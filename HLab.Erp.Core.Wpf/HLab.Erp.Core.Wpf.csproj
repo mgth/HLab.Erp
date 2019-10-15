@@ -1,0 +1,724 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>HLab.Erp.Core</RootNamespace>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="colors.xml" />
+    <None Remove="Icons\Flags\abkhazia.svg" />
+    <None Remove="Icons\Flags\afghanistan.svg" />
+    <None Remove="Icons\Flags\aland-islands.svg" />
+    <None Remove="Icons\Flags\albania.svg" />
+    <None Remove="Icons\Flags\algeria.svg" />
+    <None Remove="Icons\Flags\american-samoa.svg" />
+    <None Remove="Icons\Flags\andorra.svg" />
+    <None Remove="Icons\Flags\angola.svg" />
+    <None Remove="Icons\Flags\anguilla.svg" />
+    <None Remove="Icons\Flags\antigua-and-barbuda.svg" />
+    <None Remove="Icons\Flags\argentina.svg" />
+    <None Remove="Icons\Flags\armenia.svg" />
+    <None Remove="Icons\Flags\aruba.svg" />
+    <None Remove="Icons\Flags\australia.svg" />
+    <None Remove="Icons\Flags\austria.svg" />
+    <None Remove="Icons\Flags\azerbaijan.svg" />
+    <None Remove="Icons\Flags\azores-islands.svg" />
+    <None Remove="Icons\Flags\bahamas.svg" />
+    <None Remove="Icons\Flags\bahrain.svg" />
+    <None Remove="Icons\Flags\balearic-islands.svg" />
+    <None Remove="Icons\Flags\bangladesh.svg" />
+    <None Remove="Icons\Flags\barbados.svg" />
+    <None Remove="Icons\Flags\basque-country.svg" />
+    <None Remove="Icons\Flags\belarus.svg" />
+    <None Remove="Icons\Flags\belgium.svg" />
+    <None Remove="Icons\Flags\belize.svg" />
+    <None Remove="Icons\Flags\benin.svg" />
+    <None Remove="Icons\Flags\bermuda.svg" />
+    <None Remove="Icons\Flags\bhutan.svg" />
+    <None Remove="Icons\Flags\bolivia.svg" />
+    <None Remove="Icons\Flags\bonaire.svg" />
+    <None Remove="Icons\Flags\bosnia-and-herzegovina.svg" />
+    <None Remove="Icons\Flags\botswana.svg" />
+    <None Remove="Icons\Flags\brazil.svg" />
+    <None Remove="Icons\Flags\british-columbia.svg" />
+    <None Remove="Icons\Flags\british-indian-ocean-territory.svg" />
+    <None Remove="Icons\Flags\british-virgin-islands.svg" />
+    <None Remove="Icons\Flags\brunei.svg" />
+    <None Remove="Icons\Flags\bulgaria.svg" />
+    <None Remove="Icons\Flags\burkina-faso.svg" />
+    <None Remove="Icons\Flags\burundi.svg" />
+    <None Remove="Icons\Flags\cambodia.svg" />
+    <None Remove="Icons\Flags\cameroon.svg" />
+    <None Remove="Icons\Flags\canada.svg" />
+    <None Remove="Icons\Flags\canary-islands.svg" />
+    <None Remove="Icons\Flags\cape-verde.svg" />
+    <None Remove="Icons\Flags\cayman-islands.svg" />
+    <None Remove="Icons\Flags\central-african-republic.svg" />
+    <None Remove="Icons\Flags\ceuta.svg" />
+    <None Remove="Icons\Flags\chad.svg" />
+    <None Remove="Icons\Flags\chile.svg" />
+    <None Remove="Icons\Flags\china.svg" />
+    <None Remove="Icons\Flags\christmas-island.svg" />
+    <None Remove="Icons\Flags\cocos-island.svg" />
+    <None Remove="Icons\Flags\colombia.svg" />
+    <None Remove="Icons\Flags\comoros.svg" />
+    <None Remove="Icons\Flags\cook-islands.svg" />
+    <None Remove="Icons\Flags\corsica.svg" />
+    <None Remove="Icons\Flags\costa-rica.svg" />
+    <None Remove="Icons\Flags\croatia.svg" />
+    <None Remove="Icons\Flags\cuba.svg" />
+    <None Remove="Icons\Flags\curacao.svg" />
+    <None Remove="Icons\Flags\cyprus.svg" />
+    <None Remove="Icons\Flags\czech-republic.svg" />
+    <None Remove="Icons\Flags\democratic-republic-of-congo.svg" />
+    <None Remove="Icons\Flags\denmark.svg" />
+    <None Remove="Icons\Flags\djibouti.svg" />
+    <None Remove="Icons\Flags\dominica.svg" />
+    <None Remove="Icons\Flags\dominican-republic.svg" />
+    <None Remove="Icons\Flags\east-timor.svg" />
+    <None Remove="Icons\Flags\ecuador.svg" />
+    <None Remove="Icons\Flags\egypt.svg" />
+    <None Remove="Icons\Flags\el-salvador.svg" />
+    <None Remove="Icons\Flags\england.svg" />
+    <None Remove="Icons\Flags\equatorial-guinea.svg" />
+    <None Remove="Icons\Flags\eritrea.svg" />
+    <None Remove="Icons\Flags\estonia.svg" />
+    <None Remove="Icons\Flags\ethiopia.svg" />
+    <None Remove="Icons\Flags\european-union.svg" />
+    <None Remove="Icons\Flags\falkland-islands.svg" />
+    <None Remove="Icons\Flags\faroe-islands.svg" />
+    <None Remove="Icons\Flags\fiji.svg" />
+    <None Remove="Icons\Flags\finland.svg" />
+    <None Remove="Icons\Flags\france.svg" />
+    <None Remove="Icons\Flags\french-polynesia.svg" />
+    <None Remove="Icons\Flags\gabon.svg" />
+    <None Remove="Icons\Flags\galapagos-islands.svg" />
+    <None Remove="Icons\Flags\gambia.svg" />
+    <None Remove="Icons\Flags\georgia.svg" />
+    <None Remove="Icons\Flags\germany.svg" />
+    <None Remove="Icons\Flags\ghana.svg" />
+    <None Remove="Icons\Flags\gibraltar.svg" />
+    <None Remove="Icons\Flags\greece.svg" />
+    <None Remove="Icons\Flags\greenland.svg" />
+    <None Remove="Icons\Flags\grenada.svg" />
+    <None Remove="Icons\Flags\guam.svg" />
+    <None Remove="Icons\Flags\guatemala.svg" />
+    <None Remove="Icons\Flags\guernsey.svg" />
+    <None Remove="Icons\Flags\guinea-bissau.svg" />
+    <None Remove="Icons\Flags\guinea.svg" />
+    <None Remove="Icons\Flags\haiti.svg" />
+    <None Remove="Icons\Flags\hawaii.svg" />
+    <None Remove="Icons\Flags\honduras.svg" />
+    <None Remove="Icons\Flags\hong-kong.svg" />
+    <None Remove="Icons\Flags\hungary.svg" />
+    <None Remove="Icons\Flags\iceland.svg" />
+    <None Remove="Icons\Flags\india.svg" />
+    <None Remove="Icons\Flags\indonesia.svg" />
+    <None Remove="Icons\Flags\iran.svg" />
+    <None Remove="Icons\Flags\iraq.svg" />
+    <None Remove="Icons\Flags\ireland.svg" />
+    <None Remove="Icons\Flags\isle-of-man.svg" />
+    <None Remove="Icons\Flags\israel.svg" />
+    <None Remove="Icons\Flags\italy.svg" />
+    <None Remove="Icons\Flags\ivory-coast.svg" />
+    <None Remove="Icons\Flags\jamaica.svg" />
+    <None Remove="Icons\Flags\japan.svg" />
+    <None Remove="Icons\Flags\jersey.svg" />
+    <None Remove="Icons\Flags\jordan.svg" />
+    <None Remove="Icons\Flags\kazakhstan.svg" />
+    <None Remove="Icons\Flags\kenya.svg" />
+    <None Remove="Icons\Flags\kosovo.svg" />
+    <None Remove="Icons\Flags\kuwait.svg" />
+    <None Remove="Icons\Flags\kyrgyzstan.svg" />
+    <None Remove="Icons\Flags\laos.svg" />
+    <None Remove="Icons\Flags\latvia.svg" />
+    <None Remove="Icons\Flags\lebanon.svg" />
+    <None Remove="Icons\Flags\lesotho.svg" />
+    <None Remove="Icons\Flags\liberia.svg" />
+    <None Remove="Icons\Flags\libya.svg" />
+    <None Remove="Icons\Flags\liechtenstein.svg" />
+    <None Remove="Icons\Flags\lithuania.svg" />
+    <None Remove="Icons\Flags\luxembourg.svg" />
+    <None Remove="Icons\Flags\macao.svg" />
+    <None Remove="Icons\Flags\madagascar.svg" />
+    <None Remove="Icons\Flags\madeira.svg" />
+    <None Remove="Icons\Flags\malawi.svg" />
+    <None Remove="Icons\Flags\malaysia.svg" />
+    <None Remove="Icons\Flags\maldives.svg" />
+    <None Remove="Icons\Flags\mali.svg" />
+    <None Remove="Icons\Flags\malta.svg" />
+    <None Remove="Icons\Flags\marshall-island.svg" />
+    <None Remove="Icons\Flags\martinique.svg" />
+    <None Remove="Icons\Flags\mauritania.svg" />
+    <None Remove="Icons\Flags\mauritius.svg" />
+    <None Remove="Icons\Flags\melilla.svg" />
+    <None Remove="Icons\Flags\mexico.svg" />
+    <None Remove="Icons\Flags\micronesia.svg" />
+    <None Remove="Icons\Flags\moldova.svg" />
+    <None Remove="Icons\Flags\monaco.svg" />
+    <None Remove="Icons\Flags\mongolia.svg" />
+    <None Remove="Icons\Flags\montenegro.svg" />
+    <None Remove="Icons\Flags\montserrat.svg" />
+    <None Remove="Icons\Flags\morocco.svg" />
+    <None Remove="Icons\Flags\mozambique.svg" />
+    <None Remove="Icons\Flags\myanmar.svg" />
+    <None Remove="Icons\Flags\namibia.svg" />
+    <None Remove="Icons\Flags\nauru.svg" />
+    <None Remove="Icons\Flags\nepal.svg" />
+    <None Remove="Icons\Flags\netherlands.svg" />
+    <None Remove="Icons\Flags\new-zealand.svg" />
+    <None Remove="Icons\Flags\nicaragua.svg" />
+    <None Remove="Icons\Flags\niger.svg" />
+    <None Remove="Icons\Flags\nigeria.svg" />
+    <None Remove="Icons\Flags\niue.svg" />
+    <None Remove="Icons\Flags\norfolk-island.svg" />
+    <None Remove="Icons\Flags\north-korea.svg" />
+    <None Remove="Icons\Flags\northen-cyprus.svg" />
+    <None Remove="Icons\Flags\northern-marianas-islands.svg" />
+    <None Remove="Icons\Flags\norway.svg" />
+    <None Remove="Icons\Flags\oman.svg" />
+    <None Remove="Icons\Flags\orkney-islands.svg" />
+    <None Remove="Icons\Flags\ossetia.svg" />
+    <None Remove="Icons\Flags\otan.svg" />
+    <None Remove="Icons\Flags\pakistan.svg" />
+    <None Remove="Icons\Flags\palau.svg" />
+    <None Remove="Icons\Flags\palestine.svg" />
+    <None Remove="Icons\Flags\panama.svg" />
+    <None Remove="Icons\Flags\papua-new-guinea.svg" />
+    <None Remove="Icons\Flags\paraguay.svg" />
+    <None Remove="Icons\Flags\peru.svg" />
+    <None Remove="Icons\Flags\philippines.svg" />
+    <None Remove="Icons\Flags\pitcairn-islands.svg" />
+    <None Remove="Icons\Flags\poland.svg" />
+    <None Remove="Icons\Flags\portugal.svg" />
+    <None Remove="Icons\Flags\puerto-rico.svg" />
+    <None Remove="Icons\Flags\qatar.svg" />
+    <None Remove="Icons\Flags\rapa-nui.svg" />
+    <None Remove="Icons\Flags\republic-of-macedonia.svg" />
+    <None Remove="Icons\Flags\republic-of-the-congo.svg" />
+    <None Remove="Icons\Flags\romania.svg" />
+    <None Remove="Icons\Flags\russia.svg" />
+    <None Remove="Icons\Flags\rwanda.svg" />
+    <None Remove="Icons\Flags\saba-island.svg" />
+    <None Remove="Icons\Flags\sahrawi-arab-democratic-republic.svg" />
+    <None Remove="Icons\Flags\saint-kitts-and-nevis.svg" />
+    <None Remove="Icons\Flags\samoa.svg" />
+    <None Remove="Icons\Flags\san-marino.svg" />
+    <None Remove="Icons\Flags\sao-tome-and-principe.svg" />
+    <None Remove="Icons\Flags\sardinia.svg" />
+    <None Remove="Icons\Flags\saudi-arabia.svg" />
+    <None Remove="Icons\Flags\scotland.svg" />
+    <None Remove="Icons\Flags\senegal.svg" />
+    <None Remove="Icons\Flags\serbia.svg" />
+    <None Remove="Icons\Flags\seychelles.svg" />
+    <None Remove="Icons\Flags\sicily.svg" />
+    <None Remove="Icons\Flags\sierra-leone.svg" />
+    <None Remove="Icons\Flags\singapore.svg" />
+    <None Remove="Icons\Flags\sint-eustatius.svg" />
+    <None Remove="Icons\Flags\sint-maarten.svg" />
+    <None Remove="Icons\Flags\slovakia.svg" />
+    <None Remove="Icons\Flags\slovenia.svg" />
+    <None Remove="Icons\Flags\solomon-islands.svg" />
+    <None Remove="Icons\Flags\somalia.svg" />
+    <None Remove="Icons\Flags\somaliland.svg" />
+    <None Remove="Icons\Flags\south-africa.svg" />
+    <None Remove="Icons\Flags\south-korea.svg" />
+    <None Remove="Icons\Flags\south-sudan.svg" />
+    <None Remove="Icons\Flags\spain.svg" />
+    <None Remove="Icons\Flags\sri-lanka.svg" />
+    <None Remove="Icons\Flags\st-barts.svg" />
+    <None Remove="Icons\Flags\st-lucia.svg" />
+    <None Remove="Icons\Flags\st-vincent-and-the-grenadines.svg" />
+    <None Remove="Icons\Flags\sudan.svg" />
+    <None Remove="Icons\Flags\suriname.svg" />
+    <None Remove="Icons\Flags\sweden.svg" />
+    <None Remove="Icons\Flags\switzerland.svg" />
+    <None Remove="Icons\Flags\syria.svg" />
+    <None Remove="Icons\Flags\taiwan.svg" />
+    <None Remove="Icons\Flags\tajikistan.svg" />
+    <None Remove="Icons\Flags\tanzania.svg" />
+    <None Remove="Icons\Flags\thailand.svg" />
+    <None Remove="Icons\Flags\tibet.svg" />
+    <None Remove="Icons\Flags\togo.svg" />
+    <None Remove="Icons\Flags\tokelau.svg" />
+    <None Remove="Icons\Flags\tonga.svg" />
+    <None Remove="Icons\Flags\transnistria.svg" />
+    <None Remove="Icons\Flags\trinidad-and-tobago.svg" />
+    <None Remove="Icons\Flags\tubalu.svg" />
+    <None Remove="Icons\Flags\tunisia.svg" />
+    <None Remove="Icons\Flags\turkey.svg" />
+    <None Remove="Icons\Flags\turkmenistan.svg" />
+    <None Remove="Icons\Flags\turks-and-caicos.svg" />
+    <None Remove="Icons\Flags\uganda.svg" />
+    <None Remove="Icons\Flags\ukraine.svg" />
+    <None Remove="Icons\Flags\united-arab-emirates.svg" />
+    <None Remove="Icons\Flags\united-kingdom.svg" />
+    <None Remove="Icons\Flags\united-nations.svg" />
+    <None Remove="Icons\Flags\united-states-of-america.svg" />
+    <None Remove="Icons\Flags\uruguay.svg" />
+    <None Remove="Icons\Flags\uzbekistn.svg" />
+    <None Remove="Icons\Flags\vanuatu.svg" />
+    <None Remove="Icons\Flags\vatican-city.svg" />
+    <None Remove="Icons\Flags\venezuela.svg" />
+    <None Remove="Icons\Flags\vietnam.svg" />
+    <None Remove="Icons\Flags\virgin-islands.svg" />
+    <None Remove="Icons\Flags\wales.svg" />
+    <None Remove="Icons\Flags\yemen.svg" />
+    <None Remove="Icons\Flags\zambia.svg" />
+    <None Remove="Icons\Flags\zimbabwe.svg" />
+    <None Remove="TODO.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="colors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TODO.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Extentions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dirkster.AvalonDock" Version="3.6.0" />
+    <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="3.6.0" />
+    <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0490" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\HLab\HLab.Base.Wpf\HLab.Base.Wpf.csproj">
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Acl.Wpf\HLab.Erp.Acl.Wpf.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Acl\HLab.Erp.Acl.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Core.Annotations\HLab.Erp.Core.Annotations.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Core\HLab.Erp.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icons\Flags\abkhazia.svg" />
+    <Resource Include="Icons\Flags\afghanistan.svg" />
+    <Resource Include="Icons\Flags\aland-islands.svg" />
+    <Resource Include="Icons\Flags\albania.svg" />
+    <Resource Include="Icons\Flags\algeria.svg" />
+    <Resource Include="Icons\Flags\american-samoa.svg" />
+    <Resource Include="Icons\Flags\andorra.svg" />
+    <Resource Include="Icons\Flags\angola.svg" />
+    <Resource Include="Icons\Flags\anguilla.svg" />
+    <Resource Include="Icons\Flags\antigua-and-barbuda.svg" />
+    <Resource Include="Icons\Flags\argentina.svg" />
+    <Resource Include="Icons\Flags\armenia.svg" />
+    <Resource Include="Icons\Flags\aruba.svg" />
+    <Resource Include="Icons\Flags\australia.svg" />
+    <Resource Include="Icons\Flags\austria.svg" />
+    <Resource Include="Icons\Flags\azerbaijan.svg" />
+    <Resource Include="Icons\Flags\azores-islands.svg" />
+    <Resource Include="Icons\Flags\bahamas.svg" />
+    <Resource Include="Icons\Flags\bahrain.svg" />
+    <Resource Include="Icons\Flags\balearic-islands.svg" />
+    <Resource Include="Icons\Flags\bangladesh.svg" />
+    <Resource Include="Icons\Flags\barbados.svg" />
+    <Resource Include="Icons\Flags\basque-country.svg" />
+    <Resource Include="Icons\Flags\belarus.svg" />
+    <Resource Include="Icons\Flags\belgium.svg" />
+    <Resource Include="Icons\Flags\belize.svg" />
+    <Resource Include="Icons\Flags\benin.svg" />
+    <Resource Include="Icons\Flags\bermuda.svg" />
+    <Resource Include="Icons\Flags\bhutan.svg" />
+    <Resource Include="Icons\Flags\bolivia.svg" />
+    <Resource Include="Icons\Flags\bonaire.svg" />
+    <Resource Include="Icons\Flags\bosnia-and-herzegovina.svg" />
+    <Resource Include="Icons\Flags\botswana.svg" />
+    <Resource Include="Icons\Flags\brazil.svg" />
+    <Resource Include="Icons\Flags\british-columbia.svg" />
+    <Resource Include="Icons\Flags\british-indian-ocean-territory.svg" />
+    <Resource Include="Icons\Flags\british-virgin-islands.svg" />
+    <Resource Include="Icons\Flags\brunei.svg" />
+    <Resource Include="Icons\Flags\bulgaria.svg" />
+    <Resource Include="Icons\Flags\burkina-faso.svg" />
+    <Resource Include="Icons\Flags\burundi.svg" />
+    <Resource Include="Icons\Flags\cambodia.svg" />
+    <Resource Include="Icons\Flags\cameroon.svg" />
+    <Resource Include="Icons\Flags\canada.svg" />
+    <Resource Include="Icons\Flags\canary-islands.svg" />
+    <Resource Include="Icons\Flags\cape-verde.svg" />
+    <Resource Include="Icons\Flags\cayman-islands.svg" />
+    <Resource Include="Icons\Flags\central-african-republic.svg" />
+    <Resource Include="Icons\Flags\ceuta.svg" />
+    <Resource Include="Icons\Flags\chad.svg" />
+    <Resource Include="Icons\Flags\chile.svg" />
+    <Resource Include="Icons\Flags\china.svg" />
+    <Resource Include="Icons\Flags\christmas-island.svg" />
+    <Resource Include="Icons\Flags\cocos-island.svg" />
+    <Resource Include="Icons\Flags\colombia.svg" />
+    <Resource Include="Icons\Flags\comoros.svg" />
+    <Resource Include="Icons\Flags\cook-islands.svg" />
+    <Resource Include="Icons\Flags\corsica.svg" />
+    <Resource Include="Icons\Flags\costa-rica.svg" />
+    <Resource Include="Icons\Flags\croatia.svg" />
+    <Resource Include="Icons\Flags\cuba.svg" />
+    <Resource Include="Icons\Flags\curacao.svg" />
+    <Resource Include="Icons\Flags\cyprus.svg" />
+    <Resource Include="Icons\Flags\czech-republic.svg" />
+    <Resource Include="Icons\Flags\democratic-republic-of-congo.svg" />
+    <Resource Include="Icons\Flags\denmark.svg" />
+    <Resource Include="Icons\Flags\djibouti.svg" />
+    <Resource Include="Icons\Flags\dominica.svg" />
+    <Resource Include="Icons\Flags\dominican-republic.svg" />
+    <Resource Include="Icons\Flags\east-timor.svg" />
+    <Resource Include="Icons\Flags\ecuador.svg" />
+    <Resource Include="Icons\Flags\egypt.svg" />
+    <Resource Include="Icons\Flags\el-salvador.svg" />
+    <Resource Include="Icons\Flags\england.svg" />
+    <Resource Include="Icons\Flags\equatorial-guinea.svg" />
+    <Resource Include="Icons\Flags\eritrea.svg" />
+    <Resource Include="Icons\Flags\estonia.svg" />
+    <Resource Include="Icons\Flags\ethiopia.svg" />
+    <Resource Include="Icons\Flags\european-union.svg" />
+    <Resource Include="Icons\Flags\falkland-islands.svg" />
+    <Resource Include="Icons\Flags\faroe-islands.svg" />
+    <Resource Include="Icons\Flags\fiji.svg" />
+    <Resource Include="Icons\Flags\finland.svg" />
+    <Resource Include="Icons\Flags\france.svg" />
+    <Resource Include="Icons\Flags\french-polynesia.svg" />
+    <Resource Include="Icons\Flags\gabon.svg" />
+    <Resource Include="Icons\Flags\galapagos-islands.svg" />
+    <Resource Include="Icons\Flags\gambia.svg" />
+    <Resource Include="Icons\Flags\georgia.svg" />
+    <Resource Include="Icons\Flags\germany.svg" />
+    <Resource Include="Icons\Flags\ghana.svg" />
+    <Resource Include="Icons\Flags\gibraltar.svg" />
+    <Resource Include="Icons\Flags\greece.svg" />
+    <Resource Include="Icons\Flags\greenland.svg" />
+    <Resource Include="Icons\Flags\grenada.svg" />
+    <Resource Include="Icons\Flags\guam.svg" />
+    <Resource Include="Icons\Flags\guatemala.svg" />
+    <Resource Include="Icons\Flags\guernsey.svg" />
+    <Resource Include="Icons\Flags\guinea-bissau.svg" />
+    <Resource Include="Icons\Flags\guinea.svg" />
+    <Resource Include="Icons\Flags\haiti.svg" />
+    <Resource Include="Icons\Flags\hawaii.svg" />
+    <Resource Include="Icons\Flags\honduras.svg" />
+    <Resource Include="Icons\Flags\hong-kong.svg" />
+    <Resource Include="Icons\Flags\hungary.svg" />
+    <Resource Include="Icons\Flags\iceland.svg" />
+    <Resource Include="Icons\Flags\india.svg" />
+    <Resource Include="Icons\Flags\indonesia.svg" />
+    <Resource Include="Icons\Flags\iran.svg" />
+    <Resource Include="Icons\Flags\iraq.svg" />
+    <Resource Include="Icons\Flags\ireland.svg" />
+    <Resource Include="Icons\Flags\isle-of-man.svg" />
+    <Resource Include="Icons\Flags\israel.svg" />
+    <Resource Include="Icons\Flags\italy.svg" />
+    <Resource Include="Icons\Flags\ivory-coast.svg" />
+    <Resource Include="Icons\Flags\jamaica.svg" />
+    <Resource Include="Icons\Flags\japan.svg" />
+    <Resource Include="Icons\Flags\jersey.svg" />
+    <Resource Include="Icons\Flags\jordan.svg" />
+    <Resource Include="Icons\Flags\kazakhstan.svg" />
+    <Resource Include="Icons\Flags\kenya.svg" />
+    <Resource Include="Icons\Flags\kosovo.svg" />
+    <Resource Include="Icons\Flags\kuwait.svg" />
+    <Resource Include="Icons\Flags\kyrgyzstan.svg" />
+    <Resource Include="Icons\Flags\laos.svg" />
+    <Resource Include="Icons\Flags\latvia.svg" />
+    <Resource Include="Icons\Flags\lebanon.svg" />
+    <Resource Include="Icons\Flags\lesotho.svg" />
+    <Resource Include="Icons\Flags\liberia.svg" />
+    <Resource Include="Icons\Flags\libya.svg" />
+    <Resource Include="Icons\Flags\liechtenstein.svg" />
+    <Resource Include="Icons\Flags\lithuania.svg" />
+    <Resource Include="Icons\Flags\luxembourg.svg" />
+    <Resource Include="Icons\Flags\macao.svg" />
+    <Resource Include="Icons\Flags\madagascar.svg" />
+    <Resource Include="Icons\Flags\madeira.svg" />
+    <Resource Include="Icons\Flags\malawi.svg" />
+    <Resource Include="Icons\Flags\malaysia.svg" />
+    <Resource Include="Icons\Flags\maldives.svg" />
+    <Resource Include="Icons\Flags\mali.svg" />
+    <Resource Include="Icons\Flags\malta.svg" />
+    <Resource Include="Icons\Flags\marshall-island.svg" />
+    <Resource Include="Icons\Flags\martinique.svg" />
+    <Resource Include="Icons\Flags\mauritania.svg" />
+    <Resource Include="Icons\Flags\mauritius.svg" />
+    <Resource Include="Icons\Flags\melilla.svg" />
+    <Resource Include="Icons\Flags\mexico.svg" />
+    <Resource Include="Icons\Flags\micronesia.svg" />
+    <Resource Include="Icons\Flags\moldova.svg" />
+    <Resource Include="Icons\Flags\monaco.svg" />
+    <Resource Include="Icons\Flags\mongolia.svg" />
+    <Resource Include="Icons\Flags\montenegro.svg" />
+    <Resource Include="Icons\Flags\montserrat.svg" />
+    <Resource Include="Icons\Flags\morocco.svg" />
+    <Resource Include="Icons\Flags\mozambique.svg" />
+    <Resource Include="Icons\Flags\myanmar.svg" />
+    <Resource Include="Icons\Flags\namibia.svg" />
+    <Resource Include="Icons\Flags\nauru.svg" />
+    <Resource Include="Icons\Flags\nepal.svg" />
+    <Resource Include="Icons\Flags\netherlands.svg" />
+    <Resource Include="Icons\Flags\new-zealand.svg" />
+    <Resource Include="Icons\Flags\nicaragua.svg" />
+    <Resource Include="Icons\Flags\niger.svg" />
+    <Resource Include="Icons\Flags\nigeria.svg" />
+    <Resource Include="Icons\Flags\niue.svg" />
+    <Resource Include="Icons\Flags\norfolk-island.svg" />
+    <Resource Include="Icons\Flags\north-korea.svg" />
+    <Resource Include="Icons\Flags\northen-cyprus.svg" />
+    <Resource Include="Icons\Flags\northern-marianas-islands.svg" />
+    <Resource Include="Icons\Flags\norway.svg" />
+    <Resource Include="Icons\Flags\oman.svg" />
+    <Resource Include="Icons\Flags\orkney-islands.svg" />
+    <Resource Include="Icons\Flags\ossetia.svg" />
+    <Resource Include="Icons\Flags\otan.svg" />
+    <Resource Include="Icons\Flags\pakistan.svg" />
+    <Resource Include="Icons\Flags\palau.svg" />
+    <Resource Include="Icons\Flags\palestine.svg" />
+    <Resource Include="Icons\Flags\panama.svg" />
+    <Resource Include="Icons\Flags\papua-new-guinea.svg" />
+    <Resource Include="Icons\Flags\paraguay.svg" />
+    <Resource Include="Icons\Flags\peru.svg" />
+    <Resource Include="Icons\Flags\philippines.svg" />
+    <Resource Include="Icons\Flags\pitcairn-islands.svg" />
+    <Resource Include="Icons\Flags\poland.svg" />
+    <Resource Include="Icons\Flags\portugal.svg" />
+    <Resource Include="Icons\Flags\puerto-rico.svg" />
+    <Resource Include="Icons\Flags\qatar.svg" />
+    <Resource Include="Icons\Flags\rapa-nui.svg" />
+    <Resource Include="Icons\Flags\republic-of-macedonia.svg" />
+    <Resource Include="Icons\Flags\republic-of-the-congo.svg" />
+    <Resource Include="Icons\Flags\romania.svg" />
+    <Resource Include="Icons\Flags\russia.svg" />
+    <Resource Include="Icons\Flags\rwanda.svg" />
+    <Resource Include="Icons\Flags\saba-island.svg" />
+    <Resource Include="Icons\Flags\sahrawi-arab-democratic-republic.svg" />
+    <Resource Include="Icons\Flags\saint-kitts-and-nevis.svg" />
+    <Resource Include="Icons\Flags\samoa.svg" />
+    <Resource Include="Icons\Flags\san-marino.svg" />
+    <Resource Include="Icons\Flags\sao-tome-and-principe.svg" />
+    <Resource Include="Icons\Flags\sardinia.svg" />
+    <Resource Include="Icons\Flags\saudi-arabia.svg" />
+    <Resource Include="Icons\Flags\scotland.svg" />
+    <Resource Include="Icons\Flags\senegal.svg" />
+    <Resource Include="Icons\Flags\serbia.svg" />
+    <Resource Include="Icons\Flags\seychelles.svg" />
+    <Resource Include="Icons\Flags\sicily.svg" />
+    <Resource Include="Icons\Flags\sierra-leone.svg" />
+    <Resource Include="Icons\Flags\singapore.svg" />
+    <Resource Include="Icons\Flags\sint-eustatius.svg" />
+    <Resource Include="Icons\Flags\sint-maarten.svg" />
+    <Resource Include="Icons\Flags\slovakia.svg" />
+    <Resource Include="Icons\Flags\slovenia.svg" />
+    <Resource Include="Icons\Flags\solomon-islands.svg" />
+    <Resource Include="Icons\Flags\somalia.svg" />
+    <Resource Include="Icons\Flags\somaliland.svg" />
+    <Resource Include="Icons\Flags\south-africa.svg" />
+    <Resource Include="Icons\Flags\south-korea.svg" />
+    <Resource Include="Icons\Flags\south-sudan.svg" />
+    <Resource Include="Icons\Flags\spain.svg" />
+    <Resource Include="Icons\Flags\sri-lanka.svg" />
+    <Resource Include="Icons\Flags\st-barts.svg" />
+    <Resource Include="Icons\Flags\st-lucia.svg" />
+    <Resource Include="Icons\Flags\st-vincent-and-the-grenadines.svg" />
+    <Resource Include="Icons\Flags\sudan.svg" />
+    <Resource Include="Icons\Flags\suriname.svg" />
+    <Resource Include="Icons\Flags\sweden.svg" />
+    <Resource Include="Icons\Flags\switzerland.svg" />
+    <Resource Include="Icons\Flags\syria.svg" />
+    <Resource Include="Icons\Flags\taiwan.svg" />
+    <Resource Include="Icons\Flags\tajikistan.svg" />
+    <Resource Include="Icons\Flags\tanzania.svg" />
+    <Resource Include="Icons\Flags\thailand.svg" />
+    <Resource Include="Icons\Flags\tibet.svg" />
+    <Resource Include="Icons\Flags\togo.svg" />
+    <Resource Include="Icons\Flags\tokelau.svg" />
+    <Resource Include="Icons\Flags\tonga.svg" />
+    <Resource Include="Icons\Flags\transnistria.svg" />
+    <Resource Include="Icons\Flags\trinidad-and-tobago.svg" />
+    <Resource Include="Icons\Flags\tubalu.svg" />
+    <Resource Include="Icons\Flags\tunisia.svg" />
+    <Resource Include="Icons\Flags\turkey.svg" />
+    <Resource Include="Icons\Flags\turkmenistan.svg" />
+    <Resource Include="Icons\Flags\turks-and-caicos.svg" />
+    <Resource Include="Icons\Flags\uganda.svg" />
+    <Resource Include="Icons\Flags\ukraine.svg" />
+    <Resource Include="Icons\Flags\united-arab-emirates.svg" />
+    <Resource Include="Icons\Flags\united-kingdom.svg" />
+    <Resource Include="Icons\Flags\united-nations.svg" />
+    <Resource Include="Icons\Flags\united-states-of-america.svg" />
+    <Resource Include="Icons\Flags\uruguay.svg" />
+    <Resource Include="Icons\Flags\uzbekistn.svg" />
+    <Resource Include="Icons\Flags\vanuatu.svg" />
+    <Resource Include="Icons\Flags\vatican-city.svg" />
+    <Resource Include="Icons\Flags\venezuela.svg" />
+    <Resource Include="Icons\Flags\vietnam.svg" />
+    <Resource Include="Icons\Flags\virgin-islands.svg" />
+    <Resource Include="Icons\Flags\wales.svg" />
+    <Resource Include="Icons\Flags\yemen.svg" />
+    <Resource Include="Icons\Flags\zambia.svg" />
+    <Resource Include="Icons\Flags\zimbabwe.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ApplicationServices\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="EntitySelectors\EntitySelector.xaml.cs">
+      <DependentUpon>EntitySelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="EntitySelectors\EntitySelectorButton.xaml.cs">
+      <DependentUpon>EntitySelectorButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="EntitySelectors\EntitySelectorWindow.xaml.cs">
+      <DependentUpon>EntitySelectorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="EntityViews\EntityViewDefault.xaml.cs">
+      <DependentUpon>EntityViewDefault.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="ListFilters\FilterDateView.xaml.cs">
+      <DependentUpon>FilterDateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="ListFilters\FilterEntityView.xaml.cs">
+      <DependentUpon>FilterEntityView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="ListFilters\FilterView.xaml.cs">
+      <DependentUpon>FilterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Lists\EntityListViewGrid.xaml.cs">
+      <DependentUpon>EntityListViewGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Localization\LocalizationTagView.xaml.cs">
+      <DependentUpon>LocalizationTagView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Localization\LocalizationView.xaml.cs">
+      <DependentUpon>LocalizationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Options\OptionCore.xaml.cs">
+      <DependentUpon>OptionCore.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="RichTextBoxXaml.xaml.cs">
+      <DependentUpon>RichTextBoxXaml.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Services\LayoutDocumentView.xaml.cs">
+      <DependentUpon>LayoutDocumentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="ToolBoxes\ToolBoxView.xaml.cs">
+      <DependentUpon>ToolBoxView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Tools\Details\DetailView.xaml.cs">
+      <DependentUpon>DetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Update\ApplicationUpdateView.xaml.cs">
+      <DependentUpon>ApplicationUpdateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\DefaultSelectorView.xaml.cs">
+      <DependentUpon>DefaultSelectorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\DefaultView.xaml.cs">
+      <DependentUpon>DefaultView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\EntityListView.xaml.cs">
+      <DependentUpon>EntityListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\EntityListView2.xaml.cs">
+      <DependentUpon>EntityListView2.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\EntityListView3.xaml.cs">
+      <DependentUpon>EntityListView3.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ListItemView.xaml.cs">
+      <DependentUpon>ListItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ListViewDefault.xaml.cs">
+      <DependentUpon>ListViewDefault.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="WebService\BrowserView.xaml.cs">
+      <DependentUpon>BrowserView.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="ApplicationServices\MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="EntitySelectors\EntitySelector.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="EntitySelectors\EntitySelectorButton.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="EntitySelectors\EntitySelectorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="EntityViews\EntityViewDefault.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ListFilters\FilterDateView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ListFilters\FilterEntityView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ListFilters\FilterView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Lists\EntityListViewGrid.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Localization\LocalizationTagView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Localization\LocalizationView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Options\OptionCore.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="RichTextBoxXaml.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Services\LayoutDocumentView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ToolBoxes\ToolBoxView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Tools\Details\DetailView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Update\ApplicationUpdateView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\DefaultSelectorView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\DefaultView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\EntityListView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\EntityListView2.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\EntityListView3.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ListItemView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ListViewDefault.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="WebService\BrowserView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>HLab.Erp.Workflows</RootNamespace>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\HLab\HLab.Base.Wpf\HLab.Base.Wpf.csproj" />
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Annotations\HLab.Mvvm.Annotations.csproj" />
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Workflows\HLab.Erp.Workflows.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="WorkFlowActionView.xaml.cs">
+      <DependentUpon>WorkFlowActionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="WorkFlowStateView.xaml.cs">
+      <DependentUpon>WorkFlowStateView.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="WorkFlowActionView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="WorkFlowStateView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+</Project>

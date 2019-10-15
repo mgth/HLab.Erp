@@ -1,0 +1,65 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using HLab.Erp.Data;
+using HLab.Notify.PropertyChanged;
+using NPoco;
+
+namespace HLab.Erp.Base.Data
+{
+    [Table("Country")]
+    public class Country : Entity<Country>
+    {
+        [System.ComponentModel.DataAnnotations.Schema.Column]
+        public string Name
+        {
+            get => _name.Get();
+            set => _name.Set(value);
+        }
+        private readonly IProperty<string> _name = H.Property<string>(c => c.Default(""));
+       [System.ComponentModel.DataAnnotations.Schema.Column]
+        public string IsoA2
+        {
+            get => _isoA2.Get();
+            set => _isoA2.Set(value);
+        }
+        private readonly IProperty<string> _isoA2 = H.Property<string>();
+        public string IsoA3
+        {
+            get => _isoA3.Get();
+            set => _isoA3.Set(value);
+        }
+        private readonly IProperty<string> _isoA3 = H.Property<string>();
+       [System.ComponentModel.DataAnnotations.Schema.Column]
+       public int Iso
+       {
+           get => _iso.Get();
+           set => _iso.Set(value);
+       }
+       private readonly IProperty<int> _iso = H.Property<int>();
+
+       [System.ComponentModel.DataAnnotations.Schema.Column]
+        public string Icon
+        {
+            get => _icon.Get();
+            set => _icon.Set(value);
+        }
+        private readonly IProperty<string> _icon = H.Property<string>();
+
+
+        public int? ContinentId
+        {
+            get => _continentId.Get();
+            set => _continentId.Set(value);
+        }
+        private readonly IProperty<int?> _continentId = H.Property<int?>();
+
+        [Ignore]
+        public Continent Continent
+        {
+            //get => E.GetForeign<Continent>(() => ContinentId);
+            set => ContinentId = value.Id;
+            get => _continent.Get();
+        }
+        readonly IProperty<Continent> _continent = H.Property<Continent>(c => c
+            .Foreign(e => e.ContinentId));
+    }
+}

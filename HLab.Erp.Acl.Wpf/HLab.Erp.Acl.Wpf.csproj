@@ -1,0 +1,116 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>HLab.Erp.Acl</RootNamespace>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Page Remove="Icons\Approved.xaml" />
+    <Page Remove="Icons\Eye.xaml" />
+    <Page Remove="Icons\eye2.xaml" />
+    <Page Remove="Icons\eye3.xaml" />
+    <Page Remove="Icons\EyeCheck.xaml" />
+    <Page Remove="Icons\EyeCheck4.xaml" />
+    <Page Remove="Icons\Locked.xaml" />
+    <Page Remove="Icons\Protected.xaml" />
+    <Page Remove="Icons\Unlocked.xaml" />
+    <Page Remove="Icons\User.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Acl\HLab.Erp.Acl.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icons\Approved.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Icons\Eye.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Icons\eye2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Icons\eye3.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Icons\EyeCheck.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Icons\EyeCheck4.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Icons\Locked.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Icons\Protected.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Icons\Unlocked.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Icons\User.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="DataLockerView.xaml.cs">
+      <DependentUpon>DataLockerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="KioskLogin\KioskLoginView.xaml.cs">
+      <DependentUpon>KioskLoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="KioskLogin\UserView.xaml.cs">
+      <DependentUpon>UserView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="LoginServices\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="TextBoxCFR.xaml.cs">
+      <DependentUpon>TextBoxCFR.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="DataLockerView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Icons\users.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="KioskLogin\KioskLoginView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="KioskLogin\UserView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="LoginServices\LoginView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="TextBoxCFR.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+</Project>

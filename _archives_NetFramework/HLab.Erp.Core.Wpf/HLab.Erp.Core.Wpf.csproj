@@ -1,0 +1,885 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B1B1E423-9811-4294-A741-2C3422053C41}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HLab.Erp.Core.Wpf</RootNamespace>
+    <AssemblyName>HLab.Erp.Core.Wpf</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseLocal|x64'">
+    <OutputPath>bin\x64\ReleaseLocal\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseLocal|AnyCPU'">
+    <OutputPath>bin\ReleaseLocal\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseLocal|x86'">
+    <OutputPath>bin\x86\ReleaseLocal\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationServices\AvalonDockLayoutSerializer.cs" />
+    <Compile Include="ApplicationServices\AvalonDockLayoutViewModel.cs" />
+    <Compile Include="ApplicationServices\BootLoaderErpWpf.cs" />
+    <Compile Include="ApplicationServices\DocumentServiceWpf.cs" />
+    <Compile Include="ApplicationServices\ILayoutViewModelParent.cs" />
+    <Compile Include="ApplicationServices\LayoutUpdateStrategy .cs" />
+    <Compile Include="ApplicationServices\MainWpfViewModel.cs" />
+    <Compile Include="ApplicationServices\MenuService.cs" />
+    <Compile Include="Behaviours\FrameworkElementBehavior.cs" />
+    <Compile Include="ListFilters\DateFilterViewModel.cs" />
+    <Compile Include="ListFilters\FilterEntityView.xaml.cs">
+      <DependentUpon>FilterEntityView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ListFilters\FilterView.xaml.cs">
+      <DependentUpon>FilterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ListFilters\FilterDateView.xaml.cs">
+      <DependentUpon>FilterDateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ListFilters\FilterViewModel.cs" />
+    <Compile Include="ListFilters\FilterViewModelEntity.cs" />
+    <Compile Include="ListFilters\IFilterContentViewClass.cs" />
+    <Compile Include="ListFilters\IFilterViewModel.cs" />
+    <Compile Include="Localization\LocalizationBootloader.cs" />
+    <Compile Include="Localization\LocalizationTagView.xaml.cs">
+      <DependentUpon>LocalizationTagView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Localization\LocalizationView.xaml.cs">
+      <DependentUpon>LocalizationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Localization\LocalizationViewModel.cs" />
+    <Compile Include="Localization\LocalizeFromDb.cs" />
+    <Compile Include="Localization\TagViewModel.cs" />
+    <Compile Include="OptionsServicesWpf.cs" />
+    <Compile Include="DragDrops\DragDropItemViewModel.cs" />
+    <Compile Include="DragDrops\DragDropService.cs" />
+    <Compile Include="DragDrops\DragDropServiceWpf.cs" />
+    <Compile Include="DragDrops\IDragDropService.cs" />
+    <Compile Include="DragDrops\IViewClassDraggable.cs" />
+    <Compile Include="Extensions\IViewExt.cs" />
+    <Compile Include="MouseUtilities.cs" />
+    <Compile Include="ToolBoxes\IToolListViewModel.cs" />
+    <Compile Include="ToolBoxes\IViewClassToolItem.cs" />
+    <Compile Include="ToolBoxes\ToolBoxView.xaml.cs">
+      <DependentUpon>ToolBoxView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\Details\DetailMessage.cs" />
+    <Compile Include="Tools\Details\DetailsViewModel.cs" />
+    <Compile Include="Tools\Details\DetailView.xaml.cs">
+      <DependentUpon>DetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tools\Details\IViewClassDetail.cs" />
+    <Compile Include="Update\ApplicationUpdateView.xaml.cs">
+      <DependentUpon>ApplicationUpdateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Update\ApplicationUpdateViewModel.cs" />
+    <Compile Include="ViewModels\IListItemViewModel.cs" />
+    <Compile Include="ViewModels\IListViewModel.cs" />
+    <Compile Include="Views\EntityListView3.xaml.cs">
+      <DependentUpon>EntityListView3.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EntityListView2.xaml.cs">
+      <DependentUpon>EntityListView2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WebService\BrowserServiceModule.cs" />
+    <Compile Include="WebService\BrowserView.xaml.cs">
+      <DependentUpon>BrowserView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IPlugins.cs" />
+    <Compile Include="Lists\EntityListViewGrid.xaml.cs">
+      <DependentUpon>EntityListViewGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Lists\GridViewExt.cs" />
+    <Compile Include="Lists\NotifyCollectionChangedExt.cs" />
+    <Compile Include="EntityString.cs" />
+    <Compile Include="DragDrops\ErpDragDrop.cs" />
+    <Compile Include="Lists\QueryLists\QueryList.cs" />
+    <Compile Include="Lists\QueryLists\QueryListBase.cs" />
+    <Compile Include="Options\OptionCore.xaml.cs">
+      <DependentUpon>OptionCore.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Services\LayoutDocumentView.xaml.cs">
+      <DependentUpon>LayoutDocumentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TextBoxAdvanced.cs" />
+    <Compile Include="ViewModelStates\BrushSet.cs" />
+    <Compile Include="ViewModels\EntityListViewModel.cs" />
+    <Compile Include="ViewModels\FilterViewModel.cs" />
+    <Compile Include="ViewModels\IEntityDependency.cs" />
+    <Compile Include="ViewModels\IViewInstantiated.cs" />
+    <Compile Include="ViewModels\ViewModelConverter.cs" />
+    <Compile Include="Views\EntityListView.xaml.cs">
+      <DependentUpon>EntityListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ListItemView.xaml.cs">
+      <DependentUpon>ListItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationServices\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Lists\ViewModelsList.cs" />
+    <Compile Include="ViewModelStates\BlackTheme.cs" />
+    <Compile Include="ViewModelStates\BrushTheme.cs" />
+    <Compile Include="ViewModelStates\ClearTheme.cs" />
+    <Compile Include="ViewModelStates\State.cs" />
+    <Compile Include="Views\DefaultSelectorView.xaml.cs">
+      <DependentUpon>DefaultSelectorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DragAdorner.cs" />
+    <Compile Include="EntityViews\EntityViewDefault.xaml.cs">
+      <DependentUpon>EntityViewDefault.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EntitySelectors\EntitySelector.xaml.cs">
+      <DependentUpon>EntitySelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EntitySelectors\EntitySelectorWindow.xaml.cs">
+      <DependentUpon>EntitySelectorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EntitySelectors\EntitySelectorButton.xaml.cs">
+      <DependentUpon>EntitySelectorButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GridViewSort.cs" />
+    <Compile Include="IsListColumn.cs" />
+    <Compile Include="ListViewDragDropManager.cs" />
+    <Compile Include="ListViewLayout\ConverterGridViewColumn.cs" />
+    <Compile Include="ListViewLayout\FixedColumn.cs" />
+    <Compile Include="ListViewLayout\ImageGridViewColumn.cs" />
+    <Compile Include="ListViewLayout\LayoutColumn.cs" />
+    <Compile Include="ListViewLayout\ListViewLayoutManager.cs" />
+    <Compile Include="ListViewLayout\ProportionalColumn.cs" />
+    <Compile Include="ListViewLayout\RangeColumn.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RichTextBoxHelper.cs" />
+    <Compile Include="RichTextBoxXaml.xaml.cs">
+      <DependentUpon>RichTextBoxXaml.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TextBoxDecimal.cs" />
+    <Compile Include="Views\DefaultView.xaml.cs">
+      <DependentUpon>DefaultView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ListViewDefault.xaml.cs">
+      <DependentUpon>ListViewDefault.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WebService\BrowserViewModel.cs" />
+    <Compile Include="WebService\IBrowserService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="ListFilters\FilterEntityView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ListFilters\FilterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ListFilters\FilterDateView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Localization\LocalizationTagView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Localization\LocalizationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolBoxes\ToolBoxView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tools\Details\DetailView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Update\ApplicationUpdateView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EntityListView3.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\EntityListView2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WebService\BrowserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Lists\EntityListViewGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\OptionCore.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Services\LayoutDocumentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EntityListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ListItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ApplicationServices\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DefaultSelectorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EntitySelectors\EntitySelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EntitySelectors\EntitySelectorWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EntitySelectors\EntitySelectorButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EntityViews\EntityViewDefault.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RichTextBoxXaml.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DefaultView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ListViewDefault.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="colors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Icons\Flags\abkhazia.svg" />
+    <Resource Include="Icons\Flags\afghanistan.svg" />
+    <Resource Include="Icons\Flags\aland-islands.svg" />
+    <Resource Include="Icons\Flags\albania.svg" />
+    <Resource Include="Icons\Flags\algeria.svg" />
+    <Resource Include="Icons\Flags\american-samoa.svg" />
+    <Resource Include="Icons\Flags\andorra.svg" />
+    <Resource Include="Icons\Flags\angola.svg" />
+    <Resource Include="Icons\Flags\anguilla.svg" />
+    <Resource Include="Icons\Flags\antigua-and-barbuda.svg" />
+    <Resource Include="Icons\Flags\argentina.svg" />
+    <Resource Include="Icons\Flags\armenia.svg" />
+    <Resource Include="Icons\Flags\aruba.svg" />
+    <Resource Include="Icons\Flags\australia.svg" />
+    <Resource Include="Icons\Flags\austria.svg" />
+    <Resource Include="Icons\Flags\azerbaijan.svg" />
+    <Resource Include="Icons\Flags\azores-islands.svg" />
+    <Resource Include="Icons\Flags\bahamas.svg" />
+    <Resource Include="Icons\Flags\bahrain.svg" />
+    <Resource Include="Icons\Flags\balearic-islands.svg" />
+    <Resource Include="Icons\Flags\bangladesh.svg" />
+    <Resource Include="Icons\Flags\barbados.svg" />
+    <Resource Include="Icons\Flags\basque-country.svg" />
+    <Resource Include="Icons\Flags\belarus.svg" />
+    <Resource Include="Icons\Flags\belgium.svg" />
+    <Resource Include="Icons\Flags\belize.svg" />
+    <Resource Include="Icons\Flags\benin.svg" />
+    <Resource Include="Icons\Flags\bermuda.svg" />
+    <Resource Include="Icons\Flags\bhutan.svg" />
+    <Resource Include="Icons\Flags\bolivia.svg" />
+    <Resource Include="Icons\Flags\bonaire.svg" />
+    <Resource Include="Icons\Flags\bosnia-and-herzegovina.svg" />
+    <Resource Include="Icons\Flags\botswana.svg" />
+    <Resource Include="Icons\Flags\brazil.svg" />
+    <Resource Include="Icons\Flags\british-columbia.svg" />
+    <Resource Include="Icons\Flags\british-indian-ocean-territory.svg" />
+    <Resource Include="Icons\Flags\british-virgin-islands.svg" />
+    <Resource Include="Icons\Flags\brunei.svg" />
+    <Resource Include="Icons\Flags\bulgaria.svg" />
+    <Resource Include="Icons\Flags\burkina-faso.svg" />
+    <Resource Include="Icons\Flags\burundi.svg" />
+    <Resource Include="Icons\Flags\cambodia.svg" />
+    <Resource Include="Icons\Flags\cameroon.svg" />
+    <Resource Include="Icons\Flags\canada.svg" />
+    <Resource Include="Icons\Flags\canary-islands.svg" />
+    <Resource Include="Icons\Flags\cape-verde.svg" />
+    <Resource Include="Icons\Flags\cayman-islands.svg" />
+    <Resource Include="Icons\Flags\central-african-republic.svg" />
+    <Resource Include="Icons\Flags\ceuta.svg" />
+    <Resource Include="Icons\Flags\chad.svg" />
+    <Resource Include="Icons\Flags\chile.svg" />
+    <Resource Include="Icons\Flags\china.svg" />
+    <Resource Include="Icons\Flags\christmas-island.svg" />
+    <Resource Include="Icons\Flags\cocos-island.svg" />
+    <Resource Include="Icons\Flags\colombia.svg" />
+    <Resource Include="Icons\Flags\comoros.svg" />
+    <Resource Include="Icons\Flags\cook-islands.svg" />
+    <Resource Include="Icons\Flags\corsica.svg" />
+    <Resource Include="Icons\Flags\costa-rica.svg" />
+    <Resource Include="Icons\Flags\croatia.svg" />
+    <Resource Include="Icons\Flags\cuba.svg" />
+    <Resource Include="Icons\Flags\curacao.svg" />
+    <Resource Include="Icons\Flags\cyprus.svg" />
+    <Resource Include="Icons\Flags\czech-republic.svg" />
+    <Resource Include="Icons\Flags\democratic-republic-of-congo.svg" />
+    <Resource Include="Icons\Flags\denmark.svg" />
+    <Resource Include="Icons\Flags\djibouti.svg" />
+    <Resource Include="Icons\Flags\dominica.svg" />
+    <Resource Include="Icons\Flags\dominican-republic.svg" />
+    <Resource Include="Icons\Flags\east-timor.svg" />
+    <Resource Include="Icons\Flags\ecuador.svg" />
+    <Resource Include="Icons\Flags\egypt.svg" />
+    <Resource Include="Icons\Flags\el-salvador.svg" />
+    <Resource Include="Icons\Flags\england.svg" />
+    <Resource Include="Icons\Flags\equatorial-guinea.svg" />
+    <Resource Include="Icons\Flags\eritrea.svg" />
+    <Resource Include="Icons\Flags\estonia.svg" />
+    <Resource Include="Icons\Flags\ethiopia.svg" />
+    <Resource Include="Icons\Flags\european-union.svg" />
+    <Resource Include="Icons\Flags\falkland-islands.svg" />
+    <Resource Include="Icons\Flags\faroe-islands.svg" />
+    <Resource Include="Icons\Flags\fiji.svg" />
+    <Resource Include="Icons\Flags\finland.svg" />
+    <Resource Include="Icons\Flags\france.svg" />
+    <Resource Include="Icons\Flags\french-polynesia.svg" />
+    <Resource Include="Icons\Flags\gabon.svg" />
+    <Resource Include="Icons\Flags\galapagos-islands.svg" />
+    <Resource Include="Icons\Flags\gambia.svg" />
+    <Resource Include="Icons\Flags\georgia.svg" />
+    <Resource Include="Icons\Flags\germany.svg" />
+    <Resource Include="Icons\Flags\ghana.svg" />
+    <Resource Include="Icons\Flags\gibraltar.svg" />
+    <Resource Include="Icons\Flags\greece.svg" />
+    <Resource Include="Icons\Flags\greenland.svg" />
+    <Resource Include="Icons\Flags\grenada.svg" />
+    <Resource Include="Icons\Flags\guam.svg" />
+    <Resource Include="Icons\Flags\guatemala.svg" />
+    <Resource Include="Icons\Flags\guernsey.svg" />
+    <Resource Include="Icons\Flags\guinea-bissau.svg" />
+    <Resource Include="Icons\Flags\guinea.svg" />
+    <Resource Include="Icons\Flags\haiti.svg" />
+    <Resource Include="Icons\Flags\hawaii.svg" />
+    <Resource Include="Icons\Flags\honduras.svg" />
+    <Resource Include="Icons\Flags\hong-kong.svg" />
+    <Resource Include="Icons\Flags\hungary.svg" />
+    <Resource Include="Icons\Flags\iceland.svg" />
+    <Resource Include="Icons\Flags\india.svg" />
+    <Resource Include="Icons\Flags\indonesia.svg" />
+    <Resource Include="Icons\Flags\iran.svg" />
+    <Resource Include="Icons\Flags\iraq.svg" />
+    <Resource Include="Icons\Flags\ireland.svg" />
+    <Resource Include="Icons\Flags\isle-of-man.svg" />
+    <Resource Include="Icons\Flags\israel.svg" />
+    <Resource Include="Icons\Flags\italy.svg" />
+    <Resource Include="Icons\Flags\ivory-coast.svg" />
+    <Resource Include="Icons\Flags\jamaica.svg" />
+    <Resource Include="Icons\Flags\japan.svg" />
+    <Resource Include="Icons\Flags\jersey.svg" />
+    <Resource Include="Icons\Flags\jordan.svg" />
+    <Resource Include="Icons\Flags\kazakhstan.svg" />
+    <Resource Include="Icons\Flags\kenya.svg" />
+    <Resource Include="Icons\Flags\kosovo.svg" />
+    <Resource Include="Icons\Flags\kuwait.svg" />
+    <Resource Include="Icons\Flags\kyrgyzstan.svg" />
+    <Resource Include="Icons\Flags\laos.svg" />
+    <Resource Include="Icons\Flags\latvia.svg" />
+    <Resource Include="Icons\Flags\lebanon.svg" />
+    <Resource Include="Icons\Flags\lesotho.svg" />
+    <Resource Include="Icons\Flags\liberia.svg" />
+    <Resource Include="Icons\Flags\libya.svg" />
+    <Resource Include="Icons\Flags\liechtenstein.svg" />
+    <Resource Include="Icons\Flags\lithuania.svg" />
+    <Resource Include="Icons\Flags\luxembourg.svg" />
+    <Resource Include="Icons\Flags\macao.svg" />
+    <Resource Include="Icons\Flags\madagascar.svg" />
+    <Resource Include="Icons\Flags\madeira.svg" />
+    <Resource Include="Icons\Flags\malawi.svg" />
+    <Resource Include="Icons\Flags\malaysia.svg" />
+    <Resource Include="Icons\Flags\maldives.svg" />
+    <Resource Include="Icons\Flags\mali.svg" />
+    <Resource Include="Icons\Flags\malta.svg" />
+    <Resource Include="Icons\Flags\marshall-island.svg" />
+    <Resource Include="Icons\Flags\martinique.svg" />
+    <Resource Include="Icons\Flags\mauritania.svg" />
+    <Resource Include="Icons\Flags\mauritius.svg" />
+    <Resource Include="Icons\Flags\melilla.svg" />
+    <Resource Include="Icons\Flags\mexico.svg" />
+    <Resource Include="Icons\Flags\micronesia.svg" />
+    <Resource Include="Icons\Flags\moldova.svg" />
+    <Resource Include="Icons\Flags\monaco.svg" />
+    <Resource Include="Icons\Flags\mongolia.svg" />
+    <Resource Include="Icons\Flags\montenegro.svg" />
+    <Resource Include="Icons\Flags\montserrat.svg" />
+    <Resource Include="Icons\Flags\morocco.svg" />
+    <Resource Include="Icons\Flags\mozambique.svg" />
+    <Resource Include="Icons\Flags\myanmar.svg" />
+    <Resource Include="Icons\Flags\namibia.svg" />
+    <Resource Include="Icons\Flags\nauru.svg" />
+    <Resource Include="Icons\Flags\nepal.svg" />
+    <Resource Include="Icons\Flags\netherlands.svg" />
+    <Resource Include="Icons\Flags\new-zealand.svg" />
+    <Resource Include="Icons\Flags\nicaragua.svg" />
+    <Resource Include="Icons\Flags\niger.svg" />
+    <Resource Include="Icons\Flags\nigeria.svg" />
+    <Resource Include="Icons\Flags\niue.svg" />
+    <Resource Include="Icons\Flags\norfolk-island.svg" />
+    <Resource Include="Icons\Flags\north-korea.svg" />
+    <Resource Include="Icons\Flags\northen-cyprus.svg" />
+    <Resource Include="Icons\Flags\northern-marianas-islands.svg" />
+    <Resource Include="Icons\Flags\norway.svg" />
+    <Resource Include="Icons\Flags\oman.svg" />
+    <Resource Include="Icons\Flags\orkney-islands.svg" />
+    <Resource Include="Icons\Flags\ossetia.svg" />
+    <Resource Include="Icons\Flags\otan.svg" />
+    <Resource Include="Icons\Flags\pakistan.svg" />
+    <Resource Include="Icons\Flags\palau.svg" />
+    <Resource Include="Icons\Flags\palestine.svg" />
+    <Resource Include="Icons\Flags\panama.svg" />
+    <Resource Include="Icons\Flags\papua-new-guinea.svg" />
+    <Resource Include="Icons\Flags\paraguay.svg" />
+    <Resource Include="Icons\Flags\peru.svg" />
+    <Resource Include="Icons\Flags\philippines.svg" />
+    <Resource Include="Icons\Flags\pitcairn-islands.svg" />
+    <Resource Include="Icons\Flags\poland.svg" />
+    <Resource Include="Icons\Flags\portugal.svg" />
+    <Resource Include="Icons\Flags\puerto-rico.svg" />
+    <Resource Include="Icons\Flags\qatar.svg" />
+    <Resource Include="Icons\Flags\rapa-nui.svg" />
+    <Resource Include="Icons\Flags\republic-of-macedonia.svg" />
+    <Resource Include="Icons\Flags\republic-of-the-congo.svg" />
+    <Resource Include="Icons\Flags\romania.svg" />
+    <Resource Include="Icons\Flags\russia.svg" />
+    <Resource Include="Icons\Flags\rwanda.svg" />
+    <Resource Include="Icons\Flags\saba-island.svg" />
+    <Resource Include="Icons\Flags\sahrawi-arab-democratic-republic.svg" />
+    <Resource Include="Icons\Flags\saint-kitts-and-nevis.svg" />
+    <Resource Include="Icons\Flags\samoa.svg" />
+    <Resource Include="Icons\Flags\san-marino.svg" />
+    <Resource Include="Icons\Flags\sao-tome-and-principe.svg" />
+    <Resource Include="Icons\Flags\sardinia.svg" />
+    <Resource Include="Icons\Flags\saudi-arabia.svg" />
+    <Resource Include="Icons\Flags\scotland.svg" />
+    <Resource Include="Icons\Flags\senegal.svg" />
+    <Resource Include="Icons\Flags\serbia.svg" />
+    <Resource Include="Icons\Flags\seychelles.svg" />
+    <Resource Include="Icons\Flags\sicily.svg" />
+    <Resource Include="Icons\Flags\sierra-leone.svg" />
+    <Resource Include="Icons\Flags\singapore.svg" />
+    <Resource Include="Icons\Flags\sint-eustatius.svg" />
+    <Resource Include="Icons\Flags\sint-maarten.svg" />
+    <Resource Include="Icons\Flags\slovakia.svg" />
+    <Resource Include="Icons\Flags\slovenia.svg" />
+    <Resource Include="Icons\Flags\solomon-islands.svg" />
+    <Resource Include="Icons\Flags\somalia.svg" />
+    <Resource Include="Icons\Flags\somaliland.svg" />
+    <Resource Include="Icons\Flags\south-africa.svg" />
+    <Resource Include="Icons\Flags\south-korea.svg" />
+    <Resource Include="Icons\Flags\south-sudan.svg" />
+    <Resource Include="Icons\Flags\spain.svg" />
+    <Resource Include="Icons\Flags\sri-lanka.svg" />
+    <Resource Include="Icons\Flags\st-barts.svg" />
+    <Resource Include="Icons\Flags\st-lucia.svg" />
+    <Resource Include="Icons\Flags\st-vincent-and-the-grenadines.svg" />
+    <Resource Include="Icons\Flags\sudan.svg" />
+    <Resource Include="Icons\Flags\suriname.svg" />
+    <Resource Include="Icons\Flags\sweden.svg" />
+    <Resource Include="Icons\Flags\switzerland.svg" />
+    <Resource Include="Icons\Flags\syria.svg" />
+    <Resource Include="Icons\Flags\taiwan.svg" />
+    <Resource Include="Icons\Flags\tajikistan.svg" />
+    <Resource Include="Icons\Flags\tanzania.svg" />
+    <Resource Include="Icons\Flags\thailand.svg" />
+    <Resource Include="Icons\Flags\tibet.svg" />
+    <Resource Include="Icons\Flags\togo.svg" />
+    <Resource Include="Icons\Flags\tokelau.svg" />
+    <Resource Include="Icons\Flags\tonga.svg" />
+    <Resource Include="Icons\Flags\transnistria.svg" />
+    <Resource Include="Icons\Flags\trinidad-and-tobago.svg" />
+    <Resource Include="Icons\Flags\tubalu.svg" />
+    <Resource Include="Icons\Flags\tunisia.svg" />
+    <Resource Include="Icons\Flags\turkey.svg" />
+    <Resource Include="Icons\Flags\turkmenistan.svg" />
+    <Resource Include="Icons\Flags\turks-and-caicos.svg" />
+    <Resource Include="Icons\Flags\uganda.svg" />
+    <Resource Include="Icons\Flags\ukraine.svg" />
+    <Resource Include="Icons\Flags\united-arab-emirates.svg" />
+    <Resource Include="Icons\Flags\united-kingdom.svg" />
+    <Resource Include="Icons\Flags\united-nations.svg" />
+    <Resource Include="Icons\Flags\united-states-of-america.svg" />
+    <Resource Include="Icons\Flags\uruguay.svg" />
+    <Resource Include="Icons\Flags\uzbekistn.svg" />
+    <Resource Include="Icons\Flags\vanuatu.svg" />
+    <Resource Include="Icons\Flags\vatican-city.svg" />
+    <Resource Include="Icons\Flags\venezuela.svg" />
+    <Resource Include="Icons\Flags\vietnam.svg" />
+    <Resource Include="Icons\Flags\virgin-islands.svg" />
+    <Resource Include="Icons\Flags\wales.svg" />
+    <Resource Include="Icons\Flags\yemen.svg" />
+    <Resource Include="Icons\Flags\zambia.svg" />
+    <Resource Include="Icons\Flags\zimbabwe.svg" />
+    <Content Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\ControlzEx.4.0.3\lib\net462\ControlzEx.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\MahApps.Metro.2.0.0-alpha0479\lib\net47\MahApps.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.EntityFrameworkCore, Version=2.2.6.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.EntityFrameworkCore.2.2.6\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Abstractions, Version=2.2.6.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.EntityFrameworkCore.Abstractions.2.2.6\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Extensions.Caching.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Memory, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Extensions.Caching.Memory.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Caching.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Extensions.Configuration.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Extensions.Configuration.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Binder, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Extensions.Configuration.Binder.2.2.4\lib\netstandard2.0\Microsoft.Extensions.Configuration.Binder.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Extensions.DependencyInjection.2.2.0\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Extensions.Logging.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Extensions.Logging.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Extensions.Options.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Extensions.Primitives.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Microsoft.Xaml.Behaviors.Wpf.1.0.1\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.ComponentModel.Annotations.4.5.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Diagnostics.DiagnosticSource.4.5.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
+      <Private>True</Private>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Interactive.Async, Version=3.2.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Interactive.Async.3.2.0\lib\net46\System.Interactive.Async.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Extensions, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Runtime.Extensions.4.3.1\lib\net462\System.Runtime.Extensions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\System.Text.RegularExpressions.4.3.1\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2013">
+      <HintPath>..\..\Packages\Dirkster.AvalonDock.Themes.VS2013.3.5.12\lib\net4\Xceed.Wpf.AvalonDock.Themes.VS2013.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\Packages\Extended.Wpf.Toolkit.3.5.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HLab\HLab.Base\HLab.Base.csproj">
+      <Project>{cb426b85-b818-4938-bd91-6df20590c6d6}</Project>
+      <Name>HLab.Base</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Core.Annotations\HLab.Core.Annotations.csproj">
+      <Project>{6dce0b46-3219-4988-9df8-8c9556f92f27}</Project>
+      <Name>HLab.Core.Annotations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Core\HLab.Core.csproj">
+      <Project>{9c4e098a-bea7-42cb-9d59-6ee580198988}</Project>
+      <Name>HLab.Core</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.DependencyInjection.Annotations\HLab.DependencyInjection.Annotations.csproj">
+      <Project>{1b2f3ffd-eb15-4aeb-aae5-c9f26a3826b8}</Project>
+      <Name>HLab.DependencyInjection.Annotations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.DependencyInjection\HLab.DependencyInjection.csproj">
+      <Project>{4ebef6d5-25ef-4a18-b831-b35d8944b439}</Project>
+      <Name>HLab.DependencyInjection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Annotations\HLab.Mvvm.Annotations.csproj">
+      <Project>{3EA022A3-5A1F-4E8D-97C1-7AF69AE5579E}</Project>
+      <Name>HLab.Mvvm.Annotations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm\HLab.Mvvm.csproj">
+      <Project>{9c59ae63-10e7-4b14-91f6-3733b42c49ac}</Project>
+      <Name>HLab.Mvvm</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Notify.Annotations\HLab.Notify.Annotations.csproj">
+      <Project>{A132D912-A8C9-4271-A834-EF8AFD2CE02F}</Project>
+      <Name>HLab.Notify.Annotations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Notify.PropertyChanged\HLab.Notify.PropertyChanged.csproj">
+      <Project>{A0AFF01C-20BE-4D61-8DFB-D97641162932}</Project>
+      <Name>HLab.Notify.PropertyChanged</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Notify\HLab.Notify.csproj">
+      <Project>{AFD7F47B-126B-483B-92FB-D8C5C014376E}</Project>
+      <Name>HLab.Notify</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HLab.Erp.Acl\HLab.Erp.Acl.csproj">
+      <Project>{bcc611ca-5f7f-4692-96ed-36321288b96e}</Project>
+      <Name>HLab.Erp.Acl</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj">
+      <Project>{4EDC4222-B269-4959-B742-FC043E265950}</Project>
+      <Name>HLab.Erp.Base.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HLab.Erp.Core\HLab.Erp.Core.csproj">
+      <Project>{FDAF4812-933F-48A0-87F3-1B20BA142062}</Project>
+      <Name>HLab.Erp.Core</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj">
+      <Project>{77f2e18f-cf98-49ab-acbe-cf1a114ccad9}</Project>
+      <Name>HLab.Erp.Data</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extentions\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\Packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\..\Packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Ce projet fait référence à des packages NuGet qui sont manquants sur cet ordinateur. Utilisez l'option de restauration des packages NuGet pour les télécharger. Pour plus d'informations, consultez http://go.microsoft.com/fwlink/?LinkID=322105. Le fichier manquant est : {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\Packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\Packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

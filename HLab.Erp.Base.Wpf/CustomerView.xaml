@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="HLab.Erp.Base.Wpf.CustomerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HLab.Erp.Base.Wpf"
+             mc:Ignorable="d"
+             xmlns:base="clr-namespace:HLab.Base;assembly=HLab.Base.Wpf"
+             xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
+             xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
+             d:DataContext="{d:DesignInstance {x:Type local:CustomerViewModel}, IsDesignTimeCreatable=True}"             
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <base:DetailView>
+            <Label Style="{DynamicResource Separator}" >
+                <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                    <Canvas>
+                        <icons:IconView Id = "Icons/Customer" Height="35" Opacity="0.8"/>
+                    </Canvas>
+                    <lang:Localize Id="^Customer" Margin="50,0,0,0"/>
+                </StackPanel>
+            </Label>
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="^Name" StringFormat="{}{0} : " />
+            </Label>
+            <TextBox Text="{Binding Model.Name}" HorizontalContentAlignment="Left" />
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="^Address" StringFormat="{}{0} : " />
+            </Label>
+            <TextBox 
+                Text="{Binding Model.Address}"
+                AcceptsReturn="True" 
+                TextWrapping="Wrap"
+                HorizontalContentAlignment="Left" />
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="^Country" StringFormat="{}{0} : " />
+            </Label>
+            <TextBox Text="{Binding Model.Country.Name}" HorizontalContentAlignment="Left" />
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="^eMail" StringFormat="{}{0} : " />
+            </Label>
+            <TextBox Text="{Binding Model.Email}" HorizontalContentAlignment="Left" />
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="^Phone" StringFormat="{}{0} : " />
+            </Label>
+            <TextBox Text="{Binding Model.Phone}" HorizontalContentAlignment="Left" />
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="^Fax" StringFormat="{}{0} : " />
+            </Label>
+            <TextBox Text="{Binding Model.Fax}" HorizontalContentAlignment="Left" />
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="^Contacts" StringFormat="{}{0} : " />
+            </Label>
+            <DataGrid 
+                Margin="10,19,0,14" 
+                Background="#CFFFFFFF" 
+                HeadersVisibility="None" 
+                ItemsSource="{Binding Model.Contacts}">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn 
+                        Binding="{Binding Model.Name}" 
+                        ClipboardContentBinding="{x:Null}" 
+                        Header="^Name" Width="*" 
+                        CanUserResize="False"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </base:DetailView>
+
+        <base:DetailView Grid.Row="2">
+            <Label Style="{DynamicResource Separator}" >
+                <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                    <Canvas>
+                        <icons:IconView  Id="Icons/Edit" Height="35" Opacity="0.8"/>
+                    </Canvas>
+                    <ContentControl Width="50"></ContentControl>
+                    <lang:Localize  Id="Note"/>
+                </StackPanel>
+            </Label>
+
+
+            <TextBox Margin="50,0,15,0"  Grid.ColumnSpan="2"  Text="{Binding Model.Note}" AcceptsReturn="True" TextWrapping="Wrap"/>
+            <Label />
+
+        </base:DetailView>
+
+    </Grid>
+</UserControl>

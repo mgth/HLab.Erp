@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B17E3CC5-7254-4908-806B-962034F05046}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>HLab.Erp.Base.Wpf</RootNamespace>
+    <AssemblyName>HLab.Erp.Base.Wpf</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CustomerView.xaml.cs">
+      <DependentUpon>CustomerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomerViewModel.cs" />
+    <Compile Include="DbIconService.cs" />
+    <Compile Include="ErpBaseModule.cs" />
+    <Compile Include="ListCountryViewModel.cs" />
+    <Compile Include="ListCustomerViewModel.cs" />
+    <Compile Include="ListIconViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HLab\HLab.Base.Wpf\HLab.Base.Wpf.csproj">
+      <Project>{6eeb284b-1ba3-4cec-975c-752d32a3bc19}</Project>
+      <Name>HLab.Base.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Base\HLab.Base.csproj">
+      <Project>{f8fc76a4-4185-4d23-b707-8de9591d8052}</Project>
+      <Name>HLab.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Core.Annotations\HLab.Core.Annotations.csproj">
+      <Project>{B1DA1CB1-D9D0-4CEA-A2D9-865FAB6A0E1B}</Project>
+      <Name>HLab.Core.Annotations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Core\HLab.Core.csproj">
+      <Project>{5f8e2f32-409e-4a88-b7b8-787601642792}</Project>
+      <Name>HLab.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.DependencyInjection.Annotations\HLab.DependencyInjection.Annotations.csproj">
+      <Project>{F5AA1DCC-FD2E-4039-9326-B28E86A97D66}</Project>
+      <Name>HLab.DependencyInjection.Annotations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Annotations\HLab.Mvvm.Annotations.csproj">
+      <Project>{72EDFC1D-FD1D-4896-A339-72DA02A6920C}</Project>
+      <Name>HLab.Mvvm.Annotations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj">
+      <Project>{8FF8B90D-3611-48E3-9355-E0B776E882B1}</Project>
+      <Name>HLab.Mvvm.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm\HLab.Mvvm.csproj">
+      <Project>{128D4166-C048-4C32-AA51-376FE51CFC3D}</Project>
+      <Name>HLab.Mvvm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Notify.PropertyChanged\HLab.Notify.PropertyChanged.csproj">
+      <Project>{A0AFF01C-20BE-4D61-8DFB-D97641162932}</Project>
+      <Name>HLab.Notify.PropertyChanged</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj">
+      <Project>{4edc4222-b269-4959-b742-fc043e265950}</Project>
+      <Name>HLab.Erp.Base.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HLab.Erp.Core.Wpf\HLab.Erp.Core.Wpf.csproj">
+      <Project>{b1b1e423-9811-4294-a741-2c3422053c41}</Project>
+      <Name>HLab.Erp.Core.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HLab.Erp.Core\HLab.Erp.Core.csproj">
+      <Project>{ead1ad5b-5854-45de-8678-3acd9418c3fe}</Project>
+      <Name>HLab.Erp.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj">
+      <Project>{B757A1BE-E1EC-4E63-9441-E387030AF2E1}</Project>
+      <Name>HLab.Erp.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="CustomerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

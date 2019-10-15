@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{526A8792-CCCD-41AF-931A-B594CADFF229}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Erp.Workflow.Wpf</RootNamespace>
+    <AssemblyName>Erp.Workflow.Wpf</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorkFlowActionView.xaml.cs">
+      <DependentUpon>WorkFlowActionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WorkFlowStateView.xaml.cs">
+      <DependentUpon>WorkFlowStateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WorkflowActionViewModel.cs" />
+    <Compile Include="WorkflowViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="WorkFlowActionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WorkFlowStateView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HLab\HLab.Base.Wpf\HLab.Base.Wpf.csproj">
+      <Project>{6eeb284b-1ba3-4cec-975c-752d32a3bc19}</Project>
+      <Name>HLab.Base.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Base\HLab.Base.csproj">
+      <Project>{cb426b85-b818-4938-bd91-6df20590c6d6}</Project>
+      <Name>HLab.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Core.Annotations\HLab.Core.Annotations.csproj">
+      <Project>{B1DA1CB1-D9D0-4CEA-A2D9-865FAB6A0E1B}</Project>
+      <Name>HLab.Core.Annotations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.DependencyInjection.Annotations\HLab.DependencyInjection.Annotations.csproj">
+      <Project>{F5AA1DCC-FD2E-4039-9326-B28E86A97D66}</Project>
+      <Name>HLab.DependencyInjection.Annotations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.DependencyInjection\HLab.DependencyInjection.csproj">
+      <Project>{4EBEF6D5-25EF-4A18-B831-B35D8944B439}</Project>
+      <Name>HLab.DependencyInjection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Annotations\HLab.Mvvm.Annotations.csproj">
+      <Project>{72EDFC1D-FD1D-4896-A339-72DA02A6920C}</Project>
+      <Name>HLab.Mvvm.Annotations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj">
+      <Project>{8FF8B90D-3611-48E3-9355-E0B776E882B1}</Project>
+      <Name>HLab.Mvvm.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm\HLab.Mvvm.csproj">
+      <Project>{128D4166-C048-4C32-AA51-376FE51CFC3D}</Project>
+      <Name>HLab.Mvvm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Notify.Annotations\HLab.Notify.Annotations.csproj">
+      <Project>{6D08D49E-350D-48E4-B952-0C7BFD09F091}</Project>
+      <Name>HLab.Notify.Annotations</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Notify.PropertyChanged\HLab.Notify.PropertyChanged.csproj">
+      <Project>{A0AFF01C-20BE-4D61-8DFB-D97641162932}</Project>
+      <Name>HLab.Notify.PropertyChanged</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HLab\HLab.Notify\HLab.Notify.csproj">
+      <Project>{E886F4A7-876F-4C18-9E58-6A7F05D04D23}</Project>
+      <Name>HLab.Notify</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HLab.Erp.Workflows\HLab.Erp.Workflows.csproj">
+      <Project>{EF5143DE-6828-433C-8B5B-5148CD82E7DD}</Project>
+      <Name>HLab.Erp.Workflows</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

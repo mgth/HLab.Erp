@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>  
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\HLab\HLab.Base\HLab.Base.csproj" />
+    <ProjectReference Include="..\..\HLab\HLab.Core.Annotations\HLab.Core.Annotations.csproj" />
+    <ProjectReference Include="..\..\HLab\HLab.DependencyInjection\HLab.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm\HLab.Mvvm.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Acl\HLab.Erp.Acl.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Core.Annotations\HLab.Erp.Core.Annotations.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj" />
+  </ItemGroup>
+
+</Project>
