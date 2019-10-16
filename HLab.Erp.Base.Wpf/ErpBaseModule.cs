@@ -3,47 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Wpf.Icons;
+using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf
 {
-    public class ErpBaseModule : IPostBootloader
+    public class ErpBaseModule : N<ErpBaseModule>, IPostBootloader
     {
         [Import]
-        private readonly IIconService _icons;
-        [Import]
-        private readonly IDbService _db;
-        [Import]
-        private readonly IMenuService _menu;
-        [Import]
-        private readonly IDocumentService _docs;
-        [Import]
-        private readonly ICommandService _command;
+        private readonly IErpServices _erp;
 
+        public ErpBaseModule(IErpServices erp):base(true)
+        {
+            _erp = erp;
+            Initialize();
+        }
+
+        public ICommand CustomerCommand { get; } = H.Command(c => c.Action(
+                e => e._erp.Docs.OpenDocument(typeof(ListCustomerViewModel))
+            ));
+
+        public ICommand CountryCommand { get; } = H.Command(c => c.Action(
+                e => e._erp.Docs.OpenDocument(typeof(ListCountryViewModel))
+            ));
+        public ICommand IconCommand { get; } = H.Command(c => c.Action(
+                e => e._erp.Docs.OpenDocument(typeof(ListIconViewModel))
+            ));
         public void Load()
         {
-            var cmdCustomer = _command.Get(() => _docs.OpenDocument(typeof(ListCustomerViewModel)), () => true);
+            _erp.Menu.RegisterMenu("data", "customer", "Customer",
+                CustomerCommand,
+                _erp.Icon.GetIcon("icons/Customer"));
 
-            _menu.RegisterMenu("data", "customer", "Customer",
-                cmdCustomer,
-                _icons.GetIcon("icons/Customer"));
+            _erp.Menu.RegisterMenu("data", "country", "Country",
+                CountryCommand,
+                _erp.Icon.GetIcon("icons/Country"));
 
-            var cmdCountry = _command.Get(() => _docs.OpenDocument(typeof(ListCountryViewModel)), () => true);
-
-            _menu.RegisterMenu("data", "country", "Country",
-                cmdCountry,
-                _icons.GetIcon("icons/Country"));
-
-            var cmdIcon = _command.Get(() => _docs.OpenDocument(typeof(ListIconViewModel)), () => true);
-
-            _menu.RegisterMenu("tools", "icons", "Icons",
-                cmdIcon,
-                _icons.GetIcon("icons/Icon"));
+            _erp.Menu.RegisterMenu("tools", "icons", "Icons",
+                IconCommand,
+                _erp.Icon.GetIcon("icons/Icon"));
         }
     }
 }

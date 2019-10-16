@@ -129,7 +129,7 @@ namespace HLab.Erp.Acl.KioskLogin
         public ICommand NumPadCommand { get; } = H.Command(c => c
             .CanExecute(e => e.Login.Length > 0)
             .Action(
-            (e,n) =>
+            async (e,n) =>
             {
                 if (e._pinCode.Length > 4) e._pinCode = "";
                 e._pinCode += (string)n;
@@ -137,7 +137,7 @@ namespace HLab.Erp.Acl.KioskLogin
                 e.PinView = new String('.', e._pinCode.Length);
 
                 if(e._pinCode.Length==4)
-                    e.Message = e._logon.Login(new NetworkCredential(e.Credential.UserName, e._pinCode), true);
+                    e.Message = await e._logon.Login(new NetworkCredential(e.Credential.UserName, e._pinCode), true);
             }
             )
             .On(e => e.Login)
@@ -147,9 +147,9 @@ namespace HLab.Erp.Acl.KioskLogin
         public ICommand LoginCommand { get; } = H.Command(c => c
             .CanExecute(e => e.Login.Length > 0)
             .Action(
-            e =>
+            async e =>
             {
-                e.Message = e._logon.Login(e.Credential);
+                e.Message = await e._logon.Login(e.Credential);
             }
             ) .On(e => e.Login).CheckCanExecute()
         );

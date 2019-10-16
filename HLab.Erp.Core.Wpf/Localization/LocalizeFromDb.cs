@@ -2,6 +2,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using HLab.Base;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
@@ -18,15 +20,14 @@ namespace HLab.Erp.Core.Localization
             _db = db;
         }
 
-        private readonly ConcurrentDictionary<Tuple<string,string>,LocalizeEntry> _cache 
-            = new ConcurrentDictionary<Tuple<string, string>, LocalizeEntry>();
+        private readonly AsyncDictionary<Tuple<string,string>,LocalizeEntry> _cache 
+            = new AsyncDictionary<Tuple<string, string>, LocalizeEntry>();
 
-        public string Localize(string tag, string code)
+        public async Task<string> Localize(string tag, string code)
         {
-            var entry = _cache.GetOrAdd(Tuple.Create(tag, code), t =>
+            var entry = await _cache.GetOrAdd(Tuple.Create(tag, code), async t =>
             {
-                var entries = _db.FetchWhere<LocalizeEntry>(e => e.Tag == tag && e.Code == code);
-                var e =  entries.FirstOrDefault();
+                var e = await _db.FetchOne<LocalizeEntry>(e => e.Tag == tag && e.Code == code);
 
                 if(e!=null && e.BadCode)
                     throw new ArgumentException(e.Code + " is told bad code");

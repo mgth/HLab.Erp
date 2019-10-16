@@ -1,8 +1,7 @@
 ﻿using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
-using HLab.Erp.Core.Wpf.ViewModels;
+using HLab.Erp.Core.ViewModels;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Wpf.Icons;
 
 namespace HLab.Erp.Base.Wpf
 {

@@ -1,4 +1,5 @@
-﻿using HLab.DependencyInjection.Annotations;
+﻿using System.Threading.Tasks;
+using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
@@ -14,9 +15,9 @@ namespace HLab.Erp.Base.Wpf
         [Import]
         private IDataService _db;
 
-        public object GetIcon(string name,string forMatch, string backMatch)
+        public async Task<object> GetIcon(string name,string forMatch, string backMatch)
         {
-            var icon = _db.FetchOne<Icon>(i => i.Name==name);
+            var icon = await _db.FetchOne<Icon>(i => i.Name==name);
             if (icon != null)
             {
                 return _base.FromSvgString(icon.Source,forMatch,backMatch);
@@ -27,7 +28,7 @@ namespace HLab.Erp.Base.Wpf
 
         public object GetFromHtml(string html) => _base.GetFromHtml(html); 
 
-        public object FromSvgString(string svg, string forMatch, string backMatch) => _base.FromSvgString(svg, forMatch, backMatch);
+        public async Task<object> FromSvgString(string svg, string forMatch, string backMatch) => await _base.FromSvgString(svg, forMatch, backMatch);
 
         public void AddIconProvider(string name, IIconProvider provider) => _base.AddIconProvider(name,provider);
 

@@ -2,6 +2,7 @@
 using System.Net;
 using System.Security;
 using System.Threading;
+using System.Threading.Tasks;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 
@@ -27,15 +28,15 @@ namespace HLab.Erp.Acl
         {
             throw new NotImplementedException();
         }
-        public string Login(NetworkCredential credential,bool pin = false)
+        public async Task<string> Login(NetworkCredential credential,bool pin = false)
         {
             Connection connection;
             try
             {
                 if (pin)
-                    connection = _acl.GetConnectionWithPin(credential);
+                    connection = await _acl.GetConnectionWithPin(credential);
                 else
-                    connection = _acl.GetConnection(credential);
+                    connection = await _acl.GetConnection(credential);
             }
             catch (Exception e)
             {
@@ -53,9 +54,9 @@ namespace HLab.Erp.Acl
 
         public string Crypt(SecureString password) => _acl.Crypt(password);
 
-        public string Login(string login, SecureString password)
+        public async Task<string> Login(string login, SecureString password)
         {
-            return Login(new NetworkCredential(login, password));
+            return await Login(new NetworkCredential(login, password));
         }
 
 

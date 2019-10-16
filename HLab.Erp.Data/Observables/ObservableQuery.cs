@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
+using System.Threading.Tasks;
+using HLab.Base;
 using HLab.Core.DebugTools;
 using HLab.DependencyInjection.Annotations;
 using HLab.Notify.Annotations;
@@ -57,12 +59,13 @@ namespace HLab.Erp.Data.Observables
         {
             _db = db;
             H.Initialize(this,OnPropertyChanged);
+            Suspender = new Suspender(Update);
         }
 
         protected new class H : NotifyHelper<ObservableQuery<T>> { }
 
         private readonly IDataService _db;
-
+        public Suspender Suspender { get; }
 
         //public ModelCommand CreateCommand => this.GetCommand(Create, ()=>true);
         //public ModelCommand DeleteCommand => this.GetCommand(Delete, ()=>false);
@@ -202,7 +205,7 @@ namespace HLab.Erp.Data.Observables
                 }
             return q;
         }
-        private List<T> PostQuery(bool force = true)
+        private async Task<List<T>> PostQuery(bool force = true)
         {
             if (_source == null || force)
             {
@@ -218,7 +221,7 @@ namespace HLab.Erp.Data.Observables
                         //Query().ToList();
 
                         //_source = _db.FetchQuery<T>(Query);
-                        _source = _db.FetchWhere(Where());
+                        _source = await _db.FetchWhere(Where());
                     }               
                 }                
             }
@@ -474,8 +477,10 @@ namespace HLab.Erp.Data.Observables
 
         public void Update() => Update(true);
 
-        public void Update(bool force)
+        public async void Update(bool force)
         {
+            if (Suspender.Suspended) return;
+
             Stopwatch stopwatch = Stopwatch.StartNew();
             lock (_lockUpdate)
             {
@@ -487,7 +492,7 @@ namespace HLab.Erp.Data.Observables
 
 
             {
-                List<T> list = PostQuery(force)/*.ToList()*/;
+                List<T> list = await PostQuery(force)/*.ToList()*/;
 
                 Console.WriteLine("Query : " + stopwatch.ElapsedMilliseconds);
 

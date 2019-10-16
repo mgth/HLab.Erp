@@ -2,10 +2,10 @@
 using System.Windows.Controls;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
-using HLab.Erp.Core.Wpf.ViewModels;
+using HLab.Erp.Core.ViewModels;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Wpf.Icons;
-using HLab.Mvvm.Wpf.Lang;
+using HLab.Mvvm.Icons;
+using HLab.Mvvm.Lang;
 
 namespace HLab.Erp.Base.Wpf
 {

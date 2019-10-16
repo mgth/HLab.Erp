@@ -1,6 +1,7 @@
 ﻿using System;
 using HLab.Notify.PropertyChanged;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using HLab.Erp.Data.Observables;
 
 namespace HLab.Erp.Data
@@ -16,14 +17,23 @@ namespace HLab.Erp.Data
         {
             var getter = idGetter.Compile();
 
+
+
             return c
                 .TriggerExpression(idGetter)
                 .On(e => e.DataService)
                 .NotNull(e => e.DataService)
                 .Set(e =>
                 {
+                    //TODO : have an async setter
+
                     var id = getter(e);
-                    return id == null ? null : e.DataService.FetchOne<T>(id.Value);
+                    if (id == null) return default(T);
+
+                        var task = Task.Run(() => e.DataService.FetchOne<T>(id.Value));
+                        task.Wait();
+                        var result = task.Result;
+                        return result;
                 })
             ;
         }

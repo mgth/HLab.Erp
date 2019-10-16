@@ -5,7 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-
+using System.Threading;
+using System.Threading.Tasks;
+using HLab.Base;
 using HLab.DependencyInjection;
 using NPoco;
 
@@ -24,57 +26,51 @@ namespace HLab.Erp.Data
 
     internal class DataCache<T> : DataCache where T : class, IEntity
     {
-        private readonly ConcurrentDictionary<object,T> _cache = new ConcurrentDictionary<object,T>();
+        private readonly AsyncDictionary<object,T> _cache = new AsyncDictionary<object,T>();
         private bool _fullCache = false;
-        public List<T> Fetch(Expression<Func<T, bool>> expression)
+        public async Task<List<T>> Fetch(Expression<Func<T, bool>> expression)
         {
             var e = expression.Compile();
 
             if (!_fullCache)
             {
                 var list = new List<T>();
-                foreach (var obj in DataService.Get().Fetch<T>())
+
+                var dbList = await DataService.Get().FetchAsync<T>();
+
+                // TODO : bof
+                foreach (var obj in dbList)
                 {
-                    var cached = GetOrAdd(obj);
+                    var cached = await GetOrAdd(obj);
                     if(e(cached)) list.Add(cached);
                 }
 
                 _fullCache = true;
                 return list;
             }
-            return _cache.Values.Where(e).ToList();
+            return await _cache.Where(expression);
         }
 
-        public T Get(object key)
+        public async Task<T> GetOrAdd(object key, Func<object, Task<T>> factory) => await _cache.GetOrAdd(key, factory);
+
+        public async Task<bool> Forget(T obj)
         {
-            var subscribe = false;
-
-            var obj = _cache.GetOrAdd(key,
-                k =>
-                {
-                    subscribe = true;
-                    var o = DataService.Get().SingleById<T>(key);
-                    return o;
-                });
-
-                //if(subscribe && obj is INotifierObject nobj) nobj.GetNotifier().Subscribe();
-            if (subscribe && obj is IEntity entity) entity.OnLoaded();
-            if (subscribe && obj is IDataProvider dbf) dbf.DataService = DataService;
-
-            return obj;
+            var r = await _cache.TryRemove(obj.Id);
+            return r.Item1;
         }
 
-        public void Forget(T obj)
+        public async Task<List<T>> GetOrAdd(List<T> list)
         {
-            if (_cache.TryRemove(obj.Id, out var old))
-            {
-            }
+            var listOut = new List<T>();
+
+            await Task.Run(()=>list.ForEach(e => listOut.Add(GetOrAdd(e).Result)));
+            return listOut;
         }
 
-        public T GetOrAdd(T obj)
+        public async Task<T> GetOrAdd(T obj)
         {
-            var result = _cache.GetOrAdd(obj.Id,
-                k => obj);
+            var result = await _cache.GetOrAdd(obj.Id,
+                async k => obj);
 
                 if (result != null && !ReferenceEquals(result,obj))
                 {

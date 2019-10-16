@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading;
+using System.Threading.Tasks;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Data;
 using HLab.Notify;
@@ -36,59 +37,57 @@ namespace HLab.Erp.Acl
         }
 
 
-        public bool IsActive
-        {
-            get => _isActive.Get();
-            set
-            {
-                if (_isActive.Get() == value)
-                    return;
-
-                if (value)
-                {
-                    var existing = _db.FetchOne<DataLock>(e => e.EntityClass == _entityClass && e.EntityId == _entityId);
-                    if (existing != null)
-                    {
-                        if ((DateTime.Now - existing.HeartbeatTime).TotalMilliseconds < HeartBeat * 2) return;
-                        _db.Delete(existing);
-                    }
-                    try
-                    {
-                        _lock = _db.Add<DataLock>(t =>
-                        {
-                            t.UserId = _acl.Connection.UserId;
-                            t.EntityClass = _entityClass;
-                            t.EntityId = _entityId;
-                        });
-
-                        //_context = _db.Get();
-                        //_context.Attach(_entity);
-                    }
-                    catch (Exception e)
-                    {
-                        return;
-                    }
-
-                    _timer.Change(HeartBeat, HeartBeat);
-                }
-                else
-                {
-                    //_context.SaveChanges();
-                    _db.Delete(_lock);
-                }
-                _isActive.Set(value);
-            }
-        }
+        public bool IsActive => _isActive.Get();
         private readonly IProperty<bool> _isActive = H.Property<bool>();
+
+        public async Task Activate(bool value)
+        {
+            if (_isActive.Get() == value)
+                return;
+
+            if (value)
+            {
+                var existing = await _db.FetchOne<DataLock>(e => e.EntityClass == _entityClass && e.EntityId == _entityId);
+                if (existing != null)
+                {
+                    if ((DateTime.Now - existing.HeartbeatTime).TotalMilliseconds < HeartBeat * 2) return;
+                    _db.Delete(existing);
+                }
+                try
+                {
+                    _lock = await _db.Add<DataLock>(t =>
+                    {
+                        t.UserId = _acl.Connection.UserId;
+                        t.EntityClass = _entityClass;
+                        t.EntityId = _entityId;
+                    });
+
+                    //_context = _db.Get();
+                    //_context.Attach(_entity);
+                }
+                catch (Exception e)
+                {
+                    return;
+                }
+
+                _timer.Change(HeartBeat, HeartBeat);
+            }
+            else
+            {
+                //_context.SaveChanges();
+                _db.Delete(_lock);
+            }
+            _isActive.Set(value);        }
+
 
         public bool IsReadOnly => _isReadOnly.Get();
         private readonly IProperty<bool> _isReadOnly = H.Property<bool>(c => c
             .On(e => e.IsActive)
             .Set(e => !e.IsActive)
         );
-        public void Dispose()
+        public async void Dispose()
         {
-            IsActive = false;
+            await Activate(false);
             _timer.Dispose();
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.DirectoryServices.AccountManagement;
 using System.Net;
+using System.Threading.Tasks;
 using HLab.DependencyInjection.Annotations;
 
 namespace HLab.Erp.Acl
@@ -7,7 +8,7 @@ namespace HLab.Erp.Acl
     [Export(typeof(IAclHelper)), Singleton]
     public class AclHelperWpf : AclHelper
     {
-        protected override User GetUser(NetworkCredential credential)
+        protected override async Task<User> GetUser(NetworkCredential credential)
         {
             bool valid = false;
                 try
@@ -22,11 +23,9 @@ namespace HLab.Erp.Acl
                     valid = false;
                 }
 
-            if (valid) return Data.FetchOne<User>(u => u.Login == credential.UserName);
-            else return base.GetUser(credential);
-
-            return null;
-
+            if (valid) return await Data.FetchOne<User>(u => u.Login == credential.UserName);
+            
+            return await base.GetUser(credential);
         }
     }
 }

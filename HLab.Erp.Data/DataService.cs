@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 using HLab.DependencyInjection.Annotations;
 using HLab.Base;
 using NPoco;
@@ -16,7 +17,7 @@ namespace HLab.Erp.Data
     [Export(typeof(IDataService)), Singleton]
     public class DataService : IDataService
     {
-        public T Add<T>(Action<T> setter, Action<T> added = null)
+        public async Task<T> Add<T>(Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {
             using var db = Get();
@@ -28,12 +29,11 @@ namespace HLab.Erp.Data
             object e = null;
             if (typeof(T).GetCustomAttributes<SoftIncrementAttribut>().FirstOrDefault() is SoftIncrementAttribut a)
             {
-                //TODO efcore
                 if (t is IEntity<int> ti)
                 {
-                    var ids = db.Query<T>().OrderByDescending(d => ((IEntity<int>)d).Id);
+                    var ids = await db.QueryAsync<T>().OrderByDescending(d => ((IEntity<int>)d).Id).FirstOrDefault();
 
-                    var id = ((IEntity<int>)ids.FirstOrDefault())?.Id ?? 0;
+                    var id = ((IEntity<int>)ids)?.Id ?? 0;
 
                     id++;
 
@@ -41,7 +41,7 @@ namespace HLab.Erp.Data
                 }
             }
 
-            e = db.Insert<T>(t);
+            e = await db.InsertAsync<T>(t);
 
             if (e != null)
             {
@@ -49,7 +49,7 @@ namespace HLab.Erp.Data
                 added?.Invoke(t);
             }
 
-            return GetCache<T>().GetOrAdd(t);
+            return await GetCache<T>().GetOrAdd(t);
         }
         public int Delete<T>(T entity, Action<T> deleted = null)
             where T : class, IEntity
@@ -74,36 +74,36 @@ namespace HLab.Erp.Data
 
             return result;
         }
-        public T GetOrAdd<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
+        public async Task<T> GetOrAdd<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {
             var cache = GetCache<T>();
             T t;
             using (var db = Get())
             {
-                t = db.Query<T>().FirstOrDefault(getter);
+                t = await db.QueryAsync<T>().FirstOrDefault(getter);
             }
 
-            if (t == null) return Add(setter, added);
+            if (t == null) return await Add(setter, added);
 
-            return cache.GetOrAdd(t);
+            return await cache.GetOrAdd(t);
         }
-        public T GetOrAdd<T>(T entity)
+        public async Task<T> GetOrAdd<T>(T entity)
             where T : class, IEntity
         {
-            return GetCache<T>().GetOrAdd(entity);
+            return await GetCache<T>().GetOrAdd(entity);
         }
         //public static IQueryProviderWithIncludes<T> Query<T>() => D.Get().Query<T>();
-        public List<T> Fetch<T>() where T : class, IEntity
+        public async Task<List<T>> Fetch<T>() where T : class, IEntity
         {
             var cache = GetCache<T>();
 
             using var db = Get();
-            var listIn = db.Fetch<T>();
+            var listIn = await db.FetchAsync<T>();
 
             var listOut = new List<T>();
 
-            listIn.ToList().ForEach(e => listOut.Add(cache.GetOrAdd(e)));
+            listIn.ToList().ForEach(async e => listOut.Add(await cache.GetOrAdd(e)));
             return listOut;
         }
 
@@ -113,55 +113,63 @@ namespace HLab.Erp.Data
             action(db);
         }
 
-        public List<T> Fetch<T>(Func<IDatabase, List<T>> f)
+//        public List<T> FetchQuery<T>(Func<IQueryable<T>, IQueryable<T>> q)
+        public async Task<List<T>> FetchWhere<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity
         {
             var cache = GetCache<T>();
-            using var db = Get();
-            var listIn = f(db);
-            var listOut = new List<T>();
-
-            listIn.ForEach(e => listOut.Add(cache.GetOrAdd(e)));
-            return listOut;
-        }
-//        public List<T> FetchQuery<T>(Func<IQueryable<T>, IQueryable<T>> q)
-        public List<T> FetchQuery<T>(Func<IQueryProviderWithIncludes<T>, IQueryProvider<T>> q)
-            where T : class, IEntity
-        {
-            return Fetch(db => q(db.Query<T>()).ToList());
-        }
-        public List<T> FetchWhere<T>(Expression<Func<T, bool>> expression)
-            where T : class, IEntity
-        {
             if (typeof(ILocalCache).IsAssignableFrom(typeof(T)))
             {
-                var cache = GetCache<T>();
-                return cache.Fetch(expression);
+                return await cache.Fetch(expression);
             }
-            return Fetch(db => db.Query<T>().Where(expression).ToList());
+
+            var list = await Get().QueryAsync<T>().Where(expression).ToList();
+
+            return await cache.GetOrAdd(list);
         }
 
-        public T FetchOne<T>(Expression<Func<T, bool>> expression)
+        public async Task<T> FetchOne<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity
         {
             using (var db = Get())
             {
                 //TODO : connection Timeout
                 //var result = db.FirstOrDefault<T>(expression);
-                var result = db.Query<T>().Where(expression).FirstOrDefault();
-                return result == null ? null : GetCache<T>().GetOrAdd(result);
+                var result = await db.QueryAsync<T>().Where(expression).FirstOrDefault();
+                return result == null ? null : await GetCache<T>().GetOrAdd(result);
             }
         }
 
-        public T FetchOne<T>(int id)
+        public async Task<T> FetchOne<T>(int id)
             where T : class, IEntity<int>
 
-            => GetCache<T>().Get(id);
+            => await FetchOne<T>((object)id);
 
-        public T FetchOne<T>(string id)
+        public async Task<T> FetchOne<T>(string id)
             where T : class, IEntity<string>
 
-            => GetCache<T>().Get(id);
+            => await FetchOne<T>((object)id);
+
+        public async Task<T> FetchOne<T>(object id)
+            where T : class, IEntity
+        {
+            var subscribe = false;
+
+            var obj = await GetCache<T>().GetOrAdd(id,
+                 async k =>
+                {
+                    subscribe = true;
+                    var o = await Get().SingleByIdAsync<T>(k);
+                    return o;
+                });
+
+            //if(subscribe && obj is INotifierObject nobj) nobj.GetNotifier().Subscribe();
+            if (subscribe && obj is IEntity entity) entity.OnLoaded();
+            if (subscribe && obj is IDataProvider dbf) dbf.DataService = this;
+
+            return obj;
+
+        }
 
         public bool Any<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity

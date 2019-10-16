@@ -121,7 +121,7 @@ namespace HLab.Erp.Acl.LoginServices
             
             .CanExecute((e) => (e.Login?.Length ?? 0) > 0)
             .Action(
-            (e,n) =>
+            async (e,n) =>
             {
                 if (e._pin.Length > 4) e._pin = "";
                 e._pin += (string)n;
@@ -130,7 +130,7 @@ namespace HLab.Erp.Acl.LoginServices
 
                 if (e._pin.Length == 4)
                 {
-                    e.Message = e._logon.Login(new NetworkCredential(e.Credential.UserName, e._pin), true);
+                    e.Message = await e._logon.Login(new NetworkCredential(e.Credential.UserName, e._pin), true);
                     e._pin = "";
                     e.PinView = "";
                 }
@@ -143,9 +143,9 @@ namespace HLab.Erp.Acl.LoginServices
 
         public ICommand LoginCommand { get; } = H.Command( c => c
             .CanExecute(e => (e.Login?.Length??0)>0)
-            .Action( e =>
+            .Action(async e =>
                 {
-                    e.Message = e._logon.Login(e.Credential);
+                    e.Message = await e._logon.Login(e.Credential);
                 })                      
             .On(e => e.Login).CheckCanExecute()
         );

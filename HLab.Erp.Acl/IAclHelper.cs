@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Data;
 
@@ -13,16 +14,16 @@ namespace HLab.Erp.Acl
 {
     public interface IAclHelper
     {
-        Connection GetConnectionWithPin(NetworkCredential credential);
-        Connection GetConnection(NetworkCredential credential);
+        Task<Connection> GetConnectionWithPin(NetworkCredential credential);
+        Task<Connection> GetConnection(NetworkCredential credential);
         string Crypt(SecureString password);
     }
 
     public class AclHelper : IAclHelper
     {
-        public Connection GetConnection(NetworkCredential credential) => GetConnection(GetUser(credential));
+        public async Task<Connection> GetConnection(NetworkCredential credential) => await GetConnection(await GetUser(credential));
 
-        public Connection GetConnectionWithPin(NetworkCredential credential) => GetConnection(GetUserWithPin(credential));
+        public async Task<Connection> GetConnectionWithPin(NetworkCredential credential) => await GetConnection(await GetUserWithPin(credential));
 
 
         private const string Cle = "PG8JaR0ix+GP2w0bXse/ReZugKK+Q/g/";
@@ -36,25 +37,24 @@ namespace HLab.Erp.Acl
             Data = db;
         }
 
-        private User GetUserWithPin(NetworkCredential credential)
+        private async Task<User> GetUserWithPin(NetworkCredential credential)
         {
             var login = credential.UserName;
             var pin = Crypt(credential.SecurePassword);
-            return Data.FetchOne<User>(u => u.Login == login && u.Pin == pin);
-
+            return await Data.FetchOne<User>(u => u.Login == login && u.Pin == pin);
         }
 
-        protected virtual User GetUser(NetworkCredential credential)
+        protected virtual async Task<User> GetUser(NetworkCredential credential)
         {
-            return Data.FetchOne<User>(u => u.Login == credential.UserName && u.HashedPassword == Crypt(credential.SecurePassword));
+            return await Data.FetchOne<User>(u => u.Login == credential.UserName && u.HashedPassword == Crypt(credential.SecurePassword));
 
         }
 
-        private Connection GetConnection(User user)
+        private async Task<Connection> GetConnection(User user)
         {
             if (user == null) return null;
 
-            return Data.Add<Connection>(c =>
+            return await Data.Add<Connection>(c =>
             {
 
                 try

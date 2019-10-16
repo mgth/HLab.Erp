@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System.Threading.Tasks;
+using System.Windows.Media;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.ViewModelStates;
 using HLab.Erp.Data;
@@ -32,7 +33,7 @@ namespace HLab.Erp.Core.DragDrops
         private IProperty<object> _icon = H.Property<object>(c => c
             .On(e => e.Model.IconName)
             .On(e => e.IconName)
-            .Set(e => e._icons.GetIcon(e.Model?.IconName ?? e.IconName))
+            .Set(async e => await e._icons.GetIcon(e.Model?.IconName ?? e.IconName))
         );
 
         public virtual string IconName => "IconMicroscope";

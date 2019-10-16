@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -155,13 +156,18 @@ namespace HLab.Erp.Core.ViewModels
         {
             Id = id ?? ("C" + Guid.NewGuid().ToString().Replace('-', '_'));
             Caption = caption;
-            Getter = getter;
+            _getter = getter;
             Hidden = hidden;
         }
 
         public bool Hidden { get; }
         public object Caption { get; }
-        public Func<T,object> Getter { get; }
+        private readonly Func<T, object> _getter;
+
+        public object Get(T value)
+        {
+            return _getter(value);
+        }
 
         public string Id { get; }
     }
@@ -170,12 +176,24 @@ namespace HLab.Erp.Core.ViewModels
     {
         private readonly Dictionary<string,Column<T>> _dict = new Dictionary<string, Column<T>>();
 
-        public ColumnsProvider<T> Column(string caption, Func<T,object> f,string id=null)
+        public ColumnsProvider<T> Column(string caption, Func<T,Task<object>> f,string id=null)
         {
-            var c = new Column<T>(caption, f, id, false);
+            var c = new Column<T>(caption,t => new AsyncView{Getter = async () => await f(t)} , id, false);
             _dict.Add(c.Id,c);
             return this;
         }
+        public ColumnsProvider<T> Column(string caption, Func<T,object> f,string id=null)
+        {
+            var c = new Column<T>(caption,f, id, false);
+            _dict.Add(c.Id,c);
+            return this;
+        }
+        //public ColumnsProvider<T> Hidden(string id, Func<T,Task<object>> f)
+        //{
+        //    var c = new Column<T>("", f, id, true);
+        //    _dict.Add(c.Id,c);
+        //    return this;
+        //}
         public ColumnsProvider<T> Hidden(string id, Func<T,object> f)
         {
             var c = new Column<T>("", f, id, true);
@@ -187,7 +205,7 @@ namespace HLab.Erp.Core.ViewModels
         {
             if (_dict.ContainsKey(name))
             {
-                return _dict[name].Getter(obj);
+                return _dict[name].Get(obj);
             }
             else return null;
         }
