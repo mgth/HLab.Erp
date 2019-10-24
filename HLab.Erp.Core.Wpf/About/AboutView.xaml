@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="HLab.Erp.Core.AboutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HLab.Erp.Core"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel HorizontalAlignment="Center">
+           <TextBlock HorizontalAlignment="Center">Copyright © 2019 CHMP</TextBlock>
+            <TextBlock HorizontalAlignment="Center">    <Hyperlink 
+                               NavigateUri="http://www.chmp.org"
+                               RequestNavigate="Hyperlink_RequestNavigate">
+                www.chmp.org
+            </Hyperlink></TextBlock>
+
+<TextBlock Text ="
+    HLab.Analysis is free software: you can redistribute it and/or modify&#x0a;
+    it under the terms of the GNU General Public License as published by&#x0a;
+    the Free Software Foundation, either version 3 of the License, or&#x0a;
+    (at your option) any later version.&#x0a;
+&#x0a;
+    HLab.Base is distributed in the hope that it will be useful,&#x0a;
+    but WITHOUT ANY WARRANTY; without even the implied warranty of&#x0a;
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&#x0a;
+    GNU General Public License for more details.&#x0a;
+&#x0a;
+    You should have received a copy of the GNU General Public License&#x0a;
+    along with MouseControl.  If not, see "/>
+    <TextBlock HorizontalAlignment="Center">    
+        <Hyperlink  NavigateUri="http://www.gnu.org/licenses/"
+                    RequestNavigate="Hyperlink_RequestNavigate">
+            www.gnu.org/licenses/
+</Hyperlink>
+</TextBlock>  <TextBlock Margin="20" HorizontalAlignment="Center">          
+        <Hyperlink  NavigateUri="https://bitbucket.org/mgthieu/hlab.erp.lims.analysis/src/master/"
+                    RequestNavigate="Hyperlink_RequestNavigate">
+            Source Code
+</Hyperlink>
+</TextBlock>
+    </StackPanel>
+</UserControl>

@@ -37,12 +37,12 @@ namespace HLab.Erp.Base.Data
        private readonly IProperty<int> _iso = H.Property<int>();
 
        [System.ComponentModel.DataAnnotations.Schema.Column]
-        public string Icon
+        public string IconPath
         {
-            get => _icon.Get();
-            set => _icon.Set(value);
+            get => _iconPath.Get();
+            set => _iconPath.Set(value);
         }
-        private readonly IProperty<string> _icon = H.Property<string>();
+        private readonly IProperty<string> _iconPath = H.Property<string>();
 
 
         public int? ContinentId

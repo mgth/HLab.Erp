@@ -4,6 +4,6 @@
     {
         string Caption { get; }
 
-        string IconName { get; }
+        string IconPath { get; }
     }
 }

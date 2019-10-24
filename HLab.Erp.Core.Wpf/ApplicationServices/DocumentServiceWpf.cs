@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using HLab.Core;
 using HLab.Core.Annotations;
@@ -16,7 +17,7 @@ namespace HLab.Erp.Core.ApplicationServices
         [Import]
         public Func<MainWpfViewModel> GetViewModel { get; set; }
         [Import] private Func<object, SelectedMessage> GetMessage { get; set; }
-        public override void OpenDocument(IView content)
+        public override async Task OpenDocument(IView content)
         {
             var vm = GetViewModel();
 

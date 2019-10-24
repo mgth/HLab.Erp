@@ -20,7 +20,7 @@ namespace HLab.Erp.Base.Wpf
             Columns
                 .Column("^Name", s => s.Name)
                 .Column("^Country", s => s.Format)
-                .Column("^Icon", s => _icons.FromSvgString(s.Source))
+                .Column("^Icon", async s => await _icons.FromSvgString(s.Source))
                 ;
 
             //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(

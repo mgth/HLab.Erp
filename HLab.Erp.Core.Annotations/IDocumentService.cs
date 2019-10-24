@@ -1,7 +1,10 @@
-﻿namespace HLab.Erp.Core
+﻿using System;
+using System.Threading.Tasks;
+
+namespace HLab.Erp.Core
 {
     public interface IDocumentService
     {
-        void OpenDocument(object content);
+         Task OpenDocument(object content);
     }
 }

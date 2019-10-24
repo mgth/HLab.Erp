@@ -18,12 +18,11 @@ namespace HLab.Erp.Data
         //}
     }
 
-    [Entity]
+    [PrimaryKey("Id")]
     public abstract class Entity<TClass,T> : N<TClass>, IEntity<T>, IDataProvider//, IOnLoaded
         where TClass : Entity<TClass,T>
     {
 
-        [Column]
         public virtual T Id
         {
             get => _id.Get();

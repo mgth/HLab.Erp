@@ -5,12 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                       xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
+                      xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
                       mc:Ignorable="d" 
-                Height="175"
-                Width="300"
              d:DesignHeight="300" d:DesignWidth="300">
-
-    <StackPanel Margin="20,20,20,0">
+<Grid>
+    <Viewbox Grid.Row="2" Opacity="0.1"><icons:IconView Id="icons/LogoBackground"/></Viewbox>    <StackPanel Margin="20,20,20,0" VerticalAlignment="Center">
+        <Grid
+           
+            Height="175"
+            Width="400"
+        >
+            
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -33,6 +38,7 @@
             <PasswordBox x:Name="PasswordBox" Grid.Column="1" Grid.Row="1" PasswordChar="*" PasswordChanged="PasswordBox_OnPasswordChanged"/>
             <TextBox Visibility="{Binding DebugVisibility}" Text="{Binding Password}" x:Name="CryptedPassword" Grid.Column="1" Grid.Row="2"/>
             <TextBlock 
+                HorizontalAlignment="Center"
                 Grid.Row="3" 
                 Grid.Column="0" 
                 Grid.ColumnSpan="2"   
@@ -50,7 +56,8 @@
                 <lang:Localize Id="^Connection"/>
             </Button>
         </Grid>
-            
+        </Grid>
     </StackPanel>
+</Grid>
 </UserControl>
 

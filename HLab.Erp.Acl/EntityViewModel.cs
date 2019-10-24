@@ -10,13 +10,15 @@ namespace HLab.Erp.Acl
         where TClass : EntityViewModel<TClass, T>
         where T : IEntity
     {
-        [Import]
-        private Func<IEntity, DataLocker> _getLocker;
+        
+        [Import] private readonly Func<IEntity, DataLocker> _getLocker;
 
         public DataLocker Locker => _locker.Get();
 
         private readonly IProperty<DataLocker> _locker = H.Property<DataLocker>(c => c
             .On(e => e.Model)
-            .Set(e => e._getLocker(e.Model)));
+            .Set(e => e._getLocker(e.Model))
+            .Set(e => e._getLocker(e.Model))
+        );
     }
 }

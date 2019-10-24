@@ -53,11 +53,11 @@
                      </Style.Triggers>
                  </Style>
              </DataGrid.RowStyle>
-            <!--<interactions:Interaction.Triggers>
+            <interactions:Interaction.Triggers>
                  <interactions:EventTrigger EventName="MouseDoubleClick">
                      <interactions:InvokeCommandAction Command="{Binding OpenCommand}"/>
                  </interactions:EventTrigger>
-             </interactions:Interaction.Triggers>-->
+             </interactions:Interaction.Triggers>
          
         <!--<DataGrid.GroupStyle>
             --><!-- Style for groups at top level. --><!--

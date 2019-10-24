@@ -30,13 +30,13 @@ namespace HLab.Erp.Core.DragDrops
 
 
         public object Icon => _icon.Get();
-        private IProperty<object> _icon = H.Property<object>(c => c
-            .On(e => e.Model.IconName)
-            .On(e => e.IconName)
-            .Set(async e => await e._icons.GetIcon(e.Model?.IconName ?? e.IconName))
+        private readonly IProperty<object> _icon = H.Property<object>(c => c
+            .On(e => e.Model.IconPath)
+            .On(e => e.IconPath)
+            .Set(async e => await e._icons.GetIcon(e.Model?.IconPath ?? e.IconPath))
         );
 
-        public virtual string IconName => "IconMicroscope";
+        public virtual string IconPath => "IconMicroscope";
 
     }
 }

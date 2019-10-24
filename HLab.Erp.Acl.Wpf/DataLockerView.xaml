@@ -4,22 +4,37 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
+             xmlns:local="clr-namespace:HLab.Erp.Acl;assembly=HLab.Erp.Acl"
+             xmlns:converters="clr-namespace:HLab.Mvvm.Converters;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance {x:Type local:DataLockerDesign}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
-    <ToggleButton IsChecked="{Binding IsActive}">
-            <icons:IconView>
-                <icons:IconView.Style>
-                <Style TargetType="{x:Type icons:IconView}">
-                    <Style.Triggers>
+    <Grid>
+    <Button Command="{Binding ActivateCommand}">
+        <icons:IconView Id="icons/Locked"/>
+        <Button.Style>
+            <Style TargetType="Button">
+                <Setter Property="Visibility" Value ="Collapsed"/>
+                <Style.Triggers>
                     <DataTrigger Binding="{Binding IsActive}" Value="False">
-                        <Setter Property="Id" Value ="icons/Locked"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding IsActive}" Value="True">
-                        <Setter Property="Id" Value ="icons/Unlocked"/>
+                        <Setter Property="Visibility" Value ="Visible"/>
                     </DataTrigger>
                 </Style.Triggers>
-                </Style>
-                </icons:IconView.Style>
-            </icons:IconView>
-    </ToggleButton>
+            </Style>
+        </Button.Style>
+    </Button>
+    <Button Command="{Binding DeactivateCommand}">
+        <icons:IconView Id="icons/Unlocked"/>
+        <Button.Style>
+            <Style TargetType="Button">
+                <Setter Property="Visibility" Value ="Collapsed"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsActive}" Value="True">
+                        <Setter Property="Visibility" Value ="Visible"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Button.Style>
+    </Button>
+    </Grid>
 </UserControl>

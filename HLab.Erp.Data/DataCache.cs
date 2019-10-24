@@ -51,11 +51,11 @@ namespace HLab.Erp.Data
             return await _cache.Where(expression);
         }
 
-        public async Task<T> GetOrAdd(object key, Func<object, Task<T>> factory) => await _cache.GetOrAdd(key, factory);
+        public async Task<T> GetOrAdd(object key, Func<object, Task<T>> factory) => await _cache.GetOrAdd(key, factory).ConfigureAwait(false);
 
         public async Task<bool> Forget(T obj)
         {
-            var r = await _cache.TryRemove(obj.Id);
+            var r = await _cache.TryRemove(obj.Id).ConfigureAwait(false);
             return r.Item1;
         }
 
@@ -63,14 +63,18 @@ namespace HLab.Erp.Data
         {
             var listOut = new List<T>();
 
-            await Task.Run(()=>list.ForEach(e => listOut.Add(GetOrAdd(e).Result)));
+            await Task.Run(()=>list.ForEach(async e =>
+            {
+                var obj = await GetOrAdd(e).ConfigureAwait(false);
+                listOut.Add(obj);
+            })).ConfigureAwait(false);
             return listOut;
         }
 
         public async Task<T> GetOrAdd(T obj)
         {
             var result = await _cache.GetOrAdd(obj.Id,
-                async k => obj);
+                async k => obj).ConfigureAwait(false);
 
                 if (result != null && !ReferenceEquals(result,obj))
                 {

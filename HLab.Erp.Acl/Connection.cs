@@ -6,7 +6,7 @@ using NPoco;
 namespace HLab.Erp.Acl
 {
     //[Key("Id", AutoIncrement = false)]
-    [SoftIncrementAttribut]
+    //[SoftIncrementAttribut]
     public class Connection : Entity<Connection>
     {
         public int? UserId

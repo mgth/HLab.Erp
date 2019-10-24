@@ -19,15 +19,15 @@ namespace HLab.Erp.Base.Wpf
         {
         }
 
-        public string Title => _localization.Localize("^Customers");
+        public string Title => "^Customers";
 
         public ListCustomerViewModel()
         {
             Columns
-                .Column(_localization.Localize("^Name"), s => s.Name)
-                .Column(_localization.Localize("^Country"), s => s.Country)
-                .Column(_localization.Localize("^Email"), s => s.Email)
-                .Column(_localization.Localize("^Address"), s => s.Address);
+                .Column("^Name", s => s.Name)
+                .Column("^Country", s => s.Country)
+                .Column("^Email", s => s.Email)
+                .Column("^Address", s => s.Address);
 
             //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(
             //    "Country",

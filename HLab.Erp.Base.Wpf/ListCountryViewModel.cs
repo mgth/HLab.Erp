@@ -31,7 +31,7 @@ namespace HLab.Erp.Base.Wpf
                 .Column("^Flag", s => new IconView{
                     MaxWidth = 50,
                     MinHeight = 50,
-                    Id = s.Icon
+                    Id = s.IconPath
                 });
 
             //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(

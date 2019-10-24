@@ -2,6 +2,6 @@
 {
     public interface IEntityWithIcon
     {
-        string IconName { get; }
+        string IconPath { get; }
     }
 }

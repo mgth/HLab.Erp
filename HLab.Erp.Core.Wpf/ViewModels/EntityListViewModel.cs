@@ -40,6 +40,13 @@ namespace HLab.Erp.Core.ViewModels
     where TClass : EntityListViewModel<TClass, T>
         where T : class, IEntity, new()
     {
+        public new T Model
+        {
+            get => (T)base.Model;
+            set => base.Model = value;
+        }
+
+        public override Type ModelType => typeof(T);
 
         [Import]
         private IDocumentService _docs;
@@ -61,9 +68,23 @@ namespace HLab.Erp.Core.ViewModels
 
         public ICommand OpenCommand { get; } = H.Command(c => c
             .CanExecute(e=>e.Selected!=null)
-            .Action(e => e._docs.OpenDocument(e.Selected))
+            .Action(async e => await e.OnOpenCommand(e.Selected))
             .On(e => e.Selected).CheckCanExecute()
         );
+
+        protected virtual async Task OnOpenCommand(T target)
+        {
+            await _docs.OpenDocument(target);
+        }
+        public ICommand AddCommand { get; } = H.Command(c => c
+//            .CanExecute(e=>e.Selected!=null)
+            .Action(async e => await e.OnAddCommand(e.Selected))
+//            .On(e => e.Selected).CheckCanExecute()
+        );
+        protected virtual async Task OnAddCommand(T target)
+        {
+            await _docs.OpenDocument(target);
+        }
 
         private void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {

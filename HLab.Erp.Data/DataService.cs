@@ -218,8 +218,10 @@ namespace HLab.Erp.Data
         {
             var db = new Database(
                 ConnectionString,
-                DatabaseType.MySQL,
-                MySql.Data.MySqlClient.MySqlClientFactory.Instance
+                DatabaseType.PostgreSQL, 
+                //DatabaseType.MySQL,
+                //MySql.Data.MySqlClient.MySqlClientFactory.Instance,
+                Npgsql.NpgsqlFactory.Instance
             );
 
             return db;

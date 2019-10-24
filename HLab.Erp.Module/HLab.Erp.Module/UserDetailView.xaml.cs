@@ -18,7 +18,7 @@ namespace HLab.Erp.Module
             
         }
 
-        private void UserDetailView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private async void UserDetailView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.OldValue is UserViewModel vm)
             {
@@ -31,7 +31,7 @@ namespace HLab.Erp.Module
                     );
 
                     if (result == MessageBoxResult.Yes)
-                        vm.Locker.IsActive = false;
+                        await vm.Locker.Activate(false);
 
                 }
             }

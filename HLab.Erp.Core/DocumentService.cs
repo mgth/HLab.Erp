@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using HLab.DependencyInjection.Annotations;
 using HLab.Mvvm.Annotations;
 
@@ -9,9 +10,9 @@ namespace HLab.Erp.Core
         [Import] private IMvvmService _mvvm { get; }
         [Import] private Func<Type, object> _getter { get; }
 
-        public abstract void OpenDocument(IView content);
+        public abstract Task OpenDocument(IView content);
 
-        public void OpenDocument(object obj)
+        public async Task OpenDocument(object obj)
         {
             if (obj is Type t)
             {
@@ -19,11 +20,11 @@ namespace HLab.Erp.Core
             }
 
             if (obj is IView view)
-                OpenDocument(view);
+                await OpenDocument(view);
             else
             {
                 var doc = _mvvm.MainContext.GetView(obj, typeof(ViewModeDefault), typeof(IViewClassDocument));
-                OpenDocument(doc);
+                await OpenDocument(doc);
             }
         }
     }
