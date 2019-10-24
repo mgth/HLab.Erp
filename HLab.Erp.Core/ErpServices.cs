@@ -11,6 +11,7 @@ namespace HLab.Erp.Core
 {
     public interface IErpServices
     {
+        IApplicationInfoService Info { get; }
         IDataService Data { get; }
         IMvvmService Mvvm { get; }
         IDocumentService Docs { get; }
@@ -23,7 +24,7 @@ namespace HLab.Erp.Core
     [Export(typeof(IErpServices))]
     class ErpServices : IErpServices
     {
-        [Import] public ErpServices(IDataService data, IMvvmService mvvm, IDocumentService docs, IAclService acl, IMessageBus message, IMenuService menu, IIconService icon)
+        [Import] public ErpServices(IDataService data, IMvvmService mvvm, IDocumentService docs, IAclService acl, IMessageBus message, IMenuService menu, IIconService icon, IApplicationInfoService info)
         {
             Data = data;
             Mvvm = mvvm;
@@ -32,8 +33,10 @@ namespace HLab.Erp.Core
             Message = message;
             Menu = menu;
             Icon = icon;
+            Info = info;
         }
 
+        public IApplicationInfoService Info { get; }
         public IDataService Data { get; }
         public IMvvmService Mvvm { get; }
         public IDocumentService Docs { get; }

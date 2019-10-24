@@ -21,19 +21,9 @@ namespace HLab.Erp.Core.ApplicationServices
     {
 
         public IUpdater Updater { get; set; }
-        [Import]
-        private IApplicationInfoService _info;
-        [Import]
-        private Func<MainWpfViewModel> _getVm;
-        [Import]
-        private IMenuService _menu;
-        [Import]
-        private IAclService _acl;
-        [Import]
-        private IMvvmService _mvvm;
-        [Import]
-        private IDragDropService _dragdrop;
+        [Import] private readonly Func<MainWpfViewModel> _getVm;
 
+        [Import] private readonly IErpServices _erp;
 
         public void SetMainViewMode(Type vm)
         {
@@ -53,47 +43,6 @@ namespace HLab.Erp.Core.ApplicationServices
                         CultureInfo.CurrentCulture.IetfLanguageTag)));
         }
 
-
-        protected override void RegisterAssembly(Assembly assembly)
-        {
-            RegisterIcons(assembly);
-
-        }
-
-        public static void RegisterIcons(Assembly assembly)
-        {
-            var rm = new ResourceManager(assembly.GetName().Name + ".g", assembly);
-            try
-            {
-                var dict = new ResourceDictionary();
-                var list = rm.GetResourceSet(CultureInfo.CurrentCulture, true, true);
-                foreach (DictionaryEntry item in list)
-                {
-                    //resourceNames.Add((string)item.Key);
-                    string s = item.Key.ToString();
-                    if (s.StartsWith("icons/"))
-                    {
-                        var uri = new Uri("/" + assembly.GetName().Name + ";component/" + s.Replace(".baml", ".xaml"), UriKind.RelativeOrAbsolute);
-                        var obj = Application.LoadComponent(uri);
-
-                        string key = s.Replace("icons/", "").Replace(".baml", "");
-
-                        if (obj.GetType() == typeof(ResourceDictionary))
-                        {
-                            Application.Current.Resources.MergedDictionaries.Add(obj as ResourceDictionary);
-                        }
-                        else
-                            dict.Add(key, obj);
-                    }
-                }
-                Application.Current.Resources.MergedDictionaries.Add(dict);
-            }
-            catch (MissingManifestResourceException) { }
-            finally
-            {
-                rm.ReleaseAllResources();
-            }
-        }
 
         [Import]
         public Func<LoginViewModel> GetLoginViewModel { get; set; }
@@ -116,18 +65,18 @@ namespace HLab.Erp.Core.ApplicationServices
 
             base.Load();
 
-            _info.Version = Assembly.GetCallingAssembly().GetName().Version;
+            _erp.Info.Version = Assembly.GetCallingAssembly().GetName().Version;
 
             InitializeCultures();
 
 
             var vm = GetLoginViewModel();
-            var loginWindow = _mvvm.MainContext.GetView(vm,MainViewMode).AsWindow();
+            var loginWindow = _erp.Mvvm.MainContext.GetView(vm,MainViewMode).AsWindow();
             loginWindow.WindowState = WindowState.Maximized;
 
             loginWindow.ShowDialog();
 
-            if (_acl.Connection == null)
+            if (_erp.Acl.Connection == null)
             {
                 Application.Current.Shutdown();
                 return;
@@ -184,23 +133,17 @@ namespace HLab.Erp.Core.ApplicationServices
 
 
             ViewModel = _getVm();
-            var w = _mvvm.MainContext.GetView(ViewModel,MainViewMode);// new MainWindow{DataContext = ViewModel};
-
-            //MainWindow = (MainWindow)MvvmService.D.MainViewModeContext.GetView<ViewModeDefault>(ViewModel);// new MainWindow{DataContext = ViewModel};
-
-            _menu.RegisterMenu(null, "file", "File", null, null);
-            _menu.RegisterMenu(null, "data", "Data", null, null);
-            _menu.RegisterMenu(null, "tools", "Tools", null, null);
-            _menu.RegisterMenu(null, "help", "_?", null, null);
-
-            //_menu.RegisterMenu("file", "add", "_Ajouter", null, null);
-            //_menu.RegisterMenu("file", "open", "_Ouvrir", null, null);
+            var w = _erp.Mvvm.MainContext.GetView(ViewModel,MainViewMode);
 
 
-            _menu.RegisterMenu("file","exit","Exit", ViewModel.Exit,null);
+            _erp.Menu.RegisterMenu(null, "file", "File", null, null);
+            _erp.Menu.RegisterMenu(null, "data", "Data", null, null);
+            _erp.Menu.RegisterMenu(null, "tools", "Tools", null, null);
+            _erp.Menu.RegisterMenu(null, "help", "_?", null, null);
 
 
-            //w.Show();
+            _erp.Menu.RegisterMenu("file","exit","Exit", ViewModel.Exit,null);
+
             MainWindow.Content = w;
         }
     }
