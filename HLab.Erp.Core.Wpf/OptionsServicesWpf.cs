@@ -28,14 +28,17 @@ namespace HLab.Erp.Core
         public StreamReader GetOptionFileReader(string name)
         {
             var fileName = Path.Combine(Environment.GetFolderPath(
-                Environment.SpecialFolder.ApplicationData), RegistryPath + @"\" + RegistryPath);
+                Environment.SpecialFolder.ApplicationData), RegistryPath + @"\" + name);
 
             return new StreamReader(fileName);
         }
         public StreamWriter GetOptionFileWriter(string name)
         {
             var fileName = Path.Combine(Environment.GetFolderPath(
-                Environment.SpecialFolder.ApplicationData), RegistryPath + @"\" + RegistryPath);
+                Environment.SpecialFolder.ApplicationData), RegistryPath + @"\" + name);
+
+            var dir = Path.GetDirectoryName(fileName);
+            Directory.CreateDirectory(dir);
 
             return new StreamWriter(fileName);
         }

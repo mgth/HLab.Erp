@@ -7,6 +7,7 @@ using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
+using HLab.Mvvm.Extentions;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
 namespace HLab.Erp.Core.ApplicationServices
@@ -18,6 +19,7 @@ namespace HLab.Erp.Core.ApplicationServices
         , IView<ViewModeDefault, MainWpfViewModel>
         , IView<ViewModeKiosk, MainWpfViewModel>
     {
+        private const string LayoutFileName = "layout.xml";
 
         public MainWindow()
         {
@@ -25,17 +27,26 @@ namespace HLab.Erp.Core.ApplicationServices
 
             LoadLayout();
 
-            this.Unloaded += MainWindow_Unloaded;
+            this.Loaded += MainWindow_Loaded;
             this.DataContextChanged += MainWindow_DataContextChanged;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            var w = Window.GetWindow(this);
+            if (w != null)
+            {
+                w.Closing += W_Closing;
+            }
+        }
+
+        private void W_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SaveLayout();
         }
 
         [Import]
         private IOptionsService _options;
-
-        private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
-        {
-            SaveLayout();
-        }
 
         private void MainWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -44,19 +55,9 @@ namespace HLab.Erp.Core.ApplicationServices
 
         private void SaveLayout()
         {
-            var fileName = Path.Combine(Environment.GetFolderPath(
-                Environment.SpecialFolder.ApplicationData), @"CHMP\Echantillonage\layout.xml");
-
-            var dir = Path.GetDirectoryName(fileName);
-            if (dir == null) return;
-
-            Directory.CreateDirectory(dir);
-
             var layoutSerializer = new XmlLayoutSerializer(DockingManager);
-            using (var writer = new StreamWriter(fileName))
-            {
-                layoutSerializer.Serialize(writer);
-            }
+            using var writer = _options.GetOptionFileWriter(LayoutFileName);
+            layoutSerializer.Serialize(writer);
         }
 
         private void LoadLayout()
@@ -65,7 +66,7 @@ namespace HLab.Erp.Core.ApplicationServices
 
             try
             {
-                using (var reader = _options.GetOptionFileReader("layout.xml"))
+                using (var reader = _options.GetOptionFileReader(LayoutFileName))
                 {
                     layoutSerializer.Deserialize(reader);
                 }
