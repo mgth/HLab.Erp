@@ -69,7 +69,7 @@ namespace HLab.Erp.Acl
 
             if (value)
             {
-                var existing = await _db.FetchOne<DataLock>(e => e.EntityClass == _entityClass && e.EntityId == _entityId);
+                var existing = await _db.FetchOneAsync<DataLock>(e => e.EntityClass == _entityClass && e.EntityId == _entityId);
                 if (existing != null)
                 {
                     if ((DateTime.Now - existing.HeartbeatTime).TotalMilliseconds < HeartBeat * 2) return;
@@ -77,7 +77,7 @@ namespace HLab.Erp.Acl
                 }
                 try
                 {
-                    _lock = await _db.Add<DataLock>(t =>
+                    _lock = await _db.AddAsync<DataLock>(t =>
                     {
                         t.UserId = _acl.Connection.UserId;
                         t.EntityClass = _entityClass;

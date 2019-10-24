@@ -27,7 +27,7 @@ namespace HLab.Erp.Core.Localization
         {
             var entry = await _cache.GetOrAdd(Tuple.Create(tag, code), async t =>
             {
-                var e = await _db.FetchOne<LocalizeEntry>(e => e.Tag == tag && e.Code == code);
+                var e = await _db.FetchOneAsync<LocalizeEntry>(e => e.Tag == tag && e.Code == code);
 
                 if(e!=null && e.BadCode)
                     throw new ArgumentException(e.Code + " is told bad code");
@@ -40,7 +40,7 @@ namespace HLab.Erp.Core.Localization
 
         public void Register(string tag, string code, string value, bool quality)
         {
-                var entry = _db.Add<LocalizeEntry>(e =>
+                var entry = _db.AddAsync<LocalizeEntry>(e =>
                 {
                     e.Tag = tag;
                     e.Code = code;

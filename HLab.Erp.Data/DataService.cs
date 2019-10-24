@@ -17,12 +17,13 @@ namespace HLab.Erp.Data
     [Export(typeof(IDataService)), Singleton]
     public class DataService : IDataService
     {
-        public async Task<T> Add<T>(Action<T> setter, Action<T> added = null)
+        public async Task<T> AddAsync<T>(Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {
             using var db = Get();
 
             var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
+            if(t is IEntity<int> tt) tt.Id=-1;
 
             setter?.Invoke(t);
 
@@ -31,7 +32,7 @@ namespace HLab.Erp.Data
             {
                 if (t is IEntity<int> ti)
                 {
-                    var ids = await db.QueryAsync<T>().OrderByDescending(d => ((IEntity<int>)d).Id).FirstOrDefault();
+                    var ids = await db.QueryAsync<T>().OrderByDescending(d => ((IEntity<int>)d).Id).FirstOrDefault().ConfigureAwait(false);
 
                     var id = ((IEntity<int>)ids)?.Id ?? 0;
 
@@ -41,7 +42,7 @@ namespace HLab.Erp.Data
                 }
             }
 
-            e = await db.InsertAsync<T>(t);
+            e = await db.InsertAsync(t).ConfigureAwait(false);
 
             if (e != null)
             {
@@ -49,8 +50,48 @@ namespace HLab.Erp.Data
                 added?.Invoke(t);
             }
 
-            return await GetCache<T>().GetOrAdd(t);
+            return await GetCache<T>().GetOrAdd(t).ConfigureAwait(false);
         }
+        public T Add<T>(Action<T> setter, Action<T> added = null)
+            where T : class, IEntity
+        {
+            using var db = Get();
+
+            var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
+            if(t is IEntity<int> tt) tt.Id=-1;
+
+            setter?.Invoke(t);
+
+            object e = null;
+            if (typeof(T).GetCustomAttributes<SoftIncrementAttribut>().FirstOrDefault() is SoftIncrementAttribut a)
+            {
+                if (t is IEntity<int> ti)
+                {
+                    var ids = db.Query<T>().OrderByDescending(d => ((IEntity<int>)d).Id).FirstOrDefault();
+
+                    var id = ((IEntity<int>)ids)?.Id ?? 0;
+
+                    id++;
+
+                    ti.Id = id;
+                }
+            }
+
+            e = db.Insert(t);
+
+            if (e != null)
+            {
+                t.IsLoaded = true;
+                added?.Invoke(t);
+            }
+
+            return GetCache<T>().GetOrAdd(t).Result;
+        }
+
+
+
+
+
         public int Delete<T>(T entity, Action<T> deleted = null)
             where T : class, IEntity
         {
@@ -81,12 +122,12 @@ namespace HLab.Erp.Data
             T t;
             using (var db = Get())
             {
-                t = await db.QueryAsync<T>().FirstOrDefault(getter);
+                t = await db.QueryAsync<T>().FirstOrDefault(getter).ConfigureAwait(false);
             }
 
-            if (t == null) return await Add(setter, added);
+            if (t == null) return await AddAsync(setter, added).ConfigureAwait(false);
 
-            return await cache.GetOrAdd(t);
+            return await cache.GetOrAdd(t).ConfigureAwait(false);
         }
         public async Task<T> GetOrAdd<T>(T entity)
             where T : class, IEntity
@@ -128,7 +169,7 @@ namespace HLab.Erp.Data
             return await cache.GetOrAdd(list);
         }
 
-        public async Task<T> FetchOne<T>(Expression<Func<T, bool>> expression)
+        public async Task<T> FetchOneAsync<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity
         {
             using (var db = Get())
@@ -138,6 +179,15 @@ namespace HLab.Erp.Data
                 var result = await db.QueryAsync<T>().Where(expression).FirstOrDefault();
                 return result == null ? null : await GetCache<T>().GetOrAdd(result);
             }
+        }
+        public T FetchOne<T>(Expression<Func<T, bool>> expression)
+            where T : class, IEntity
+        {
+            using var db = Get();
+            //TODO : connection Timeout
+            //var result = db.FirstOrDefault<T>(expression);
+            var result = db.Query<T>().Where(expression).FirstOrDefault();
+            return result == null ? null : GetCache<T>().GetOrAdd(result).Result;
         }
 
         public async Task<T> FetchOne<T>(int id)
@@ -234,5 +284,11 @@ namespace HLab.Erp.Data
         }
 
         public DbTransaction BeginTransaction() => Get().Transaction;
+
+        public void Save<T>(T value) where T : class, IEntity
+        {
+            using var d = Get();
+                d.Save(value);
+        }
     }
 }

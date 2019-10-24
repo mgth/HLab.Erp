@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using HLab.Core.Annotations;
@@ -47,6 +49,8 @@ namespace HLab.Erp.Core.ApplicationServices
 
         [Import]
         private IOptionsService _options;
+        [Import]
+        private IAclService _acl;
 
         private void MainWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -56,18 +60,24 @@ namespace HLab.Erp.Core.ApplicationServices
         private void SaveLayout()
         {
             var layoutSerializer = new XmlLayoutSerializer(DockingManager);
-            using var writer = _options.GetOptionFileWriter(LayoutFileName);
+            //using var writer = _options.GetOptionFileWriter(LayoutFileName);
+            var sb = new StringBuilder();
+            using var writer = new StringWriter(sb);
             layoutSerializer.Serialize(writer);
+            _options.SetValue<string>("Layout", sb.ToString(), _acl.Connection.UserId);
         }
 
-        private void LoadLayout()
+        private async void LoadLayout()
         {
             var layoutSerializer = new XmlLayoutSerializer(DockingManager);
 
             try
             {
-                using (var reader = _options.GetOptionFileReader(LayoutFileName))
+                var layout = await _options.GetValue<string>("Layout",_acl.Connection.UserId).ConfigureAwait(true);
+                //using var reader = _options.GetOptionFileReader(LayoutFileName);
+                if (!string.IsNullOrWhiteSpace(layout))
                 {
+                    using var reader = new StringReader(layout);
                     layoutSerializer.Deserialize(reader);
                 }
             }

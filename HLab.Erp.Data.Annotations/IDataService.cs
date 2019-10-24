@@ -15,9 +15,14 @@ namespace HLab.Erp.Data
         void Register(string connectionString, string driver);
         bool Any<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity;
-        Task<T> Add<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity;
 
-        Task<T> FetchOne<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
+        Task<T> AddAsync<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity;
+        T Add<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity;
+
+        void Save<T>(T value) where T : class, IEntity;
+
+        T FetchOne<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
+        Task<T> FetchOneAsync<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
         Task<T> FetchOne<T>(int id) where T : class, IEntity<int>;
         Task<T> FetchOne<T>(string id) where T : class, IEntity<string>;
 

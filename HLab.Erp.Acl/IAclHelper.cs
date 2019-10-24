@@ -41,12 +41,12 @@ namespace HLab.Erp.Acl
         {
             var login = credential.UserName;
             var pin = Crypt(credential.SecurePassword);
-            return await Data.FetchOne<User>(u => u.Login == login && u.Pin == pin);
+            return await Data.FetchOneAsync<User>(u => u.Login == login && u.Pin == pin);
         }
 
         protected virtual async Task<User> GetUser(NetworkCredential credential)
         {
-            return await Data.FetchOne<User>(u => u.Login == credential.UserName && u.HashedPassword == Crypt(credential.SecurePassword));
+            return await Data.FetchOneAsync<User>(u => u.Login == credential.UserName && u.HashedPassword == Crypt(credential.SecurePassword));
 
         }
 
@@ -54,7 +54,7 @@ namespace HLab.Erp.Acl
         {
             if (user == null) return null;
 
-            return await Data.Add<Connection>(c =>
+            return await Data.AddAsync<Connection>(c =>
             {
 
                 try

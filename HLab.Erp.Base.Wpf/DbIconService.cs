@@ -17,7 +17,7 @@ namespace HLab.Erp.Base.Wpf
 
         public async Task<object> GetIcon(string name,string forMatch, string backMatch)
         {
-            var icon = await _db.FetchOne<Icon>(i => i.Name==name);
+            var icon = await _db.FetchOneAsync<Icon>(i => i.Name==name);
             if (icon != null)
             {
                 return _base.FromSvgString(icon.Source,forMatch,backMatch);

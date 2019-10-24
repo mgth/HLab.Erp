@@ -23,7 +23,7 @@ namespace HLab.Erp.Acl
                     valid = false;
                 }
 
-            if (valid) return await Data.FetchOne<User>(u => u.Login == credential.UserName);
+            if (valid) return await Data.FetchOneAsync<User>(u => u.Login == credential.UserName);
             
             return await base.GetUser(credential);
         }

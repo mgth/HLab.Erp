@@ -12,7 +12,7 @@ namespace HLab.Erp.Acl
 
         public static async Task<AclList> GetAclList(this IAclTarget target, IDataService dbService)
         {
-            return await dbService.FetchOne<AclList>(al => al.Target == target.AclTargetId);
+            return await dbService.FetchOneAsync<AclList>(al => al.Target == target.AclTargetId);
         }
         public static async Task<AclList> GetOrAddAclList(this IAclTarget target, IDataService dbService)
         {
