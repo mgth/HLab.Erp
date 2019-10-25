@@ -58,9 +58,8 @@ namespace HLab.Erp.Workflows
             where TWf : NotifierBase, IWorkflow<TWf>
             => t.Icon<TWf>(e => icon);
 
-        public static TC WhenStateAllowed<TC, TWf>(this TC t, Func<WorkflowState<TWf>> getState)
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> WhenStateAllowed<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.State> getState)
             where TWf : NotifierBase, IWorkflow<TWf>
-            where TC : IFluentConfigurator<IWorkflowConditionalObject<TWf>>
         {
                 var cond = new WorkflowCondition<TWf>(w =>
                     getState().Check(w) == WorkflowConditionResult.Passed
@@ -73,12 +72,19 @@ namespace HLab.Erp.Workflows
             return t;
         }
 
-        public static TC FromState<TC, TWf>(this TC t, Func<WorkflowState<TWf>> getState)
+        //public static TC FromState<TC, TWf>(this TC t, Func<Workflow<TWf>.State> getState)
+        //    where TWf : NotifierBase, IWorkflow<TWf>
+        //    where TC : IFluentConfigurator<IWorkflowConditionalObject<TWf>>
+        //{
+        //        t.Target.AddCondition(new WorkflowCondition<TWf>(w =>
+        //        (w.CurrentState == getState()) ? WorkflowConditionResult.Passed : WorkflowConditionResult.Hidden));
+        //    return t;
+        //}
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> FromState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.State> getState)
             where TWf : NotifierBase, IWorkflow<TWf>
-            where TC : IFluentConfigurator<IWorkflowConditionalObject<TWf>>
         {
                 t.Target.AddCondition(new WorkflowCondition<TWf>(w =>
-                (w.State == getState()) ? WorkflowConditionResult.Passed : WorkflowConditionResult.Hidden));
+                (w.CurrentState == getState()) ? WorkflowConditionResult.Passed : WorkflowConditionResult.Hidden));
             return t;
         }
 
@@ -89,7 +95,7 @@ namespace HLab.Erp.Workflows
             return t;
         }
 
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> ToState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<WorkflowState<TWf>> getState)
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> ToState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.State> getState)
             where TWf : NotifierBase, IWorkflow<TWf>
         {
             t.WhenStateAllowed(getState);           

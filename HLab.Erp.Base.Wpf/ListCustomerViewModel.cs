@@ -10,7 +10,7 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf
 {
-    class ListCustomerViewModel : EntityListViewModel<ListCustomerViewModel,Customer>, IMvvmContextProvider
+    public class ListCustomerViewModel : EntityListViewModel<ListCustomerViewModel,Customer>, IMvvmContextProvider
     {
         [Import]
         private ILocalizationService _localization;
@@ -19,7 +19,7 @@ namespace HLab.Erp.Base.Wpf
         {
         }
 
-        public string Title => "^Customers";
+        public string Title => "Customers";
 
         public ListCustomerViewModel()
         {

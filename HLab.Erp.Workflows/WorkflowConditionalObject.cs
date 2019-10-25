@@ -49,7 +49,7 @@ namespace HLab.Erp.Workflows
         {
             if (workflow is T wf)
             {
-                return Condition.CheckAll(wf);
+                return Condition?.CheckAll(wf)??WorkflowConditionResult.Passed;
             }
             else throw new Exception("Work workflow type");
         }

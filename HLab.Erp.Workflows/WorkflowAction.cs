@@ -42,20 +42,4 @@ namespace HLab.Erp.Workflows
         Forward,
     }
 
-    public class WorkflowActionClass<T> : WorkflowConditionalObject<T> , IWorkflowAction
-        where T : NotifierBase, IWorkflow<T>
-    {
-        public static WorkflowActionClass<T> Create(Action<IFluentConfigurator<WorkflowActionClass<T>>> configure)
-        {
-            var wfAction = new WorkflowActionClass<T>();
-            var configurator = new FluentConfigurator<WorkflowActionClass<T>>(wfAction);
-            configure(configurator);
-            Workflow<T>.AddAction(wfAction);
-            return wfAction;
-        }
-
-        public WorkflowDirection Direction { get; set; }
-
-        public WorkflowAction GetAction(T workflow) => new WorkflowAction(workflow,this);
-    }
 }

@@ -4,12 +4,21 @@ using HLab.Mvvm.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using HLab.Base.Fluent;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Workflows
 {
+    public static class NotifyHelperExtension
+    {
+
+    }
+
+
     public interface IWorkflow
     {
         User User { get; set; }
@@ -24,65 +33,105 @@ namespace HLab.Erp.Workflows
     public interface IWorkflow<T> : IWorkflow
         where T : NotifierBase, IWorkflow<T>
     {
-        bool SetState(Func<WorkflowState<T>> setState);
-        WorkflowState<T> State { get; }
+        bool SetState(Func<Workflow<T>.State> setState);
+        Workflow<T>.State CurrentState { get; }
     }
 
     public abstract class Workflow<T> : Workflow, IWorkflow<T>
         where T : NotifierBase, IWorkflow<T>
     {
         protected class H : NotifyHelper<T> { }
+        public class State : WorkflowConditionalObject<T> 
+        {
+            public static State Create(
+                Action<IFluentConfigurator<State>> configure, 
+                [CallerMemberName]string name="")
+            {
+                var state =  new State(name);
+                var configurator = new FluentConfigurator<State>(state);
+                configure?.Invoke(configurator);
+                AddState(state);
+                return state;
+            }
+
+            public string Name { get; }
+
+            protected State(string name)
+            {
+                Name = name;
+            }
+        }
+
+        public class Action : WorkflowConditionalObject<T> , IWorkflowAction
+        {
+            public static Action Create(Action<IFluentConfigurator<Action>> configure)
+            {
+                var wfAction = new Action();
+                var configurator = new FluentConfigurator<Action>(wfAction);
+                configure(configurator);
+                Workflow<T>.AddAction(wfAction);
+                return wfAction;
+            }
+
+            public WorkflowDirection Direction { get; set; }
+
+            public WorkflowAction GetAction(T workflow) => new WorkflowAction(workflow,this);
+        }
 
         public User User { get; set; }
 
-        private static readonly List<WorkflowState<T>> WorkflowStates = new List<WorkflowState<T>>();
-        private static readonly List<WorkflowActionClass<T>> WorkflowActions = new List<WorkflowActionClass<T>>();
+        private static readonly List<State> WorkflowStates = new List<State>();
+        private static readonly List<Action> WorkflowActions = new List<Action>();
         public string Caption => _caption.Get();
         private readonly IProperty<string> _caption = H.Property<string>(c => c
-            .On(e => e.State)
-            .Set(e => e.State.GetCaption(e))
+            .On(e => e.CurrentState)
+            .Set(e => e.CurrentState.GetCaption(e))
         );
         public string Icon => _icon.Get();
         private readonly IProperty<string> _icon = H.Property<string>(c => c
-            .On(e => e.State)
-            .Set(e => e.State.GetIcon(e))
+            .On(e => e.CurrentState)
+            .Set(e => e.CurrentState.GetIcon(e))
         );
 
 
-        internal static void AddState(WorkflowState<T> state)
+        internal static void AddState(State state)
         {
             WorkflowStates.Add(state);
         }
-        public static void AddAction(WorkflowActionClass<T> state)
+        public static void AddAction(Action state)
         {
             WorkflowActions.Add(state);
         }
 
 
-        public WorkflowState<T> State
+        public State CurrentState
         {
             get => _state.Get();
             protected set
             {
-                value.Action(this as T);
-                _state.Set(value);
+                if (_state.Set(value))
+                    value?.Action(this as T);
             }
         }
-        private readonly IProperty<WorkflowState<T>> _state = H.Property<WorkflowState<T>>();
+        private readonly IProperty<State> _state = H.Property<State>();
 
-        public bool SetState(Func<WorkflowState<T>> setState)
+        public bool SetState(Func<State> setState)
         {
             var state = setState();
 
             if (state.Check(this as T) == WorkflowConditionResult.Passed)
             {
-                State = state;
+                CurrentState = state;
+                OnSetState(state);
                 Update();
                 return true;
             }
 
             return false;
         }
+
+        public virtual void OnSetState(State state)
+        { }
 
         public ObservableCollection<WorkflowAction> Actions { get; } = new ObservableCollection<WorkflowAction>();
 
@@ -101,10 +150,17 @@ namespace HLab.Erp.Workflows
     }
 
     public class Workflow<T, TTarget> : Workflow<T> where T : Workflow<T, TTarget>
+    where TTarget : INotifyPropertyChanged
     {
         public Workflow(TTarget target)
         {
             Target = target;
+            Target.PropertyChanged += Target_PropertyChanged;
+        }
+
+        private void Target_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Update();
         }
 
         public TTarget Target { get; }

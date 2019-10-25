@@ -15,18 +15,18 @@ namespace HLab.Erp.Base.Wpf
 {
     public class ErpBaseModule : N<ErpBaseModule>, IPostBootloader
     {
-        [Import]
+        
         private readonly IErpServices _erp;
 
-        public ErpBaseModule(IErpServices erp):base(true)
+        [Import]public ErpBaseModule(IErpServices erp):base(true)
         {
             _erp = erp;
             Initialize();
         }
 
         public ICommand CustomerCommand { get; } = H.Command(c => c.Action(
-                e => e._erp.Docs.OpenDocument(typeof(ListCustomerViewModel))
-            ));
+            e => e._erp.Docs.OpenDocument(typeof(ListCustomerViewModel))
+            ).CanExecute(e => true));
 
         public ICommand CountryCommand { get; } = H.Command(c => c.Action(
                 e => e._erp.Docs.OpenDocument(typeof(ListCountryViewModel))
