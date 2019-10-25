@@ -16,6 +16,7 @@ namespace HLab.Erp.Workflows
 
     public interface IWorkflowAction : IWorkflowConditional
     {
+        WorkflowDirection Direction { get; }
     }
 
     public class WorkflowAction
@@ -33,13 +34,14 @@ namespace HLab.Erp.Workflows
         public void Action() => _action.Action(_workflow);
         public WorkflowConditionResult Check() => _action.Check(_workflow);
         public IEnumerable<string> Messages => _action.GetMessages(_workflow);
+        public WorkflowDirection Direction => _action.Direction;
 
     }
 
     public enum WorkflowDirection
     {
-        Backward,
         Forward,
+        Backward,
     }
 
 }

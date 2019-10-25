@@ -7,6 +7,14 @@ namespace HLab.Erp.Workflows
 {
     public static class WorkflowActionExtensions
     {
+        /// <summary>
+        /// Add condition to show action
+        /// </summary>
+        /// <typeparam name="TC"></typeparam>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
         public static TC VisibleWhen<TC,TWf>(this TC t, Func<TWf,bool> condition) 
             where TWf : NotifierBase, IWorkflow<TWf>
              where TC : IFluentConfigurator<IWorkflowConditionalObject<TWf>>
@@ -15,50 +23,117 @@ namespace HLab.Erp.Workflows
                     condition(w) ? WorkflowConditionResult.Passed : WorkflowConditionResult.Hidden));
             return t;
         }
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> NotWhen<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<TWf, bool> condition)
+
+        /// <summary>
+        /// Add condition to prevent action
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            NotWhen<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<TWf, bool> condition)
             where TWf : NotifierBase, IWorkflow<TWf>
         {
-            t.Target.AddCondition(new WorkflowCondition<TWf>(w =>
+            t?.Target.AddCondition(new WorkflowCondition<TWf>(w =>
                 condition(w) ? WorkflowConditionResult.Failed : WorkflowConditionResult.Passed));
             return t;
         }
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> WithMessage<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<TWf, string> getter)
+
+        /// <summary>
+        /// Add message factory to inform about why the action is not possible
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="getter"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            WithMessage<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<TWf, string> getter)
             where TWf : NotifierBase, IWorkflow<TWf>
         {
-            t.Target.Condition?.SetMessage(w => new List<string>{getter(w)});
+            t?.Target.Condition?.SetMessage(w => new List<string>{getter(w)});
             return t;
         }
 
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> WithMessage<TC, TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, string message)
+        /// <summary>
+        /// Add message to inform about why the action is not possible
+        /// </summary>
+        /// <typeparam name="TC"></typeparam>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            WithMessage<TC, TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, string message)
             where TWf : NotifierBase, IWorkflow<TWf>
             => t.WithMessage(e => message);
 
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> Caption<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<TWf, string> getter)
+        /// <summary>
+        /// Add caption to a workflow element
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="getter"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            Caption<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<TWf, string> getter)
             where TWf : NotifierBase, IWorkflow<TWf>
         //            where T : IWorkflowConditionalObject<TWf>
             //            where TC : IFluentConfigurator<T>
         {
-            t.Target.SetCaption(getter);
+            t?.Target.SetCaption(getter);
             return t;
         }
 
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> Caption<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, string caption)
+        /// <summary>
+        /// Add caption factory to a workflow element
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="caption"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            Caption<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, string caption)
             where TWf : NotifierBase, IWorkflow<TWf>
 //            where TC : IFluentConfigurator<IWorkflowConditionalObject<TWf>>
             => t.Caption<TWf>(e => caption);
 
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> Icon<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<TWf, string> getter)
+        /// <summary>
+        /// Add Icon factory to a workflow element
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="getter"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            Icon<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<TWf, string> getter)
             where TWf : NotifierBase, IWorkflow<TWf>
         {
-            t.Target.SetIcon(getter);
+            t?.Target.SetIcon(getter);
             return t;
         }
 
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> Icon<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, string icon)
+        /// <summary>
+        /// Add Icon path to a workflow element.
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="icon"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            Icon<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, string icon)
             where TWf : NotifierBase, IWorkflow<TWf>
             => t.Icon<TWf>(e => icon);
 
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> WhenStateAllowed<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.State> getState)
+        /// <summary>
+        /// Enable an action when some state is allowed
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="getState"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            WhenStateAllowed<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.State> getState)
             where TWf : NotifierBase, IWorkflow<TWf>
         {
                 var cond = new WorkflowCondition<TWf>(w =>
@@ -68,33 +143,46 @@ namespace HLab.Erp.Workflows
 
                 cond.SetMessage(w => getState().GetMessages(w));
 
-                t.Target.AddCondition(cond);
+                t?.Target.AddCondition(cond);
             return t;
         }
 
-        //public static TC FromState<TC, TWf>(this TC t, Func<Workflow<TWf>.State> getState)
-        //    where TWf : NotifierBase, IWorkflow<TWf>
-        //    where TC : IFluentConfigurator<IWorkflowConditionalObject<TWf>>
-        //{
-        //        t.Target.AddCondition(new WorkflowCondition<TWf>(w =>
-        //        (w.CurrentState == getState()) ? WorkflowConditionResult.Passed : WorkflowConditionResult.Hidden));
-        //    return t;
-        //}
+        /// <summary>
+        /// Enable an action when current state
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="getState"></param>
+        /// <returns></returns>
         public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> FromState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.State> getState)
             where TWf : NotifierBase, IWorkflow<TWf>
         {
-                t.Target.AddCondition(new WorkflowCondition<TWf>(w =>
+                t?.Target.AddCondition(new WorkflowCondition<TWf>(w =>
                 (w.CurrentState == getState()) ? WorkflowConditionResult.Passed : WorkflowConditionResult.Hidden));
             return t;
         }
 
+        /// <summary>
+        /// Define action for a workflow element
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
         public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> Action<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Action<TWf> action)
             where TWf : NotifierBase, IWorkflow<TWf>
         {
-            t.Target.SetAction(action);
+            t?.Target.SetAction(action);
             return t;
         }
 
+        /// <summary>
+        /// Define target state for a workflow element
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="getState"></param>
+        /// <returns></returns>
         public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> ToState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.State> getState)
             where TWf : NotifierBase, IWorkflow<TWf>
         {
@@ -102,11 +190,19 @@ namespace HLab.Erp.Workflows
             t.Action(w => w.SetState(getState));
             return t;
         }
+
+        /// <summary>
+        /// Set the action to be backward action
+        /// </summary>
+        /// <typeparam name="TC"></typeparam>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <returns></returns>
         public static TC Backward<TC, TWf>(this TC t)
             where TWf : Workflow<TWf>
-            where TC : IFluentConfigurator<WorkflowConditionalObject<TWf>>
+            where TC : IFluentConfigurator<Workflow<TWf>.Action>
         {
-            //t.Target.;
+            t.Target.Direction = WorkflowDirection.Backward;
             return t;
         }
     }

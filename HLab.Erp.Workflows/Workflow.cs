@@ -24,7 +24,8 @@ namespace HLab.Erp.Workflows
         User User { get; set; }
         string Caption { get; }
         string Icon { get; }
-        ObservableCollection<WorkflowAction> Actions { get; }
+        ObservableCollection<WorkflowAction> ForwardActions { get; }
+        ObservableCollection<WorkflowAction> BackwardActions { get; }
     }
 
     public class Workflow : NotifierBase
@@ -66,11 +67,11 @@ namespace HLab.Erp.Workflows
         {
             public static Action Create(Action<IFluentConfigurator<Action>> configure)
             {
-                var wfAction = new Action();
-                var configurator = new FluentConfigurator<Action>(wfAction);
-                configure(configurator);
-                Workflow<T>.AddAction(wfAction);
-                return wfAction;
+                var action = new Action();
+                var configurator = new FluentConfigurator<Action>(action);
+                configure?.Invoke(configurator);
+                AddAction(action);
+                return action;
             }
 
             public WorkflowDirection Direction { get; set; }
@@ -87,7 +88,9 @@ namespace HLab.Erp.Workflows
             .On(e => e.CurrentState)
             .Set(e => e.CurrentState.GetCaption(e))
         );
+
         public string Icon => _icon.Get();
+
         private readonly IProperty<string> _icon = H.Property<string>(c => c
             .On(e => e.CurrentState)
             .Set(e => e.CurrentState.GetIcon(e))
@@ -117,6 +120,8 @@ namespace HLab.Erp.Workflows
 
         public bool SetState(Func<State> setState)
         {
+            if (setState == null) return false;
+
             var state = setState();
 
             if (state.Check(this as T) == WorkflowConditionResult.Passed)
@@ -133,18 +138,25 @@ namespace HLab.Erp.Workflows
         public virtual void OnSetState(State state)
         { }
 
-        public ObservableCollection<WorkflowAction> Actions { get; } = new ObservableCollection<WorkflowAction>();
+        public ObservableCollection<WorkflowAction> ForwardActions { get; } = new ObservableCollection<WorkflowAction>();
+        public ObservableCollection<WorkflowAction> BackwardActions { get; } = new ObservableCollection<WorkflowAction>();
 
         protected void Update()
         {
-            Actions.Clear();
+            ForwardActions.Clear();
+            BackwardActions.Clear();
             var actions = WorkflowActions
                 .Where(a => a.Check(this as T) != WorkflowConditionResult.Hidden)
                 .Select(e => e.GetAction(this as T) );
 
             foreach (var action in actions)
             {
-                Actions.Add(action);
+                if(action.Direction == WorkflowDirection.Backward)
+                    BackwardActions.Add(action);
+                else
+                {
+                    ForwardActions.Add(action);
+                }
             }
         }
     }
