@@ -11,5 +11,8 @@ namespace HLab.Erp.Acl
         //string Login(string login, string password);
         Task<string> Login(NetworkCredential credential, bool pin = false);
         string Crypt(SecureString password);
+        Task<AclNode> GetAclNode(object target);
+
+        Task<bool> IsGranted(AclRight right, object grantedTo, object grantedOn = null);
     }
 }

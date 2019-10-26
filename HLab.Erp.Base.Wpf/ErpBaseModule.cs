@@ -34,6 +34,9 @@ namespace HLab.Erp.Base.Wpf
         public ICommand IconCommand { get; } = H.Command(c => c.Action(
                 e => e._erp.Docs.OpenDocument(typeof(ListIconViewModel))
             ));
+        public ICommand UserCommand { get; } = H.Command(c => c.Action(
+                e => e._erp.Docs.OpenDocument(typeof(ListUserViewModel))
+            ));
         public void Load()
         {
             _erp.Menu.RegisterMenu("data", "customer", "Customer",
@@ -47,6 +50,10 @@ namespace HLab.Erp.Base.Wpf
             _erp.Menu.RegisterMenu("tools", "icons", "Icons",
                 IconCommand,
                 _erp.Icon.GetIcon("icons/Icon"));
+
+            _erp.Menu.RegisterMenu("tools", "users", "Users",
+                IconCommand,
+                _erp.Icon.GetIcon("Icons/Users"));
         }
     }
 }

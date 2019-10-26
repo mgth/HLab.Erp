@@ -42,12 +42,6 @@ namespace HLab.Erp.Acl
         }
         private readonly IProperty<string> _hashedPassword = H.Property<string>(c => c.Default(""));
 
-        public int? RightId
-        {
-            get => _rightId.Get();
-            set => _rightId.Set(value);
-        }
-        private readonly IProperty<int?> _rightId = H.Property<int?>();
 
          public string Function
         {

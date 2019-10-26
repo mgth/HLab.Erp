@@ -100,7 +100,7 @@
     <Page Update="DataLockerView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Icons\users.xaml">
+    <Page Update="Icons\Users.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="KioskLogin\KioskLoginView.xaml">
