@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Threading.Tasks;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
@@ -17,7 +18,22 @@ namespace HLab.Erp.Acl
             get => _name.Get();
             set => _name.Set(value);
         }
-        IProperty<string> _name = H.Property<string>(c => c.Default(""));
+
+        readonly IProperty<string> _name = H.Property<string>(c => c.Default(""));
+        public string TargetClass
+        {
+            get => _targetClass.Get();
+            set => _targetClass.Set(value);
+        }
+
+        private readonly IProperty<string> _targetClass = H.Property<string>(c => c.Default(""));
+        public int? TargetId
+        {
+            get => _targetId.Get();
+            set => _targetId.Set(value);
+        }
+
+        private readonly IProperty<int?> _targetId = H.Property<int?>();
 
         [Import][NotMapped]
         public ObservableQuery<AclLink> Members
@@ -26,7 +42,7 @@ namespace HLab.Erp.Acl
             set => _members.Set(value.AddFilter("", ()=>n => n.GroupId == Id)
                     .FluentUpdate());
         }
-        IProperty<ObservableQuery<AclLink>> _members = H.Property<ObservableQuery<AclLink>>();
+        private readonly IProperty<ObservableQuery<AclLink>> _members = H.Property<ObservableQuery<AclLink>>();
 
         [Import][NotMapped]
         public ObservableQuery<AclLink> Groups
@@ -35,24 +51,24 @@ namespace HLab.Erp.Acl
             set => _groups.Set(value.AddFilter("", ()=>n => n.MemberId == Id)
                     .FluentUpdate());
         }
-        IProperty<ObservableQuery<AclLink>> _groups = H.Property<ObservableQuery<AclLink>>();
 
-        public bool Grant(string right, IAclTarget target)
+        private readonly IProperty<ObservableQuery<AclLink>> _groups = H.Property<ObservableQuery<AclLink>>();
+
+        public bool Grant(AclRight right, AclNode target)
         {
-            // TODO
-            //E.DbService.Add<AclGranted>(
-            //    t =>
-            //    {
-            //        t.AclNodeId = Id;
-            //        t.Right = right;
-            //        t.AclListId = target.GetOrAddAclList(E.DbService).Id;
-            //    }
-            //);
+            DataService.Add<AclGranted>(
+                t =>
+                {
+                    t.ToNodeId = Id;
+                    t.Right = right;
+                    t.OnNodeId = target.Id;
+                }
+            );
 
             return true;
         }
 
-        public IEnumerable<int> GetGroups()
+        public IEnumerable<int?> GetGroups()
         {
             foreach (var g in Groups)
             {
@@ -64,11 +80,20 @@ namespace HLab.Erp.Acl
             }
         }
 
-        public bool IsGranted(string right, IAclTarget target)
+        public async Task<bool> IsGranted(AclRight right, AclNode target)
         {
             var groups = GetGroups().ToList();
+            var targets = target.GetGroups().ToList();
+
+            var grants = await DataService.FetchWhere<AclGranted>(e => 
+                    groups.Contains(e.ToNodeId) && 
+                    targets.Contains(e.OnNodeId)
+                ).ConfigureAwait(false);
+
+            if (grants.Count == 0) return false;
+            if (grants.Any(e => e.Deny)) return false;
+
             return true;
-            // TODO : return target.IsGranted(right, groups, E.DbService);
         }
     }
 }

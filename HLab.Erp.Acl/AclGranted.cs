@@ -1,66 +1,64 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using HLab.Erp.Data;
+﻿using HLab.Erp.Data;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
+using NPoco;
 
 namespace HLab.Erp.Acl
 {
     public class AclGranted : Entity<AclGranted>
     {
-        [Column]
         public bool Deny
         {
             get => _aclGranted.Get();
             set => _aclGranted.Set(value);
         }
-        IProperty<bool> _aclGranted = H.Property<bool>();
+
+        private readonly IProperty<bool> _aclGranted = H.Property<bool>();
 
         [Column]
-        public string Right
+        public int? RightId
+        {
+            get => _right.Id.Get();
+            set => _right.Id.Set(value);
+        }
+        [Ignore]
+        public AclRight Right
         {
             get => _right.Get();
             set => _right.Set(value);
         }
-        IProperty<string> _right = H.Property<string>(c => c.Default(""));
+
+        private readonly IForeign<AclRight> _right = H.Foreign<AclRight>();
+
 
         [Column]
-
-        public int AclNodeId
+        public int? ToNodeId
         {
-            get => _aclNodeId.Get();
-            set => _aclNodeId.Set(value);
+            get => _toNode.Id.Get();
+            set => _toNode.Id.Set(value);
         }
-        IProperty<int> _aclNodeId = H.Property<int>(c => c.Default(-1));
 
-        [NotMapped]
-        [TriggerOn(nameof(AclNodeId))]
-        public AclNode Member
-        {
-            get => _member.Get();
-            set => _member.Set(value);
-            //get => E.GetForeign<AclNode>(()=>AclNodeId);
-            //set => AclNodeId = value.Id;
-        }
-        IProperty<AclNode> _member = H.Property<AclNode>();
+        [Ignore]
+         public AclNode ToNode
+         {
+            get => _toNode.Get();
+            set => _toNode.Set(value);
+         }
+         private readonly IForeign<AclNode> _toNode = H.Foreign<AclNode>();
 
         [Column]
-        public int? AclListId
+        public int? OnNodeId
         {
-            get => _aclListId.Get();
-            set => _aclListId.Set(value);
+            get => _onNode.Id.Get();
+            set => _onNode.Id.Set(value);
         }
-        IProperty<int?> _aclListId = H.Property<int?>();
 
-        [NotMapped]
-        [TriggerOn(nameof(AclListId))]
-        public AclList AclList
-        {
-            //get => E.GetForeign<AclList>(() => AclListId);
-            //set => AclListId = value.Id;
-            get => _aclList.Get();
-            set => _aclList.Set(value);
-        }
-        IProperty<AclList> _aclList = H.Property<AclList>();
-
+        [Ignore]
+         public AclNode OnNode
+         {
+            get => _onNode.Get();
+            set => _onNode.Set(value);
+         }
+         private readonly IForeign<AclNode> _onNode = H.Foreign<AclNode>();
     }
 }

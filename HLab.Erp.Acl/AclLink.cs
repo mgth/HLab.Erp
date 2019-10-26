@@ -4,18 +4,20 @@ using HLab.Notify.Annotations;
 
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
+using NPoco;
 
 namespace HLab.Erp.Acl
 {
     public class AclLink : Entity<AclLink>
     {
-        [Column]
+        [System.ComponentModel.DataAnnotations.Schema.Column]
         public int? GroupId
         {
             get => _groupId.Get();
             set => _groupId.Set(value);
         }
-        IProperty<int?> _groupId = H.Property<int?>();
+
+        private readonly IProperty<int?> _groupId = H.Property<int?>();
 
         [NotMapped]
         [TriggerOn(nameof(GroupId))]
@@ -27,7 +29,7 @@ namespace HLab.Erp.Acl
         }
         IProperty<AclNode> _group = H.Property<AclNode>();
 
-        [Column]
+        [System.ComponentModel.DataAnnotations.Schema.Column]
         public int? MemberId
         {
             get => _memberId.Get();
@@ -35,14 +37,13 @@ namespace HLab.Erp.Acl
         }
         IProperty<int?> _memberId = H.Property<int?>();
 
-        [NotMapped]
-        [TriggerOn(nameof(MemberId))]
+        [Ignore]
         public AclNode Member
         {
             //get => E.GetForeign<AclNode>(() => MemberId); set => MemberId = value.Id;
             get => _member.Get();
             set => _member.Set(value);
         }
-        IProperty<AclNode> _member = H.Property<AclNode>();
+        IForeign<AclNode> _member = H.Foreign<AclNode>();
     }
 }

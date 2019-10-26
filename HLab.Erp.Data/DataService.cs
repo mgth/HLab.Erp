@@ -122,10 +122,11 @@ namespace HLab.Erp.Data
             T t;
             using (var db = Get())
             {
-                t = await db.QueryAsync<T>().FirstOrDefault(getter).ConfigureAwait(false);
+                //t = await db.QueryAsync<T>().FirstOrDefault(getter).ConfigureAwait(true);
+                t = db.Query<T>().FirstOrDefault(getter);
             }
 
-            if (t == null) return await AddAsync(setter, added).ConfigureAwait(false);
+            if (t == null) return Add(setter, added);
 
             return await cache.GetOrAdd(t).ConfigureAwait(false);
         }

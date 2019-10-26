@@ -30,7 +30,7 @@ namespace HLab.Erp.Acl
         public ObservableQuery<AclGranted> Granted
         {
             get => _granted.Get();
-            set => _granted.Set(value.AddFilter("", ()=>n => n.AclListId == Id)
+            set => _granted.Set(value.AddFilter("", ()=>n => n.ToNodeId == Id)
                     .FluentUpdate());
         }
 

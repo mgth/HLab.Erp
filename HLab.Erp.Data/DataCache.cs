@@ -65,7 +65,7 @@ namespace HLab.Erp.Data
 
             await Task.Run(()=>list.ForEach(async e =>
             {
-                var obj = await GetOrAdd(e).ConfigureAwait(false);
+                var obj = await GetOrAdd(e).ConfigureAwait(true);
                 listOut.Add(obj);
             })).ConfigureAwait(false);
             return listOut;
