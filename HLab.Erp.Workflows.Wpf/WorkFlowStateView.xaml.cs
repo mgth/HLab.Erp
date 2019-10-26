@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Workflow
+namespace HLab.Erp.Workflows
 {
     /// <summary>
     /// Logique d'interaction pour WorkFlowState.xaml

@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Dynamic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using HLab.Base.Fluent;
+using HLab.DependencyInjection.Annotations;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Workflows
@@ -24,12 +26,14 @@ namespace HLab.Erp.Workflows
         User User { get; set; }
         string Caption { get; }
         string Icon { get; }
-        ObservableCollection<WorkflowAction> ForwardActions { get; }
-        ObservableCollection<WorkflowAction> BackwardActions { get; }
+        ObservableCollection<WorkflowAction> Actions { get; }
+        object Target { get; }
     }
 
     public class Workflow : NotifierBase
-    { }
+    {
+        public object Target { get; }
+    }
 
     public interface IWorkflow<T> : IWorkflow
         where T : NotifierBase, IWorkflow<T>
@@ -109,14 +113,14 @@ namespace HLab.Erp.Workflows
 
         public State CurrentState
         {
-            get => _state.Get();
+            get => _currentState.Get();
             protected set
             {
-                if (_state.Set(value))
+                if (_currentState.Set(value))
                     value?.Action(this as T);
             }
         }
-        private readonly IProperty<State> _state = H.Property<State>();
+        private readonly IProperty<State> _currentState = H.Property<State>();
 
         public bool SetState(Func<State> setState)
         {
@@ -138,25 +142,18 @@ namespace HLab.Erp.Workflows
         public virtual void OnSetState(State state)
         { }
 
-        public ObservableCollection<WorkflowAction> ForwardActions { get; } = new ObservableCollection<WorkflowAction>();
-        public ObservableCollection<WorkflowAction> BackwardActions { get; } = new ObservableCollection<WorkflowAction>();
+        public ObservableCollection<WorkflowAction> Actions { get; } = new ObservableCollection<WorkflowAction>();
 
         protected void Update()
         {
-            ForwardActions.Clear();
-            BackwardActions.Clear();
+            Actions.Clear();
             var actions = WorkflowActions
                 .Where(a => a.Check(this as T) != WorkflowConditionResult.Hidden)
                 .Select(e => e.GetAction(this as T) );
 
             foreach (var action in actions)
             {
-                if(action.Direction == WorkflowDirection.Backward)
-                    BackwardActions.Add(action);
-                else
-                {
-                    ForwardActions.Add(action);
-                }
+                Actions.Add(action);
             }
         }
     }
