@@ -76,36 +76,8 @@ namespace HLab.Erp.Data
             var result = await _cache.GetOrAdd(obj.Id,
                 async k => obj).ConfigureAwait(false);
 
-                if (result != null && !ReferenceEquals(result,obj))
-                {
-                    //foreach (var info in result.GetType().GetProperties().Where(p => p.GetCustomAttributes(true).OfType<ColumnAttribute>().Any()))
-                    foreach (var info in result.GetType().GetProperties().Where(p => p.CanWrite))
-                    {
-                        var t = info.PropertyType;
-                        if (t.IsConstructedGenericType)
-                        {
-                            if (info.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                            {
-                                t = t.GetGenericArguments()[0];
-                            }
-                        }
+            obj.CopyPrimitivesTo(result);
 
-                        if(t.IsPrimitive
-                        || t == typeof(string)
-                        || t == typeof(DateTime)
-                        || t == typeof(Byte[])
-                        )
-                            info.SetValue(result,info.GetValue(obj));
-                        else
-                        {
-                            if (!typeof(IEntity).IsAssignableFrom(t))
-                            {
-
-                            }
-                        }
-                    }
-            } 
-            
             if (result is IDataProvider dbf && dbf.DataService==null) 
                 dbf.DataService = DataService;
 

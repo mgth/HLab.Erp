@@ -212,7 +212,7 @@ namespace HLab.Erp.Data
                     subscribe = true;
                     var o = await Get().SingleByIdAsync<T>(k);
                     return o;
-                });
+                }).ConfigureAwait(false);
 
             //if(subscribe && obj is INotifierObject nobj) nobj.GetNotifier().Subscribe();
             if (subscribe && obj is IEntity entity) entity.OnLoaded();

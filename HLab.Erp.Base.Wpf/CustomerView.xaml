@@ -17,6 +17,14 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <base:DetailView>
+                <ContentPresenter Height="50" Content="{Binding Locker}" Grid.ColumnSpan="2"/>
+
+                <Label>
+                    <lang:Localize Id="Workflow" Margin="50,0,0,0"/>
+                </Label>
+                <ContentPresenter Content="{Binding Workflow}"/>
+
+
             <Label Style="{DynamicResource Separator}" >
                 <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                     <Canvas>

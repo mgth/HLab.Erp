@@ -13,10 +13,11 @@ using HLab.Erp.Core.DragDrops;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
-using H = HLab.Notify.PropertyChanged.NotifyHelper<HLab.Erp.Core.ApplicationServices.MainWpfViewModel>;
 
 namespace HLab.Erp.Core.ApplicationServices
 {
+    using H = NotifyHelper<MainWpfViewModel>;
+
     [Export(typeof(MainWpfViewModel)), Singleton]
     public class MainWpfViewModel : INotifyPropertyChanged
     {

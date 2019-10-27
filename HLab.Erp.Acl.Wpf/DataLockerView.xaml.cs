@@ -6,7 +6,7 @@ namespace HLab.Erp.Acl
     /// <summary>
     /// Logique d'interaction pour DataLockerView.xaml
     /// </summary>
-    public partial class DataLockerView : UserControl, IView<DataLocker>
+    public partial class DataLockerView : UserControl, IView<IDataLocker>
     {
         public DataLockerView()
         {

@@ -283,7 +283,7 @@
   <ItemGroup>
     <PackageReference Include="Dirkster.AvalonDock" Version="3.6.0" />
     <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="3.6.0" />
-    <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0490" />
+    <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0531" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

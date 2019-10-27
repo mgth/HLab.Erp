@@ -10,8 +10,11 @@
              d:DataContext="{d:DesignInstance {x:Type local:DataLockerDesign}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-    <Button Command="{Binding ActivateCommand}">
-        <icons:IconView Id="icons/Locked"/>
+    <Button Command="{Binding ActivateCommand}" Background="#40000000">
+        <StackPanel Orientation="Vertical">
+            <icons:IconView Id="icons/Locked" Height="25"/>
+            <TextBlock Foreground="DarkRed" Text="{Binding Message}"/>
+        </StackPanel>
         <Button.Style>
             <Style TargetType="Button">
                 <Setter Property="Visibility" Value ="Collapsed"/>
@@ -23,8 +26,13 @@
             </Style>
         </Button.Style>
     </Button>
-    <Button Command="{Binding DeactivateCommand}">
-        <icons:IconView Id="icons/Unlocked"/>
+        
+    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Height="30">
+    <Button Command="{Binding DeactivateCommand}"  BorderThickness="0" Background="Transparent">
+        <StackPanel Orientation="Vertical">
+            <icons:IconView Id="Icons/Cancel" Height="25"/>
+            <TextBlock Foreground="DarkRed" Text="{Binding Message}"/>
+        </StackPanel>
         <Button.Style>
             <Style TargetType="Button">
                 <Setter Property="Visibility" Value ="Collapsed"/>
@@ -36,5 +44,22 @@
             </Style>
         </Button.Style>
     </Button>
+        <Label></Label>
+    <Button Command="{Binding DeactivateCommand}" BorderThickness="0" Background="Transparent">
+        <StackPanel Orientation="Vertical">
+            <icons:IconView Id="icons/Save" Height="25"/>
+            <TextBlock Foreground="DarkRed" Text="{Binding Message}"/>
+        </StackPanel>
+        <Button.Style>
+            <Style TargetType="Button">
+                <Setter Property="Visibility" Value ="Collapsed"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsActive}" Value="True">
+                        <Setter Property="Visibility" Value ="Visible"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Button.Style>
+    </Button></StackPanel>
     </Grid>
 </UserControl>

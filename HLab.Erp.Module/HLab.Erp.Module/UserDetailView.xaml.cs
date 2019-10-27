@@ -31,7 +31,7 @@ namespace HLab.Erp.Module
                     );
 
                     if (result == MessageBoxResult.Yes)
-                        await vm.Locker.Activate(false);
+                        await vm.Locker.Save();
 
                 }
             }
