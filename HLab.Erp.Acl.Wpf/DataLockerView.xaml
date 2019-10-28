@@ -28,7 +28,7 @@
     </Button>
         
     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Height="30">
-    <Button Command="{Binding DeactivateCommand}"  BorderThickness="0" Background="Transparent">
+    <Button Command="{Binding CancelCommand}"  BorderThickness="0" Background="Transparent">
         <StackPanel Orientation="Vertical">
             <icons:IconView Id="Icons/Cancel" Height="25"/>
             <TextBlock Foreground="DarkRed" Text="{Binding Message}"/>
@@ -45,7 +45,7 @@
         </Button.Style>
     </Button>
         <Label></Label>
-    <Button Command="{Binding DeactivateCommand}" BorderThickness="0" Background="Transparent">
+    <Button Command="{Binding SaveCommand}" BorderThickness="0" Background="Transparent">
         <StackPanel Orientation="Vertical">
             <icons:IconView Id="icons/Save" Height="25"/>
             <TextBlock Foreground="DarkRed" Text="{Binding Message}"/>

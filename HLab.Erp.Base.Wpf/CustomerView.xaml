@@ -8,6 +8,7 @@
              xmlns:base="clr-namespace:HLab.Base;assembly=HLab.Base.Wpf"
              xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
              xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
+             xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              d:DataContext="{d:DesignInstance {x:Type local:CustomerViewModel}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -17,7 +18,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <base:DetailView>
-                <ContentPresenter Height="50" Content="{Binding Locker}" Grid.ColumnSpan="2"/>
+                <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
 
                 <Label>
                     <lang:Localize Id="Workflow" Margin="50,0,0,0"/>

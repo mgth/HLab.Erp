@@ -35,7 +35,6 @@ namespace HLab.Erp.Acl
         }
     }
 
-
     [Export(typeof(IDataLocker))]
     public class DataLocker<T> : N<DataLocker<T>>, IDataLocker
     where T : class,IEntity<int>
@@ -70,7 +69,12 @@ namespace HLab.Erp.Acl
         }
 
 
-        public bool IsActive => _isActive.Get();
+        public bool IsActive
+        {
+            get => _isActive.Get();
+            private set => _isActive.Set(value);
+        }
+
         private readonly IProperty<bool> _isActive = H.Property<bool>(c => c.Default(false));
 
         public ICommand ActivateCommand { get; } = H.Command(c => c
@@ -119,21 +123,21 @@ namespace HLab.Erp.Acl
             }
 
             _timer.Change(HeartBeat, HeartBeat);
-            
+            IsActive = true;
         }
 
         public async Task Save()
         {
             _persister.Save();
             _db.Delete(_lock);
-            _isActive.Set(false);
+            IsActive = false;
         }
         public async Task Cancel()
         {
             _db.FetchOne<T>(_entity.Id);
             _persister.Save();
             _db.Delete(_lock);
-            _isActive.Set(false);
+            IsActive = false;
         }
 
         public string Message => _message.Get();
