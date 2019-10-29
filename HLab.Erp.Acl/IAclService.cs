@@ -10,6 +10,7 @@ namespace HLab.Erp.Acl
         Connection Connection { get; }
         //string Login(string login, string password);
         Task<string> Login(NetworkCredential credential, bool pin = false);
+        Task<User> Check(NetworkCredential credential, bool pin = false);
         string Crypt(SecureString password);
         Task<AclNode> GetAclNode(object target);
 

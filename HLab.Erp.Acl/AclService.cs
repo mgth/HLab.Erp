@@ -38,15 +38,30 @@ namespace HLab.Erp.Acl
         {
             throw new NotImplementedException();
         }
+        public async Task<User> Check(NetworkCredential credential, bool pin = false)
+        {
+            try
+            {
+                if (pin)
+                    return await _acl.GetUserWithPin(credential).ConfigureAwait(true);
+                else
+                    return await _acl.GetUser(credential).ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public async Task<string> Login(NetworkCredential credential,bool pin = false)
         {
             Connection connection;
             try
             {
                 if (pin)
-                    connection = await _acl.GetConnectionWithPin(credential);
+                    connection = await _acl.GetConnectionWithPin(credential).ConfigureAwait(true);
                 else
-                    connection = await _acl.GetConnection(credential);
+                    connection = await _acl.GetConnection(credential).ConfigureAwait(true);
             }
             catch (Exception e)
             {
@@ -104,6 +119,7 @@ namespace HLab.Erp.Acl
 
             return await toNode.IsGranted(right, onNode).ConfigureAwait(false);
         }
+
 
         //private ConcurrentDictionary<string,DataLock> _locks = new ConcurrentDictionary<string,DataLock>();
 

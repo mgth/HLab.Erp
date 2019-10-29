@@ -44,7 +44,7 @@
                 <lang:Localize Id="^Address" StringFormat="{}{0} : " />
             </Label>
             <TextBox 
-                Text="{Binding Model.Address}"
+                Text="{Binding Model.Address,UpdateSourceTrigger=PropertyChanged}"
                 AcceptsReturn="True" 
                 TextWrapping="Wrap"
                 HorizontalContentAlignment="Left" />

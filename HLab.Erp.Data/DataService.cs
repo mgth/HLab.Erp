@@ -194,12 +194,22 @@ namespace HLab.Erp.Data
         public async Task<T> FetchOne<T>(int id)
             where T : class, IEntity<int>
 
-            => await FetchOne<T>((object)id);
+            => await FetchOne<T>((object)id).ConfigureAwait(false);
 
         public async Task<T> FetchOne<T>(string id)
             where T : class, IEntity<string>
 
-            => await FetchOne<T>((object)id);
+            => await FetchOne<T>((object)id).ConfigureAwait(false);
+
+        public async Task<T> ReFetchOne<T>(T entity)
+            where T : class, IEntity
+        {
+            if(entity==null) return null;
+
+            using var db = Get();
+            var re = await db.SingleByIdAsync<T>(entity.Id).ConfigureAwait(false);
+            return await GetCache<T>().GetOrAdd(re).ConfigureAwait(false);
+        }
 
         public async Task<T> FetchOne<T>(object id)
             where T : class, IEntity
@@ -290,6 +300,12 @@ namespace HLab.Erp.Data
         {
             using var d = Get();
                 d.Save(value);
+        }
+
+        public void Update<T>(T value, IEnumerable<string> columns) where T : class, IEntity
+        {
+            using var d = Get();
+                d.Update(value,columns);
         }
     }
 }

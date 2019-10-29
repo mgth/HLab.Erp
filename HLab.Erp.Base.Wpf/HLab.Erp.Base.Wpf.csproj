@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Page Remove="Icons\cancel.xaml" />
+    <Page Remove="Icons\Entities\Customer.xaml" />
     <Page Remove="Icons\save.xaml" />
   </ItemGroup>
 
@@ -25,10 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Icons\cancel.xaml">
+    <Resource Include="Icons\Cancel.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>
-    <Resource Include="Icons\save.xaml">
+    <Resource Include="Icons\Entities\Customer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Icons\Save.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>
   </ItemGroup>

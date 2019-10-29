@@ -14,16 +14,19 @@ namespace HLab.Erp.Acl
 {
     public interface IAclHelper
     {
-        Task<Connection> GetConnectionWithPin(NetworkCredential credential);
+        Task<User> GetUser(NetworkCredential credential);
         Task<Connection> GetConnection(NetworkCredential credential);
+
+        Task<User> GetUserWithPin(NetworkCredential credential);
+        Task<Connection> GetConnectionWithPin(NetworkCredential credential);
         string Crypt(SecureString password);
     }
 
     public class AclHelper : IAclHelper
     {
-        public async Task<Connection> GetConnection(NetworkCredential credential) => await GetConnection(await GetUser(credential));
+        public async Task<Connection> GetConnection(NetworkCredential credential) => await GetConnection(await GetUser(credential).ConfigureAwait(false)).ConfigureAwait(false);
 
-        public async Task<Connection> GetConnectionWithPin(NetworkCredential credential) => await GetConnection(await GetUserWithPin(credential));
+        public async Task<Connection> GetConnectionWithPin(NetworkCredential credential) => await GetConnection(await GetUserWithPin(credential).ConfigureAwait(false)).ConfigureAwait(false);
 
 
         private const string Cle = "PG8JaR0ix+GP2w0bXse/ReZugKK+Q/g/";
@@ -37,17 +40,16 @@ namespace HLab.Erp.Acl
             Data = db;
         }
 
-        private async Task<User> GetUserWithPin(NetworkCredential credential)
+        public async Task<User> GetUserWithPin(NetworkCredential credential)
         {
             var login = credential.UserName;
             var pin = Crypt(credential.SecurePassword);
             return await Data.FetchOneAsync<User>(u => u.Login == login && u.Pin == pin);
         }
 
-        protected virtual async Task<User> GetUser(NetworkCredential credential)
+        public virtual async Task<User> GetUser(NetworkCredential credential)
         {
             return await Data.FetchOneAsync<User>(u => u.Login == credential.UserName && u.HashedPassword == Crypt(credential.SecurePassword));
-
         }
 
         private async Task<Connection> GetConnection(User user)
@@ -75,7 +77,7 @@ namespace HLab.Erp.Acl
                 c.UserId = user.Id;
                 c.Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
                 c.X64 = Environment.Is64BitProcess;
-            });
+            }).ConfigureAwait(false);
         }
 
         public string Crypt(SecureString password)

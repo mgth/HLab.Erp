@@ -28,6 +28,8 @@ namespace HLab.Erp.Data
     {
         private readonly AsyncDictionary<object,T> _cache = new AsyncDictionary<object,T>();
         private bool _fullCache = false;
+
+
         public async Task<List<T>> Fetch(Expression<Func<T, bool>> expression)
         {
             var e = expression.Compile();
@@ -35,23 +37,24 @@ namespace HLab.Erp.Data
             if (!_fullCache)
             {
                 var list = new List<T>();
-
-                var dbList = await DataService.Get().FetchAsync<T>();
+                using var db = DataService.Get();
+                var dbList = await db.FetchAsync<T>().ConfigureAwait(false);
 
                 // TODO : bof
                 foreach (var obj in dbList)
                 {
-                    var cached = await GetOrAdd(obj);
+                    var cached = await GetOrAdd(obj).ConfigureAwait(false);
                     if(e(cached)) list.Add(cached);
                 }
 
                 _fullCache = true;
                 return list;
             }
-            return await _cache.Where(expression);
+            return await _cache.Where(expression).ConfigureAwait(false);
         }
 
-        public async Task<T> GetOrAdd(object key, Func<object, Task<T>> factory) => await _cache.GetOrAdd(key, factory).ConfigureAwait(false);
+        public async Task<T> GetOrAdd(object key, Func<object, Task<T>> factory) 
+            => await _cache.GetOrAdd(key, factory).ConfigureAwait(false);
 
         public async Task<bool> Forget(T obj)
         {

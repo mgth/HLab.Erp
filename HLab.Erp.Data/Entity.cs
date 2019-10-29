@@ -32,8 +32,11 @@ namespace HLab.Erp.Data
         }
 
         public IProperty<int?> Id { get; }
+#if DEBUG
+        public T Get([CallerMemberName]string name = null) => Value.Get(name);
+#else        
         public T Get() => Value.Get();
-
+#endif
         public void Set(T value) => Id.Set(value.Id);
 
         public IProperty<T> Value { get; }
@@ -66,7 +69,8 @@ namespace HLab.Erp.Data
 
             public static IForeign<TF> Foreign<TF>(Expression<Func<TClass,int?>> e,[CallerMemberName] string name = null) where TF : Entity<TF>, IEntity<int>
             {
-                var id = H.Property<int?>(name);
+                name = H.Name(name) ;
+                var id = H.Property<int?>(name+"Id");
                 var v = H.Property<TF>(c => c.Foreign(e),name);
                 return new ForeignProperty<TF>(id,v);
             }

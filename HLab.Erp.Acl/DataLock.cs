@@ -52,7 +52,6 @@ namespace HLab.Erp.Acl
             get => _startTime.Get();
             set => _startTime.Set(value);
         }
-
         private readonly IProperty<DateTime> _startTime = H.Property<DateTime>(c => c.Set(e => DateTime.Now));
 
         public DateTime HeartbeatTime
@@ -60,12 +59,11 @@ namespace HLab.Erp.Acl
             get => _heartbeatTime.Get();
             set => _heartbeatTime.Set(value);
         }
-
         private readonly IProperty<DateTime> _heartbeatTime = H.Property<DateTime>(c => c.Set(e => DateTime.Now));
 
-        public void Heartbeat()
+        public void Heartbeat(int heartBeat)
         {
-            HeartbeatTime = DateTime.Now;
+            HeartbeatTime = DateTime.Now.AddMilliseconds(heartBeat);
         }
 
         private const string Charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

@@ -8,7 +8,7 @@ namespace HLab.Erp.Acl
     [Export(typeof(IAclHelper)), Singleton]
     public class AclHelperWpf : AclHelper
     {
-        protected override async Task<User> GetUser(NetworkCredential credential)
+        public override async Task<User> GetUser(NetworkCredential credential)
         {
             bool valid = false;
                 try
@@ -23,9 +23,9 @@ namespace HLab.Erp.Acl
                     valid = false;
                 }
 
-            if (valid) return await Data.FetchOneAsync<User>(u => u.Login == credential.UserName);
+            if (valid) return await Data.FetchOneAsync<User>(u => u.Login == credential.UserName).ConfigureAwait(false);
             
-            return await base.GetUser(credential);
+            return await base.GetUser(credential).ConfigureAwait(false);
         }
     }
 }

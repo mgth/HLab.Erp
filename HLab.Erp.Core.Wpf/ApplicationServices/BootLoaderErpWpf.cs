@@ -10,10 +10,10 @@ using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
 using HLab.Erp.Acl.LoginServices;
 using HLab.Erp.Core.DragDrops;
-using HLab.Erp.Core.Extensions;
 using HLab.Erp.Core.Update;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
+using HLab.Mvvm.Wpf.Views;
 
 namespace HLab.Erp.Core.ApplicationServices
 {

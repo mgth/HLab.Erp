@@ -1,11 +1,13 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
+using NPoco;
 
 namespace HLab.Erp.Acl
 {
-    public class User : Entity<User>
+    public class User : Entity<User>, IListableModel
     {
         public string Name
         {
@@ -70,6 +72,10 @@ namespace HLab.Erp.Acl
             set => _expiry.Set(value);
         }
         private readonly IProperty<DateTime?> _expiry = H.Property<DateTime?>();
-        
+
+        [Ignore]
+        public string Caption => FirstName + " " + Name + " (" + Initials + ")";
+        [Ignore]
+        public string IconPath => "Icon/User";
     }
 }

@@ -21,11 +21,13 @@ namespace HLab.Erp.Data
 
         void Save<T>(T value) where T : class, IEntity;
 
+        void Update<T>(T value, IEnumerable<string> columns) where T : class, IEntity;
+
         T FetchOne<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
         Task<T> FetchOneAsync<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
         Task<T> FetchOne<T>(int id) where T : class, IEntity<int>;
         Task<T> FetchOne<T>(string id) where T : class, IEntity<string>;
-
+        Task<T> ReFetchOne<T>(T entity) where T : class, IEntity;
         Task<T> GetOrAdd<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null) where T : class, IEntity;
         Task<T> GetOrAdd<T>(T entity) where T : class, IEntity;
 

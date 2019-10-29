@@ -10,17 +10,17 @@ using NPoco;
 
 namespace HLab.Erp.Data
 {
-    public class EntityPersister : Persister
-//    where T : class, INotifyPropertyChanged
+    public class EntityPersister<T> : Persister
+    where T : class, IEntity
     {
         [Import]
-        private DataService _db;
+        private IDataService _db;
 
-        public EntityPersister(object target) : base(target)
+        public EntityPersister(object target) : base(target,false)
         {
         }
 
-//        protected new T Target => (T)base.Target;
+        protected new T Target => (T)base.Target;
 
         protected override Persistency CheckPersistency(PropertyInfo property)
         {
@@ -35,17 +35,36 @@ namespace HLab.Erp.Data
         }
         public override void Save()
         {
-            var columns = new List<string>();
-            while (!Dirty.IsEmpty)
+            var columns = new List<PropertyInfo>();
+            while (Dirty.TryTake(out var e))
             {
-                if (Dirty.TryTake(out var e))
-                {
-                    columns.Add(e.Name);
-                }
+                columns.Add(e);
             }
 
-            using var db = _db.Get();
-            db.Update(Target, columns);
+            try
+            {
+                _db.Update(Target, columns.Select(e => e.Name));
+            }
+            catch
+            {
+                foreach(var p in columns)
+                    Dirty.Add(p);
+                throw;
+            }
+            //db.Save(Target);
+        }
+
+        public override string ToString()
+        {
+            var columns = Dirty.ToList();
+            var sb = new StringBuilder();
+            foreach(var p in columns)
+                sb
+                    .Append(p.Name)
+                    .Append("=")
+                    .Append(p.GetValue(Target).ToString())
+                    .Append("\n");
+            return sb.ToString();
         }
     }
 }

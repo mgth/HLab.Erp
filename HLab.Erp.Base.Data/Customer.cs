@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
@@ -6,7 +7,7 @@ using NPoco;
 
 namespace HLab.Erp.Base.Data
 {
-    public class Customer : Entity<Customer>, ILocalCache
+    public class Customer : Entity<Customer>, ILocalCache, IListableModel
     {
         public string Name
         {
@@ -95,5 +96,11 @@ namespace HLab.Erp.Base.Data
         }
         private readonly IProperty<Country> _country = H.Property<Country>(c => c
             .Foreign(e => e.CountryId));
+
+        [Ignore]
+        public string Caption => Name;
+
+        [Ignore]
+        public string IconPath => "Icons/Entities/Customer";
     }
 }

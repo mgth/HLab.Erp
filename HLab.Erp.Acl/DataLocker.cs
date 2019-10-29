@@ -52,20 +52,32 @@ namespace HLab.Erp.Acl
         private readonly Timer _timer;
         private readonly T _entity;
 
-        private EntityPersister _persister;
+        public EntityPersister<T> Persister {
+            get => _persister.Get(); 
+            private set => _persister.Set(value); 
+        }
+        private IProperty<EntityPersister<T>> _persister = H.Property<EntityPersister<T>>();
+
+        private EntityPersister<DataLock> _lockPersister;
 
         [Import]
-        private Func<T,EntityPersister> _getPersister;
+        private Func<T,EntityPersister<T>> _getPersister;
+        [Import]
+        private Func<DataLock,EntityPersister<DataLock>> _getLockPersister;
 
         public DataLocker(T entity):base(false)
         {
-                _persister = _getPersister(entity);
-
+            
             _entity = entity;
             _entityClass = entity.GetType().Name;
             _entityId = (int)entity.Id;
-            _timer = new Timer((o) => { _lock?.Heartbeat(); }, null,Timeout.Infinite,Timeout.Infinite);
+            _timer = new Timer((o) => {
+                _lock?.Heartbeat(HeartBeat); 
+                _lockPersister?.Save();
+                }, null,Timeout.Infinite,Timeout.Infinite);
             Initialize();
+
+            Persister = _getPersister(entity);
         }
 
 
@@ -82,7 +94,9 @@ namespace HLab.Erp.Acl
         );
 
         public ICommand SaveCommand { get; } = H.Command(c => c
+            .CanExecute(e => e.Persister.IsDirty)
             .Action(async e => await e.Save())
+            .On(e => e.Persister.IsDirty).CheckCanExecute()
         );
         public ICommand CancelCommand { get; } = H.Command(c => c
             .Action(async e => await e.Cancel())
@@ -94,10 +108,10 @@ namespace HLab.Erp.Acl
                 return;
 
             var existing =
-                await _db.FetchOneAsync<DataLock>(e => e.EntityClass == _entityClass && e.EntityId == _entityId);
+                await _db.FetchOneAsync<DataLock>(e => e.EntityClass == _entityClass && e.EntityId == _entityId).ConfigureAwait(true);
             if (existing != null)
             {
-                if ((DateTime.Now - existing.HeartbeatTime).TotalMilliseconds < HeartBeat * 2)
+                if ((DateTime.Now - existing.HeartbeatTime).TotalMilliseconds < HeartBeat)
                 {
                     _message.Set(String.Format("Object locked by {0}", existing.User.Initials));
                     return;
@@ -108,16 +122,32 @@ namespace HLab.Erp.Acl
 
             try
             {
+                //Clear error message
                 _message.Set(null);
+
+                //Generate data lock token
                 _lock = await _db.AddAsync<DataLock>(t =>
                 {
                     t.UserId = _acl.Connection.UserId;
                     t.EntityClass = _entityClass;
                     t.EntityId = _entityId;
-                }).ConfigureAwait(false);
+                }).ConfigureAwait(true);
+
+                // Get a persister on lock
+                _lockPersister = _getLockPersister(_lock);
+
+                //Reload entity to be sure no changes occured before locking
+                await _db.ReFetchOne(_entity).ConfigureAwait(true);
             }
             catch (Exception e)
             {
+                if(_lock!=null) _db.Delete(_lock);
+                _lock = null;
+
+                if(_lockPersister!=null) {
+                    _lockPersister=null;
+                }
+
                 _message.Set(e.Message);
                 return;
             }
@@ -126,21 +156,53 @@ namespace HLab.Erp.Acl
             IsActive = true;
         }
 
+        [Import]
+        private Func<IAuditTrailProvider> _getAudit;
+
         public async Task Save()
         {
-            _persister.Save();
-            _db.Delete(_lock);
-            IsActive = false;
+            try
+            {
+                Message = null;
+
+                var log = Persister.ToString();
+
+                if(_getAudit().Audit("Update",null,log,_entity))
+                {
+                    Persister.Save();
+                    _timer.Change(Timeout.Infinite,Timeout.Infinite);
+                    _db.Delete(_lock);
+                    IsActive = false;
+                    _lock = null;
+                }
+            }
+            catch(Exception e)
+            {
+                Message = e.Message;
+            }
         }
         public async Task Cancel()
         {
-            _db.FetchOne<T>(_entity.Id);
-            _persister.Save();
-            _db.Delete(_lock);
-            IsActive = false;
+            try
+            {
+                Message = null;
+                await _db.ReFetchOne(_entity).ConfigureAwait(true);
+                Persister.Reset();
+                _db.Delete(_lock);
+                IsActive = false;
+            }
+            catch (Exception e)
+            {
+                Message = e.Message;
+            }
         }
 
-        public string Message => _message.Get();
+        public string Message
+        {
+            get => _message.Get();
+            private set => _message.Set(value);
+        }
+
         private readonly IProperty<string> _message = H.Property<string>();
 
         public bool IsReadOnly => _isReadOnly.Get();
