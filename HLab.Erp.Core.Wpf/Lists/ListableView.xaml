@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:HLab.Erp.Core.Lists"
              xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
              xmlns:core="clr-namespace:HLab.Erp.Core;assembly=HLab.Erp.Core.Annotations"
+             xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type core:IListableModel}, IsDesignTimeCreatable=false}"             
              d:DesignHeight="450" d:DesignWidth="800">
@@ -18,9 +19,10 @@
             
         <icons:IconView Id="{Binding IconPath}" Height="20" HorizontalAlignment="Center"/>
         <Label Grid.Column="1"/>
-        <TextBlock 
+        <Label 
             Grid.Column="2" 
-            Text="{Binding Caption}" 
-            HorizontalAlignment="Left"/>
+            HorizontalAlignment="Left">
+            <lang:Localize Id="{Binding Caption}"/>
+        </Label>
     </Grid>
 </UserControl>

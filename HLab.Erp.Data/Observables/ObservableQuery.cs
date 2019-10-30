@@ -59,7 +59,7 @@ namespace HLab.Erp.Data.Observables
         {
             _db = db;
             H.Initialize(this,OnPropertyChanged);
-            Suspender = new Suspender(Update);
+            Suspender = new Suspender(()=>Update());
         }
 
         protected new class H : NotifyHelper<ObservableQuery<T>> { }
@@ -98,7 +98,7 @@ namespace HLab.Erp.Data.Observables
             public int Order { get; set; }
         }
 
-        private readonly object _lockFilters = new object();
+        private readonly ReaderWriterLockSlim _lockFilters = new ReaderWriterLockSlim();
         private readonly List<Filter> _filters = new List<Filter>();
         private readonly List<PostFilter> _postFilters = new List<PostFilter>();
 
@@ -141,41 +141,27 @@ namespace HLab.Erp.Data.Observables
         private readonly IProperty<Func<IEnumerable<T>>> _sourceEnumerable = H.Property<Func<IEnumerable<T>>>();
 
 
-        //private Func<DbContext, IQueryable<T>> Query()
+        //private IQueryable<T> Query(IQueryable<T> s)
         //{
-        //    Expression<Func<DbContext, IQueryable<T>>> s = ctx => ctx.Set<T>();
-
-        //        lock (_lockFilters)
-        //            foreach (Filter filter in _filters.OrderBy(f => f.Order))
-        //            {
-        //                var s2 = s.Compile();
-
-        //                if(filter.Func!=null)
-        //                    s =  ctx => filter.Func(s2(ctx));
-        //                else
-        //                    s = ctx => s2(ctx).Where(filter.Expression);
-        //            }
-
-        //    return EF.CompileQuery<DbContext, IQueryable<T>>(s);
-        //}
-        private IQueryable<T> Query(IQueryable<T> s)
-        {
-            if (s == null) return null;
+        //    if (s == null) return null;
             
-            lock (_lockFilters)
-                foreach (Filter filter in _filters.OrderBy(f => f.Order))
-                {
+        //    lock (_lockFilters)
+        //        foreach (Filter filter in _filters.OrderBy(f => f.Order))
+        //        {
 
-                    s = filter.Func != null ? filter.Func(s) : s.Where(filter.GetExpression());
-                }
-            return s;
-        }
+        //            s = filter.Func != null ? filter.Func(s) : s.Where(filter.GetExpression());
+        //        }
+        //    return s;
+        //}
 
         private Expression<Func<T,bool>> Where()
         {
             Expression result = null;
             ParameterExpression param = null;
-            lock (_lockFilters)
+
+            _lockFilters.EnterReadLock();
+            try
+            {
                 foreach (Filter filter in _filters.OrderBy(f => f.Order))
                 {
                     if (result == null)
@@ -188,6 +174,11 @@ namespace HLab.Erp.Data.Observables
                         result = Expression.AndAlso(result,filter.GetExpression().Body);
                     }
                 }
+            }
+            finally
+            {
+                _lockFilters.ExitReadLock();
+            }
 
             if (result == null)
                 return t => true;
@@ -195,14 +186,23 @@ namespace HLab.Erp.Data.Observables
             return Expression.Lambda<Func<T,bool>>(result,param);
         }
 
+        //TODO : use where function to compile expression and cache it
         private IEnumerable<T> PostQuery(IEnumerable<T> q)
         {
             if (q == null) return null;
-            lock (_lockFilters)
+            _lockFilters.EnterReadLock();
+            try
+            {
                 foreach (var filter in _postFilters.OrderBy(f => f.Order))
                 {
                     q = filter.Func != null ? filter.Func(q) : q.Where(filter.Expression);
                 }
+            }
+            finally
+            {
+                _lockFilters.ExitReadLock();
+            }
+
             return q;
         }
         private async Task<List<T>> PostQuery(bool force = true)
@@ -215,14 +215,7 @@ namespace HLab.Erp.Data.Observables
                 }
                 else
                 {
-                    //using (var context = DbService.D.Get())
-                    {
-                        // NullException : often occur when data is not nullable but sql is
-                        //Query().ToList();
-
-                        //_source = _db.FetchQuery<T>(Query);
-                        _source = await _db.FetchWhere(Where());
-                    }               
+                    _source = await _db.FetchWhere(Where()).ConfigureAwait(false);
                 }                
             }
             var list = PostQuery(_source).ToList();
@@ -233,7 +226,8 @@ namespace HLab.Erp.Data.Observables
 
         public ObservableQuery<T> AddFilter(Func<Expression<Func<T, bool>>> expression, int order = 0, string name = null)
         {
-            lock (_lockFilters)
+            _lockFilters.EnterWriteLock();
+            try
             {
                 if (name != null) RemoveFilter(name);
                 _filters.Add(new Filter
@@ -244,11 +238,17 @@ namespace HLab.Erp.Data.Observables
                 });
                 return this;
             }
+            finally
+            {
+                if(_lockFilters.IsWriteLockHeld) 
+                    _lockFilters.ExitWriteLock();
+            }
         }
 
         public ObservableQuery<T> AddFilterFunc(Func<IQueryable<T>, IQueryable<T>> func, int order = 1, string name = null)
-        {
-            lock (_lockFilters)
+        { 
+            _lockFilters.EnterWriteLock(); 
+            try
             {
                 if (name != null) RemoveFilter(name);
                 _filters.Add(new Filter
@@ -259,6 +259,11 @@ namespace HLab.Erp.Data.Observables
                 });
                 return this;
             }
+            finally
+            {
+                if(_lockFilters.IsWriteLockHeld) 
+                    _lockFilters.ExitWriteLock();
+            }
         }
         public ObservableQuery<T> AddPostFilter(string name, Func<T, bool> expression, int order = 0)
         {
@@ -267,7 +272,8 @@ namespace HLab.Erp.Data.Observables
 
         public ObservableQuery<T> AddPostFilter(Func<T, bool> expression, int order = 0, string name = null)
         {
-            lock (_lockFilters)
+            _lockFilters.EnterWriteLock(); 
+            try
             {
                 if (name != null) RemoveFilter(name);
                 _postFilters.Add(new PostFilter
@@ -278,12 +284,18 @@ namespace HLab.Erp.Data.Observables
                 });
                 return this;
             }
+            finally
+            {
+                if(_lockFilters.IsWriteLockHeld) 
+                    _lockFilters.ExitWriteLock();
+            }
             //return AddPostFilter(s => s.Where(expression), order, name);
         }
 
         public ObservableQuery<T> AddPostFilter(Func<IEnumerable<T>, IEnumerable<T>> func, int order = 0, string name = null)
         {
-            lock (_lockFilters)
+            _lockFilters.EnterWriteLock(); 
+            try
             {
                 if (name != null) RemovePostFilter(name);
                 _postFilters.Add(new PostFilter
@@ -294,10 +306,16 @@ namespace HLab.Erp.Data.Observables
                 });
                 return this;
             }
+            finally
+            {
+                if(_lockFilters.IsWriteLockHeld) 
+                    _lockFilters.ExitWriteLock();
+            }
         }
         public ObservableQuery<T> RemoveFilter(string name)
         {
-            lock (_lockFilters)
+            _lockFilters.EnterWriteLock(); 
+            try
             {
                 foreach (Filter f in _filters.Where(f => f.Name == name).ToList())
                 {
@@ -305,17 +323,28 @@ namespace HLab.Erp.Data.Observables
                 }
                 return this;
             }
+            finally
+            {
+                if(_lockFilters.IsWriteLockHeld) 
+                    _lockFilters.ExitWriteLock();
+            }
         }
 
         public ObservableQuery<T> RemovePostFilter(string name)
         {
-            lock (_lockFilters)
+            _lockFilters.EnterWriteLock(); 
+            try
             {
                 foreach (var f in _postFilters.Where(f => f.Name == name).ToList())
                 {
                     _postFilters.Remove(f);
                 }
                 return this;
+            }
+            finally
+            {
+                if(_lockFilters.IsWriteLockHeld) 
+                    _lockFilters.ExitWriteLock();
             }
         }
 
@@ -366,11 +395,17 @@ namespace HLab.Erp.Data.Observables
         private ObservableQuery<T> AddCreator(IDictionary<string, Action<CreateHelper>> dict, Action<CreateHelper> func,
             string name = "")
         {
-            lock (_lockFilters)
+            _lockFilters.EnterWriteLock(); 
+            try
             {
                 if (name != null && dict.ContainsKey(name)) dict.Remove(name);
                 dict.Add(name ?? "", func);
                 return this;
+            }
+            finally
+            {
+                if(_lockFilters.IsWriteLockHeld) 
+                    _lockFilters.ExitWriteLock();
             }
         }
 
@@ -475,9 +510,9 @@ namespace HLab.Erp.Data.Observables
         }
 
 
-        public void Update() => Update(true);
+        public async Task  Update() => await Update(true).ConfigureAwait(true);
 
-        public async void Update(bool force)
+        public async Task Update(bool force)
         {
             if (Suspender.Suspended) return;
 
@@ -492,7 +527,7 @@ namespace HLab.Erp.Data.Observables
 
 
             {
-                List<T> list = await PostQuery(force)/*.ToList()*/;
+                List<T> list = await PostQuery(force).ConfigureAwait(true)/*.ToList()*/;
 
                 Console.WriteLine("Query : " + stopwatch.ElapsedMilliseconds);
 
@@ -517,7 +552,7 @@ namespace HLab.Erp.Data.Observables
                     // while list is consistant
                     if (n < Count && Equals(id,this[n].Id)) continue;
 
-                    //next item exists elswhere in collection
+                    //next item exists elsewhere in collection
                     var n2 = n + 1;
                     while(n2<Count)
                     {

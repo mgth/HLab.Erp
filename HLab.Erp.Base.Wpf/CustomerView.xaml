@@ -9,6 +9,7 @@
              xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
              xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
+             xmlns:annotations="clr-namespace:HLab.Mvvm.Annotations;assembly=HLab.Mvvm.Annotations"
              d:DataContext="{d:DesignInstance {x:Type local:CustomerViewModel}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -20,16 +21,16 @@
         <base:DetailView>
                 <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
 
-                <Label>
+                <!--<Label>
                     <lang:Localize Id="Workflow" Margin="50,0,0,0"/>
                 </Label>
-                <ContentPresenter Content="{Binding Workflow}"/>
+                <ContentPresenter Content="{Binding Workflow}"/>-->
 
 
             <Label Style="{DynamicResource Separator}" >
                 <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                     <Canvas>
-                        <icons:IconView Id = "Icons/Customer" Height="35" Opacity="0.8"/>
+                        <icons:IconView Id = "Icons/Entities/Customer" Height="35" Opacity="0.8"/>
                     </Canvas>
                     <lang:Localize Id="^Customer" Margin="50,0,0,0"/>
                 </StackPanel>
@@ -52,22 +53,29 @@
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="^Country" StringFormat="{}{0} : " />
             </Label>
-            <TextBox Text="{Binding Model.Country.Name}" HorizontalContentAlignment="Left" />
-
+            <Grid>
+                <!--<TextBlock Text="{Binding Model.Country.Name}"/>-->
+                <ComboBox 
+                    mvvm:ViewLocator.ViewClass="{x:Type annotations:IViewClassListItem}" 
+                    ItemsSource="{Binding Countries}" />
+                    <!--SelectedValue="{Binding Model.CountryId}"
+                    SelectedValuePath="Id"-->
+            </Grid>
+            
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="^eMail" StringFormat="{}{0} : " />
             </Label>
-            <TextBox Text="{Binding Model.Email}" HorizontalContentAlignment="Left" />
+            <TextBox Text="{Binding Model.Email,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="^Phone" StringFormat="{}{0} : " />
             </Label>
-            <TextBox Text="{Binding Model.Phone}" HorizontalContentAlignment="Left" />
+            <TextBox Text="{Binding Model.Phone,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="^Fax" StringFormat="{}{0} : " />
             </Label>
-            <TextBox Text="{Binding Model.Fax}" HorizontalContentAlignment="Left" />
+            <TextBox Text="{Binding Model.Fax,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="^Contacts" StringFormat="{}{0} : " />

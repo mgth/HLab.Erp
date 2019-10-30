@@ -1,11 +1,13 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using HLab.Erp.Acl;
+using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 using NPoco;
 
 namespace HLab.Erp.Base.Data
 {
-    [Table("Country")]
+
     public class Country : Entity<Country>
     {
         [System.ComponentModel.DataAnnotations.Schema.Column]
@@ -15,7 +17,7 @@ namespace HLab.Erp.Base.Data
             set => _name.Set(value);
         }
         private readonly IProperty<string> _name = H.Property<string>(c => c.Default(""));
-       [System.ComponentModel.DataAnnotations.Schema.Column]
+        [Ignore] 
         public string IsoA2
         {
             get => _isoA2.Get();
@@ -28,15 +30,15 @@ namespace HLab.Erp.Base.Data
             set => _isoA3.Set(value);
         }
         private readonly IProperty<string> _isoA3 = H.Property<string>();
-       [System.ComponentModel.DataAnnotations.Schema.Column]
-       public int Iso
+
+        public int Iso
        {
            get => _iso.Get();
            set => _iso.Set(value);
        }
        private readonly IProperty<int> _iso = H.Property<int>();
 
-       [System.ComponentModel.DataAnnotations.Schema.Column]
+
         public string IconPath
         {
             get => _iconPath.Get();
