@@ -57,7 +57,9 @@
                 <!--<TextBlock Text="{Binding Model.Country.Name}"/>-->
                 <ComboBox 
                     mvvm:ViewLocator.ViewClass="{x:Type annotations:IViewClassListItem}" 
-                    ItemsSource="{Binding Countries}" />
+                    IsEditable="True"
+                    ItemsSource="{Binding Erp.Countries}" 
+                    />
                     <!--SelectedValue="{Binding Model.CountryId}"
                     SelectedValuePath="Id"-->
             </Grid>

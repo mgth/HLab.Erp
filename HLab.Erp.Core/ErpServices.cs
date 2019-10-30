@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
+using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
+using HLab.Erp.Data.Observables;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core
@@ -19,12 +22,13 @@ namespace HLab.Erp.Core
         IMessageBus Message { get;  }
         IMenuService Menu { get; }
         IIconService Icon { get; }
+        INotifyCollectionChanged Countries{ get; }
     }
 
     [Export(typeof(IErpServices))]
     class ErpServices : IErpServices
     {
-        [Import] public ErpServices(IDataService data, IMvvmService mvvm, IDocumentService docs, IAclService acl, IMessageBus message, IMenuService menu, IIconService icon, IApplicationInfoService info)
+        [Import] public ErpServices(IDataService data, IMvvmService mvvm, IDocumentService docs, IAclService acl, IMessageBus message, IMenuService menu, IIconService icon, IApplicationInfoService info, ObservableQuery<Country> countries)
         {
             Data = data;
             Mvvm = mvvm;
@@ -34,6 +38,7 @@ namespace HLab.Erp.Core
             Menu = menu;
             Icon = icon;
             Info = info;
+            Countries = countries.FluentUpdate();
         }
 
         public IApplicationInfoService Info { get; }
@@ -44,5 +49,7 @@ namespace HLab.Erp.Core
         public IMessageBus Message { get; }
         public IMenuService Menu { get; }
         public IIconService Icon { get; }
+
+        public INotifyCollectionChanged Countries{ get; }
     }
 }

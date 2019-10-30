@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
 using HLab.Erp.Base.Data;
+using HLab.Erp.Core;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
@@ -15,12 +16,12 @@ namespace HLab.Erp.Base.Wpf
     public class CustomerViewModel : EntityViewModel<CustomerViewModel,Customer>
     {
          private readonly IIconService _iconService;
+         public IErpServices Erp { get; }
 
-        [Import] public CustomerViewModel(ObservableQuery<Country> countries, IIconService iconService)
+        [Import] public CustomerViewModel(IIconService iconService, IErpServices erp)
         {
-            Countries = countries;
             _iconService = iconService;
-            countries.Update();
+            Erp = erp;
         }
 
         public string Title => Model.Name;
@@ -28,7 +29,5 @@ namespace HLab.Erp.Base.Wpf
         public object Icon => _iconService.GetIcon(Model.IconPath);
 
        
-        public ObservableQuery<Country> Countries {get;}
-
     }
 }
