@@ -56,7 +56,7 @@ namespace HLab.Erp.Acl
             get => _persister.Get(); 
             private set => _persister.Set(value); 
         }
-        private IProperty<EntityPersister<T>> _persister = H.Property<EntityPersister<T>>();
+        private readonly IProperty<EntityPersister<T>> _persister = H.Property<EntityPersister<T>>();
 
         private EntityPersister<DataLock> _lockPersister;
 
@@ -67,7 +67,6 @@ namespace HLab.Erp.Acl
 
         public DataLocker(T entity):base(false)
         {
-            
             _entity = entity;
             _entityClass = entity.GetType().Name;
             _entityId = (int)entity.Id;

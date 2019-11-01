@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 
 namespace HLab.Erp.Core.ViewModels
 {
@@ -9,5 +10,7 @@ namespace HLab.Erp.Core.ViewModels
     public interface IListViewModel
     {
         void PopulateDataGrid(DataGrid grid);
+
+        void SetOpenAction(Action<object> action);
     }
 }

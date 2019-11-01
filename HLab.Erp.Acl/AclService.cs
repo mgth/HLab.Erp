@@ -117,6 +117,10 @@ namespace HLab.Erp.Acl
             var toNode = await GetAclNode(grantedTo).ConfigureAwait(false);
             var onNode = await GetAclNode(grantedOn).ConfigureAwait(false);
 
+            //TODO : should it be false or true (or exception) 
+            if (toNode == null) return false;
+            if (onNode == null) return false;
+
             return await toNode.IsGranted(right, onNode).ConfigureAwait(false);
         }
 

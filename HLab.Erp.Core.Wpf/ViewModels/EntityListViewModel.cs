@@ -34,6 +34,8 @@ namespace HLab.Erp.Core.ViewModels
         {
             throw new NotImplementedException();
         }
+
+        public abstract void SetOpenAction(Action<object> action);
     }
 
     public abstract class EntityListViewModel<TClass,T> : EntityListViewModel<TClass>
@@ -64,18 +66,23 @@ namespace HLab.Erp.Core.ViewModels
         {
             List.CollectionChanged += List_CollectionChanged;
             H.Initialize((TClass)this,OnPropertyChanged);
+
+            OpenAction = target => _docs.OpenDocument(target);
         }
 
         public ICommand OpenCommand { get; } = H.Command(c => c
             .CanExecute(e=>e.Selected!=null)
-            .Action(async e => await e.OnOpenCommand(e.Selected))
+            .Action(e => e.OpenAction.Invoke(e.Selected))
             .On(e => e.Selected).CheckCanExecute()
         );
 
-        protected virtual async Task OnOpenCommand(T target)
+        protected Action<T> OpenAction;
+        public override void SetOpenAction(Action<object> action)
         {
-            await _docs.OpenDocument(target);
+            OpenAction = t => action(t);
         }
+
+
         public ICommand AddCommand { get; } = H.Command(c => c
 //            .CanExecute(e=>e.Selected!=null)
             .Action(async e => await e.OnAddCommand(e.Selected))

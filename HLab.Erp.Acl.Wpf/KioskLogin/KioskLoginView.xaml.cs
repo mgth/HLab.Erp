@@ -6,7 +6,7 @@ using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl.LoginServices;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Extentions;
+using HLab.Mvvm.Extensions;
 
 namespace HLab.Erp.Acl.KioskLogin
 {

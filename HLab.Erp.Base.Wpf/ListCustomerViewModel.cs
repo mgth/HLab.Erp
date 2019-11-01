@@ -29,6 +29,7 @@ namespace HLab.Erp.Base.Wpf
                 .Column("^Email", s => s.Email)
                 .Column("^Address", s => s.Address);
 
+            List.OrderBy = e => e.Name;
             //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(
             //    "Country",
             //    "Pays",

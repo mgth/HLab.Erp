@@ -18,6 +18,8 @@ namespace HLab.Erp.Base.Wpf
          private readonly IIconService _iconService;
          public IErpServices Erp { get; }
 
+
+
         [Import] public CustomerViewModel(IIconService iconService, IErpServices erp)
         {
             _iconService = iconService;

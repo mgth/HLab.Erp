@@ -9,7 +9,7 @@ namespace HLab.Erp.Core.Views
     /// </summary>
     public partial class EntityListView3 : UserControl, 
         IView<ViewModeDefault, IListViewModel>,
-        IViewClassDocument
+        IViewClassDocument, IViewClassDefault
 
     {
         public EntityListView3()

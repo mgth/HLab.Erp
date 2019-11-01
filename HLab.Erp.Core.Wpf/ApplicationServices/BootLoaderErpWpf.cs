@@ -13,7 +13,7 @@ using HLab.Erp.Core.DragDrops;
 using HLab.Erp.Core.Update;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Wpf.Views;
+using HLab.Mvvm.Views;
 
 namespace HLab.Erp.Core.ApplicationServices
 {

@@ -9,6 +9,44 @@ using HLab.Mvvm.Lang;
 
 namespace HLab.Erp.Base.Wpf
 {
+    class ListCountryPopupViewModel : EntityListViewModel<ListCountryPopupViewModel, Country>, IMvvmContextProvider
+    {
+        [Import]
+        private ILocalizationService _localization;
+
+        public void ConfigureMvvmContext(IMvvmContext ctx)
+        {
+        }
+
+        public string Title => "^Country";
+
+        public ListCountryPopupViewModel()
+        {
+            Columns
+                //.Column("^Name", s => new Localize{Id=s.Name})
+                .Column("^Name", async s => await _localization.Localize(s.Name).ConfigureAwait(false))
+                //.Column("^A2 Code", s => s.IsoA2)
+                //.Column("^A3 Code ", s => s.IsoA3)
+                //.Column("^Code", s => s.Iso)
+                //.Column("^Continent", s => new Localize{Id = s.Continent.Name})
+                .Column("^Flag", s => new IconView
+                {
+                    MaxWidth = 30,
+                    MinHeight = 30,
+                    Id = s.IconPath
+                })
+                ;
+
+            List.OrderBy = e => e.Name;
+            //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(
+            //    "Country",
+            //    "Pays",
+            //    c => c.Country,List
+            //    ));
+            List.Update();
+        }
+    }
+
     class ListCountryViewModel : EntityListViewModel<ListCountryViewModel,Country>, IMvvmContextProvider
     {
         [Import]
@@ -34,6 +72,7 @@ namespace HLab.Erp.Base.Wpf
                     Id = s.IconPath
                 });
 
+            List.OrderBy = e => e.Name;
             //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(
             //    "Country",
             //    "Pays",

@@ -102,6 +102,11 @@ namespace HLab.Erp.Data.Observables
         private readonly List<Filter> _filters = new List<Filter>();
         private readonly List<PostFilter> _postFilters = new List<PostFilter>();
 
+        public Expression<Func<T, object>> OrderBy
+        {
+            get => _orderBy;
+            set => _orderBy = value;
+        }
 
         //public new IEntity Selected
         //{
@@ -215,7 +220,7 @@ namespace HLab.Erp.Data.Observables
                 }
                 else
                 {
-                    _source = await _db.FetchWhere(Where()).ConfigureAwait(false);
+                    _source = await _db.FetchWhere(Where(),_orderBy).ConfigureAwait(false);
                 }                
             }
             var list = PostQuery(_source).ToList();
@@ -314,7 +319,8 @@ namespace HLab.Erp.Data.Observables
         }
         public ObservableQuery<T> RemoveFilter(string name)
         {
-            _lockFilters.EnterWriteLock(); 
+            bool locked = _lockFilters.IsWriteLockHeld;
+            if(!locked) _lockFilters.EnterWriteLock(); 
             try
             {
                 foreach (Filter f in _filters.Where(f => f.Name == name).ToList())
@@ -325,7 +331,7 @@ namespace HLab.Erp.Data.Observables
             }
             finally
             {
-                if(_lockFilters.IsWriteLockHeld) 
+                if(!locked && _lockFilters.IsWriteLockHeld) 
                     _lockFilters.ExitWriteLock();
             }
         }
@@ -499,6 +505,7 @@ namespace HLab.Erp.Data.Observables
         private volatile bool _updating = false;
 
         private bool _initialized = false;
+        private Expression<Func<T, object>> _orderBy;
 
         public ObservableQuery<T> Init()
         {

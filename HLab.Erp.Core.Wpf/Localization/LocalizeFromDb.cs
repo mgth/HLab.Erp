@@ -20,19 +20,21 @@ namespace HLab.Erp.Core.Localization
             _db = db;
         }
 
-        private readonly AsyncDictionary<Tuple<string,string>,LocalizeEntry> _cache 
-            = new AsyncDictionary<Tuple<string, string>, LocalizeEntry>();
+        private readonly ConcurrentDictionary<string,AsyncDictionary<string,LocalizeEntry>> _cache 
+            = new ConcurrentDictionary<string,AsyncDictionary<string,LocalizeEntry>>();
 
         public async Task<string> Localize(string tag, string code)
         {
-            var entry = await _cache.GetOrAdd(Tuple.Create(tag, code), async t =>
+            var dic = _cache.GetOrAdd(tag, t => new AsyncDictionary<string, LocalizeEntry>());
+
+            var entry = await dic.GetOrAdd(code, async t =>
             {
-                var e = await _db.FetchOneAsync<LocalizeEntry>(e => e.Tag == tag && e.Code == code);
+                var e = await _db.FetchOneAsync<LocalizeEntry>(e => e.Tag == tag && e.Code == code).ConfigureAwait(false);
 
                 if(e!=null && e.BadCode)
                     throw new ArgumentException(e.Code + " is told bad code");
                 return e;
-            });
+            }).ConfigureAwait(false);
 
 
             return entry?.Value;

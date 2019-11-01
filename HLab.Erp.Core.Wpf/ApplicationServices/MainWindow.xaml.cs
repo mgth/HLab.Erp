@@ -9,7 +9,6 @@ using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Extentions;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
 namespace HLab.Erp.Core.ApplicationServices

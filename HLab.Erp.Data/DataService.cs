@@ -156,18 +156,26 @@ namespace HLab.Erp.Data
         }
 
 //        public List<T> FetchQuery<T>(Func<IQueryable<T>, IQueryable<T>> q)
-        public async Task<List<T>> FetchWhere<T>(Expression<Func<T, bool>> expression)
+        public async Task<List<T>> FetchWhere<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy)
             where T : class, IEntity
         {
             var cache = GetCache<T>();
             if (typeof(ILocalCache).IsAssignableFrom(typeof(T)))
             {
-                return await cache.Fetch(expression);
+                var list = await cache.Fetch(expression).ConfigureAwait(false);
+                if(orderBy!=null)
+                    list = list.OrderBy(orderBy.Compile()).ToList();
             }
 
-            var list = await Get().QueryAsync<T>().Where(expression).ToList();
+            using (var db = Get())
+            {
+                var list = 
+                    orderBy==null?
+                    await db.QueryAsync<T>().Where(expression).ToList().ConfigureAwait(false) :
+                    await db.QueryAsync<T>().Where(expression).OrderBy(orderBy).ToList().ConfigureAwait(false);
 
-            return await cache.GetOrAdd(list);
+                return await cache.GetOrAdd(list).ConfigureAwait(false);
+            }
         }
 
         public async Task<T> FetchOneAsync<T>(Expression<Func<T, bool>> expression)
@@ -177,8 +185,8 @@ namespace HLab.Erp.Data
             {
                 //TODO : connection Timeout
                 //var result = db.FirstOrDefault<T>(expression);
-                var result = await db.QueryAsync<T>().Where(expression).FirstOrDefault();
-                return result == null ? null : await GetCache<T>().GetOrAdd(result);
+                var result = await db.QueryAsync<T>().Where(expression).FirstOrDefault().ConfigureAwait(false);
+                return result == null ? null : await GetCache<T>().GetOrAdd(result).ConfigureAwait(false);
             }
         }
         public T FetchOne<T>(Expression<Func<T, bool>> expression)

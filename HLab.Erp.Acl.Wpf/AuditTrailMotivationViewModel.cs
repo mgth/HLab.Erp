@@ -4,7 +4,6 @@ using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Wpf.Views;
 using HLab.Notify.PropertyChanged;
 using System;
 using System.Collections.Generic;
@@ -13,6 +12,7 @@ using System.Security;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
+using HLab.Mvvm.Views;
 
 namespace HLab.Erp.Acl
 {

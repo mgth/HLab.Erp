@@ -88,7 +88,7 @@ namespace HLab.Erp.Acl
             var grants = await DataService.FetchWhere<AclGranted>(e => 
                     groups.Contains(e.ToNodeId) && 
                     targets.Contains(e.OnNodeId)
-                ).ConfigureAwait(false);
+                ,null).ConfigureAwait(false);
 
             if (grants.Count == 0) return false;
             if (grants.Any(e => e.Deny)) return false;

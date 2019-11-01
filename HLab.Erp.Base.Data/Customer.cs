@@ -25,13 +25,6 @@ namespace HLab.Erp.Base.Data
 
         private readonly IProperty<string> _address = H.Property<string>(c => c.Default(""));
 
-        public int? CountryId
-        {
-            get => _countryId.Get();
-            set => _countryId.Set(value);
-        }
-
-        private readonly IProperty<int?> _countryId = H.Property<int?>();
 
         public string Phone
         {
@@ -87,15 +80,19 @@ namespace HLab.Erp.Base.Data
         }
         private readonly IProperty<string> _note = H.Property<string>(c => c.Default(""));
 
-        [Ignore]
-        public Country Country
+        public int? CountryId
         {
-            //get => E.GetForeign<Country>(()=> CountryId);
-            set => CountryId = value.Id;
-            get => _country.Get();
+            get => _country.Id.Get();
+            set => _country.Id.Set(value);
         }
-        private readonly IProperty<Country> _country = H.Property<Country>(c => c
-            .Foreign(e => e.CountryId));
+
+        
+        [Ignore] public Country Country
+        {
+            get => _country.Get();
+            set => _country.Set(value);
+        }
+        private readonly IForeign<Country> _country = H.Foreign<Country>();
 
         [Ignore]
         public string Caption => Name;
