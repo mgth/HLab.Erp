@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using HLab.Erp.Acl;
 using HLab.Erp.Core.ViewModels;
+using HLab.Erp.Core.ViewModels.EntityLists;
 
 namespace HLab.Erp.Base.Wpf
 {

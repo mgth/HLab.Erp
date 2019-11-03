@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core.ViewModels;
+using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Icons;
 using HLab.Mvvm.Lang;
@@ -24,7 +25,7 @@ namespace HLab.Erp.Base.Wpf
         {
             Columns
                 //.Column("^Name", s => new Localize{Id=s.Name})
-                .Column("^Name", async s => await _localization.Localize(s.Name).ConfigureAwait(false))
+                .Column("^Name", async s => await _localization.Localize(s.Name).ConfigureAwait(false), s=> s.Name)
                 //.Column("^A2 Code", s => s.IsoA2)
                 //.Column("^A3 Code ", s => s.IsoA3)
                 //.Column("^Code", s => s.Iso)

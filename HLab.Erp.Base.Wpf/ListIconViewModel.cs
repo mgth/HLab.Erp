@@ -1,6 +1,7 @@
 ﻿using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core.ViewModels;
+using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf
@@ -20,7 +21,7 @@ namespace HLab.Erp.Base.Wpf
             Columns
                 .Column("^Name", s => s.Name)
                 .Column("^Country", s => s.Format)
-                .Column("^Icon", async s => await _icons.FromSvgString(s.Source))
+                .Column("^Icon", async s => await _icons.FromSvgString(s.Source),null)
                 ;
 
             //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(

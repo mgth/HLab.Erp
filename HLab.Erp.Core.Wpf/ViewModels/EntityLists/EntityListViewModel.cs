@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Dynamic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Markup;
-using System.Xml;
-using HLab.Core;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.ListFilters;
@@ -22,10 +15,9 @@ using HLab.Erp.Core.Tools.Details;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
-using HLab.Mvvm.Lang;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.ViewModels
+namespace HLab.Erp.Core.ViewModels.EntityLists
 {
     public abstract class EntityListViewModel<TClass> : ViewModel<TClass>, IListViewModel
     where TClass : EntityListViewModel<TClass>
@@ -57,13 +49,14 @@ namespace HLab.Erp.Core.ViewModels
 
         [Import]
         public ObservableQuery<T> List { get; }
-        public ColumnsProvider<T> Columns { get; } = new ColumnsProvider<T>();
+        public ColumnsProvider<T> Columns { get; }
         public ObservableCollection<IFilterViewModel> Filters { get; } = new ObservableCollection<IFilterViewModel>();
 
         public ObservableCollection<dynamic> ListViewModel { get; } = new ObservableCollection<dynamic>();
         private readonly ConcurrentDictionary<T,dynamic> _cache = new ConcurrentDictionary<T, dynamic>();
         protected EntityListViewModel()
         {
+            Columns = new ColumnsProvider<T>(List);
             List.CollectionChanged += List_CollectionChanged;
             H.Initialize((TClass)this,OnPropertyChanged);
 
@@ -176,148 +169,5 @@ namespace HLab.Erp.Core.ViewModels
         private readonly IProperty<dynamic> _selectedViewModel = H.Property<dynamic>(c => c
             .On(e => e.Selected)
             .Set(e => e.Selected==null?null:e._cache.GetOrAdd(e.Selected, o => new ObjectMapper<T>(o, e.Columns))));
-    }
-
-    public class Column<T>
-    {
-        public Column(object caption, Func<T, object> getter, string id, bool hidden)
-        {
-            Id = id ?? ("C" + Guid.NewGuid().ToString().Replace('-', '_'));
-            Caption = caption;
-            _getter = getter;
-            Hidden = hidden;
-        }
-
-        public bool Hidden { get; }
-        public object Caption { get; }
-        private readonly Func<T, object> _getter;
-
-        public object Get(T value)
-        {
-            return _getter(value);
-        }
-
-        public string Id { get; }
-    }
-
-    public class ColumnsProvider<T>
-    {
-        private readonly Dictionary<string,Column<T>> _dict = new Dictionary<string, Column<T>>();
-
-        public ColumnsProvider<T> Column(string caption, Func<T,Task<object>> f,string id=null)
-        {
-            var c = new Column<T>(caption,t => new AsyncView{Getter = async () => await f(t)} , id, false);
-            _dict.Add(c.Id,c);
-            return this;
-        }
-        public ColumnsProvider<T> Column(string caption, Func<T,object> f,string id=null)
-        {
-            var c = new Column<T>(caption,f, id, false);
-            _dict.Add(c.Id,c);
-            return this;
-        }
-        //public ColumnsProvider<T> Hidden(string id, Func<T,Task<object>> f)
-        //{
-        //    var c = new Column<T>("", f, id, true);
-        //    _dict.Add(c.Id,c);
-        //    return this;
-        //}
-        public ColumnsProvider<T> Hidden(string id, Func<T,object> f)
-        {
-            var c = new Column<T>("", f, id, true);
-            _dict.Add(c.Id,c);
-            return this;
-        }
-
-        public object GetValue(T obj, string name)
-        {
-            if (_dict.ContainsKey(name))
-            {
-                return _dict[name].Get(obj);
-            }
-            else return null;
-        }
-
-        public GridView GetView()
-        {
-            var gv = new GridView();
-
-            foreach (var column in _dict.Values)
-            {
-                if (column.Hidden) continue;
-
-                object content;
-                if (column.Caption is string s)
-                    content = new Localize {Id = s};
-                else
-                {
-                    content = column.Caption;
-                }
-
-                var c = new GridViewColumn
-                {
-                    Header = new GridViewColumnHeader { Content = content },
-                    //DisplayMemberBinding = new Binding(column.Id),
-                    CellTemplate = CreateColumnTemplate(column.Id)
-                };
-
-                gv.Columns.Add(c);
-            }
-
-            return gv;
-        }
-        public DataTemplate CreateColumnTemplate(string property)
-        {
-        //    StringReader stringReader = new StringReader(
-        //        @"<DataTemplate 
-        //xmlns:mvvm=""clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm""
-        //xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> 
-        //    <mvvm:ViewLocator Model=""{Binding " + property + @"}""/> 
-        //</DataTemplate>");
-
-
-            StringReader stringReader = new StringReader(
-                @"<DataTemplate 
-        xmlns:mvvm=""clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm""
-        xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> 
-            <ContentControl Content=""{Binding " + property + @"}""/> 
-        </DataTemplate>");
-
-
-            XmlReader xmlReader = XmlReader.Create(stringReader);
-            return XamlReader.Load(xmlReader) as DataTemplate;
-        }
-    }
-
-    public sealed class ObjectMapper<T> : DynamicObject
-    {
-        private readonly T _model;
-        private readonly ColumnsProvider<T> _columns;
-
-        public T Model => _model;
-
-        public ObjectMapper(T model, ColumnsProvider<T> columns)
-        {
-            _model = model;
-            _columns = columns;
-        }
-
-        public override bool TrySetMember(SetMemberBinder binder, object value)
-        {
-            return true;
-        }
-
-        public override bool TryGetMember(GetMemberBinder binder, out object result)
-        {
-            switch (binder.Name)
-            {
-                //case "Model":
-                //    result = _model;
-                //    return true;
-                default:
-                    result = _columns.GetValue(_model, binder.Name);
-                    return true;
-            }
-        }
     }
 }
