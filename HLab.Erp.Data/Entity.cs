@@ -81,7 +81,7 @@ namespace HLab.Erp.Data
             get => _id.Get();
             set => _id.Set(value);
         }
-        private readonly IProperty<T> _id = H.Property<T>();
+        private readonly IProperty<T> _id = H.Property<T>(c => c.Default((T)(object)-1));
 
         object IEntity.Id => Id;
 

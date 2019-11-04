@@ -95,7 +95,13 @@ namespace HLab.Erp.Base.Data
         private readonly IForeign<Country> _country = H.Foreign<Country>();
 
         [Ignore]
-        public string Caption => Name;
+        public string Caption => _caption.Get();
+        private IProperty<string> _caption = H.Property<string>(c => c
+            .On(e => e.Name)
+            .On(e => e.Id)
+            //TODO : localize
+            .Set(e => (e.Id < 0 && string.IsNullOrEmpty(e.Name)) ? "Nouveau client" : e.Name)
+        );
 
         [Ignore]
         public string IconPath => "Icons/Entities/Customer";

@@ -41,8 +41,15 @@ namespace HLab.Erp.Data
                 columns.Add(e);
             }
 
+
+
             try
             {
+                if(Target is IEntity<int> ei && ei.Id<0)
+                {
+                    _db.GetOrAdd(ei);
+                    return;
+                }
                 _db.Update(Target, columns.Select(e => e.Name));
             }
             catch
@@ -51,7 +58,6 @@ namespace HLab.Erp.Data
                     Dirty.Add(p);
                 throw;
             }
-            //db.Save(Target);
         }
 
         public override string ToString()

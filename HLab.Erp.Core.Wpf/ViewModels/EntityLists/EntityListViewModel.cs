@@ -81,9 +81,12 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
             .Action(async e => await e.OnAddCommand(e.Selected))
 //            .On(e => e.Selected).CheckCanExecute()
         );
+
         protected virtual async Task OnAddCommand(T target)
         {
-            await _docs.OpenDocument(target);
+            var entity = (T)Activator.CreateInstance(typeof(T));
+            if(entity is IEntity<int> e) e.Id=-1;
+            _docs.OpenDocument(entity);
         }
 
         private void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

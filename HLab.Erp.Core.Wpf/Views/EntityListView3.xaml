@@ -24,9 +24,41 @@
             </ItemsControl>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <Button><lang:Localize Id="^Add"></lang:Localize></Button>
-            <Button><lang:Localize Id="^Delete"></lang:Localize></Button>
+            <Button Command ="{Binding AddCommand}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}" >
+                        <Style.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <lang:Localize Id="^Add"/>
+            </Button>
+            <Button Command="{Binding DeleteCommand}">                    
+                <Button.Style>
+                        <Style TargetType="{x:Type Button}" >
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                <lang:Localize Id="^Delete"/>
+            </Button>
             <Button Command="{Binding OpenCommand}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}" >
+                        <Style.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+
                 <lang:Localize Id="^Open"/></Button>
         </StackPanel>
 

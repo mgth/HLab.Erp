@@ -58,7 +58,7 @@ namespace HLab.Erp.Data
             using var db = Get();
 
             var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
-            if(t is IEntity<int> tt) tt.Id=-1;
+            //if(t is IEntity<int> tt) tt.Id=-1;
 
             setter?.Invoke(t);
 

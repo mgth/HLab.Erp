@@ -19,7 +19,7 @@
         <Button Grid.Column="2" x:Name="Button" Click="ButtonBase_OnClick">
             <StackPanel>
                 <TextBlock>Select</TextBlock>
-                <Popup x:Name="Popup" Height="500">
+                <Popup x:Name="Popup" Height="500" StaysOpen="False">
                     <Grid>
                         <ContentPresenter x:Name="PopupContent"/>
                     </Grid>

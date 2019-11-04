@@ -74,6 +74,7 @@ namespace HLab.Erp.Acl
                 _lock?.Heartbeat(HeartBeat); 
                 _lockPersister?.Save();
                 }, null,Timeout.Infinite,Timeout.Infinite);
+
             Initialize();
 
             Persister = _getPersister(entity);
@@ -119,39 +120,43 @@ namespace HLab.Erp.Acl
                 _db.Delete(existing);
             }
 
-            try
+            if(_entityId >= 0)
             {
-                //Clear error message
-                _message.Set(null);
-
-                //Generate data lock token
-                _lock = await _db.AddAsync<DataLock>(t =>
+                try
                 {
-                    t.UserId = _acl.Connection.UserId;
-                    t.EntityClass = _entityClass;
-                    t.EntityId = _entityId;
-                }).ConfigureAwait(true);
+                    //Clear error message
+                    _message.Set(null);
 
-                // Get a persister on lock
-                _lockPersister = _getLockPersister(_lock);
+                    //Generate data lock token
+                    _lock = await _db.AddAsync<DataLock>(t =>
+                    {
+                        t.UserId = _acl.Connection.UserId;
+                        t.EntityClass = _entityClass;
+                        t.EntityId = _entityId;
+                    }).ConfigureAwait(true);
 
-                //Reload entity to be sure no changes occured before locking
-                await _db.ReFetchOne(_entity).ConfigureAwait(true);
-            }
-            catch (Exception e)
-            {
-                if(_lock!=null) _db.Delete(_lock);
-                _lock = null;
+                    // Get a persister on lock
+                    _lockPersister = _getLockPersister(_lock);
 
-                if(_lockPersister!=null) {
-                    _lockPersister=null;
+                    //Reload entity to be sure no changes occured before locking
+                    await _db.ReFetchOne(_entity).ConfigureAwait(true);
+                }
+                catch (Exception e)
+                {
+                    if(_lock!=null) _db.Delete(_lock);
+                    _lock = null;
+
+                    if(_lockPersister!=null) {
+                        _lockPersister=null;
+                    }
+
+                    _message.Set(e.Message);
+                    return;
                 }
 
-                _message.Set(e.Message);
-                return;
+                _timer.Change(HeartBeat, HeartBeat);
             }
 
-            _timer.Change(HeartBeat, HeartBeat);
             IsActive = true;
         }
 
@@ -166,11 +171,17 @@ namespace HLab.Erp.Acl
 
                 var log = Persister.ToString();
 
-                if(_getAudit().Audit("Update",null,log,_entity))
+                var action = _entityId < 0 ? "Create" : "Update";
+
+                //TODO : add AclRight needed to do the action
+                if(_getAudit().Audit(action,null,log,_entity))
                 {
                     Persister.Save();
                     _timer.Change(Timeout.Infinite,Timeout.Infinite);
-                    _db.Delete(_lock);
+
+                    if(_lock!=null)
+                        _db.Delete(_lock);
+
                     IsActive = false;
                     _lock = null;
                 }

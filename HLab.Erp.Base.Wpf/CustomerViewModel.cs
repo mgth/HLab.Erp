@@ -10,6 +10,7 @@ using HLab.Erp.Core;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
+using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf
 {
@@ -26,7 +27,14 @@ namespace HLab.Erp.Base.Wpf
             Erp = erp;
         }
 
-        public string Title => Model.Name;
+        public string Title => _title.Get();
+        private IProperty<string> _title = H.Property<string>(c => c
+            .On(e => e.Model.Name)
+            .On(e => e.Model.Id)
+            //TODO : localize
+            .Set(e => (e.Id < 0 && string.IsNullOrEmpty(e.Model.Name)) ? "Nouveau client" : e.Model.Name)
+        );
+
 
         public object Icon => _iconService.GetIcon(Model.IconPath);
 
