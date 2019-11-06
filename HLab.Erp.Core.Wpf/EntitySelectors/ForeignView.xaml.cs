@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using HLab.Base;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.ViewModels;
+using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.EntitySelectors
@@ -36,7 +37,7 @@ namespace HLab.Erp.Core.EntitySelectors
 
         private static readonly DependencyProperty ModelProperty = H.Property<object>()
             .BindsTwoWayByDefault
-            .OnChange((s,a) => s.Locator.Model = a.NewValue)
+            .OnChange((s,a) => s.Locator.SetValue(ViewLocator.ModelProperty, a.NewValue))
             .Register();
 
         private static readonly DependencyProperty ModelClassProperty = H.Property<Type>()

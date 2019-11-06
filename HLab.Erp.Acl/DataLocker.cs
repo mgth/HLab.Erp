@@ -78,6 +78,9 @@ namespace HLab.Erp.Acl
             Initialize();
 
             Persister = _getPersister(entity);
+
+            if (entity.Id < 0)
+                IsActive = true;
         }
 
 
@@ -163,8 +166,12 @@ namespace HLab.Erp.Acl
         [Import]
         private Func<IAuditTrailProvider> _getAudit;
 
+        public Action<T> BeforeSavingAction { get; set; }
+
         public async Task Save()
         {
+            BeforeSavingAction?.Invoke(_entity);
+
             try
             {
                 Message = null;

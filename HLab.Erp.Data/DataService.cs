@@ -228,7 +228,7 @@ namespace HLab.Erp.Data
                  async k =>
                 {
                     subscribe = true;
-                    var o = await Get().SingleByIdAsync<T>(k);
+                    var o = await Get().SingleOrDefaultByIdAsync<T>(k);
                     return o;
                 }).ConfigureAwait(false);
 

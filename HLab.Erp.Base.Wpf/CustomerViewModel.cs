@@ -32,7 +32,7 @@ namespace HLab.Erp.Base.Wpf
             .On(e => e.Model.Name)
             .On(e => e.Model.Id)
             //TODO : localize
-            .Set(e => (e.Id < 0 && string.IsNullOrEmpty(e.Model.Name)) ? "Nouveau client" : e.Model.Name)
+            .Set(e => (e.Model.Id < 0 && string.IsNullOrEmpty(e.Model.Name)) ? "Nouveau client" : e.Model.Name)
         );
 
 

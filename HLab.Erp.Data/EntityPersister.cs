@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using HLab.Base;
 using HLab.DependencyInjection.Annotations;
 using HLab.Notify.PropertyChanged;
 using NPoco;
@@ -41,13 +42,11 @@ namespace HLab.Erp.Data
                 columns.Add(e);
             }
 
-
-
             try
             {
                 if(Target is IEntity<int> ei && ei.Id<0)
                 {
-                    _db.GetOrAdd(ei);
+                    var t = _db.Add<T>(e => Target.CopyPrimitivesTo(e));
                     return;
                 }
                 _db.Update(Target, columns.Select(e => e.Name));
