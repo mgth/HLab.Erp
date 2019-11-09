@@ -215,8 +215,8 @@ namespace HLab.Erp.Data
             if(entity==null) return null;
 
             using var db = Get();
-            var re = await db.SingleByIdAsync<T>(entity.Id).ConfigureAwait(false);
-            return await GetCache<T>().GetOrAdd(re).ConfigureAwait(false);
+            var re = await db.SingleByIdAsync<T>(entity.Id).ConfigureAwait(true);
+            return await GetCache<T>().GetOrAdd(re).ConfigureAwait(true);
         }
 
         public async Task<T> FetchOne<T>(object id)
