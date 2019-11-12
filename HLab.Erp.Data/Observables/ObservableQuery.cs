@@ -542,7 +542,7 @@ namespace HLab.Erp.Data.Observables
 
                 var count = list.Count;
 
-                for(int n = 0; n < list.Count; n++ )
+                for(var n = 0; n < list.Count; n++ )
                 {
                     var item = list[n];
                     var id = item.Id;
@@ -556,7 +556,7 @@ namespace HLab.Erp.Data.Observables
                         }
                         return;
                     }
-                    // while list is consistant
+                    // while list is consistent
                     if (n < Count && Equals(id,this[n].Id)) continue;
 
                     //next item exists elsewhere in collection

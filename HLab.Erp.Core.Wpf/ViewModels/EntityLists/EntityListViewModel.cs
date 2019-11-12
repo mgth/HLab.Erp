@@ -57,6 +57,7 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
         protected EntityListViewModel()
         {
             Columns = new ColumnsProvider<T>(List);
+            List_CollectionChanged(null,new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add,List,0));
             List.CollectionChanged += List_CollectionChanged;
             H.Initialize((TClass)this,OnPropertyChanged);
 
@@ -94,10 +95,11 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    var newIndex = e.NewStartingIndex;
                     foreach (var n in e.NewItems.OfType<T>())
                     {
                         ObjectMapper<T> h = _cache.GetOrAdd(n,o => new ObjectMapper<T>(o, Columns));
-                        ListViewModel.Add(h);
+                        ListViewModel.Insert(newIndex++,h);
                     }
                     break;
 
@@ -124,7 +126,7 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
                             }
                             else
                             {
-                                { }
+                                var test = ListViewModel[e.OldStartingIndex];
                             }
                         }
                     }
