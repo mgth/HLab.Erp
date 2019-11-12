@@ -104,8 +104,29 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var n in e.OldItems.OfType<T>())
                     {
-                        if(_cache.TryRemove(n,out var h))
+                        if (_cache.TryRemove(n, out var h))
                             ListViewModel.Remove(h);
+                        else
+                        {
+                            var hh = ListViewModel.FirstOrDefault(x =>
+                            {
+                                if (x is ObjectMapper<T> om)
+                                {
+                                    if (om.Model.Id == n.Id) return true;
+                                }
+
+                                return false;
+                            });
+
+                            if (hh != null)
+                            {
+                                ListViewModel.Remove(hh);
+                            }
+                            else
+                            {
+                                { }
+                            }
+                        }
                     }
 
                     break;

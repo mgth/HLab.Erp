@@ -84,7 +84,7 @@
                 Margin="10,19,0,14" 
                 Background="#CFFFFFFF" 
                 HeadersVisibility="None" 
-                ItemsSource="{Binding Model.Contacts}">
+                ItemsSource="{Binding Contacts}">
 
                 <DataGrid.Columns>
                     <DataGridTextColumn 

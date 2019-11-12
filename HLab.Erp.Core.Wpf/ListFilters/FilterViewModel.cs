@@ -3,12 +3,9 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.ListFilters
 {
-    public abstract class FilterViewModel : ViewModel<FilterViewModel>, IFilterViewModel
+    public abstract class FilterViewModel<TClass> : ViewModel<TClass>, IFilterViewModel
+    where TClass : FilterViewModel<TClass>
     {
-        public FilterViewModel()
-        {
-            H.Initialize(this,OnPropertyChanged);
-        }
 
         public string Title
         {

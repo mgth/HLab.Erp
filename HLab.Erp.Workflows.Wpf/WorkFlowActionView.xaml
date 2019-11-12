@@ -27,7 +27,7 @@
                 FontWeight="Black" 
                 Command="{Binding Command}"
                 Content="{Binding Model.Caption, FallbackValue=Action}"/>
-        <ListView ItemsSource="{Binding Model.Messages}"  Grid.Row ="1">
+        <ListView ItemsSource="{Binding Model.Messages}"  Grid.Row ="1" MaxHeight="50">
             <ListView.ItemTemplate>
                 <DataTemplate>
                 <Label Foreground="Red" Content="{Binding}"/>

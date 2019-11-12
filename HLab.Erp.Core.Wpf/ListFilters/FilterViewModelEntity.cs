@@ -10,14 +10,8 @@ namespace HLab.Erp.Core.ListFilters
 
     public interface IEntityFilterViewModel { }
 
-    public class EntityFilterViewModel : FilterViewModel, IEntityFilterViewModel
+    public class EntityFilterViewModel : FilterViewModel<EntityFilterViewModel>, IEntityFilterViewModel
     {
-        private new class H : NotifyHelper<EntityFilterViewModel> { }
-
-        public EntityFilterViewModel()
-        {
-            H.Initialize(this,OnPropertyChanged);
-        }
 
         public INotifyCollectionChanged Query
         {

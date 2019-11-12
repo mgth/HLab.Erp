@@ -16,11 +16,17 @@ namespace HLab.Erp.Core.ListFilters
         }
     }
 
-
-    public class FilterDateViewModel : FilterViewModel
+    public class FilterTextDesignViewModel : FilterTextViewModel
     {
+        public FilterTextDesignViewModel()
+        {
+            Value = "DummySearch";
+        }
+    }
 
-        private new class H : NotifyHelper<FilterDateViewModel> { }
+
+    public class FilterDateViewModel : FilterViewModel<FilterDateViewModel>
+    {
 
         public Action Update
         {
@@ -28,12 +34,7 @@ namespace HLab.Erp.Core.ListFilters
             private set => _update.Set(value);
         }
         private readonly IProperty<Action> _update = H.Property<Action>();
- 
-        public FilterDateViewModel()
-        {
-            H.Initialize(this,OnPropertyChanged);
-        }
-
+        
         public DateTime ReferenceDate {
             get => _referenceDate.Get();
             set => _referenceDate.Set(value);
@@ -99,10 +100,16 @@ namespace HLab.Erp.Core.ListFilters
         /// <summary>
         /// Max Date
         /// </summary>
-        public DateTime MaxDate {
+        public DateTime MaxDate
+        {
             get => _maxDate.Get();
-            set => _maxDate.Set(value);
+            set
+            {
+                MaxDateCalculated = false;
+                _maxDate.Set(value);
+            }
         }
+
         private readonly IProperty<DateTime> _maxDate = H.Property<DateTime>(c => c
             .On(e => e.MaxDateCalculated)
             .On(e => e.MaxDateShift)
