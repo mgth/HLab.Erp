@@ -161,8 +161,8 @@ namespace HLab.Erp.Data.Observables
 
         private Expression<Func<T,bool>> Where()
         {
-            Expression result = null;
-            ParameterExpression param = null;
+            Expression<Func<T,bool>> result = null;
+            //ParameterExpression param = null;
 
             _lockFilters.EnterReadLock();
             try
@@ -171,12 +171,13 @@ namespace HLab.Erp.Data.Observables
                 {
                     if (result == null)
                     {
-                        result = filter.GetExpression().Body;
-                        param = filter.GetExpression().Parameters[0];
+                        result = filter.GetExpression();
+                        //param = filter.GetExpression().Parameters[0];
                     }
                     else
                     {
-                        result = Expression.AndAlso(result,filter.GetExpression().Body);
+                        //result = Expression.AndAlso(result,filter.GetExpression().Body);
+                        result = result.And(filter.GetExpression());
                     }
                 }
             }
@@ -188,7 +189,7 @@ namespace HLab.Erp.Data.Observables
             if (result == null)
                 return t => true;
 
-            return Expression.Lambda<Func<T,bool>>(result,param);
+            return result;
         }
 
         //TODO : use where function to compile expression and cache it
@@ -529,77 +530,95 @@ namespace HLab.Erp.Data.Observables
                 _updateNeeded = false;
             }
 
-
-            var changed = false;
-
-
+            Lock.EnterWriteLock();
+            try
             {
-                List<T> list = await PostQuery(force).ConfigureAwait(true)/*.ToList()*/;
-
-                Console.WriteLine("Query : " + stopwatch.ElapsedMilliseconds);
-
-                if (list == null) return;
-
-                var count = list.Count;
-
-                for(var n = 0; n < list.Count; n++ )
+                var changed = false;
                 {
-                    var item = list[n];
-                    var id = item.Id;
+                    List<T> list = await PostQuery(force).ConfigureAwait(true) /*.ToList()*/;
 
-                    if (_updateNeeded)
+                    Console.WriteLine("Query : " + stopwatch.ElapsedMilliseconds);
+
+                    if (list == null) return;
+
+                    var count = list.Count;
+
+                    for (var n = 0; n < count; n++)
                     {
-                        lock (_lockUpdate)
-                        {
-                            _updating = false;
-                            _updateNeeded = false;
-                        }
-                        return;
-                    }
-                    // while list is consistent
-                    if (n < Count && Equals(id,this[n].Id)) continue;
+                        var item = list[n];
+                        var id = item.Id;
 
-                    //next item exists elsewhere in collection
-                    var n2 = n + 1;
-                    while(n2<Count)
+                        if (_updateNeeded)
+                        {
+                            lock (_lockUpdate)
+                            {
+                                _updating = false;
+                                _updateNeeded = false;
+                            }
+
+                            return;
+                        }
+
+                        // while list is consistent
+                        if (n < Count)
+                        {
+                            if (Equals(id, this[n].Id)) continue;
+
+                        }
+
+                        //next item exists elsewhere in collection
+                        var n2 = n;
+                        while (n2 < Count)
+                        {
+                            var i = this[n2];
+                            if (Equals(i.Id, id))
+                            {
+                                RemoveAtNolock(n2);
+                                InsertNoLock(n, i);
+                                break;
+                            }
+                            if(list.Exists(e => Equals(this[n2].Id,e.Id)))
+                                n2++;
+                            else
+                                RemoveAtNolock(n);
+
+                        }
+                        if(n2==Count)
+                            InsertNoLock(n, item);
+
+                        changed = true;
+                    }
+
+                    Console.WriteLine("Update : " + stopwatch.ElapsedMilliseconds);
+
+                    //remove remaining items
+                    while (count < Count)
                     {
-                        var i = this[n2];
-                        if(Equals(i.Id,id))
-                        {
-                            RemoveAt(n2);
-                            base.Insert(n, i);
-                            continue;
-                        }
-                        n2++;
+                        RemoveAtNolock(count);
                     }
 
-                    base.Insert(n, item);
-                    changed = true;
-                }
-                Console.WriteLine("Update : " + stopwatch.ElapsedMilliseconds);
+                    Console.WriteLine("Cleanup : " + stopwatch.ElapsedMilliseconds);
+                    Debug.Assert(Count == count);
 
-                //remove remaining items
-                while (count < Count)
-                {
-                        RemoveAt(count);
                 }
-
-                Console.WriteLine("Cleanup : " + stopwatch.ElapsedMilliseconds);
-                Debug.Assert(Count==count);
-                
-            }
 /*
             foreach (var i in this)
             {
                 Debug.Assert(this.Count(e => Equals(e.Id, i.Id)) == 1);
             }
             */
-            if (!changed)
-            {
-            }
+                if (!changed)
+                {
+                }
 
-            _initialized = true;
-            _updating = false;
+                _initialized = true;
+                _updating = false;
+            }
+            finally
+            {
+                Lock.ExitWriteLock();
+                OnCollectionChanged();
+            }
         }
 
         //take care of modified entity that do not match filters anymore

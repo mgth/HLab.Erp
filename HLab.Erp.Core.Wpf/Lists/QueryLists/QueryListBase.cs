@@ -107,10 +107,27 @@ namespace HLab.Erp.Core.Lists.QueryLists
 
         public T SelectedEntity
         {
-            get { using(Lock.Read) return Selected.Model; }
-            set { using (Lock.Write)
-                {                    
+            get
+            {
+                Lock.EnterReadLock();
+                try
+                {
+                    return Selected.Model;
+                }
+                finally
+                {
+                    Lock.ExitReadLock();
+                }
+            }
+            set { 
+                Lock.EnterWriteLock();
+                try
+                {
                     _selected.Set(this.FirstOrDefault(e => e.Model.Equals(value)));
+                }
+                finally
+                {
+                    Lock.ExitWriteLock();
                 }
             }
         }

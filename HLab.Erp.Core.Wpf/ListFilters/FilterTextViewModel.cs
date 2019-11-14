@@ -19,7 +19,8 @@ namespace HLab.Erp.Core.ListFilters
 
         public Expression<Func<T,bool>> Match<T>(Expression<Func<T, string>> getter)
         {
-            if (Value == null) return e => true; 
+            if (string.IsNullOrWhiteSpace(Value)) 
+                return e => true; 
 
             var entity = getter.Parameters[0];
             var value = Expression.Constant(Value,typeof(string));

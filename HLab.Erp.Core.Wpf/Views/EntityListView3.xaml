@@ -24,7 +24,8 @@
             </ItemsControl>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <Button Command ="{Binding AddCommand}">
+
+            <Button Command ="{Binding AddCommand}" Foreground="Black">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}" >
                         <Style.Triggers>
@@ -36,7 +37,8 @@
                 </Button.Style>
                 <lang:Localize Id="^Add"/>
             </Button>
-            <Button Command="{Binding DeleteCommand}">                    
+
+            <Button Command="{Binding DeleteCommand}" Foreground="Black">                    
                 <Button.Style>
                         <Style TargetType="{x:Type Button}" >
                             <Style.Triggers>
@@ -81,6 +83,15 @@
                          </DataTrigger>
                          <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
                              <Setter Property="Background" Value="#08FFFFFF" />
+                         </Trigger>
+                         <Trigger Property="IsSelected"
+                                  Value="True">
+                             <Setter Property="Background"
+                                     Value="#40FFFFFF" />
+                             <Setter Property="BorderBrush"
+                                     Value="#80FFFFFF" />
+                             <Setter Property="BorderThickness"
+                                     Value="2" />
                          </Trigger>
                      </Style.Triggers>
                  </Style>

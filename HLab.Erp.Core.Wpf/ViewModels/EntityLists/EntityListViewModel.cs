@@ -30,7 +30,7 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
         public abstract void SetOpenAction(Action<object> action);
     }
 
-    public abstract class EntityListViewModel<TClass,T> : EntityListViewModel<TClass>
+    public abstract class EntityListViewModel<TClass,T> : EntityListViewModel<TClass>, IListViewModel<T>
     where TClass : EntityListViewModel<TClass, T>
         where T : class, IEntity, new()
     {
@@ -106,6 +106,7 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var n in e.OldItems.OfType<T>())
                     {
+                        //TODO should keep deleted elements in cache for some times
                         if (_cache.TryRemove(n, out var h))
                             ListViewModel.Remove(h);
                         else
