@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
+using HLab.Erp.Base.Wpf.Entities.Icons;
+using HLab.Erp.Base.Wpf.Entities.Users;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
@@ -52,7 +54,7 @@ namespace HLab.Erp.Base.Wpf
                 _erp.Icon.GetIcon("icons/Icon"));
 
             _erp.Menu.RegisterMenu("tools", "users", "Users",
-                IconCommand,
+                UserCommand,
                 _erp.Icon.GetIcon("Icons/Users"));
         }
     }

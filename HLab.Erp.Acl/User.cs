@@ -45,12 +45,26 @@ namespace HLab.Erp.Acl
         private readonly IProperty<string> _hashedPassword = H.Property<string>(c => c.Default(""));
 
 
-         public string Function
+        public string Function
         {
             get => _function.Get();
             set => _function.Set(value);
         }
         private readonly IProperty<string> _function = H.Property<string>(c => c.Default(""));
+
+        public string Phone
+        {
+            get => _phone.Get();
+            set => _phone.Set(value);
+        }
+        private readonly IProperty<string> _phone = H.Property<string>(c => c.Default(""));
+
+        public string Email
+        {
+            get => _email.Get();
+            set => _email.Set(value);
+        }
+        private readonly IProperty<string> _email = H.Property<string>(c => c.Default(""));
 
         public String Note
         {
@@ -77,5 +91,6 @@ namespace HLab.Erp.Acl
         public string Caption => FirstName + " " + Name + " (" + Initials + ")";
         [Ignore]
         public string IconPath => "Icon/User";
+
     }
 }

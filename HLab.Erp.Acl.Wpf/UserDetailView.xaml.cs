@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,18 +10,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using HLab.Erp.Base.Data;
-using HLab.Erp.Core;
-using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Base.Wpf
+namespace HLab.Erp.Acl
 {
     /// <summary>
-    /// Logique d'interaction pour CustomerView.xaml
+    /// Logique d'interaction pour UserDetailView.xaml
     /// </summary>
-    public partial class CustomerView : UserControl, IView<CustomerViewModel>, IViewClassDocument
+    public partial class UserDetailView : UserControl
     {
-        public CustomerView()
+        public UserDetailView()
         {
             InitializeComponent();
         }

@@ -1,17 +1,18 @@
-﻿<UserControl x:Class="HLab.Erp.Base.Wpf.CustomerView"
+﻿<UserControl x:Class="HLab.Erp.Base.Wpf.Entities.Users.UserView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HLab.Erp.Base.Wpf"
-             mc:Ignorable="d"
              xmlns:base="clr-namespace:HLab.Base;assembly=HLab.Base.Wpf"
              xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
              xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
+             xmlns:users="clr-namespace:HLab.Erp.Base.Wpf.Entities.Users"
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
-             xmlns:data="clr-namespace:HLab.Erp.Base.Data;assembly=HLab.Erp.Base.Data"
-             d:DataContext="{d:DesignInstance {x:Type local:CustomerViewModel}, IsDesignTimeCreatable=True}"             
+             xmlns:data="clr-namespace:HLab.Erp.Acl;assembly=HLab.Erp.Acl"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance {x:Type users:UserViewModel}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
@@ -20,80 +21,93 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <base:DetailView>
-                <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
-
-                <!--<Label>
-                    <lang:Localize Id="Workflow" Margin="50,0,0,0"/>
-                </Label>
-                <ContentPresenter Content="{Binding Workflow}"/>-->
-
+            <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
 
             <Label Style="{DynamicResource Separator}" >
                 <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                     <Canvas>
-                        <icons:IconView Id = "Icons/Entities/Customer" Height="35" Opacity="0.8"/>
+                        <icons:IconView Id = "Icons/entities/User" Height="35" Opacity="0.8"/>
                     </Canvas>
-                    <lang:Localize Id="^Customer" Margin="50,0,0,0"/>
+                    <lang:Localize Id="^User" Margin="50,0,0,0"/>
                 </StackPanel>
             </Label>
 
             <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="^Name" StringFormat="{}{0} : " />
+                <lang:Localize Id="^Login" StringFormat="{}{0} : " />
             </Label>
-            <TextBox Text="{Binding Model.Name,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
+            <TextBox Text="{Binding Model.Login}" HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="^Address" StringFormat="{}{0} : " />
+                <lang:Localize Id="^Name" StringFormat="{}{0} : " />
+            </Label>
+            <TextBox Text="{Binding Model.Name}" HorizontalContentAlignment="Left" />
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="^First Name" StringFormat="{}{0} : " />
             </Label>
             <TextBox 
-                Text="{Binding Model.Address,UpdateSourceTrigger=PropertyChanged}"
+                Text="{Binding Model.FirstName}"
                 AcceptsReturn="True" 
                 TextWrapping="Wrap"
                 HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="^Country" StringFormat="{}{0} : " />
+                <lang:Localize Id="^Function" StringFormat="{}{0} : " />
             </Label>
-            <entitySelectors:ForeignView 
-                IsReadOnly="{Binding Locker.IsReadOnly}"
-                Model="{Binding Model.Country}" 
-                ModelClass="{x:Type data:Country}" 
-                ListClass="{x:Type local:ListCountryPopupViewModel}"
-                MvvmContext="{Binding Erp.Mvvm.MainContext}"
-                />
-            
+            <TextBox Text="{Binding Model.Function}" HorizontalContentAlignment="Left" />
+
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="^eMail" StringFormat="{}{0} : " />
             </Label>
-            <TextBox Text="{Binding Model.Email,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
+            <TextBox Text="{Binding Model.Email}" HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="^Phone" StringFormat="{}{0} : " />
             </Label>
-            <TextBox Text="{Binding Model.Phone,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
+            <TextBox Text="{Binding Model.Phone}" HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="^Fax" StringFormat="{}{0} : " />
+                <lang:Localize Id="^Initials" StringFormat="{}{0} : " />
             </Label>
-            <TextBox Text="{Binding Model.Fax,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
+            <TextBox Text="{Binding Model.Initials}" HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="^Contacts" StringFormat="{}{0} : " />
+                <lang:Localize Id="^Password" StringFormat="{}{0} : " />
             </Label>
-            <DataGrid 
-                Margin="10,19,0,14" 
-                Background="#CFFFFFFF" 
-                HeadersVisibility="None" 
-                ItemsSource="{Binding Contacts}">
+            <Button Command="{Binding ChangePasswordCommand}">
+                <lang:Localize Id="Change"/>
+            </Button>
 
-                <DataGrid.Columns>
-                    <DataGridTextColumn 
-                        Binding="{Binding Model.Name}" 
-                        ClipboardContentBinding="{x:Null}" 
-                        Header="^Name" Width="*" 
-                        CanUserResize="False"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <Label Style="{DynamicResource Separator}" >
+                <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                    <Canvas>
+                        <icons:IconView  Id="Icons/Edit" Height="35" Opacity="0.8"/>
+                    </Canvas>
+                    <ContentControl Width="50"></ContentControl>
+                    <lang:Localize  Id="Profiles"/>
+                </StackPanel>
+            </Label>
+
+            <Label>
+                    <lang:Localize  Id="Add Profile"/>
+            </Label>
+            <entitySelectors:ForeignView 
+                IsReadOnly="{Binding Locker.IsReadOnly}"
+                Model="{Binding SelectedProfile}" 
+                ModelClass="{x:Type data:Profile}" 
+                ListClass="{x:Type users:ListProfileViewModel}"
+                MvvmContext="{Binding Erp.Mvvm.MainContext}"
+            />
+
+
+            <Label/>
+            <Button Command="{Binding RemoveProfileCommand}">
+                <lang:Localize Id="Remove"/>
+            </Button>
+
+
+            <mvvm:ViewLocator Model="{Binding Profiles}"/>
+
         </base:DetailView>
 
         <base:DetailView Grid.Row="2">
@@ -108,8 +122,10 @@
             </Label>
 
 
+
             <TextBox Margin="50,0,15,0"  Grid.ColumnSpan="2"  Text="{Binding Model.Note}" AcceptsReturn="True" TextWrapping="Wrap"/>
             <Label />
+
 
         </base:DetailView>
 

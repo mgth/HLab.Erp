@@ -9,6 +9,7 @@ namespace HLab.Erp.Acl
     {
         public static readonly AclRight AclUserCreateRight = AclRight.Get();
         public static readonly AclRight AclGroupCreateRight = AclRight.Get();
+        public static readonly AclRight AclChangePassword = AclRight.Get();
     }
 
     public class AclRight : Entity<AclRight>

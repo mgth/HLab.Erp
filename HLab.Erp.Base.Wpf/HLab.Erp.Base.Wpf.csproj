@@ -31,13 +31,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="CustomerView.xaml.cs">
+    <Compile Update="Entities\Customers\CustomerView.xaml.cs">
       <DependentUpon>CustomerView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="CustomerView.xaml">
+    <Page Update="Entities\Customers\CustomerView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

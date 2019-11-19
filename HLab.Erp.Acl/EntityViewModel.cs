@@ -21,6 +21,8 @@ namespace HLab.Erp.Acl
             .Set(e => e._getLocker(e.Model))
         );
 
+        public virtual string EntityName => typeof(T).Name;
 
+        public virtual string EntityIconPath => "icons/entities/" + EntityName;
     }
 }

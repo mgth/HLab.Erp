@@ -1,10 +1,9 @@
 ﻿using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
-using HLab.Erp.Core.ViewModels;
 using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Base.Wpf
+namespace HLab.Erp.Base.Wpf.Entities.Icons
 {
     public class ListIconViewModel : EntityListViewModel<ListIconViewModel,Icon>, IMvvmContextProvider
     {
