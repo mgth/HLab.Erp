@@ -33,18 +33,19 @@ namespace HLab.Erp.Core.EntitySelectors
         public ForeignView()
         {
             InitializeComponent();
+            Locator.SetValue(ViewLocator.ModelProperty,null);
         }
 
-        private static readonly DependencyProperty ModelProperty = H.Property<object>()
+        public static readonly DependencyProperty ModelProperty = H.Property<object>()
             .BindsTwoWayByDefault
             .OnChange((s,a) => s.Locator.SetValue(ViewLocator.ModelProperty, a.NewValue))
             .Register();
 
-        private static readonly DependencyProperty ModelClassProperty = H.Property<Type>()
+        public static readonly DependencyProperty ModelClassProperty = H.Property<Type>()
 //            .OnChange( (s,a) => s.SetList() )
             .Register();
 
-        private static readonly DependencyProperty ListClassProperty = H.Property<Type>()
+        public static readonly DependencyProperty ListClassProperty = H.Property<Type>()
             .OnChange( (s,a) => s.SetList() )
             .Register();
 
@@ -52,7 +53,7 @@ namespace HLab.Erp.Core.EntitySelectors
 //            .OnChange( (s,a) => s.SetList() )
             .Register();
 
-        private static readonly DependencyProperty IsReadOnlyProperty = H.Property<bool>()
+        public static readonly DependencyProperty IsReadOnlyProperty = H.Property<bool>()
             .OnChange( (s,a) => s.SetReadOnly(a.NewValue) )
             .Register();
 

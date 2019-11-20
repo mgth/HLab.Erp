@@ -73,7 +73,7 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
         protected Action<T> OpenAction;
         public override void SetOpenAction(Action<object> action)
         {
-            OpenAction = t => action(t);
+            OpenAction = action;
         }
 
 
@@ -83,9 +83,15 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
 //            .On(e => e.Selected).CheckCanExecute()
         );
 
+
+        [Import]
+        private Func<T> CreateInstance;
+
         protected virtual async Task OnAddCommand(T target)
         {
-            var entity = (T)Activator.CreateInstance(typeof(T));
+            //var entity = (T)Activator.CreateInstance(typeof(T));
+            var entity = CreateInstance();
+
             if(entity is IEntity<int> e) e.Id=-1;
             _docs.OpenDocument(entity);
         }

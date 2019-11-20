@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using HLab.Base;
+using HLab.DependencyInjection.Annotations;
 using HLab.Notify.PropertyChanged;
 using NPoco;
 
@@ -98,7 +99,7 @@ namespace HLab.Erp.Data
         }
 
 
-        [Ignore]
+        [Ignore][Import(InjectLocation.AfterConstructor)]
         public IDataService DataService
         {
             get => _dataService.Get(); 
