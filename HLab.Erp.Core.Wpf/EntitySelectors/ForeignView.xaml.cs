@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HLab.Base;
 using HLab.DependencyInjection.Annotations;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ViewModels;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
@@ -49,9 +50,9 @@ namespace HLab.Erp.Core.EntitySelectors
             .OnChange( (s,a) => s.SetList() )
             .Register();
 
-        private static readonly DependencyProperty MvvmContextProperty = H.Property<IMvvmContext>()
-//            .OnChange( (s,a) => s.SetList() )
-            .Register();
+//        private static readonly DependencyProperty MvvmContextProperty = H.Property<IMvvmContext>()
+////            .OnChange( (s,a) => s.SetList() )
+//            .Register();
 
         public static readonly DependencyProperty IsReadOnlyProperty = H.Property<bool>()
             .OnChange( (s,a) => s.SetReadOnly(a.NewValue) )
@@ -72,11 +73,11 @@ namespace HLab.Erp.Core.EntitySelectors
             get => (Type)GetValue(ListClassProperty);
             set => SetValue(ListClassProperty, value);
         }
-        public IMvvmContext MvvmContext
-        {
-            get => (IMvvmContext)GetValue(MvvmContextProperty);
-            set => SetValue(MvvmContextProperty, value);
-        }
+        //public IMvvmContext MvvmContext
+        //{
+        //    get => (IMvvmContext)GetValue(MvvmContextProperty);
+        //    set => SetValue(MvvmContextProperty, value);
+        //}
         public bool IsReadOnly
         {
             get => (bool)GetValue(IsReadOnlyProperty);
@@ -96,15 +97,23 @@ namespace HLab.Erp.Core.EntitySelectors
             Popup.IsOpen = !Popup.IsOpen;
             if (Popup.IsOpen)
             {
-                if (ListClass == null)
+                Type type = ListClass;
+                if (type == null)
                 {
+                    if (typeof(IListableModel).IsAssignableFrom(ModelClass))
+                        type = typeof(ListableEntityListViewModel<>).MakeGenericType(ModelClass);
+                }
+                if(type==null)
+                { 
                     PopupContent.Content = null;
                     return;
                 }
 
-                var vm = MvvmContext.Scope.Locate(ListClass,this);
+                var ctx = ViewLocator.GetMvvmContext(this);
 
-                if(vm is IListViewModel lvm)
+                var vm = ctx.Scope.Locate(type,this);
+
+                if(vm is IEntityListViewModel lvm)
                     lvm.SetOpenAction(t =>
                     {
                         Popup.IsOpen = false;
@@ -112,7 +121,7 @@ namespace HLab.Erp.Core.EntitySelectors
                     });
 
 
-                var view = MvvmContext.GetView(vm,typeof(ViewModeDefault),typeof(IViewClassDefault));
+                var view = ctx.GetView(vm,typeof(ViewModeDefault),typeof(IViewClassDefault));
                 PopupContent.Content = view;
             }
         }

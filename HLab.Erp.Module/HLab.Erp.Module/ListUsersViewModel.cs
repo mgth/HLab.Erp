@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Windows;
 using HLab.Erp.Acl;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ViewModels;
 using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Mvvm.Annotations;

@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using HLab.Base;
 using HLab.DependencyInjection;
-using NPoco;
 
 namespace HLab.Erp.Data
 {
@@ -65,12 +59,13 @@ namespace HLab.Erp.Data
         public async Task<List<T>> GetOrAdd(List<T> list)
         {
             var listOut = new List<T>();
-
-            await Task.Run(()=>list.ForEach(async e =>
+            foreach (var e in list)
             {
                 var obj = await GetOrAdd(e).ConfigureAwait(true);
                 listOut.Add(obj);
-            })).ConfigureAwait(false);
+            }
+            //await Task.Run(()=>
+            //})).ConfigureAwait(true);
             return listOut;
         }
 

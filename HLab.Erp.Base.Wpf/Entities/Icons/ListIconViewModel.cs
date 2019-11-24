@@ -1,6 +1,6 @@
 ﻿using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
-using HLab.Erp.Core.ViewModels.EntityLists;
+using HLab.Erp.Core.EntityLists;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf.Entities.Icons

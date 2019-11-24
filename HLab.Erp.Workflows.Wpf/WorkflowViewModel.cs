@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 using HLab.Mvvm;
 using HLab.Notify.Annotations;
 
@@ -20,22 +21,28 @@ namespace HLab.Erp.Workflows
 
         private void Actions_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            Actions.Clear();
-            BackwardActions.Clear();
-            foreach (var m in Model.Actions)
-            {
-                switch (m.Direction)
+            Application.Current.Dispatcher.Invoke(
+                () =>
                 {
-                    case WorkflowDirection.Forward:
-                        Actions.Add(m);
-                        break;
-                    case WorkflowDirection.Backward:
-                        BackwardActions.Add(m);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    Actions.Clear();
+                    BackwardActions.Clear();
+                    foreach (var m in Model.Actions)
+                    {
+                        switch (m.Direction)
+                        {
+                            case WorkflowDirection.Forward:
+                                Actions.Add(m);
+                                break;
+                            case WorkflowDirection.Backward:
+                                BackwardActions.Add(m);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    }
                 }
-            }
+                );
+
         }
     }
 }

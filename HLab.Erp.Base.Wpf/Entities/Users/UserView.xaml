@@ -96,7 +96,6 @@
                 Model="{Binding SelectedProfile}" 
                 ModelClass="{x:Type data:Profile}" 
                 ListClass="{x:Type users:ListProfileViewModel}"
-                MvvmContext="{Binding Erp.Mvvm.MainContext}"
             />
 
 

@@ -21,12 +21,12 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Label Grid.Column="0" Grid.Row="0" Foreground="White">
-            <lang:Localize Id="^Start"/>
+            <lang:Localize Id="{}{Start}"/>
         </Label>
 
-        <StackPanel Grid.Column="1" Grid.Row="0"  >
+        <StackPanel Grid.Column="1" Grid.Row="0" >
             <DatePicker SelectedDate="{Binding MinDate}" IsEnabled="{Binding MinDateEnabled}"/>
-            <StackPanel Orientation="Horizontal" Grid.Column="1">
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Visibility="Collapsed">
                 <base:NumTextBox Width="50" Value="{Binding MinDateShift}"/>
                 <ComboBox>
                     <ComboBox.Items>
@@ -40,12 +40,12 @@
         </StackPanel>
         
         <Label Grid.Column="0" Grid.Row="1">
-            <lang:Localize Id="^End"/>
+            <lang:Localize Id="{}{End}"/>
         </Label>
 
         <StackPanel Grid.Column="1" Grid.Row="1">
             <DatePicker   SelectedDate="{Binding MaxDate}" IsEnabled="{Binding MaxDateEnabled}"/>
-            <StackPanel Orientation="Horizontal" IsEnabled="{Binding MaxDateCalculated}">
+            <StackPanel Orientation="Horizontal" IsEnabled="{Binding MaxDateCalculated}" Visibility="Collapsed">
                 <base:NumTextBox Width="50" Value="{Binding MaxDateShift}"/>
                 <ComboBox>
                     <ComboBox.Items>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace HLab.Erp.Core.ViewModels
+namespace HLab.Erp.Core.EntityLists
 {
     public class Column<T>
     {

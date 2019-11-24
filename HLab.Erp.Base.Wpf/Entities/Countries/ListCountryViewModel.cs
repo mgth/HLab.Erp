@@ -1,14 +1,11 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using HLab.DependencyInjection.Annotations;
+﻿using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
-using HLab.Erp.Core.ViewModels;
-using HLab.Erp.Core.ViewModels.EntityLists;
+using HLab.Erp.Core.EntityLists;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Icons;
 using HLab.Mvvm.Lang;
 
-namespace HLab.Erp.Base.Wpf
+namespace HLab.Erp.Base.Wpf.Entities.Countries
 {
     class ListCountryPopupViewModel : EntityListViewModel<ListCountryPopupViewModel, Country>, IMvvmContextProvider
     {
@@ -30,12 +27,13 @@ namespace HLab.Erp.Base.Wpf
                 //.Column("^A3 Code ", s => s.IsoA3)
                 //.Column("^Code", s => s.Iso)
                 //.Column("^Continent", s => new Localize{Id = s.Continent.Name})
-                .Column("^Flag", s => new IconView
-                {
-                    MaxWidth = 30,
-                    MinHeight = 30,
-                    Id = s.IconPath
-                })
+                .Icon("Flag",s => s.IconPath)
+                //.Column("^Flag", s => new IconView
+                //{
+                //    MaxWidth = 30,
+                //    MinHeight = 30,
+                //    Id = s.IconPath
+                //})
                 ;
 
             List.OrderBy = e => e.Name;

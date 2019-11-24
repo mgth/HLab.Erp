@@ -25,7 +25,7 @@ namespace HLab.Erp.Workflows
     {
         User User { get; set; }
         string Caption { get; }
-        string Icon { get; }
+        string IconPath { get; }
         ObservableCollection<WorkflowAction> Actions { get; }
         object Target { get; }
     }
@@ -93,9 +93,9 @@ namespace HLab.Erp.Workflows
             .Set(e => e.CurrentState.GetCaption(e))
         );
 
-        public string Icon => _icon.Get();
+        public string IconPath => _iconPath.Get();
 
-        private readonly IProperty<string> _icon = H.Property<string>(c => c
+        private readonly IProperty<string> _iconPath = H.Property<string>(c => c
             .On(e => e.CurrentState)
             .Set(e => e.CurrentState.GetIcon(e))
         );

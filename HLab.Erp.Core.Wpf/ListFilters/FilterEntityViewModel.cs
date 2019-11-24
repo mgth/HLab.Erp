@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ViewModels;
 using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Erp.Data;
@@ -15,9 +16,9 @@ namespace HLab.Erp.Core.ListFilters
 
         private static readonly MethodInfo ContainsMethod = typeof(List<TClass>).GetMethod("Contains", new[] {typeof(TClass)});
 
-        private readonly IListViewModel<TClass> _list;
+        private readonly IEntityListViewModel<TClass> _list;
 
-        public FilterEntityViewModel(IListViewModel<TClass> list)
+        public FilterEntityViewModel(IEntityListViewModel<TClass> list)
         {
             _list = list;
         }

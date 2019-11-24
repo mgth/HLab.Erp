@@ -7,24 +7,6 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.ListFilters
 {
-    public class FilterDateDesignViewModel : FilterDateViewModel
-    {
-        public FilterDateDesignViewModel()
-        {
-            MinDate = DateTime.Now.AddDays(-10);
-            MaxDate = DateTime.Now;
-        }
-    }
-
-    public class FilterTextDesignViewModel : FilterTextViewModel
-    {
-        public FilterTextDesignViewModel()
-        {
-            Value = "DummySearch";
-        }
-    }
-
-
     public class FilterDateViewModel : FilterViewModel<FilterDateViewModel>
     {
 

@@ -7,9 +7,6 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.ListFilters
 {
-
-    public interface IEntityFilterViewModel { }
-
     public class EntityFilterViewModel : FilterViewModel<EntityFilterViewModel>, IEntityFilterViewModel
     {
 

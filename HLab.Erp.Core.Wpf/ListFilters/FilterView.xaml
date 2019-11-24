@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:HLab.Erp.Core.ListFilters"
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:listFilters="clr-namespace:HLab.Erp.Core.ListFilters"
+             xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -30,23 +31,24 @@
                 FontSize="16" 
                 FontWeight="Bold" 
                 Content="{Binding Title,FallbackValue=TITLE}"/>-->
-            <Grid Grid.Row="1" >
+            <Grid Grid.Column="1" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <CheckBox IsChecked="{Binding Enabled}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-            <StackPanel Orientation="Horizontal" Grid.Row="1">
-                <StackPanel.LayoutTransform>
+            <StackPanel Orientation="Vertical" Grid.Column="1">
+                <!--<StackPanel.LayoutTransform>
                     <RotateTransform Angle="-90"></RotateTransform>
-                </StackPanel.LayoutTransform>
+                </StackPanel.LayoutTransform>-->
             <Label 
                 Foreground="#40FFFFFF" 
                 Grid.Row="1" 
                 HorizontalAlignment="Center" 
                 FontSize="12" 
                 FontWeight="Bold" 
-                Content="{Binding Title,FallbackValue=TITLE}">
+                >
+                <lang:Localize Id="{Binding Title}"/>
             </Label>
             </StackPanel>
             </Grid>

@@ -26,7 +26,7 @@ namespace HLab.Erp.Module
 
         public void Load()
         {
-            _erp.Menu.RegisterMenu("tools", "users", "Users",
+            _erp.Menu.RegisterMenu("tools", "users", "{Users}",
                 ListUsersOpenDocumentCommand,
                 _erp.Icon.GetIcon("icons/Users"));
         }

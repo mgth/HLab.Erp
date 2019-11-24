@@ -1,4 +1,5 @@
 ﻿using System.Dynamic;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.ViewModels.EntityLists

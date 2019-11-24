@@ -6,13 +6,13 @@
              xmlns:local="clr-namespace:HLab.Erp.Core.ListFilters"
              xmlns:annotations="clr-namespace:HLab.Mvvm.Annotations;assembly=HLab.Mvvm.Annotations"
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
+             xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            <ComboBox 
-                mvvm:ViewLocator.ViewClass="{x:Type annotations:IViewClassDefault}"
-                ItemsSource="{Binding Values}"
-                SelectedItem="{Binding Value}"
-                      />
+            <entitySelectors:ForeignView
+                Model="{Binding value}"
+                ListClass="{Binding ListClass}"
+                />
     </Grid>
 </UserControl>

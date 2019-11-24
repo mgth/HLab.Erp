@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
+using HLab.Erp.Base.Wpf.Entities.Countries;
 using HLab.Erp.Base.Wpf.Entities.Icons;
 using HLab.Erp.Base.Wpf.Entities.Users;
 using HLab.Erp.Core;
@@ -41,19 +42,19 @@ namespace HLab.Erp.Base.Wpf
             ));
         public void Load()
         {
-            _erp.Menu.RegisterMenu("data", "customer", "Customer",
+            _erp.Menu.RegisterMenu("data", "customer", "{Customer}",
                 CustomerCommand,
                 _erp.Icon.GetIcon("icons/Customer"));
 
-            _erp.Menu.RegisterMenu("data", "country", "Country",
+            _erp.Menu.RegisterMenu("data", "country", "{Country}",
                 CountryCommand,
-                _erp.Icon.GetIcon("icons/Country"));
+                _erp.Icon.GetIcon("icons/entities/Country"));
 
-            _erp.Menu.RegisterMenu("tools", "icons", "Icons",
+            _erp.Menu.RegisterMenu("tools", "icons", "{Icons}",
                 IconCommand,
                 _erp.Icon.GetIcon("icons/Icon"));
 
-            _erp.Menu.RegisterMenu("tools", "users", "Users",
+            _erp.Menu.RegisterMenu("tools", "users", "{Users}",
                 UserCommand,
                 _erp.Icon.GetIcon("Icons/Users"));
         }

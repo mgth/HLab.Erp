@@ -136,13 +136,13 @@ namespace HLab.Erp.Core.ApplicationServices
             var w = _erp.Mvvm.MainContext.GetView(ViewModel,MainViewMode);
 
 
-            _erp.Menu.RegisterMenu(null, "file", "File", null, null);
-            _erp.Menu.RegisterMenu(null, "data", "Data", null, null);
-            _erp.Menu.RegisterMenu(null, "tools", "Tools", null, null);
-            _erp.Menu.RegisterMenu(null, "help", "_?", null, null);
+            _erp.Menu.RegisterMenu(null, "file", "{File}", null, null);
+            _erp.Menu.RegisterMenu(null, "data", "{Data}", null, null);
+            _erp.Menu.RegisterMenu(null, "tools", "{Tools}", null, null);
+            _erp.Menu.RegisterMenu(null, "help", "{_?}", null, null);
 
 
-            _erp.Menu.RegisterMenu("file","exit","Exit", ViewModel.Exit,null);
+            _erp.Menu.RegisterMenu("file","exit","{Exit}", ViewModel.Exit,null);
 
             MainWindow.Content = w;
         }

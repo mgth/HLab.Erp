@@ -619,15 +619,6 @@
     <Compile Update="Views\DefaultView.xaml.cs">
       <DependentUpon>DefaultView.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\EntityListView.xaml.cs">
-      <DependentUpon>EntityListView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\EntityListView2.xaml.cs">
-      <DependentUpon>EntityListView2.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\EntityListView3.xaml.cs">
-      <DependentUpon>EntityListView3.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Views\ListItemView.xaml.cs">
       <DependentUpon>ListItemView.xaml</DependentUpon>
     </Compile>
@@ -697,13 +688,7 @@
     <Page Update="Views\DefaultView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\EntityListView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\EntityListView2.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\EntityListView3.xaml">
+    <Page Update="EntityLists\EntityListView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ListItemView.xaml">

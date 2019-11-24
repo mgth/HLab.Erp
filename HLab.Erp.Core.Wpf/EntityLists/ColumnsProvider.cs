@@ -7,21 +7,38 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Xml;
+using HLab.DependencyInjection.Annotations;
+using HLab.Erp.Core.ViewModels;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
+using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Lang;
 
-namespace HLab.Erp.Core.ViewModels
+namespace HLab.Erp.Core.EntityLists
 {
     public class ColumnsProvider<T> where T:class, IEntity
     {
+        [Import]
+        private IIconService _icons;
+
         private readonly Dictionary<string,Column<T>> _dict = new Dictionary<string, Column<T>>();
         private ObservableQuery<T> _list;
 
         public ColumnsProvider(ObservableQuery<T> list)
         {
             _list = list;
+        }
+
+        public ColumnsProvider<T> Icon(string caption, Func<T,string> iconPath,Expression<Func<T,object>> orderBy=null,double height=25.0, string id=null)
+        {
+            return Column(caption, async (s) =>
+            {
+                var icon = await _icons.GetIcon(iconPath(s));
+                if (icon is FrameworkElement fe) fe.MaxHeight = height;
+                return icon;
+
+            }, orderBy);
         }
 
         public ColumnsProvider<T> Column(string caption, Func<T,Task<object>> f,Expression<Func<T,object>> orderBy,string id=null)

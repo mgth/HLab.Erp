@@ -23,13 +23,34 @@ namespace HLab.Erp.Core.Localization
         private readonly ConcurrentDictionary<string,AsyncDictionary<string,LocalizeEntry>> _cache 
             = new ConcurrentDictionary<string,AsyncDictionary<string,LocalizeEntry>>();
 
-        public async Task<string> Localize(string tag, string code)
+        private async Task<AsyncDictionary<string, LocalizeEntry>> GetDictionary(string language)
         {
-            var dic = _cache.GetOrAdd(tag, t => new AsyncDictionary<string, LocalizeEntry>());
+            var created = false;
+            var dic = _cache.GetOrAdd(language, t =>
+            {
+                created = true;
+                return new AsyncDictionary<string, LocalizeEntry>();
+            });
+
+            if (created)
+            {
+                var list = await _db.FetchWhere<LocalizeEntry>(e => e.Tag == language,e => e.Tag);
+                foreach (var e in list)
+                {
+                    await dic.GetOrAdd(e.Code, async x => e);
+                }
+            }
+            return dic;
+        }
+
+
+        public async Task<string> Localize(string language, string code)
+        {
+            var dic = await GetDictionary(language);
 
             var entry = await dic.GetOrAdd(code, async t =>
             {
-                var e = await _db.FetchOneAsync<LocalizeEntry>(e => e.Tag == tag && e.Code == code).ConfigureAwait(false);
+                var e = await _db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == code).ConfigureAwait(false);
 
                 if(e!=null && e.BadCode)
                     throw new ArgumentException(e.Code + " is told bad code");

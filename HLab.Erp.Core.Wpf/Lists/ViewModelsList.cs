@@ -12,7 +12,7 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.Lists
 {
-
+    [Obsolete]
     [Export(typeof(ViewModelsList))]
     public class ViewModelsList : ObservableCollection<IViewModel> // todo : test with ObservableHashset
     {

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,25 +13,47 @@ using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Core.Tools.Details;
+using HLab.Erp.Core.ViewModels;
+using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.ViewModels.EntityLists
+namespace HLab.Erp.Core.EntityLists
 {
-    public abstract class EntityListViewModel<TClass> : ViewModel<TClass>, IListViewModel
+    public class ListableEntityListViewModel<T> : EntityListViewModel<ListableEntityListViewModel<T>, T>
+        where T : class, IEntity, IListableModel, new()
+    {
+        public ListableEntityListViewModel()
+        {
+            Columns
+                .Icon("",e => e.IconPath)
+                .Column("{Name}", e => e.Caption);
+
+            List.Update();
+        }
+        public ListableEntityListViewModel(Expression<Func<T,bool>> filter)
+        {
+            List.AddFilter(()=>filter);
+
+            Columns
+                .Icon("",e => e.IconPath)
+                .Column("{Name}", e => e.Caption);
+
+            List.Update();
+        }
+    }
+
+    public abstract class EntityListViewModel<TClass> : ViewModel<TClass>, IEntityListViewModel
     where TClass : EntityListViewModel<TClass>
     {
-        public virtual void PopulateDataGrid(DataGrid grid)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void PopulateDataGrid(DataGrid grid);
 
         public abstract void SetOpenAction(Action<object> action);
     }
 
-    public abstract class EntityListViewModel<TClass,T> : EntityListViewModel<TClass>, IListViewModel<T>
+    public abstract class EntityListViewModel<TClass,T> : EntityListViewModel<TClass>, IEntityListViewModel<T>
     where TClass : EntityListViewModel<TClass, T>
         where T : class, IEntity, new()
     {
@@ -54,9 +77,12 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
 
         public ObservableCollection<dynamic> ListViewModel { get; } = new ObservableCollection<dynamic>();
         private readonly ConcurrentDictionary<T,dynamic> _cache = new ConcurrentDictionary<T, dynamic>();
+
+        [Import] private Func<ObservableQuery<T>,ColumnsProvider<T>> _getColumnsProvider;
+
         protected EntityListViewModel()
         {
-            Columns = new ColumnsProvider<T>(List);
+            Columns = _getColumnsProvider(List);
             List_CollectionChanged(null,new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add,List,0));
             List.CollectionChanged += List_CollectionChanged;
             H.Initialize((TClass)this,OnPropertyChanged);

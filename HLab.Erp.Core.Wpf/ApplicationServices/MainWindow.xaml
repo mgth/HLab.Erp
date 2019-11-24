@@ -31,7 +31,7 @@
             <Label Opacity="0.5" Grid.Column="2" HorizontalContentAlignment="Center">HLAB Analysis</Label>
             <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="0,0,120,0">
                 <Label Content ="{Binding Acl.Connection.User.Name}"/>
-                <icons:IconView Margin="7" Id="Icons/User" Height="20"/>
+                <icons:IconView Margin="7" Id="Icons/Entities/User" Height="20"/>
             </StackPanel>
         </Grid>
         <Viewbox Height="1000" Grid.Row="2" Opacity="0.1"><icons:IconView Id="icons/LogoBackground"/></Viewbox>
@@ -60,10 +60,9 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" >
                         <Viewbox HorizontalAlignment="Left" Height="16">
-                            <ContentControl Content="{Binding Icon}"/>
+                            <icons:IconView Id="{Binding IconPath}"/>
                         </Viewbox>
-                        <ContentControl TextBlock.FontSize="14" Content="{Binding Title}"/>
-                        <!--<TextBlock FontSize="24" Margin="10,0,0,0" Text="{Binding Title, FallbackValue=Undefined}" />-->
+                        <lang:Localize TextBlock.FontSize="14" Id="{Binding Title}"/>
                     </StackPanel>
                 </DataTemplate>
             </xcad:DockingManager.DocumentHeaderTemplate>

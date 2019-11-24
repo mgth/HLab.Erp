@@ -1,5 +1,5 @@
 ﻿using HLab.Erp.Acl;
-using HLab.Erp.Core.ViewModels.EntityLists;
+using HLab.Erp.Core.EntityLists;
 
 namespace HLab.Erp.Base.Wpf.Entities.Users
 {

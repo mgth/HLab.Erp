@@ -29,10 +29,10 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Row="0">
-                <lang:Localize Id="^Name"/>
+                <lang:Localize Id="{}{Name}"/>
             </Label>
             <Label Grid.Row="1" Grid.Column="0">
-                <lang:Localize Id="^Password"/>
+                <lang:Localize Id="{}{Password}"/>
             </Label>
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Login}"/>
             <PasswordBox x:Name="PasswordBox" Grid.Column="1" Grid.Row="1" PasswordChar="*" PasswordChanged="PasswordBox_OnPasswordChanged"/>
@@ -53,7 +53,7 @@
                 Grid.Row="4" 
                 Margin="10" 
                 Command="{Binding LoginCommand}">
-                <lang:Localize Id="^Connection"/>
+                <lang:Localize Id="{}{Connection}"/>
             </Button>
         </Grid>
         </Grid>
