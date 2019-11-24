@@ -138,6 +138,7 @@ namespace HLab.Erp.Core.ApplicationServices
 
             _erp.Menu.RegisterMenu(null, "file", "{File}", null, null);
             _erp.Menu.RegisterMenu(null, "data", "{Data}", null, null);
+            _erp.Menu.RegisterMenu(null, "param", "{Parameters}", null, null);
             _erp.Menu.RegisterMenu(null, "tools", "{Tools}", null, null);
             _erp.Menu.RegisterMenu(null, "help", "{_?}", null, null);
 

@@ -3,6 +3,7 @@ using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
 using HLab.Erp.Base.Data;
+using HLab.Erp.Base.Wpf.Entities.Profiles;
 using HLab.Erp.Data;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
@@ -17,20 +18,23 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
 
         public string Title => Model.Name;
 
-        private readonly Func<int, ListUserProfileViewModel> _getUserProfiles;
+        [Import]
+        private readonly Func<User, ListUserProfileViewModel> _getUserProfiles;
 
         public ListUserProfileViewModel UserProfiles => _userProfiles.Get();
         private readonly IProperty<ListUserProfileViewModel> _userProfiles = H.Property<ListUserProfileViewModel>(c => c
             .On(e => e.Model)
-            .Set(e => e._getUserProfiles(e.Model.Id))
+            .NotNull(e => e.Model)
+            .Set(e => e._getUserProfiles(e.Model))
         );
 
-        private readonly Func<int, ListProfileViewModel> _getProfiles;
+        [Import]
+        private readonly Func<User, ListProfileViewModel> _getProfiles;
 
         public ListProfileViewModel Profiles => _profiles.Get();
         private readonly IProperty<ListProfileViewModel> _profiles = H.Property<ListProfileViewModel>(c => c
             .On(e => e.Model)
-            .Set(e => e._getProfiles(e.Model.Id))
+            .Set(e => e._getProfiles(e.Model))
         );
 
         public ICommand ChangePasswordCommand { get; } = H.Command(c => c

@@ -38,7 +38,7 @@ namespace HLab.Erp.Data
 #else        
         public T Get() => Value.Get();
 #endif
-        public void Set(T value) => Id.Set(value.Id);
+        public void Set(T value) => Id.Set(value?.Id);
 
         public IProperty<T> Value { get; }
         public void SetParent(object parent, INotifyClassParser parser, Action<PropertyChangedEventArgs> args)

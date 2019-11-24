@@ -8,6 +8,7 @@
   <ItemGroup>
     <Page Remove="Icons\cancel.xaml" />
     <Page Remove="Icons\Entities\Customer.xaml" />
+    <Page Remove="Icons\OpenForeign.xaml" />
     <Page Remove="Icons\save.xaml" />
   </ItemGroup>
 
@@ -23,6 +24,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Resource>
     <Resource Include="Icons\Entities\Customer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Icons\OpenForeign.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>
     <Resource Include="Icons\Save.xaml">

@@ -43,26 +43,32 @@ namespace HLab.Erp.Core.EntitySelectors
             .Register();
 
         public static readonly DependencyProperty ModelClassProperty = H.Property<Type>()
-//            .OnChange( (s,a) => s.SetList() )
             .Register();
 
         public static readonly DependencyProperty ListClassProperty = H.Property<Type>()
             .OnChange( (s,a) => s.SetList() )
             .Register();
 
-//        private static readonly DependencyProperty MvvmContextProperty = H.Property<IMvvmContext>()
-////            .OnChange( (s,a) => s.SetList() )
-//            .Register();
-
         public static readonly DependencyProperty IsReadOnlyProperty = H.Property<bool>()
             .OnChange( (s,a) => s.SetReadOnly(a.NewValue) )
             .Register();
+
+        public static readonly DependencyProperty CommandProperty = H.Property<ICommand>()
+            .OnChange( (s,a) => s.SetCommand(a.NewValue) )
+            .Register();
+
+        private void SetCommand(ICommand command)
+        {
+            Locator.Visibility = command == null ? Visibility.Visible : Visibility.Collapsed;
+            OpenButton.Visibility = command == null ? Visibility.Visible : Visibility.Collapsed;
+        }
 
         public object Model
         {
             get => GetValue(ModelProperty);
             set => SetValue(ModelProperty, value);
         }
+
         public Type ModelClass
         {
             get => (Type)GetValue(ModelClassProperty);
@@ -73,15 +79,16 @@ namespace HLab.Erp.Core.EntitySelectors
             get => (Type)GetValue(ListClassProperty);
             set => SetValue(ListClassProperty, value);
         }
-        //public IMvvmContext MvvmContext
-        //{
-        //    get => (IMvvmContext)GetValue(MvvmContextProperty);
-        //    set => SetValue(MvvmContextProperty, value);
-        //}
+
         public bool IsReadOnly
         {
             get => (bool)GetValue(IsReadOnlyProperty);
             set => SetValue(IsReadOnlyProperty, value);
+        }
+        public ICommand Command
+        {
+            get => (ICommand)GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
         }
 
         private void SetList()
@@ -97,7 +104,7 @@ namespace HLab.Erp.Core.EntitySelectors
             Popup.IsOpen = !Popup.IsOpen;
             if (Popup.IsOpen)
             {
-                Type type = ListClass;
+                var type = ListClass;
                 if (type == null)
                 {
                     if (typeof(IListableModel).IsAssignableFrom(ModelClass))
@@ -113,17 +120,35 @@ namespace HLab.Erp.Core.EntitySelectors
 
                 var vm = ctx.Scope.Locate(type,this);
 
-                if(vm is IEntityListViewModel lvm)
-                    lvm.SetOpenAction(t =>
+                if (vm is IEntityListViewModel lvm)
+                {
+                    if (Command != null)
                     {
-                        Popup.IsOpen = false;
-                        Model = t;
-                    });
+                        lvm.SetOpenAction(t =>
+                        {
+                            Popup.IsOpen = false;
+                            Command.Execute(t);
+                        });
+                    }
+                    else
+                    {
+                        lvm.SetOpenAction(t =>
+                        {
+                            Popup.IsOpen = false;
+                            Model = t;
+                        });
+                    }
+                }
 
 
                 var view = ctx.GetView(vm,typeof(ViewModeDefault),typeof(IViewClassDefault));
                 PopupContent.Content = view;
             }
+        }
+
+        private void OpenButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ViewLocator.GetMvvmContext(this).Scope.Locate<IDocumentService>().OpenDocument(Model);
         }
     }
 }

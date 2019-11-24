@@ -1,46 +1,30 @@
-﻿using HLab.Erp.Acl;
+﻿using System;
+using HLab.Erp.Acl;
 using HLab.Erp.Core.EntityLists;
+using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf.Entities.Users
 {
-    public class ListProfileViewModel : EntityListViewModel<ListProfileViewModel,Profile>
+    public class ListUserViewModel : EntityListViewModel<ListUserViewModel,User>, IMvvmContextProvider
     {
-        public ListProfileViewModel(User user)
+        public void ConfigureMvvmContext(IMvvmContext ctx)
         {
-            Columns
-                .Column("Name", s => s.Name);
+        }
 
-//            List.AddFilter(() => e => e.UserId == user.Id);
+        public String Title => "Users";
+        public string Icon => "Icons/entities/Users";
 
-            List.Update();
-        }        
-    }
-
-    public class ListUserProfileViewModel : EntityListViewModel<ListUserProfileViewModel,UserProfile>
-    {
-        public ListUserProfileViewModel(User user)
-        {
-            Columns
-                .Column("Name", s => s.Profile.Name);
-
-            List.AddFilter(() => e => e.UserId == user.Id);
-
-            List.Update();
-        }        
-    }
-
-    public class ListUserViewModel : EntityListViewModel<ListUserViewModel,User>
-    {
         public ListUserViewModel()
         {
             Columns
-                .Column("Name", s => s.Name)
-                .Column("First Name", s => s.FirstName)
-                .Column("Login", s => s.Login)
-                .Column("Initials", s => s.Initials);
+                .Column("{First Name}", u => u.FirstName)
+                .Column("{Name}", u=>u.Name)
+                .Column("{Login}", u=>u.Login)
+                .Column("{Function}", u=>u.Function)
+                .Column("{Initials}", u=>u.Initials)
+                ;
 
             List.Update();
         }
-
     }
 }

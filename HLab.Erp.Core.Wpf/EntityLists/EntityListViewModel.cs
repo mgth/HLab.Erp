@@ -115,11 +115,10 @@ namespace HLab.Erp.Core.EntityLists
 
         protected virtual async Task OnAddCommand(T target)
         {
-            //var entity = (T)Activator.CreateInstance(typeof(T));
             var entity = CreateInstance();
 
             if(entity is IEntity<int> e) e.Id=-1;
-            _docs.OpenDocument(entity);
+            await _docs.OpenDocument(entity);
         }
 
         private void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

@@ -8,6 +8,7 @@ using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Wpf.Entities.Countries;
 using HLab.Erp.Base.Wpf.Entities.Icons;
+using HLab.Erp.Base.Wpf.Entities.Profiles;
 using HLab.Erp.Base.Wpf.Entities.Users;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
@@ -40,23 +41,30 @@ namespace HLab.Erp.Base.Wpf
         public ICommand UserCommand { get; } = H.Command(c => c.Action(
                 e => e._erp.Docs.OpenDocument(typeof(ListUserViewModel))
             ));
+        public ICommand ProfileCommand { get; } = H.Command(c => c.Action(
+                e => e._erp.Docs.OpenDocument(typeof(ListProfileViewModel))
+            ));
         public void Load()
         {
             _erp.Menu.RegisterMenu("data", "customer", "{Customer}",
                 CustomerCommand,
-                _erp.Icon.GetIcon("icons/Customer"));
+                _erp.Icon.GetIcon("Icons/Entities/Customer"));
 
-            _erp.Menu.RegisterMenu("data", "country", "{Country}",
+            _erp.Menu.RegisterMenu("param", "country", "{Country}",
                 CountryCommand,
-                _erp.Icon.GetIcon("icons/entities/Country"));
+                _erp.Icon.GetIcon("Icons/Entities/Country"));
 
-            _erp.Menu.RegisterMenu("tools", "icons", "{Icons}",
+            _erp.Menu.RegisterMenu("param", "icons", "{Icons}",
                 IconCommand,
-                _erp.Icon.GetIcon("icons/Icon"));
+                _erp.Icon.GetIcon("Icons/Icon"));
 
-            _erp.Menu.RegisterMenu("tools", "users", "{Users}",
+            _erp.Menu.RegisterMenu("param", "users", "{Users}",
                 UserCommand,
-                _erp.Icon.GetIcon("Icons/Users"));
+                _erp.Icon.GetIcon("Icons/Entities/User"));
+
+            _erp.Menu.RegisterMenu("param", "profiles", "{Profiles}",
+                ProfileCommand,
+                _erp.Icon.GetIcon("Icons/Entities/Profile"));
         }
     }
 }
