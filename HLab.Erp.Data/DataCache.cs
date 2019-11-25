@@ -72,7 +72,7 @@ namespace HLab.Erp.Data
         public async Task<T> GetOrAdd(T obj)
         {
             var result = await _cache.GetOrAdd(obj.Id,
-                async k => obj).ConfigureAwait(false);
+                async k => obj).ConfigureAwait(true);
 
             obj.CopyPrimitivesTo(result);
 

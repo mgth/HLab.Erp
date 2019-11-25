@@ -174,7 +174,7 @@ namespace HLab.Erp.Data
                     await db.QueryAsync<T>().Where(expression).ToList().ConfigureAwait(false) :
                     await db.QueryAsync<T>().Where(expression).OrderBy(orderBy).ToList().ConfigureAwait(false);
 
-                return await cache.GetOrAdd(list).ConfigureAwait(false);
+                return await cache.GetOrAdd(list).ConfigureAwait(true);
             }
         }
 

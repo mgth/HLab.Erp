@@ -221,7 +221,7 @@ namespace HLab.Erp.Data.Observables
                 }
                 else
                 {
-                    _source = await _db.FetchWhere(Where(),_orderBy).ConfigureAwait(false);
+                    _source = await _db.FetchWhere(Where(),_orderBy).ConfigureAwait(true);
                 }                
             }
             var list = PostQuery(_source).ToList();
