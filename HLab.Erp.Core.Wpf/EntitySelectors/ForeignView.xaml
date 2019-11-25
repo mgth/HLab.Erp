@@ -9,7 +9,7 @@
              xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
              xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance local:ForeignViewModel }">
+             d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -17,11 +17,12 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <mvvm:ViewLocator x:Name="Locator" ViewClass="{x:Type annotations:IViewClassListItem}"/>
-        <Button Grid.Column="1" x:Name="OpenButton" Click="OpenButton_OnClick"><icons:IconView Id="Icons/OpenForeign" MaxHeight="10"/></Button>
+        <Button Grid.Column="1" x:Name="OpenButton" Click="OpenButton_OnClick">
+            <icons:IconView Id="Icons/OpenForeign" MaxHeight="10"/>
+        </Button>
         <Button Grid.Column="2" x:Name="Button" Click="ButtonBase_OnClick">
             <StackPanel>
                 <TextBlock>...</TextBlock>
-                <!--<lang:Localize>{Select}</lang:Localize>-->
                 <Popup x:Name="Popup" Height="500" StaysOpen="False">
                     <Grid>
                         <ContentPresenter x:Name="PopupContent"/>
