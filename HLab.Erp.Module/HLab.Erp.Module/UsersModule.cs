@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
+using HLab.Erp.Base.Wpf.Entities.Users;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm;
@@ -21,7 +22,7 @@ namespace HLab.Erp.Module
         }
 
         public ICommand ListUsersOpenDocumentCommand { get; } = H.Command(c => c
-            .Action(e => e._erp.Docs.OpenDocument(typeof(ListUsersViewModel)))
+            .Action(e => e._erp.Docs.OpenDocument(typeof(ListUserViewModel)))
         );
 
         public void Load()
