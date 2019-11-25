@@ -14,7 +14,8 @@ namespace HLab.Erp.Core.Tools.Details
 
         public void Load()
         {
-            _docs.OpenDocument(_getDetails());
+            //TODO :
+            //_docs.OpenDocument(_getDetails());
         }
     }
 
