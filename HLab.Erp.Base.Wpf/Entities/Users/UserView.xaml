@@ -94,9 +94,9 @@
             </Label>
             <entitySelectors:ForeignView 
                 IsReadOnly="{Binding Locker.IsReadOnly}"
-                Model="{Binding SelectedProfile}" 
                 ModelClass="{x:Type data:Profile}" 
                 ListClass="{x:Type profiles:ListProfileViewModel}"
+                Command="{Binding AddProfileCommand}"
             />
 
 
@@ -106,6 +106,7 @@
             </Button>
 
 
+            <Label/>
             <mvvm:ViewLocator Model="{Binding Profiles}"/>
 
         </base:DetailView>

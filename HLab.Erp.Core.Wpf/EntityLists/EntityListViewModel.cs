@@ -51,6 +51,7 @@ namespace HLab.Erp.Core.EntityLists
         public abstract void PopulateDataGrid(DataGrid grid);
 
         public abstract void SetOpenAction(Action<object> action);
+        public abstract void SetSelectAction(Action<object> action);
     }
 
     public abstract class EntityListViewModel<TClass,T> : EntityListViewModel<TClass>, IEntityListViewModel<T>
@@ -102,6 +103,12 @@ namespace HLab.Erp.Core.EntityLists
             OpenAction = action;
         }
 
+        protected Action<T> SelectAction;
+        public override void SetSelectAction(Action<object> action)
+        {
+            SelectAction = action;
+        }
+
 
         public ICommand AddCommand { get; } = H.Command(c => c
 //            .CanExecute(e=>e.Selected!=null)
@@ -111,7 +118,7 @@ namespace HLab.Erp.Core.EntityLists
 
 
         [Import]
-        private Func<T> CreateInstance;
+        protected Func<T> CreateInstance;
 
         protected virtual async Task OnAddCommand(T target)
         {
@@ -213,7 +220,15 @@ namespace HLab.Erp.Core.EntityLists
         public T Selected
         {
             get => _selected.Get();
-            set { if(_selected.Set(value)) _msg.Publish(new DetailMessage(value)); }
+            set {
+                if (_selected.Set(value))
+                {
+                    if (SelectAction != null)
+                        SelectAction(value);
+                    else
+                        _msg.Publish(new DetailMessage(value));
+                }
+            }
         }
 
         private readonly IProperty<T> _selected = H.Property<T>();

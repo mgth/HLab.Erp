@@ -124,7 +124,8 @@ namespace HLab.Erp.Core.EntitySelectors
                 {
                     if (Command != null)
                     {
-                        lvm.SetOpenAction(t =>
+
+                        lvm.SetSelectAction(t =>
                         {
                             Popup.IsOpen = false;
                             Command.Execute(t);
@@ -132,7 +133,7 @@ namespace HLab.Erp.Core.EntitySelectors
                     }
                     else
                     {
-                        lvm.SetOpenAction(t =>
+                        lvm.SetSelectAction(t =>
                         {
                             Popup.IsOpen = false;
                             Model = t;

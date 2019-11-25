@@ -17,6 +17,7 @@ namespace HLab.Erp.Core.EntityLists
         void PopulateDataGrid(DataGrid grid);
 
         void SetOpenAction(Action<object> action);
+        void SetSelectAction(Action<object> action);
     }
     public interface IEntityListViewModel<T> where T : class, IEntity
     {
