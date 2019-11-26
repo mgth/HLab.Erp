@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Net;
 using System.Security;
 using System.Threading;
@@ -70,6 +72,7 @@ namespace HLab.Erp.Acl
             if (connection != null /*&& user.CryptedPassword == password*/)
             {
                 Connection = connection;
+                await PopulateRights();
                 _msg.Publish(new UserLoggedInMessage(connection));
                 return Connection.User.FirstName + " " + Connection.User.Name + " Connecté.";
             }
@@ -112,7 +115,32 @@ namespace HLab.Erp.Acl
             return node;
         }
 
-        public async Task<bool> IsGranted(AclRight right, object grantedTo, object grantedOn = null)
+        public List<AclRight> CurrentRights;
+
+        public bool IsGranted(AclRight right, object grantedTo = null, object grantedOn = null) => CurrentRights.Contains(right);
+
+        private async Task PopulateRights()
+        {
+            List<AclRight> rights = new List<AclRight>();
+
+            var userId = Connection.UserId;
+            var profiles = await _data.FetchWhere<UserProfile>(e => e.UserId == userId, e => e.Id);
+            foreach (var profile in profiles)
+            {
+                var profileRights = await _data.FetchWhere<AclRightProfile>(e => e.ProfileId == profile.Id, e => e.Id);
+                foreach(var rightProfile in profileRights)
+                {
+                    if(rights.Any(r => r.Id == rightProfile.AclRightId)) continue;
+                    var right = await _data.FetchOne<AclRight>(rightProfile.AclRightId.Value);
+
+                    rights.Add(right);
+                }
+            }
+
+            CurrentRights = rights;
+        }
+
+        public async Task<bool> IsGrantedV2(AclRight right, object grantedTo, object grantedOn = null)
         {
             var toNode = await GetAclNode(grantedTo).ConfigureAwait(false);
             var onNode = await GetAclNode(grantedOn).ConfigureAwait(false);

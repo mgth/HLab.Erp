@@ -12,6 +12,8 @@ namespace HLab.Erp.Core
 
         public abstract Task OpenDocument(IView content);
 
+        public object MainViewModel {get;set;}
+
         public async Task OpenDocument(object obj)
         {
             if (obj is Type t)

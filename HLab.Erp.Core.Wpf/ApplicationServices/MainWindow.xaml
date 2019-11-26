@@ -28,9 +28,9 @@
             </Grid.ColumnDefinitions>
             <Viewbox  Height="25"><icons:IconView Id="icons/logo" Grid.Column="0"/></Viewbox>
             <ContentControl Grid.Column="1" FontSize="25" Content="{Binding Menu}"/>
-            <Label Opacity="0.5" Grid.Column="2" HorizontalContentAlignment="Center">HLAB Analysis</Label>
+            <Label Opacity="0.5" Grid.Column="2" HorizontalContentAlignment="Center" Content="{Binding Title}"/>
             <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="0,0,120,0">
-                <Label Content ="{Binding Acl.Connection.User.Name}"/>
+                <Button Command="{Binding OpenUserCommand}" Content ="{Binding Acl.Connection.User.Caption}"/>
                 <icons:IconView Margin="7" Id="Icons/Entities/User" Height="20"/>
             </StackPanel>
         </Grid>

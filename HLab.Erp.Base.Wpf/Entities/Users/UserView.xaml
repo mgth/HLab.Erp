@@ -93,6 +93,7 @@
                     <lang:Localize  Id="{}{Add Profile}"/>
             </Label>
             <entitySelectors:ForeignView 
+                HorizontalAlignment="Left"
                 IsReadOnly="{Binding Locker.IsReadOnly}"
                 ModelClass="{x:Type data:Profile}" 
                 ListClass="{x:Type profiles:ListProfileViewModel}"
@@ -107,7 +108,7 @@
 
 
             <Label/>
-            <mvvm:ViewLocator Model="{Binding Profiles}"/>
+            <mvvm:ViewLocator Model="{Binding UserProfiles}"/>
 
         </base:DetailView>
 

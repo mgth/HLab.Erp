@@ -10,9 +10,10 @@ namespace HLab.Erp.Acl
 {
     public static class AclRights
     {
-        public static readonly AclRight AclUserCreateRight = AclRight.Get();
-        public static readonly AclRight AclGroupCreateRight = AclRight.Get();
-        public static readonly AclRight AclChangePassword = AclRight.Get();
+        public static readonly AclRight ManageUser = AclRight.Get();
+        public static readonly AclRight ChangePassword = AclRight.Get();
+        public static readonly AclRight ManageProfiles = AclRight.Get();
+        public static readonly AclRight ManageRights = AclRight.Get();
     }
 
     public class AclRight : Entity<AclRight>, IListableModel

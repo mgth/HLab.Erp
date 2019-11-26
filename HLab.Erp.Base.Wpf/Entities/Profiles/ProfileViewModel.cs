@@ -14,8 +14,15 @@ namespace HLab.Erp.Base.Wpf.Entities.Profiles
 {
     public class ProfileViewModel : EntityViewModel<ProfileViewModel,Profile>
     {
-        public string Title => "Profiles";
+        public string Title => _title.Get();
+        private IProperty<string> _title = H.Property<string>(c => c
+            .On(e => e.Model.Name).Set(e => "{Profile}\n"+e.Model.Name)
+        );
         public string IconPath => "Icons/Entities/Profile";
+
+        [Import]
+        public IAclService Acl {get;}
+
 
         [Import]
         private readonly Func<Profile, ListUserProfileViewModel> _getUserProfiles;
@@ -41,6 +48,17 @@ namespace HLab.Erp.Base.Wpf.Entities.Profiles
         );
         public ICommand AddAclRightCommand { get; } = H.Command(c => c
             .Action((p, u) => p.AddRight(u as AclRight))
+        );
+        public ICommand RemoveUserCommand { get; } = H.Command(c => c
+            .CanExecute(p => p.UserProfiles.Selected !=null)
+            .Action((p) => p.RemoveUser(p.UserProfiles.Selected))
+            .On(p => p.UserProfiles.Selected).CheckCanExecute()
+        );
+
+        public ICommand RemoveAclRightCommand { get; } = H.Command(c => c
+            .CanExecute(p => p.ProfileRights.Selected != null && p.Acl.IsGranted(AclRights.ManageProfiles))
+            .Action((p) => p.RemoveRight(p.ProfileRights.Selected))
+            .On(p => p.ProfileRights.Selected).CheckCanExecute()
         );
 
         [Import] private IDataService _data;
@@ -69,6 +87,27 @@ namespace HLab.Erp.Base.Wpf.Entities.Profiles
             });
             if (up != null)
                 ProfileRights.List.Update();
+        }
+
+        private void RemoveUser(UserProfile userProfile)
+        {
+            if(userProfile==null) return;
+            if(!UserProfiles.List.Contains(userProfile)) return;
+
+            if(_data.Delete<UserProfile>(userProfile)>0)
+            {
+                UserProfiles.List.Update();
+            }
+        }
+        private void RemoveRight(AclRightProfile right)
+        {
+            if(right==null) return;
+            if(!ProfileRights.List.Contains(right)) return;
+
+            if(_data.Delete<AclRightProfile>(right)>0)
+            {
+                ProfileRights.List.Update();
+            }
         }
     }
 }

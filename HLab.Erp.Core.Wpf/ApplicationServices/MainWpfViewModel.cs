@@ -29,18 +29,21 @@ namespace HLab.Erp.Core.ApplicationServices
         }
 
         [Import]
-        private readonly IMessageBus _msg;
-        [Import]
-        private readonly IDragDropService _dragdrop;
-        [Import]
-        private readonly Func<object, SelectedMessage> _getSelectedMessage;
-        [Import]
-        private readonly IApplicationInfoService _info;
-        [Import]
-        public IAclService Acl { get; } 
+        public IAclService Acl {get; }
 
         [Import]
-        public IIconService IconService { get; }
+        private readonly IDragDropService _dragDrop;
+        [Import]
+        private readonly IMessageBus _message;
+        [Import(InjectLocation.AfterConstructor)]
+        private readonly IDocumentService _doc;
+
+        [Import]
+        private readonly IApplicationInfoService _info;
+
+        [Import]
+        private readonly Func<object, SelectedMessage> _getSelectedMessage;
+
         [Import]
         public ILocalizationService LocalizationService { get; }
 
@@ -62,7 +65,7 @@ namespace HLab.Erp.Core.ApplicationServices
                 if (_activeDocument.Set(value))
                 {
                     var message = _getSelectedMessage(value);
-                    _msg.Publish(message);
+                    _message.Publish(message);
                 }
             }
         }
@@ -72,7 +75,7 @@ namespace HLab.Erp.Core.ApplicationServices
         private readonly IProperty<Canvas> _dragCanvas = H.Property<Canvas>( c => c
             .Set( e => {
                     var canvas = new Canvas();
-                    e._dragdrop.RegisterDragCanvas(canvas);
+                    e._dragDrop.RegisterDragCanvas(canvas);
                     return canvas;
                 }
             )
@@ -85,6 +88,9 @@ namespace HLab.Erp.Core.ApplicationServices
 
         public ICommand Exit  { get; } = H.Command(c => c
             .Action(e => Application.Current.Shutdown())
+        );
+        public ICommand OpenUserCommand  { get; } = H.Command(c => c
+            .Action(e => e._doc.OpenDocument(e.Acl.Connection.User))
         );
 
         public bool RegisterMenu(string[] parents, MenuItem newMenuItem, ItemCollection items=null)

@@ -8,39 +8,39 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.ApplicationServices
 {
-    [Export(typeof(IDocumentService))]
+    [Export(typeof(IDocumentService)),Singleton]
     public class DocumentServiceWpf : DocumentService
     {
         [Import]
         public IMessageBus MessageBus { get; private set; }
 
-        [Import]
-        public Func<MainWpfViewModel> GetViewModel { get; set; }
+
         [Import] private Func<object, SelectedMessage> GetMessage { get; set; }
         public override async Task OpenDocument(IView content)
         {
-            var vm = GetViewModel();
-
-            if (content is IViewClassAnchorable)
+            if (MainViewModel is MainWpfViewModel vm)
             {
-                if (!vm.Anchorables.Contains(content))
-                    vm.Anchorables.Add(content);
-
-            }
-            else
-            {
-                if (!vm.Documents.Contains(content))
+                if (content is IViewClassAnchorable)
                 {
-                    vm.Documents.Add(content);
+                    if (!vm.Anchorables.Contains(content))
+                        vm.Anchorables.Add(content);
 
-                    var message = GetMessage(content);
+                }
+                else
+                {
+                    if (!vm.Documents.Contains(content))
+                    {
+                        vm.Documents.Add(content);
 
-                    MessageBus.Publish(message);
+                        var message = GetMessage(content);
+
+                        MessageBus.Publish(message);
+                    }
+
                 }
 
+                vm.ActiveDocument = content as FrameworkElement;
             }
-
-            vm.ActiveDocument = content as FrameworkElement;
         }
     }
 }

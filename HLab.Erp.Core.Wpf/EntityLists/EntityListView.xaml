@@ -32,6 +32,9 @@
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </Trigger>
+                                <DataTrigger Binding="{Binding AddAllowed}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
@@ -45,13 +48,16 @@
                                 <Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </Trigger>
+                                <DataTrigger Binding="{Binding DeleteAllowed}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
                 <lang:Localize Id="{}{Delete}"/>
             </Button>
 
-            <Button Command="{Binding OpenCommand}">
+            <!--<Button Command="{Binding OpenCommand}">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}" >
                         <Style.Triggers>
@@ -62,7 +68,7 @@
                     </Style>
                 </Button.Style>
 
-                <lang:Localize Id="{}{Open}"/></Button>
+                <lang:Localize Id="{}{Open}"/></Button>-->
         </StackPanel>
 
 
@@ -81,6 +87,9 @@
                      <Style.Triggers>
                          <DataTrigger Binding="{Binding IsValid}" Value="False">
                              <Setter Property="Opacity" Value="0.3" />
+                         </DataTrigger>
+                         <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                             <Setter Property="Background" Value="DarkGreen" />
                          </DataTrigger>
                          <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
                              <Setter Property="Background" Value="#08FFFFFF" />

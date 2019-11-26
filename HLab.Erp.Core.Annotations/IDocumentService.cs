@@ -5,6 +5,8 @@ namespace HLab.Erp.Core
 {
     public interface IDocumentService
     {
-         Task OpenDocument(object content);
+        Task OpenDocument(object content);
+
+        object MainViewModel { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -23,6 +24,7 @@ namespace HLab.Erp.Core.EntitySelectors
     /// <summary>
     /// Logique d'interaction pour ForeignView.xaml
     /// </summary>
+    [ContentProperty(nameof(ButtonContent))]
     public partial class ForeignView : UserControl, IView<IForeignViewModel>, IViewClassForeign
     {
         [Import]
@@ -57,6 +59,10 @@ namespace HLab.Erp.Core.EntitySelectors
             .OnChange( (s,a) => s.SetCommand(a.NewValue) )
             .Register();
 
+        public static readonly DependencyProperty ButtonContentProperty = H.Property<object>()
+            .OnChange( (s,a) => s.SetButtonContent(a.NewValue) )
+            .Register();
+
         private void SetCommand(ICommand command)
         {
             Locator.Visibility = command == null ? Visibility.Visible : Visibility.Collapsed;
@@ -89,6 +95,16 @@ namespace HLab.Erp.Core.EntitySelectors
         {
             get => (ICommand)GetValue(CommandProperty);
             set => SetValue(CommandProperty, value);
+        }
+        public object ButtonContent
+        {
+            get => (object)GetValue(ButtonContentProperty);
+            set => SetValue(ButtonContentProperty, value);
+        }
+
+        private void SetButtonContent(object content)
+        {
+            Label.Content = content;
         }
 
         private void SetList()

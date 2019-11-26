@@ -47,28 +47,38 @@
                 </StackPanel>
             </Label>
 
-            <Label>
-                    <lang:Localize  Id="{}{Add User}"/>
-            </Label>
-            <entitySelectors:ForeignView 
-                HorizontalAlignment="Left"
-                IsReadOnly="{Binding Locker.IsReadOnly}"
-                ModelClass="{x:Type data:User}" 
-                Command="{Binding AddUserCommand}"
-            />
-            <!--ListClass="{x:Type users:ListUserViewModel}"-->
+            <ContentControl/>
 
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Style>
+                    <Style TargetType="{x:Type StackPanel}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=Locker.IsActive}" Value="False">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                
+                
+                <entitySelectors:ForeignView 
+                    HorizontalAlignment="Left"
+                    IsReadOnly="{Binding Locker.IsReadOnly}"
+                    ModelClass="{x:Type data:User}" 
+                    Command="{Binding AddUserCommand}"
+                >
+                    <lang:Localize Id="{}{Add}"/>
+                </entitySelectors:ForeignView>
+
+                <Button Command="{Binding RemoveUserCommand}">
+                    <lang:Localize Id="{}{Remove}"/>
+                </Button>
+                
+            </StackPanel>
 
             <Label/>
-            <Button Command="{Binding RemoveUserCommand}">
-                <lang:Localize Id="{}{Remove}"/>
-            </Button>
-
-            <Label>
-                <lang:Localize  Id="{}{Users}"/>
-            </Label>
-
             <mvvm:ViewLocator Model="{Binding UserProfiles}"/>
+            
             <Label Style="{DynamicResource Separator}" >
                 <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                     <Canvas>
@@ -79,26 +89,31 @@
                 </StackPanel>
             </Label>
 
-            <Label>
-                <lang:Localize  Id="{}{Add Right}"/>
-            </Label>
-            <entitySelectors:ForeignView 
-                HorizontalAlignment="Left"
-                IsReadOnly="{Binding Locker.IsReadOnly}"
-                ModelClass="{x:Type data:AclRight}" 
-                Command="{Binding AddAclRightCommand}"
-            />
+            <Label/>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Style>
+                    <Style TargetType="{x:Type StackPanel}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=Locker.IsActive}" Value="False">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <entitySelectors:ForeignView 
+                    HorizontalAlignment="Left"
+                    IsReadOnly="{Binding Locker.IsReadOnly}"
+                    ModelClass="{x:Type data:AclRight}" 
+                    Command="{Binding AddAclRightCommand}"
+                >
+                    <lang:Localize  Id="{}{Add Right}"/>
+                </entitySelectors:ForeignView>
+                <Button Command="{Binding RemoveRightCommand}"><lang:Localize Id="{}{Remove}"/></Button>
+            </StackPanel>
             <!--ListClass="{x:Type users:ListUserViewModel}"-->
 
 
             <Label/>
-            <Button Command="{Binding RemoveRightCommand}">
-                <lang:Localize Id="{}{Remove}"/>
-            </Button>
-
-            <Label>
-                <lang:Localize  Id="{}{Rights}"/>
-            </Label>
 
             <mvvm:ViewLocator Model="{Binding ProfileRights}"/>
         </base:DetailView>

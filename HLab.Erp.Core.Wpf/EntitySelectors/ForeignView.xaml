@@ -22,7 +22,7 @@
         </Button>
         <Button Grid.Column="2" x:Name="Button" Click="ButtonBase_OnClick">
             <StackPanel>
-                <TextBlock>...</TextBlock>
+                <Label x:Name="Label">...</Label>
                 <Popup x:Name="Popup" Height="500" StaysOpen="False">
                     <Grid>
                         <ContentPresenter x:Name="PopupContent"/>

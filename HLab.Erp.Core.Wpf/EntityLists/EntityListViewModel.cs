@@ -70,6 +70,8 @@ namespace HLab.Erp.Core.EntityLists
         private IDocumentService _docs;
         [Import]
         private IMessageBus _msg;
+        [Import]
+        private IDataService _data;
 
         [Import]
         public ObservableQuery<T> List { get; }
@@ -127,6 +129,11 @@ namespace HLab.Erp.Core.EntityLists
             if(entity is IEntity<int> e) e.Id=-1;
             await _docs.OpenDocument(entity);
         }
+
+        public bool AddAllowed {get => _addAllowed.Get(); set => _addAllowed.Get();}
+        private IProperty<bool> _addAllowed = H.Property<bool>();
+        public bool DeleteAllowed {get => _deleteAllowed.Get(); set => _deleteAllowed.Get();}
+        private IProperty<bool> _deleteAllowed = H.Property<bool>();
 
         private void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {

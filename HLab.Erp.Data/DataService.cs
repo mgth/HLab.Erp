@@ -100,11 +100,10 @@ namespace HLab.Erp.Data
             {
                 try
                 {
-                    db.Delete<T>(entity);
+                    result = db.Delete<T>(entity);
 
-                    //result = db.SaveChanges();
-
-                    GetCache<T>().Forget(entity);
+                    if(result>0)
+                        GetCache<T>().Forget(entity);
                 }
                 catch (Exception e)
                 {

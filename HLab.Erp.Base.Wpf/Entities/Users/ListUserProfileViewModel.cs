@@ -8,7 +8,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
         public ListAclRightProfileViewModel(AclRight right)
         {
             Columns
-                .Column("Name", s => s.Profile.Name);
+                .Column("{Name}", s => s.Profile.Name);
 
             List.AddFilter(() => e => e.AclRightId == right.Id);
 
@@ -17,7 +17,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
         public ListAclRightProfileViewModel(Profile profile)
         {
             Columns
-                .Column("Name", s => s.AclRight.Caption);
+                .Column("{Name}", s => s.AclRight.Caption);
 
             List.AddFilter(() => e => e.ProfileId == profile.Id);
 
@@ -31,7 +31,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
         public ListUserProfileViewModel(User user)
         {
             Columns
-                .Column("Name", s => s.Profile.Name);
+                .Column("{Name}", s => s.Profile.Name);
 
             List.AddFilter(() => e => e.UserId == user.Id);
 
@@ -40,7 +40,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
         public ListUserProfileViewModel(Profile profile)
         {
             Columns
-                .Column("Name", s => s.User.Caption);
+                .Column("{Name}", s => s.User.Caption);
 
             List.AddFilter(() => e => e.ProfileId == profile.Id);
 
