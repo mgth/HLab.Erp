@@ -31,7 +31,7 @@ namespace HLab.Erp.Data
         Task<T> GetOrAdd<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null) where T : class, IEntity;
         Task<T> GetOrAdd<T>(T entity) where T : class, IEntity;
 
-        Task<List<T>> FetchWhere<T>(
+        Task<List<T>> FetchWhereAsync<T>(
             Expression<Func<T, bool>> expression,
             Expression<Func<T,object>> orderBy
             ) where T : class, IEntity;

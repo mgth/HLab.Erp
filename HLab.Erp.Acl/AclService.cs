@@ -128,10 +128,10 @@ namespace HLab.Erp.Acl
             List<AclRight> rights = new List<AclRight>();
 
             var userId = Connection.UserId;
-            var profiles = await _data.FetchWhere<UserProfile>(e => e.UserId == userId, e => e.Id);
+            var profiles = await _data.FetchWhereAsync<UserProfile>(e => e.UserId == userId, e => e.Id);
             foreach (var profile in profiles)
             {
-                var profileRights = await _data.FetchWhere<AclRightProfile>(e => e.ProfileId == profile.Id, e => e.Id);
+                var profileRights = await _data.FetchWhereAsync<AclRightProfile>(e => e.ProfileId == profile.Id, e => e.Id);
                 foreach(var rightProfile in profileRights)
                 {
                     if(rights.Any(r => r.Id == rightProfile.AclRightId)) continue;

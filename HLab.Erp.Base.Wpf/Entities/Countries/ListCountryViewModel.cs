@@ -22,7 +22,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
         {
             Columns
                 //.Column("^Name", s => new Localize{Id=s.Name})
-                .Column("{Name}", async s => await _localization.Localize(s.Name).ConfigureAwait(false), s=> s.Name)
+                .Column("{Name}", async s => await _localization.LocalizeAsync(s.Name).ConfigureAwait(false), s=> s.Name)
                 //.Column("^A2 Code", s => s.IsoA2)
                 //.Column("^A3 Code ", s => s.IsoA3)
                 //.Column("^Code", s => s.Iso)

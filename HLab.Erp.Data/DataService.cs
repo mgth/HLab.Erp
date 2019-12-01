@@ -155,7 +155,7 @@ namespace HLab.Erp.Data
         }
 
 //        public List<T> FetchQuery<T>(Func<IQueryable<T>, IQueryable<T>> q)
-        public async Task<List<T>> FetchWhere<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy)
+        public async Task<List<T>> FetchWhereAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy)
             where T : class, IEntity
         {
             var cache = GetCache<T>();
@@ -164,16 +164,19 @@ namespace HLab.Erp.Data
                 var list = await cache.Fetch(expression).ConfigureAwait(false);
                 if(orderBy!=null)
                     list = list.OrderBy(orderBy.Compile()).ToList();
+
+                return list;
             }
 
-            using (var db = Get())
+            using var db = Get();
             {
-                var list = 
-                    orderBy==null?
-                    await db.QueryAsync<T>().Where(expression).ToList().ConfigureAwait(false) :
-                    await db.QueryAsync<T>().Where(expression).OrderBy(orderBy).ToList().ConfigureAwait(false);
+                var list =
+                    await db.QueryAsync<T>().Where(expression).ToList().ConfigureAwait(false);
 
-                return await cache.GetOrAdd(list).ConfigureAwait(true);
+                if(orderBy!=null)
+                    list = list.OrderBy(orderBy.Compile()).ToList();
+
+                return await cache.GetOrAdd(list).ConfigureAwait(false);
             }
         }
 

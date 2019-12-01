@@ -34,7 +34,7 @@ namespace HLab.Erp.Core.Localization
 
             if (created)
             {
-                var list = await _db.FetchWhere<LocalizeEntry>(e => e.Tag == language,e => e.Tag);
+                var list = await _db.FetchWhereAsync<LocalizeEntry>(e => e.Tag == language,e => e.Tag);
                 foreach (var e in list)
                 {
                     await dic.GetOrAdd(e.Code, async x => e);
@@ -44,7 +44,7 @@ namespace HLab.Erp.Core.Localization
         }
 
 
-        public async Task<string> Localize(string language, string code)
+        public async Task<string> LocalizeAsync(string language, string code)
         {
             var dic = await GetDictionary(language);
 

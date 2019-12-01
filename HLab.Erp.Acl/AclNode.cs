@@ -83,7 +83,7 @@ namespace HLab.Erp.Acl
             var groups = GetGroups().ToList();
             var targets = target.GetGroups().ToList();
 
-            var grants = await DataService.FetchWhere<AclGranted>(e => 
+            var grants = await DataService.FetchWhereAsync<AclGranted>(e => 
                     groups.Contains(e.ToNodeId) && 
                     targets.Contains(e.OnNodeId)
                 ,null).ConfigureAwait(false);
