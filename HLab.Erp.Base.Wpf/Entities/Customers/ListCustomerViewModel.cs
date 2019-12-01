@@ -23,15 +23,18 @@ namespace HLab.Erp.Base.Wpf
         {
         }
 
-        public string Title => "Customers";
+        public string Title => "{Customers}";
 
         public ListCustomerViewModel()
         {
+            AddAllowed = true;
+            DeleteAllowed = true;
+
             Columns
-                .Column("^Name", s => s.Name)
-                .Column("^Country", s => s.Country)
-                .Column("^Email", s => s.Email)
-                .Column("^Address", s => s.Address);
+                .Column("{Name}", s => s.Name)
+                .Column("{Country}", s => s.Country)
+                .Column("{eMail}", s => s.Email)
+                .Column("{Address}", s => s.Address);
 
             List.OrderBy = e => e.Name;
             //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(

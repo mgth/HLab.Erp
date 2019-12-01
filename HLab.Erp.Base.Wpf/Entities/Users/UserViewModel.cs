@@ -17,7 +17,10 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
         [Import]
         private IAclService _acl;
 
-        public string Title => Model.Name;
+        public string Title => _title.Get();
+        public IProperty<string> _title = H.Property<string>( c=> c
+            .OneWayBind(e => e.Model.Name)
+        );
 
         [Import]
         private readonly Func<User, ListUserProfileViewModel> _getUserProfiles;

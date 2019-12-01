@@ -135,6 +135,8 @@ namespace HLab.Erp.Core.ListFilters
 
         public Expression<Func<T,bool>> Match<T>(Expression<Func<T, DateTime?>> getter)
         {
+            //if(!Enabled) return t => true;
+
             var entity = getter.Parameters[0];
             var minDate = Expression.Constant(MinDate,typeof(DateTime?));
             var maxDate = Expression.Constant(MaxDate,typeof(DateTime?));

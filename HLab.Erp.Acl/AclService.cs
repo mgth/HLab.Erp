@@ -117,7 +117,11 @@ namespace HLab.Erp.Acl
 
         public List<AclRight> CurrentRights;
 
-        public bool IsGranted(AclRight right, object grantedTo = null, object grantedOn = null) => CurrentRights.Contains(right);
+        public bool IsGranted(AclRight right, object grantedTo = null, object grantedOn = null)
+        {
+            if(Connection.User.Login=="admin") return true;
+            return CurrentRights.Contains(right);
+        }
 
         private async Task PopulateRights()
         {

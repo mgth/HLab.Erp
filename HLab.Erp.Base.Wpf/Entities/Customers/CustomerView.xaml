@@ -40,12 +40,12 @@
             </Label>
 
             <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="^Name" StringFormat="{}{0} : " />
+                <lang:Localize Id="{}{Name}" StringFormat="{}{0} : " />
             </Label>
             <TextBox Text="{Binding Model.Name,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="^Address" StringFormat="{}{0} : " />
+                <lang:Localize Id="{}{Address} : "/>
             </Label>
             <TextBox 
                 Text="{Binding Model.Address,UpdateSourceTrigger=PropertyChanged}"
@@ -54,7 +54,7 @@
                 HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="^Country" StringFormat="{}{0} : " />
+                <lang:Localize Id="{}{Country} : "/>
             </Label>
             <entitySelectors:ForeignView 
                 IsReadOnly="{Binding Locker.IsReadOnly}"
@@ -64,22 +64,22 @@
                 />
             
             <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="^eMail" StringFormat="{}{0} : " />
+                <lang:Localize Id="{}{eMail} : "/>
             </Label>
             <TextBox Text="{Binding Model.Email,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="^Phone" StringFormat="{}{0} : " />
+                <lang:Localize Id="{}{Phone} : "/>
             </Label>
             <TextBox Text="{Binding Model.Phone,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="^Fax" StringFormat="{}{0} : " />
+                <lang:Localize Id="{}{Fax}"/>
             </Label>
             <TextBox Text="{Binding Model.Fax,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
 
             <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="^Contacts" StringFormat="{}{0} : " />
+                <lang:Localize Id="{}{Contacts} : "/>
             </Label>
             <DataGrid 
                 Margin="10,19,0,14" 
@@ -91,25 +91,38 @@
                     <DataGridTextColumn 
                         Binding="{Binding Model.Name}" 
                         ClipboardContentBinding="{x:Null}" 
-                        Header="^Name" Width="*" 
+                        Header="{}{Name}" Width="*" 
                         CanUserResize="False"/>
                 </DataGrid.Columns>
+                
             </DataGrid>
         </base:DetailView>
 
         <base:DetailView Grid.Row="2">
+            
             <Label Style="{DynamicResource Separator}" >
                 <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                     <Canvas>
-                        <icons:IconView  Id="Icons/Edit" Height="35" Opacity="0.8"/>
+                        <icons:IconView  
+                            Id="Icons/Edit" 
+                            Height="35" 
+                            Opacity="0.8"
+                            />
                     </Canvas>
                     <ContentControl Width="50"></ContentControl>
-                    <lang:Localize  Id="Note"/>
+                    <lang:Localize  Id="{}{Note}"/>
                 </StackPanel>
             </Label>
 
 
-            <TextBox Margin="50,0,15,0"  Grid.ColumnSpan="2"  Text="{Binding Model.Note}" AcceptsReturn="True" TextWrapping="Wrap"/>
+            <TextBox 
+                Margin="50,0,15,0"
+                Grid.ColumnSpan="2"
+                Text="{Binding Model.Note}"
+                AcceptsReturn="True"
+                TextWrapping="Wrap"
+                MaxHeight="200"
+                />
             <Label />
 
         </base:DetailView>

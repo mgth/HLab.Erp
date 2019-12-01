@@ -88,9 +88,6 @@
                          <DataTrigger Binding="{Binding IsValid}" Value="False">
                              <Setter Property="Opacity" Value="0.3" />
                          </DataTrigger>
-                         <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                             <Setter Property="Background" Value="DarkGreen" />
-                         </DataTrigger>
                          <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
                              <Setter Property="Background" Value="#08FFFFFF" />
                          </Trigger>
@@ -103,6 +100,9 @@
                              <Setter Property="BorderThickness"
                                      Value="2" />
                          </Trigger>
+                         <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                             <Setter Property="Background" Value="DarkGreen" />
+                         </DataTrigger>
                      </Style.Triggers>
                  </Style>
              </DataGrid.RowStyle>

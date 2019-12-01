@@ -40,6 +40,15 @@ namespace HLab.Erp.Workflows
             return t;
         }
 
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            When<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<TWf, bool> condition)
+            where TWf : NotifierBase, IWorkflow<TWf>
+        {
+            t?.Target.AddCondition(new WorkflowCondition<TWf>(w =>
+                condition(w) ? WorkflowConditionResult.Passed : WorkflowConditionResult.Failed));
+            return t;
+        }
+
         /// <summary>
         /// Add message factory to inform about why the action is not possible
         /// </summary>

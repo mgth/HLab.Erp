@@ -47,6 +47,7 @@ namespace HLab.Erp.Data
                 if(Target is IEntity<int> ei && ei.Id<0)
                 {
                     var t = _db.Add<T>(e => Target.CopyPrimitivesTo(e));
+                    ei.Id = (int)t.Id;
                     return;
                 }
                 _db.Update(Target, columns.Select(e => e.Name));

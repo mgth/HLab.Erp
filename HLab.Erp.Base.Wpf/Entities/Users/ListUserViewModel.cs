@@ -11,11 +11,14 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
         {
         }
 
-        public String Title => "Users";
+        public String Title => "{Users}";
         public string Icon => "Icons/entities/Users";
 
         public ListUserViewModel()
         {
+            DeleteAllowed = true;
+            AddAllowed = true;
+
             Columns
                 .Column("{First Name}", u => u.FirstName)
                 .Column("{Name}", u=>u.Name)

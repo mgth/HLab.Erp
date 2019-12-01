@@ -517,10 +517,11 @@ namespace HLab.Erp.Data.Observables
             return this;
         }
 
+        public async Task  Update() => await Update(true,false).ConfigureAwait(true);
+        public async Task  Update(bool force) => await Update(force,false).ConfigureAwait(true);
+        public async Task  Refresh() => await Update(true,true).ConfigureAwait(true);
 
-        public async Task  Update() => await Update(true).ConfigureAwait(true);
-
-        public async Task Update(bool force)
+        public async Task Update(bool force,bool refresh)
         {
             if (Suspender.Suspended) return;
 
@@ -540,6 +541,12 @@ namespace HLab.Erp.Data.Observables
                     Console.WriteLine("Query : " + stopwatch.ElapsedMilliseconds);
 
                     if (list == null) return;
+
+                    if(refresh)
+                    {
+                        while(Count>0)
+                            RemoveAt(0);
+                    }
 
                     var count = list.Count;
 

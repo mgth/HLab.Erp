@@ -13,21 +13,16 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
-        public string Title => "^Icons";
+        public string Title => "{Icons}";
 
         public ListIconViewModel()
         {
             Columns
-                .Column("^Name", s => s.Name)
-                .Column("^Country", s => s.Format)
-                .Column("^Icon", async s => await _icons.FromSvgString(s.Source),null)
+                .Column("{Name}", s => s.Name)
+                .Column("{Format}", s => s.Format)
+                .Column("{Icon}", async s => await _icons.FromSvgString(s.Source),null)
                 ;
 
-            //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(
-            //    "Country",
-            //    "Pays",
-            //    c => c.Country,List
-            //    ));
             List.Update();
         }
     }

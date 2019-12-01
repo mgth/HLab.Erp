@@ -130,9 +130,10 @@ namespace HLab.Erp.Core.EntityLists
             await _docs.OpenDocument(entity);
         }
 
-        public bool AddAllowed {get => _addAllowed.Get(); set => _addAllowed.Get();}
+        public bool AddAllowed {get => _addAllowed.Get(); set => _addAllowed.Set(value);}
         private IProperty<bool> _addAllowed = H.Property<bool>();
-        public bool DeleteAllowed {get => _deleteAllowed.Get(); set => _deleteAllowed.Get();}
+
+        public bool DeleteAllowed {get => _deleteAllowed.Get(); set => _deleteAllowed.Set(value);}
         private IProperty<bool> _deleteAllowed = H.Property<bool>();
 
         private void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -182,7 +183,8 @@ namespace HLab.Erp.Core.EntityLists
                 case NotifyCollectionChangedAction.Replace:
                 case NotifyCollectionChangedAction.Move:
                 case NotifyCollectionChangedAction.Reset:
-                    throw new NotImplementedException();
+                    ListViewModel.Clear();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

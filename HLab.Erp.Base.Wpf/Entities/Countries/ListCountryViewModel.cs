@@ -16,18 +16,18 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
         {
         }
 
-        public string Title => "^Country";
+        public string Title => "{Country}";
 
         public ListCountryPopupViewModel()
         {
             Columns
                 //.Column("^Name", s => new Localize{Id=s.Name})
-                .Column("^Name", async s => await _localization.Localize(s.Name).ConfigureAwait(false), s=> s.Name)
+                .Column("{Name}", async s => await _localization.Localize(s.Name).ConfigureAwait(false), s=> s.Name)
                 //.Column("^A2 Code", s => s.IsoA2)
                 //.Column("^A3 Code ", s => s.IsoA3)
                 //.Column("^Code", s => s.Iso)
                 //.Column("^Continent", s => new Localize{Id = s.Continent.Name})
-                .Icon("Flag",s => s.IconPath)
+                .Icon("{Flag}",s => s.IconPath)
                 //.Column("^Flag", s => new IconView
                 //{
                 //    MaxWidth = 30,
@@ -55,17 +55,17 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
         {
         }
 
-        public string Title => "^Country";
+        public string Title => "{Country}";
 
         public ListCountryViewModel()
         {
             Columns
-                .Column("^Name", s => new Localize{Id=s.Name})
-                .Column("^A2 Code", s => s.IsoA2)
-                .Column("^A3 Code ", s => s.IsoA3)
-                .Column("^Code", s => s.Iso)
-                .Column("^Continent", s => new Localize{Id = s.Continent.Name})
-                .Column("^Flag", s => new IconView{
+                .Column("{Name}", s => new Localize{Id=s.Name})
+                .Column("{A2 Code}", s => s.IsoA2)
+                .Column("{A3 Code}", s => s.IsoA3)
+                .Column("{Code}", s => s.Iso)
+                .Column("{Continent}", s => new Localize{Id = s.Continent.Name})
+                .Column("{Flag}", s => new IconView{
                     MaxWidth = 50,
                     MinHeight = 50,
                     Id = s.IconPath
