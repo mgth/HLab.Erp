@@ -21,31 +21,21 @@ namespace HLab.Erp.Workflows
     }
 
 
-    public interface IWorkflow
-    {
-        User User { get; set; }
-        string Caption { get; }
-        string IconPath { get; }
-        ObservableCollection<WorkflowAction> Actions { get; }
-        object Target { get; }
-    }
 
-    public class Workflow : NotifierBase
+    public abstract class Workflow<T> : N<T>, IWorkflow<T>
+        where T : /*Workflow<T>, */class, IWorkflow<T>
     {
-        public object Target { get; }
-    }
+        protected Workflow():base()
+        {
+            this.PropertyChanged += Workflow_PropertyChanged;
+        }
 
-    public interface IWorkflow<T> : IWorkflow
-        where T : NotifierBase, IWorkflow<T>
-    {
-        bool SetState(Func<Workflow<T>.State> setState);
-        Workflow<T>.State CurrentState { get; }
-    }
+        private void Workflow_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName=="CurrentState")
+            { }
+        }
 
-    public abstract class Workflow<T> : Workflow, IWorkflow<T>
-        where T : NotifierBase, IWorkflow<T>
-    {
-        protected class H : NotifyHelper<T> { }
         public class State : WorkflowConditionalObject<T> 
         {
             public static State Create(
@@ -67,6 +57,7 @@ namespace HLab.Erp.Workflows
             }
         }
 
+
         public class Action : WorkflowConditionalObject<T> , IWorkflowAction
         {
             public static Action Create(Action<IFluentConfigurator<Action>> configure)
@@ -84,27 +75,30 @@ namespace HLab.Erp.Workflows
         }
 
         public User User { get; set; }
+        public object Target { get; protected set; }
 
         private static readonly List<State> WorkflowStates = new List<State>();
         private static readonly List<Action> WorkflowActions = new List<Action>();
+
         public string Caption => _caption.Get();
         private readonly IProperty<string> _caption = H.Property<string>(c => c
             .On(e => e.CurrentState)
             .Set(e => e.CurrentState.GetCaption(e))
+            .Set(e => e.CurrentState.GetCaption(e))
         );
 
         public string IconPath => _iconPath.Get();
-
         private readonly IProperty<string> _iconPath = H.Property<string>(c => c
             .On(e => e.CurrentState)
-            .Set(e => e.CurrentState.GetIcon(e))
+            .Set(e => e.CurrentState.GetIconPath(e))
+            .Set(e => e.CurrentState.GetIconPath(e))
         );
-
 
         internal static void AddState(State state)
         {
             WorkflowStates.Add(state);
         }
+
         public static void AddAction(Action state)
         {
             WorkflowActions.Add(state);
@@ -114,7 +108,7 @@ namespace HLab.Erp.Workflows
         public State CurrentState
         {
             get => _currentState.Get();
-            protected set
+            set
             {
                 if (_currentState.Set(value))
                     value?.Action(this as T);
@@ -158,12 +152,13 @@ namespace HLab.Erp.Workflows
         }
     }
 
-    public class Workflow<T, TTarget> : Workflow<T> where T : Workflow<T, TTarget>
-    where TTarget : INotifyPropertyChanged
+    public class Workflow<T, TTarget> : Workflow<T> 
+        where T : Workflow<T, TTarget>
+        where TTarget : INotifyPropertyChanged
     {
         public Workflow(TTarget target)
         {
-            Target = target;
+            base.Target = target;
             Target.PropertyChanged += Target_PropertyChanged;
         }
 
@@ -172,6 +167,6 @@ namespace HLab.Erp.Workflows
             Update();
         }
 
-        public TTarget Target { get; }
+        public new TTarget Target => (TTarget)base.Target;
     }
 }

@@ -27,12 +27,7 @@ namespace HLab.Erp.Data
         {
             if (!property.CanWrite) return Persistency.None;
 
-            foreach (var attr in property.GetCustomAttributes().OfType<IgnoreAttribute>())
-            {
-                return Persistency.None;
-            }
-
-            return Persistency.OnSave;
+            return property.GetCustomAttributes().OfType<IgnoreAttribute>().Any() ? Persistency.None : Persistency.OnSave;
         }
         public override void Save()
         {

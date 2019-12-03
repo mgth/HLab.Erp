@@ -22,27 +22,28 @@
                     ShadowDepth="0"
                     Color="Aqua"
                     Opacity="1"
-                    BlurRadius="10"
+                    BlurRadius="5"
                 />
             </Grid.Effect>
 
             <Border
                 BorderBrush="Aqua"
-                BorderThickness="3"
+                BorderThickness="2"
                 Background="Transparent" 
                 CornerRadius="10">
             </Border>
+
             <StackPanel Orientation="Horizontal">
-                <icons:IconView Margin="5" Width="40" Id="{Binding Model.Icon}"/>
+                <icons:IconView Margin="5" Width="40" Id="{Binding Model.IconPath}"/>
             <Label
                 Margin="5"
                 VerticalAlignment="Center" 
                 HorizontalAlignment="Center" 
-                FontSize="20"
+                FontSize="16"
                 FontWeight="Black" 
 
                 ><StackPanel>
-                    <lang:Localize Id="{Binding Model.CurrentState.Name}"/>
+                    <lang:Localize Id="{Binding Model.Caption}"/>
                 </StackPanel>
             </Label>
             </StackPanel>

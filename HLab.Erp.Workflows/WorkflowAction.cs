@@ -10,7 +10,7 @@ namespace HLab.Erp.Workflows
         WorkflowConditionResult Check(IWorkflow workflow);
         void Action(IWorkflow workflow);
         string GetCaption(IWorkflow workflow);
-        string GetIcon(IWorkflow workflow);
+        string GetIconPath(IWorkflow workflow);
         IEnumerable<string> GetMessages(IWorkflow workflow);
     }
 
@@ -30,7 +30,7 @@ namespace HLab.Erp.Workflows
         }
 
         public string Caption => _action.GetCaption(_workflow);
-        public string Icon => _action.GetIcon(_workflow);
+        public string IconPath => _action.GetIconPath(_workflow);
         public void Action() => _action.Action(_workflow);
         public WorkflowConditionResult Check() => _action.Check(_workflow);
         public IEnumerable<string> Messages => _action.GetMessages(_workflow);

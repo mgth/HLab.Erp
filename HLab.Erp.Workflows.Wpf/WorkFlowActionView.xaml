@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:workflows="clr-namespace:HLab.Erp.Workflows"
+             xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
+             xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="70" d:DesignWidth="300" 
              d:DataContext="{d:DesignInstance {x:Type workflows:WorkflowActionViewModel}}">
@@ -12,12 +14,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <!--<Border
-                BorderBrush="Aqua"
-                BorderThickness="5"
-                Background="Transparent" 
-                CornerRadius="10"/>-->
-            <!--<icons:IconView Id="{Binding Model.Icon}"/>-->
             <Button
                 Foreground="Aqua"
                 Background="Transparent"
@@ -26,11 +22,17 @@
                 HorizontalAlignment="Center" 
                 FontWeight="Black" 
                 Command="{Binding Command}"
-                Content="{Binding Model.Caption, FallbackValue=Action}"/>
+                >
+                <StackPanel Orientation="Horizontal">
+                    <icons:IconView Width="20" Height="20" Id="{Binding Model.IconPath}"/>
+                    <Label/>
+                    <lang:Localize VerticalAlignment="Center" Id="{Binding Model.Caption}"/>
+                </StackPanel>
+            </Button>
         <ListView ItemsSource="{Binding Model.Messages}"  Grid.Row ="1" MaxHeight="50">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                <Label Foreground="Red" Content="{Binding}"/>
+                        <lang:Localize HorizontalAlignment="Center" Foreground="Red" VerticalAlignment="Center" Id="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

@@ -7,17 +7,17 @@ namespace HLab.Erp.Workflows
 {
 
     public interface IWorkflowConditionalObject<T>
-        where T : NotifierBase, IWorkflow<T>
+        where T : class,IWorkflow<T>
     {
         void AddCondition(WorkflowCondition<T> condition);
         void SetCaption(Func<T, string> getCaption);
-        void SetIcon(Func<T, string> getIcon);
+        void SetIconPath(Func<T, string> getIcon);
         void SetAction(Action<T> action);
         WorkflowCondition<T> Condition { get; }
     }
 
     public abstract class WorkflowConditionalObject<T> : IWorkflowConditionalObject<T>
-        where T : NotifierBase, IWorkflow<T>
+        where T : class, IWorkflow<T>
     {
 
         private Action<T> _action;
@@ -35,9 +35,9 @@ namespace HLab.Erp.Workflows
             Condition = condition;
         }
 
-        private Func<T,string> _getIcon;
-        void IWorkflowConditionalObject<T>.SetIcon(Func<T, string> getIcon) => _getIcon = getIcon;
-        public string GetIcon(IWorkflow workflow) => _getIcon?.Invoke((T)workflow) ?? "";
+        private Func<T,string> _getIconPath;
+        void IWorkflowConditionalObject<T>.SetIconPath(Func<T, string> getIcon) => _getIconPath = getIcon;
+        public string GetIconPath(IWorkflow workflow) => _getIconPath?.Invoke((T)workflow) ?? "";
 
 
         private Func<T,string> _getCaption;

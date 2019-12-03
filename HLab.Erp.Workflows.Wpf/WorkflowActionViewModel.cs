@@ -8,11 +8,9 @@ namespace HLab.Erp.Workflows
 {
     class WorkflowActionViewModel : ViewModel<WorkflowActionViewModel, WorkflowAction>
     {
-        [Import]
-        private IIconService _icons;
-        public object Icon => _icon.Get();
-        private readonly IProperty<object> _icon = H.Property<object>(c => c
-            .Set(vm => vm._icons.GetIcon(vm.Model.Icon) )
+        public string IconPath => _iconPath.Get();
+        private readonly IProperty<string> _iconPath = H.Property<string>(c => c
+            .OneWayBind(e => e.Model.IconPath)
         );
 
         public ICommand Command { get; } = H.Command(c => c

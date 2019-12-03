@@ -22,7 +22,7 @@ namespace HLab.Erp.Workflows
         private void Actions_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             Application.Current.Dispatcher.Invoke(
-                () =>
+            () =>
                 {
                     Actions.Clear();
                     BackwardActions.Clear();
@@ -41,8 +41,7 @@ namespace HLab.Erp.Workflows
                         }
                     }
                 }
-                );
-
+            );
         }
     }
 }
