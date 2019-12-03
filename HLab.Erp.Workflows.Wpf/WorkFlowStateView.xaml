@@ -34,7 +34,7 @@
             </Border>
 
             <StackPanel Orientation="Horizontal">
-                <icons:IconView Margin="5" Width="40" Id="{Binding Model.IconPath}"/>
+                <icons:IconView Margin="5" Width="40" Path="{Binding Model.IconPath}"/>
             <Label
                 Margin="5"
                 VerticalAlignment="Center" 

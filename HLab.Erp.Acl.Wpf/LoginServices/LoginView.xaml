@@ -9,7 +9,7 @@
                       mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 <Grid>
-    <Viewbox Grid.Row="2" Opacity="0.1"><icons:IconView Id="icons/LogoBackground"/></Viewbox>    <StackPanel Margin="20,20,20,0" VerticalAlignment="Center">
+    <Viewbox Grid.Row="2" Opacity="0.1"><icons:IconView Path="icons/LogoBackground"/></Viewbox>    <StackPanel Margin="20,20,20,0" VerticalAlignment="Center">
         <Grid
            
             Height="175"

@@ -29,7 +29,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
         );
 
 
-        public object Icon => _iconService.GetIcon(Model.IconPath);
+        public object Icon => _iconService.GetIconAsync(Model.IconPath);
 
         ICorporation ICorporationViewModel.Model => Model;
     }

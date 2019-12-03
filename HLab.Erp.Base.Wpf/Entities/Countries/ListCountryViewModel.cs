@@ -68,7 +68,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
                 .Column("{Flag}", s => new IconView{
                     MaxWidth = 50,
                     MinHeight = 50,
-                    Id = s.IconPath
+                    Path = s.IconPath
                 });
 
             List.OrderBy = e => e.Name;

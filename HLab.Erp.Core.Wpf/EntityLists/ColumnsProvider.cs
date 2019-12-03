@@ -34,7 +34,7 @@ namespace HLab.Erp.Core.EntityLists
         {
             return Column(caption, async (s) =>
             {
-                var icon = await _icons.GetIcon(iconPath(s));
+                var icon = await _icons.GetIconAsync(iconPath(s));
                 if (icon is FrameworkElement fe) fe.MaxHeight = height;
                 return icon;
 

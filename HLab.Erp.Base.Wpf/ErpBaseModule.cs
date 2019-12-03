@@ -48,23 +48,23 @@ namespace HLab.Erp.Base.Wpf
         {
             _erp.Menu.RegisterMenu("data", "customer", "{Customer}",
                 CustomerCommand,
-                _erp.Icon.GetIcon("Icons/Entities/Customer"));
+                _erp.Icon.GetIconAsync("Icons/Entities/Customer"));
 
             _erp.Menu.RegisterMenu("param", "country", "{Country}",
                 CountryCommand,
-                _erp.Icon.GetIcon("Icons/Entities/Country"));
+                _erp.Icon.GetIconAsync("Icons/Entities/Country"));
 
             _erp.Menu.RegisterMenu("param", "icons", "{Icons}",
                 IconCommand,
-                _erp.Icon.GetIcon("Icons/Icon"));
+                _erp.Icon.GetIconAsync("Icons/Icon"));
 
             _erp.Menu.RegisterMenu("param", "users", "{Users}",
                 UserCommand,
-                _erp.Icon.GetIcon("Icons/Entities/User"));
+                _erp.Icon.GetIconAsync("Icons/Entities/User"));
 
             _erp.Menu.RegisterMenu("param", "profiles", "{Profiles}",
                 ProfileCommand,
-                _erp.Icon.GetIcon("Icons/Entities/Profile"));
+                _erp.Icon.GetIconAsync("Icons/Entities/Profile"));
         }
     }
 }

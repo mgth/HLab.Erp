@@ -26,7 +26,7 @@
                             </Border>
                             <ContentPresenter Margin="2" Grid.Column="0"  x:Name="ContentElement" Content="{TemplateBinding Content}"/>
                             <Border Grid.Column="1" Width="1" Height="1" Background="#FF000000"/>
-                            <icons:IconView Id="Icons/EyeCheck4" Grid.Column="1"  Width="15" Foreground="#FF80FFFF"/>
+                            <icons:IconView Path="Icons/EyeCheck4" Grid.Column="1"  Width="15" Foreground="#FF80FFFF"/>
                             <Popup Grid.Column="1">
                                 <Border BorderThickness="2" BorderBrush="Green" Width="200" Height="200"></Border>
                             </Popup>

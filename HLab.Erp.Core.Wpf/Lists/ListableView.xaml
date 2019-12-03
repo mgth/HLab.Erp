@@ -17,7 +17,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
             
-        <icons:IconView Id="{Binding IconPath}" Height="20" HorizontalAlignment="Center"/>
+        <icons:IconView Path="{Binding IconPath}" Height="20" HorizontalAlignment="Center"/>
         <Label Grid.Column="1"/>
         <TextBlock 
             Grid.Column="2" 

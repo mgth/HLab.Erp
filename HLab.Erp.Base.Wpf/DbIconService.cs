@@ -15,7 +15,7 @@ namespace HLab.Erp.Base.Wpf
         [Import]
         private IDataService _db;
 
-        public async Task<object> GetIcon(string name,string forMatch, string backMatch)
+        public async Task<object> GetIconAsync(string name,string forMatch, string backMatch)
         {
             var icon = await _db.FetchOneAsync<Icon>(i => i.Name==name);
             if (icon != null)
@@ -23,7 +23,7 @@ namespace HLab.Erp.Base.Wpf
                 return _base.FromSvgString(icon.Source,forMatch,backMatch);
             }
 
-            return _base.GetIcon(name,forMatch,backMatch);
+            return _base.GetIconAsync(name,forMatch,backMatch);
         }
 
         public object GetFromHtml(string html) => _base.GetFromHtml(html); 

@@ -26,15 +26,15 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Viewbox  Height="25"><icons:IconView Id="icons/logo" Grid.Column="0"/></Viewbox>
+            <Viewbox  Height="25"><icons:IconView Path="icons/logo" Grid.Column="0"/></Viewbox>
             <ContentControl Grid.Column="1" FontSize="25" Content="{Binding Menu}"/>
             <Label Opacity="0.5" Grid.Column="2" HorizontalContentAlignment="Center" Content="{Binding Title}"/>
             <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="0,0,120,0">
                 <Button Command="{Binding OpenUserCommand}" Content ="{Binding Acl.Connection.User.Caption}"/>
-                <icons:IconView Margin="7" Id="Icons/Entities/User" Height="20"/>
+                <icons:IconView Margin="7" Path="Icons/Entities/User" Height="20"/>
             </StackPanel>
         </Grid>
-        <Viewbox Height="1000" Grid.Row="2" Opacity="0.1"><icons:IconView Id="icons/LogoBackground"/></Viewbox>
+        <Viewbox Height="1000" Grid.Row="2" Opacity="0.1"><icons:IconView Path="icons/LogoBackground"/></Viewbox>
         
         <xcad:DockingManager x:Name="DockingManager" Grid.Row="2"
                              
@@ -60,7 +60,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" >
                         <Viewbox HorizontalAlignment="Left" Height="16">
-                            <icons:IconView Id="{Binding IconPath}"/>
+                            <icons:IconView Path="{Binding IconPath}"/>
                         </Viewbox>
                         <lang:Localize TextBlock.FontSize="14" Id="{Binding Title}"/>
                     </StackPanel>

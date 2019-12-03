@@ -33,7 +33,7 @@ namespace HLab.Erp.Core.DragDrops
         private readonly IProperty<object> _icon = H.Property<object>(c => c
             .On(e => e.Model.IconPath)
             .On(e => e.IconPath)
-            .Set(async e => await e._icons.GetIcon(e.Model?.IconPath ?? e.IconPath))
+            .Set(async e => await e._icons.GetIconAsync(e.Model?.IconPath ?? e.IconPath))
         );
 
         public virtual string IconPath => "IconMicroscope";

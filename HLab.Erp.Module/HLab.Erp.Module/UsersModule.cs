@@ -29,7 +29,7 @@ namespace HLab.Erp.Module
         {
             _erp.Menu.RegisterMenu("tools", "users", "{Users}",
                 ListUsersOpenDocumentCommand,
-                _erp.Icon.GetIcon("icons/Users"));
+                _erp.Icon.GetIconAsync("icons/Users"));
         }
     }
 }

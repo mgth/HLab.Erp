@@ -25,7 +25,7 @@
             <Label Style="{DynamicResource Separator}" >
                 <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                     <Canvas>
-                        <icons:IconView Id = "Icons/users" Height="35" Opacity="0.8"/>
+                        <icons:IconView Path = "Icons/users" Height="35" Opacity="0.8"/>
                     </Canvas>
                     <lang:Localize Id="{}{Profile}" Margin="50,0,0,0"/>
                 </StackPanel>
@@ -40,7 +40,7 @@
             <Label Style="{DynamicResource Separator}" >
                 <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                     <Canvas>
-                        <icons:IconView  Id="Icons/Entities/User" Height="35" Opacity="0.8"/>
+                        <icons:IconView  Path="Icons/Entities/User" Height="35" Opacity="0.8"/>
                     </Canvas>
                     <ContentControl Width="50"></ContentControl>
                     <lang:Localize  Id="{}{Users}"/>
@@ -82,7 +82,7 @@
             <Label Style="{DynamicResource Separator}" >
                 <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                     <Canvas>
-                        <icons:IconView  Id="Icons/Locked" Height="35" Opacity="0.8"/>
+                        <icons:IconView  Path="Icons/Locked" Height="35" Opacity="0.8"/>
                     </Canvas>
                     <ContentControl Width="50"></ContentControl>
                     <lang:Localize  Id="{}{Rights}"/>
@@ -122,7 +122,7 @@
             <Label Style="{DynamicResource Separator}" >
                 <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                     <Canvas>
-                        <icons:IconView  Id="Icons/Edit" Height="35" Opacity="0.8"/>
+                        <icons:IconView  Path="Icons/Edit" Height="35" Opacity="0.8"/>
                     </Canvas>
                     <ContentControl Width="50"></ContentControl>
                     <lang:Localize  Id="{}{Note}"/>

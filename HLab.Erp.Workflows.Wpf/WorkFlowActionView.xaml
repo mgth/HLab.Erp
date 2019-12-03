@@ -24,7 +24,7 @@
                 Command="{Binding Command}"
                 >
                 <StackPanel Orientation="Horizontal">
-                    <icons:IconView Width="20" Height="20" Id="{Binding Model.IconPath}"/>
+                    <icons:IconView Width="20" Height="20" Path="{Binding Model.IconPath}"/>
                     <Label/>
                     <lang:Localize VerticalAlignment="Center" Id="{Binding Model.Caption}"/>
                 </StackPanel>

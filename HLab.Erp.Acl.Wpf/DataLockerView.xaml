@@ -14,7 +14,7 @@
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Height="30">
     <Button Command="{Binding ActivateCommand}" Background="#40000000">
         <StackPanel Orientation="Vertical">
-            <icons:IconView Id="icons/Locked" Height="25"/>
+            <icons:IconView Path="icons/Locked" Height="25"/>
         </StackPanel>
         <Button.Style>
             <Style TargetType="Button">
@@ -30,7 +30,7 @@
         
     <Button Command="{Binding CancelCommand}"  BorderThickness="0" Background="Transparent">
         <StackPanel Orientation="Vertical">
-            <icons:IconView Id="Icons/Cancel" Height="25"/>
+            <icons:IconView Path="Icons/Cancel" Height="25"/>
         </StackPanel>
         <Button.Style>
             <Style TargetType="Button">
@@ -46,7 +46,7 @@
         <Label></Label>
     <Button Command="{Binding SaveCommand}" BorderThickness="0" Background="Transparent">
         <StackPanel Orientation="Vertical">
-            <icons:IconView Id="icons/Save" Height="25"/>
+            <icons:IconView Path="icons/Save" Height="25"/>
         </StackPanel>
         <Button.Style>
             <Style TargetType="Button">

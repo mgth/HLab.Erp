@@ -24,7 +24,7 @@ namespace HLab.Erp.Core.WebService
 
         public void Load()
         {
-            _erp.Menu.RegisterMenu("tools", "internet", "{Internet}", OpenDocumentCommand, _erp.Icon.GetIcon("icons/internet"));
+            _erp.Menu.RegisterMenu("tools", "internet", "{Internet}", OpenDocumentCommand, _erp.Icon.GetIconAsync("icons/internet"));
         }
     }
 }

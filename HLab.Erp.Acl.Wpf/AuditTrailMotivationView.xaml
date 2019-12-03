@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel HorizontalAlignment="Center" Margin="20">
-        <icons:IconView Id="{Binding IconPath}" MaxHeight="30"/>
+        <icons:IconView Path="{Binding IconPath}" MaxHeight="30"/>
         <TextBlock HorizontalAlignment="Center" Margin="5" Text="{Binding EntityCaption}"/>
         <TextBlock Padding="5" Text="{Binding Log}" FontStyle="Italic" Foreground="#80FFFFFF">
             <TextBlock.Background>
@@ -69,7 +69,7 @@
                 IsCancel="True"
                 Tag="Actions/Revert.xaml" 
                 Command="{Binding CancelCommand}">
-                <icons:IconView Id="Icons/Cancel" Height="30"/>
+                <icons:IconView Path="Icons/Cancel" Height="30"/>
             </Button>
 <Label/>
             <Button 
@@ -79,7 +79,7 @@
                 Width="80" 
                 Tag="Validations/ValidateDocument.xaml" 
                 Command="{Binding OkCommand}" IsDefault="True">
-                <icons:IconView Id="Icons/Save" Height="30"/>                
+                <icons:IconView Path="Icons/Save" Height="30"/>                
             </Button>
 
         </StackPanel>
