@@ -15,20 +15,20 @@ namespace HLab.Erp.Base.Wpf
         [Import]
         private IDataService _db;
 
-        public async Task<object> GetIconAsync(string name,string forMatch, string backMatch)
+        public async Task<object> GetIconAsync(string name)
         {
             var icon = await _db.FetchOneAsync<Icon>(i => i.Name==name);
             if (icon != null)
             {
-                return _base.FromSvgString(icon.Source,forMatch,backMatch);
+                return _base.FromSvgStringAsync(icon.Source);
             }
 
-            return _base.GetIconAsync(name,forMatch,backMatch);
+            return _base.GetIconAsync(name);
         }
 
         public object GetFromHtml(string html) => _base.GetFromHtml(html); 
 
-        public async Task<object> FromSvgString(string svg, string forMatch, string backMatch) => await _base.FromSvgString(svg, forMatch, backMatch);
+        public async Task<object> FromSvgStringAsync(string svg) => await _base.FromSvgStringAsync(svg).ConfigureAwait(false);
 
         public void AddIconProvider(string name, IIconProvider provider) => _base.AddIconProvider(name,provider);
 

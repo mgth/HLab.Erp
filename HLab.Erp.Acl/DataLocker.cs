@@ -93,19 +93,19 @@ namespace HLab.Erp.Acl
         private readonly IProperty<bool> _isActive = H.Property<bool>(c => c.Default(false));
 
         public ICommand ActivateCommand { get; } = H.Command(c => c
-            .Action(async e => await e.Activate())
+            .Action(async e => await e.ActivateAsync().ConfigureAwait(false))
         );
 
         public ICommand SaveCommand { get; } = H.Command(c => c
             .CanExecute(e => e.Persister.IsDirty)
-            .Action(async e => await e.Save())
+            .Action(async e => await e.SaveAsync().ConfigureAwait(false))
             .On(e => e.Persister.IsDirty).CheckCanExecute()
         );
         public ICommand CancelCommand { get; } = H.Command(c => c
-            .Action(async e => await e.Cancel())
+            .Action(async e => await e.CancelAsync().ConfigureAwait(false))
         );
 
-        public async Task Activate()
+        public async Task ActivateAsync()
         {
             if (IsActive)
                 return;
@@ -168,7 +168,7 @@ namespace HLab.Erp.Acl
 
         public Action<T> BeforeSavingAction { get; set; }
 
-        public async Task Save()
+        public async Task SaveAsync()
         {
             BeforeSavingAction?.Invoke(_entity);
 
@@ -198,7 +198,7 @@ namespace HLab.Erp.Acl
                 Message = e.Message;
             }
         }
-        public async Task Cancel()
+        public async Task CancelAsync()
         {
             try
             {
@@ -231,7 +231,7 @@ namespace HLab.Erp.Acl
         public async void Dispose()
         {
             if(IsActive)
-                await Cancel().ConfigureAwait(false);
+                await CancelAsync().ConfigureAwait(false);
             _timer.Dispose();
         }
 

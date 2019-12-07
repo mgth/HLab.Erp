@@ -20,7 +20,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             Columns
                 .Column("{Name}", s => s.Name)
                 .Column("{Format}", s => s.Format)
-                .Column("{Icon}", async s => await _icons.FromSvgString(s.Source),null)
+                .Column("{Icon}", async s => await _icons.FromSvgStringAsync(s.Source),null)
                 ;
 
             List.Update();
