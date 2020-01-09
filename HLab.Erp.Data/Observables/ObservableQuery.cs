@@ -167,19 +167,14 @@ namespace HLab.Erp.Data.Observables
             _lockFilters.EnterReadLock();
             try
             {
-                foreach (Filter filter in _filters.OrderBy(f => f.Order))
+                foreach (var filter in _filters.OrderBy(f => f.Order))
                 {
-                    if (result == null)
-                    {
-                        result = filter.GetExpression();
-                        //param = filter.GetExpression().Parameters[0];
-                    }
-                    else
-                    {
-                        //result = Expression.AndAlso(result,filter.GetExpression().Body);
-                        result = result.And(filter.GetExpression());
-                    }
+                    result = result.AndAlso(filter.GetExpression());
                 }
+            }
+            catch
+            {
+                return t => true;
             }
             finally
             {
