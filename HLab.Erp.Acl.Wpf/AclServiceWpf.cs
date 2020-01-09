@@ -10,7 +10,7 @@ namespace HLab.Erp.Acl
     {
         public override async Task<User> GetUser(NetworkCredential credential)
         {
-//#if !DEBUG
+#if !DEBUG
             bool valid = false;
                 try
                 {
@@ -25,7 +25,7 @@ namespace HLab.Erp.Acl
                 }
 
             if (valid) return await Data.FetchOneAsync<User>(u => u.Login == credential.UserName).ConfigureAwait(false);
-//#endif            
+#endif            
             return await base.GetUser(credential).ConfigureAwait(false);
         }
     }
