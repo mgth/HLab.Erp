@@ -19,7 +19,11 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         
-        <Grid>
+        <Grid
+                   MouseDown="MainWindow_OnMouseDown"
+                   MouseMove="UIElement_OnMouseMove"
+                   MouseUp="UIElement_OnMouseUp"
+        >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -28,7 +32,10 @@
             </Grid.ColumnDefinitions>
             <Viewbox  Height="25"><icons:IconView Path="icons/logo" Grid.Column="0"/></Viewbox>
             <ContentControl Grid.Column="1" FontSize="25" Content="{Binding Menu}"/>
-            <Label Opacity="0.5" Grid.Column="2" HorizontalContentAlignment="Center" Content="{Binding Title}"/>
+            <Label Opacity="0.5" Grid.Column="2" 
+                   HorizontalContentAlignment="Center" 
+                   Content="{Binding Title}" 
+            />
             <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="0,0,120,0">
                 <Button Command="{Binding OpenUserCommand}" Content ="{Binding Acl.Connection.User.Caption}"/>
                 <icons:IconView Margin="7" Path="Icons/Entities/User" Height="20"/>
