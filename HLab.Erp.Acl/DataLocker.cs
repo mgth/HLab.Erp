@@ -89,7 +89,6 @@ namespace HLab.Erp.Acl
             get => _isActive.Get();
             private set => _isActive.Set(value);
         }
-
         private readonly IProperty<bool> _isActive = H.Property<bool>(c => c.Default(false));
 
         public ICommand ActivateCommand { get; } = H.Command(c => c
@@ -101,6 +100,7 @@ namespace HLab.Erp.Acl
             .Action(async e => await e.SaveAsync().ConfigureAwait(false))
             .On(e => e.Persister.IsDirty).CheckCanExecute()
         );
+
         public ICommand CancelCommand { get; } = H.Command(c => c
             .Action(async e => await e.CancelAsync().ConfigureAwait(false))
         );
@@ -198,6 +198,7 @@ namespace HLab.Erp.Acl
                 Message = e.Message;
             }
         }
+
         public async Task CancelAsync()
         {
             try
@@ -205,6 +206,7 @@ namespace HLab.Erp.Acl
                 Message = null;
                 await _db.ReFetchOne(_entity).ConfigureAwait(true);
                 Persister.Reset();
+                _timer.Change(Timeout.Infinite,Timeout.Infinite);
                 _db.Delete(_lock);
                 IsActive = false;
             }
