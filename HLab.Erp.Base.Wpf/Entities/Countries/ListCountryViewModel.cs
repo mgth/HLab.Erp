@@ -1,6 +1,7 @@
 ﻿using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.ListFilters;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Icons;
 using HLab.Mvvm.Lang;
@@ -37,6 +38,12 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
                 ;
 
             List.OrderBy = e => e.Name;
+
+            Filters.Add(new FilterTextViewModel()
+            {
+                Title = "{Name}",
+            }.Link(List, s => s.Name));
+
             //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(
             //    "Country",
             //    "Pays",

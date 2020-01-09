@@ -1,24 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Base.Data;
-using HLab.Erp.Core;
+﻿using HLab.Erp.Base.Data;
 using HLab.Erp.Core.EntityLists;
-using HLab.Erp.Core.ViewModels;
-using HLab.Erp.Core.ViewModels.EntityLists;
-using HLab.Erp.Data;
+using HLab.Erp.Core.ListFilters;
+using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Base.Wpf
+namespace HLab.Erp.Base.Wpf.Entities.Customers
 {
     public class ListCustomerViewModel : EntityListViewModel<ListCustomerViewModel,Customer>, IMvvmContextProvider
     {
-        [Import]
-        private ILocalizationService _localization;
-
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
@@ -32,11 +21,17 @@ namespace HLab.Erp.Base.Wpf
 
             Columns
                 .Column("{Name}", s => s.Name)
-                .Column("{Country}", s => s.Country)
+                .Column("{Country}", s => new ViewLocator{Model = s.Country})
                 .Column("{eMail}", s => s.Email)
                 .Column("{Address}", s => s.Address);
 
             List.OrderBy = e => e.Name;
+
+            using (List.Suspender.Get())
+            {
+                Filters.Add(new FilterTextViewModel {Title = "{Name}"}.Link(List, e => e.Name));
+            }
+
             //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(
             //    "Country",
             //    "Pays",
