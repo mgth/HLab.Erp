@@ -19,8 +19,8 @@ namespace HLab.Erp.Core.ListFilters
 
         public Expression<Func<T,bool>> Match<T>(Expression<Func<T, string>> getter)
         {
-            if (string.IsNullOrWhiteSpace(Value)) 
-                return e => true; 
+            if (!Enabled || string.IsNullOrWhiteSpace(Value)) 
+                return null; 
 
             var entity = getter.Parameters[0];
             var value = Expression.Constant(Value,typeof(string));
@@ -45,8 +45,10 @@ namespace HLab.Erp.Core.ListFilters
             private set => _update.Set(value);
         }
         private readonly IProperty<Action> _update = H.Property<Action>();
+
         private IProperty<bool> _updateTrigger = H.Property<bool>(c => c
             .On(e => e.Value)
+            .On(e => e.Enabled)
             .On(e => e.Update)
             .NotNull(e => e.Update)
             .Do((e,p) => e.Update.Invoke())
