@@ -15,14 +15,16 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <mvvm:ViewLocator x:Name="Locator" ViewClass="{x:Type annotations:IViewClassListItem}"/>
-        <Button Grid.Column="1" x:Name="OpenButton" Click="OpenButton_OnClick">
+        <Label Grid.Column="1"/>
+        <Button Grid.Column="2" x:Name="OpenButton" Click="OpenButton_OnClick">
             <icons:IconView Path="Icons/OpenForeign" MaxHeight="10"/>
         </Button>
-        <Button Grid.Column="2" x:Name="Button" Click="ButtonBase_OnClick">
+        <Button Grid.Column="3" x:Name="Button" Click="ButtonBase_OnClick">
             <StackPanel>
-                <Label x:Name="Label">...</Label>
+                <icons:IconView x:Name="Label" Path="Icons/SelectForeign" MaxHeight="10"/>
                 <Popup x:Name="Popup" Height="500" StaysOpen="False">
                     <Grid>
                         <ContentPresenter x:Name="PopupContent"/>
