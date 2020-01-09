@@ -37,7 +37,7 @@ namespace HLab.Erp.Base.Wpf.Entities
         {
             _erp.Menu.RegisterMenu("data", Name, Header,
                 OpenCommand,
-                _erp.Icon.GetIconAsync(IconPath));
+                IconPath);
         }
     }
 }

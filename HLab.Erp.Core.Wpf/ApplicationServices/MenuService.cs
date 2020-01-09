@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
+using HLab.Mvvm.Icons;
 using HLab.Mvvm.Lang;
 
 namespace HLab.Erp.Core.ApplicationServices
@@ -12,7 +13,7 @@ namespace HLab.Erp.Core.ApplicationServices
         [Import]
         private MainWpfViewModel _viewModel;
 
-        public void RegisterMenu(string parent, string newName, object header, ICommand command, object icon)
+        public void RegisterMenu(string parent, string newName, object header, ICommand command, string iconPath)
         {
             if (header is string s)
             {
@@ -24,10 +25,10 @@ namespace HLab.Erp.Core.ApplicationServices
                 Name = newName,
                 Header = header,
                 Command = command,
-                Icon = new Viewbox
+                Icon = new IconView
                 {
                     Height = 25,
-                    Child = icon as UIElement
+                    Path = iconPath
                 }
 
             };
