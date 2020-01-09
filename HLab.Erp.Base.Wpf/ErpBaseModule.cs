@@ -7,6 +7,7 @@ using System.Windows.Input;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Wpf.Entities.Countries;
+using HLab.Erp.Base.Wpf.Entities.Customers;
 using HLab.Erp.Base.Wpf.Entities.Icons;
 using HLab.Erp.Base.Wpf.Entities.Profiles;
 using HLab.Erp.Base.Wpf.Entities.Users;
@@ -28,10 +29,6 @@ namespace HLab.Erp.Base.Wpf
             Initialize();
         }
 
-        public ICommand CustomerCommand { get; } = H.Command(c => c.Action(
-            e => e._erp.Docs.OpenDocument(typeof(ListCustomerViewModel))
-            ).CanExecute(e => true));
-
         public ICommand CountryCommand { get; } = H.Command(c => c.Action(
                 e => e._erp.Docs.OpenDocument(typeof(ListCountryViewModel))
             ));
@@ -46,9 +43,6 @@ namespace HLab.Erp.Base.Wpf
             ));
         public void Load()
         {
-            _erp.Menu.RegisterMenu("data", "customer", "{Customer}",
-                CustomerCommand,
-                _erp.Icon.GetIconAsync("Icons/Entities/Customer"));
 
             _erp.Menu.RegisterMenu("param", "country", "{Country}",
                 CountryCommand,
