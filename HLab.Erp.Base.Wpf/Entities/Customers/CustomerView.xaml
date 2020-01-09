@@ -13,6 +13,7 @@
              xmlns:data="clr-namespace:HLab.Erp.Base.Data;assembly=HLab.Erp.Base.Data"
              xmlns:customers="clr-namespace:HLab.Erp.Base.Wpf.Entities.Customers"
              xmlns:countries="clr-namespace:HLab.Erp.Base.Wpf.Entities.Countries"
+             xmlns:entities="clr-namespace:HLab.Erp.Base.Wpf.Entities"
              d:DataContext="{d:DesignInstance {x:Type customers:CustomerViewModelDesign}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -29,15 +30,7 @@
                 </Label>
                 <ContentPresenter Content="{Binding Workflow}"/>-->
 
-
-            <Label Style="{DynamicResource Separator}" >
-                <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                    <Canvas>
-                        <icons:IconView Path = "{Binding EntityIconPath}" Height="35" Opacity="0.8"/>
-                    </Canvas>
-                    <lang:Localize Id="{Binding EntityName}" Margin="50,0,0,0"/>
-                </StackPanel>
-            </Label>
+            <entities:DetailSeparator Grid.ColumnSpan="2" IconPath="{Binding EntityIconPath}" Text="{Binding EntityName}"/>
 
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="{}{Name}" StringFormat="{}{0} : " />
@@ -57,6 +50,7 @@
                 <lang:Localize Id="{}{Country} : "/>
             </Label>
             <entitySelectors:ForeignView 
+                HorizontalAlignment="Left"
                 IsReadOnly="{Binding Locker.IsReadOnly}"
                 Model="{Binding Model.Country}" 
                 ModelClass="{x:Type data:Country}" 
