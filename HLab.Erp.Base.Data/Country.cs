@@ -8,9 +8,8 @@ using NPoco;
 namespace HLab.Erp.Base.Data
 {
 
-    public class Country : Entity<Country>
+    public class Country : Entity<Country>,IListableModel
     {
-        [System.ComponentModel.DataAnnotations.Schema.Column]
         public string Name
         {
             get => _name.Get();
@@ -61,6 +60,10 @@ namespace HLab.Erp.Base.Data
             set => ContinentId = value.Id;
             get => _continent.Get();
         }
+
+        [Ignore]
+        public string Caption => Name;
+
         readonly IProperty<Continent> _continent = H.Property<Continent>(c => c
             .Foreign(e => e.ContinentId));
     }
