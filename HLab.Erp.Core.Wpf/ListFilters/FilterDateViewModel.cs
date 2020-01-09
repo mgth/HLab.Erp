@@ -99,14 +99,18 @@ namespace HLab.Erp.Core.ListFilters
             .When(e => e.MaxDateCalculated)
             .Set(e => Shift(e.ReferenceDate, e.MaxDateShift, e.MaxDateShiftUnit))
         );
+
         public bool MaxDateCalculated {
             get => _maxDateCalculated.Get();
             set => _maxDateCalculated.Set(value);
         }
-        private readonly IProperty<bool> _maxDateCalculated = H.Property<bool>(c => c
-        );
+        private readonly IProperty<bool> _maxDateCalculated = H.Property<bool>(c => c.Default(false));
+
         public bool MaxDateEnabled => _maxDateEnabled.Get();
-        private readonly IProperty<bool> _maxDateEnabled = H.Property<bool>(c => c.On(e => e.MaxDateCalculated).Set(e => !e.MaxDateCalculated));
+        private readonly IProperty<bool> _maxDateEnabled = H.Property<bool>(c => c
+            .Default(true)
+            .On(e => e.MaxDateCalculated)
+            .Set(e => !e.MaxDateCalculated));
 
         public int MaxDateShift
         {
@@ -135,24 +139,31 @@ namespace HLab.Erp.Core.ListFilters
 
         public Expression<Func<T,bool>> Match<T>(Expression<Func<T, DateTime?>> getter)
         {
-            //if(!Enabled) return t => true;
+            if (!Enabled) return null;
 
             var entity = getter.Parameters[0];
-            var minDate = Expression.Constant(MinDate,typeof(DateTime?));
-            var maxDate = Expression.Constant(MaxDate,typeof(DateTime?));
+            var minDate = Expression.Constant(MinDate, typeof(DateTime?));
+            var maxDate = Expression.Constant(MaxDate, typeof(DateTime?));
 
             var ex1 = Expression.LessThanOrEqual(getter.Body, maxDate);
             var ex2 = Expression.GreaterThanOrEqual(getter.Body, minDate);
 
             var ex = Expression.AndAlso(ex1, ex2);
 
-            return Expression.Lambda<Func<T, bool>>(ex,entity);
+            return Expression.Lambda<Func<T, bool>>(ex, entity);
+
+            //var g = getter.Compile();
+            //var minDate = MinDate;
+            //var maxDate = MaxDate;
+
+            //return t => g(t) <= maxDate && g(t) >= minDate;
         }
 
         private IProperty<bool> _updateTrigger = H.Property<bool>(c => c
             .On(e => e.MinDate)
             .On(e => e.MaxDate)
             .On(e => e.Update)
+            .On(e => e.Enabled)
             .NotNull(e => e.Update)
             .Do((e,p) => e.Update.Invoke())
         );
