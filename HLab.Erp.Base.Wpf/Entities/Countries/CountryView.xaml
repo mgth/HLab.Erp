@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="HLab.Erp.Base.Wpf.Entities.Countries.CountryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HLab.Erp.Base.Wpf.Entities.Countries"
+             xmlns:base="clr-namespace:HLab.Base;assembly=HLab.Base.Wpf"
+             xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
+             xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
+             xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance local:CountryViewModel}"
+             >
+    <Grid>
+        <base:DetailView>
+            <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="{}{Name} : "/>
+            </Label>
+            <TextBox Text="{Binding Model.Name}" HorizontalContentAlignment="Left" />
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="{}Iso A2 : "/>
+            </Label>
+            <TextBox Text="{Binding Model.IsoA2}" HorizontalContentAlignment="Left" />
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="{}Iso A3 : "/>
+            </Label>
+            <TextBox Text="{Binding Model.IsoA3}" HorizontalContentAlignment="Left" />
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="{}Iso : "/>
+            </Label>
+            <TextBox Text="{Binding Model.Iso}" HorizontalContentAlignment="Left" />
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="{}{Icon path} : "/>
+            </Label>
+            <TextBox Text="{Binding Model.IconPath}" HorizontalContentAlignment="Left" />
+
+            <Label HorizontalContentAlignment="Right" >
+                <lang:Localize Id="{}{Icon} : "/>
+            </Label>
+            <icons:IconView Path="{Binding Model.IconPath}" MaxHeight="50" HorizontalAlignment="Left"/>
+
+        </base:DetailView>
+    </Grid>
+</UserControl>
