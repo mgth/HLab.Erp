@@ -270,6 +270,7 @@
     <None Remove="Icons\Flags\yemen.svg" />
     <None Remove="Icons\Flags\zambia.svg" />
     <None Remove="Icons\Flags\zimbabwe.svg" />
+    <None Remove="Icons\SelectForeign.svg" />
     <None Remove="TODO.txt" />
   </ItemGroup>
 
@@ -283,7 +284,7 @@
   <ItemGroup>
     <PackageReference Include="Dirkster.AvalonDock" Version="3.6.2" />
     <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="3.6.2" />
-    <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0605" />
+    <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0660" />
   </ItemGroup>
 
   <ItemGroup>
@@ -559,6 +560,7 @@
     <Resource Include="Icons\Flags\yemen.svg" />
     <Resource Include="Icons\Flags\zambia.svg" />
     <Resource Include="Icons\Flags\zimbabwe.svg" />
+    <Resource Include="Icons\SelectForeign.svg" />
   </ItemGroup>
 
   <ItemGroup>
