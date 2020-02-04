@@ -78,20 +78,24 @@ namespace HLab.Erp.Acl
             }
         }
 
-        public async Task<bool> IsGranted(AclRight right, AclNode target)
+        public async Task<bool> IsGrantedAsync(AclRight right, AclNode target)
         {
             var groups = GetGroups().ToList();
             var targets = target.GetGroups().ToList();
 
-            var grants = await DataService.FetchWhereAsync<AclGranted>(e => 
+            var grants = DataService.FetchWhereAsync<AclGranted>(e => 
                     groups.Contains(e.ToNodeId) && 
                     targets.Contains(e.OnNodeId)
-                ,null).ConfigureAwait(false);
+                ,null);
 
-            if (grants.Count == 0) return false;
-            if (grants.Any(e => e.Deny)) return false;
+            var granted = false;
+            await foreach (var grant in grants)
+            {
+                if (grant.Deny) return false;
+                granted = true;
+            }
 
-            return true;
+            return granted;
         }
     }
 }

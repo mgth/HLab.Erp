@@ -18,32 +18,36 @@
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="{}{Name} : "/>
             </Label>
-            <TextBox Text="{Binding Model.Name}" HorizontalContentAlignment="Left" />
+            <lang:LocalizeTextBox 
+                Text="{Binding Model.Name}" 
+                IsReadOnly="{Binding Locker.IsReadOnly}"/>
 
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="{}Iso A2 : "/>
             </Label>
-            <TextBox Text="{Binding Model.IsoA2}" HorizontalContentAlignment="Left" />
+            <TextBox Text="{Binding Model.IsoA2}"/>
 
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="{}Iso A3 : "/>
             </Label>
-            <TextBox Text="{Binding Model.IsoA3}" HorizontalContentAlignment="Left" />
+            <TextBox Text="{Binding Model.IsoA3}"/>
 
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="{}Iso : "/>
             </Label>
-            <TextBox Text="{Binding Model.Iso}" HorizontalContentAlignment="Left" />
+            <TextBox Text="{Binding Model.Iso}"/>
 
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="{}{Icon path} : "/>
             </Label>
-            <TextBox Text="{Binding Model.IconPath}" HorizontalContentAlignment="Left" />
+            <TextBox Text="{Binding Model.IconPath}" />
 
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="{}{Icon} : "/>
             </Label>
-            <icons:IconView Path="{Binding Model.IconPath}" MaxHeight="50" HorizontalAlignment="Left"/>
+            <Button Command="{Binding PastIconCommand}">
+                <icons:IconView Path="{Binding Model.IconPath}" MaxHeight="50" HorizontalAlignment="Left"/>
+            </Button>
 
         </base:DetailView>
     </Grid>

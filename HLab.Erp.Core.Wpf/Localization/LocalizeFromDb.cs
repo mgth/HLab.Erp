@@ -23,7 +23,7 @@ namespace HLab.Erp.Core.Localization
         private readonly ConcurrentDictionary<string,AsyncDictionary<string,LocalizeEntry>> _cache 
             = new ConcurrentDictionary<string,AsyncDictionary<string,LocalizeEntry>>();
 
-        private async Task<AsyncDictionary<string, LocalizeEntry>> GetDictionary(string language)
+        private async Task<AsyncDictionary<string, LocalizeEntry>> GetDictionaryAsync(string language)
         {
             var created = false;
             var dic = _cache.GetOrAdd(language, t =>
@@ -34,10 +34,10 @@ namespace HLab.Erp.Core.Localization
 
             if (created)
             {
-                var list = await _db.FetchWhereAsync<LocalizeEntry>(e => e.Tag == language,e => e.Tag);
-                foreach (var e in list)
+                var list = _db.FetchWhereAsync<LocalizeEntry>(e => e.Tag == language,e => e.Tag).ConfigureAwait(false);
+                await foreach (var e in list)
                 {
-                    await dic.GetOrAdd(e.Code, async x => e);
+                    await dic.GetOrAddAsync(e.Code, async x => e).ConfigureAwait(false);
                 }
             }
             return dic;
@@ -46,9 +46,15 @@ namespace HLab.Erp.Core.Localization
 
         public async Task<string> LocalizeAsync(string language, string code)
         {
-            var dic = await GetDictionary(language);
+            var entry = await GetLocalizeEntryAsync(language, code).ConfigureAwait(false);
+            return entry?.Value;
+        }
 
-            var entry = await dic.GetOrAdd(code, async t =>
+        public async Task<ILocalizeEntry> GetLocalizeEntryAsync(string language, string code)
+        {
+            var dic = await GetDictionaryAsync(language).ConfigureAwait(false);
+
+            var entry = await dic.GetOrAddAsync(code, async t =>
             {
                 var e = await _db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == code).ConfigureAwait(false);
 
@@ -57,8 +63,13 @@ namespace HLab.Erp.Core.Localization
                 return e;
             }).ConfigureAwait(false);
 
+            return entry;
+        }
 
-            return entry?.Value;
+        public async IAsyncEnumerable<ILocalizeEntry> GetLocalizeEntriesAsync(string code)
+        {
+            await foreach(var item in _db.FetchWhereAsync<LocalizeEntry>(e => e.Code == code, e => e.Value).ConfigureAwait(false))
+                yield return item;
         }
 
         public void Register(string tag, string code, string value, bool quality)

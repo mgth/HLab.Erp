@@ -25,13 +25,13 @@ namespace HLab.Erp.Data
 
         T FetchOne<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
         Task<T> FetchOneAsync<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
-        Task<T> FetchOne<T>(int id) where T : class, IEntity<int>;
-        Task<T> FetchOne<T>(string id) where T : class, IEntity<string>;
-        Task<T> ReFetchOne<T>(T entity) where T : class, IEntity;
-        Task<T> GetOrAdd<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null) where T : class, IEntity;
-        Task<T> GetOrAdd<T>(T entity) where T : class, IEntity;
+        Task<T> FetchOneAsync<T>(int id) where T : class, IEntity<int>;
+        Task<T> FetchOneAsync<T>(string id) where T : class, IEntity<string>;
+        Task<T> ReFetchOneAsync<T>(T entity) where T : class, IEntity;
+        Task<T> GetOrAddAsync<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null) where T : class, IEntity;
+        Task<T> GetOrAddAsync<T>(T entity) where T : class, IEntity;
 
-        Task<List<T>> FetchWhereAsync<T>(
+        IAsyncEnumerable<T> FetchWhereAsync<T>(
             Expression<Func<T, bool>> expression,
             Expression<Func<T,object>> orderBy
             ) where T : class, IEntity;
@@ -40,7 +40,7 @@ namespace HLab.Erp.Data
             where T : class, IEntity;
 
         //void Execute(Action<IDatabase> action);
-        Task<List<T>> Fetch<T>() where T : class, IEntity;
+        IAsyncEnumerable<T> FetchAsync<T>() where T : class, IEntity;
 
         void RegisterEntities(IExportLocatorScope container);
         List<Type> Entities { get; }

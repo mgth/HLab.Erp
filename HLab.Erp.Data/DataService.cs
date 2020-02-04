@@ -50,7 +50,7 @@ namespace HLab.Erp.Data
                 added?.Invoke(t);
             }
 
-            return await GetCache<T>().GetOrAdd(t).ConfigureAwait(false);
+            return await GetCache<T>().GetOrAddAsync(t).ConfigureAwait(false);
         }
         public T Add<T>(Action<T> setter, Action<T> added = null)
             where T : class, IEntity
@@ -85,7 +85,7 @@ namespace HLab.Erp.Data
                 added?.Invoke(t);
             }
 
-            return GetCache<T>().GetOrAdd(t).Result;
+            return GetCache<T>().GetOrAddAsync(t).Result;
         }
 
 
@@ -103,7 +103,7 @@ namespace HLab.Erp.Data
                     result = db.Delete<T>(entity);
 
                     if(result>0)
-                        GetCache<T>().Forget(entity);
+                        GetCache<T>().ForgetAsync(entity);
                 }
                 catch (Exception e)
                 {
@@ -114,7 +114,7 @@ namespace HLab.Erp.Data
 
             return result;
         }
-        public async Task<T> GetOrAdd<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
+        public async Task<T> GetOrAddAsync<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {
             var cache = GetCache<T>();
@@ -127,25 +127,26 @@ namespace HLab.Erp.Data
 
             if (t == null) return Add(setter, added);
 
-            return await cache.GetOrAdd(t).ConfigureAwait(false);
+            return await cache.GetOrAddAsync(t).ConfigureAwait(false);
         }
-        public async Task<T> GetOrAdd<T>(T entity)
+        public Task<T> GetOrAddAsync<T>(T entity)
             where T : class, IEntity
         {
-            return await GetCache<T>().GetOrAdd(entity);
+            return GetCache<T>().GetOrAddAsync(entity);
         }
         //public static IQueryProviderWithIncludes<T> Query<T>() => D.Get().Query<T>();
-        public async Task<List<T>> Fetch<T>() where T : class, IEntity
+        public async IAsyncEnumerable<T> FetchAsync<T>() where T : class, IEntity
         {
             var cache = GetCache<T>();
 
             using var db = Get();
-            var listIn = await db.FetchAsync<T>();
 
             var listOut = new List<T>();
 
-            listIn.ToList().ForEach(async e => listOut.Add(await cache.GetOrAdd(e)));
-            return listOut;
+            await foreach (var item in db.FetchAsync<T>())
+            {
+                yield return await cache.GetOrAddAsync(item).ConfigureAwait(false);
+            }
         }
 
         public void Execute(Action<IDatabase> action)
@@ -155,15 +156,20 @@ namespace HLab.Erp.Data
         }
 
 //        public List<T> FetchQuery<T>(Func<IQueryable<T>, IQueryable<T>> q)
-        public async Task<List<T>> FetchWhereAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy)
+        public IAsyncEnumerable<T> FetchWhereAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy)
             where T : class, IEntity
         {
             var cache = GetCache<T>();
+
+
             if (typeof(ILocalCache).IsAssignableFrom(typeof(T)))
             {
-                var list = await cache.Fetch(expression).ConfigureAwait(false);
-                if(orderBy!=null)
-                    list = list.OrderBy(orderBy.Compile()).ToList();
+                var list = cache.FetchAsync(expression);
+                if (orderBy != null)
+                {
+                    var o = orderBy.Compile();
+                    list = list.OrderBy(o);
+                }
 
                 return list;
             }
@@ -171,25 +177,22 @@ namespace HLab.Erp.Data
             using var db = Get();
             {
                 var list =
-                    await db.QueryAsync<T>().Where(expression).ToList().ConfigureAwait(false);
+                    db.QueryAsync<T>().Where(expression);
 
-                if(orderBy!=null)
-                    list = list.OrderBy(orderBy.Compile()).ToList();
+                if (orderBy != null) list = list.OrderBy(orderBy);
 
-                return await cache.GetOrAdd(list).ConfigureAwait(false);
+                return cache.GetOrAddAsync(list.ToEnumerable());
             }
         }
 
         public async Task<T> FetchOneAsync<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity
         {
-            using (var db = Get())
-            {
-                //TODO : connection Timeout
-                //var result = db.FirstOrDefault<T>(expression);
-                var result = await db.QueryAsync<T>().Where(expression).FirstOrDefault().ConfigureAwait(false);
-                return result == null ? null : await GetCache<T>().GetOrAdd(result).ConfigureAwait(false);
-            }
+            using var db = Get();
+            //TODO : connection Timeout
+            //var result = db.FirstOrDefault<T>(expression);
+            var result = await db.QueryAsync<T>().Where(expression).FirstOrDefault().ConfigureAwait(false);
+            return result == null ? null : await GetCache<T>().GetOrAddAsync(result).ConfigureAwait(false);
         }
         public T FetchOne<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity
@@ -198,39 +201,39 @@ namespace HLab.Erp.Data
             //TODO : connection Timeout
             //var result = db.FirstOrDefault<T>(expression);
             var result = db.Query<T>().Where(expression).FirstOrDefault();
-            return result == null ? null : GetCache<T>().GetOrAdd(result).Result;
+            return result == null ? null : GetCache<T>().GetOrAddAsync(result).Result;
         }
 
-        public async Task<T> FetchOne<T>(int id)
+        public Task<T> FetchOneAsync<T>(int id)
             where T : class, IEntity<int>
 
-            => await FetchOne<T>((object)id).ConfigureAwait(false);
+            => FetchOneAsync<T>((object)id);
 
-        public async Task<T> FetchOne<T>(string id)
+        public Task<T> FetchOneAsync<T>(string id)
             where T : class, IEntity<string>
 
-            => await FetchOne<T>((object)id).ConfigureAwait(false);
+            => FetchOneAsync<T>((object)id);
 
-        public async Task<T> ReFetchOne<T>(T entity)
+        public async Task<T> ReFetchOneAsync<T>(T entity)
             where T : class, IEntity
         {
             if(entity==null) return null;
 
             using var db = Get();
             var re = await db.SingleByIdAsync<T>(entity.Id).ConfigureAwait(true);
-            return await GetCache<T>().GetOrAdd(re).ConfigureAwait(true);
+            return await GetCache<T>().GetOrAddAsync(re).ConfigureAwait(true);
         }
 
-        public async Task<T> FetchOne<T>(object id)
+        public async Task<T> FetchOneAsync<T>(object id)
             where T : class, IEntity
         {
             var subscribe = false;
 
-            var obj = await GetCache<T>().GetOrAdd(id,
+            var obj = await GetCache<T>().GetOrAddAsync(id,
                  async k =>
                 {
                     subscribe = true;
-                    var o = await Get().SingleOrDefaultByIdAsync<T>(k);
+                    var o = await Get().SingleOrDefaultByIdAsync<T>(k).ConfigureAwait(false);
                     return o;
                 }).ConfigureAwait(false);
 

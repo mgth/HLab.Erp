@@ -30,16 +30,16 @@ namespace HLab.Erp.Base.Wpf
         }
 
         public ICommand CountryCommand { get; } = H.Command(c => c.Action(
-                e => e._erp.Docs.OpenDocument(typeof(ListCountryViewModel))
+                e => e._erp.Docs.OpenDocumentAsync(typeof(ListCountryViewModel))
             ));
         public ICommand IconCommand { get; } = H.Command(c => c.Action(
-                e => e._erp.Docs.OpenDocument(typeof(ListIconViewModel))
+                e => e._erp.Docs.OpenDocumentAsync(typeof(ListIconViewModel))
             ));
         public ICommand UserCommand { get; } = H.Command(c => c.Action(
-                e => e._erp.Docs.OpenDocument(typeof(ListUserViewModel))
+                e => e._erp.Docs.OpenDocumentAsync(typeof(ListUserViewModel))
             ));
         public ICommand ProfileCommand { get; } = H.Command(c => c.Action(
-                e => e._erp.Docs.OpenDocument(typeof(ListProfileViewModel))
+                e => e._erp.Docs.OpenDocumentAsync(typeof(ListProfileViewModel))
             ));
         public void Load()
         {

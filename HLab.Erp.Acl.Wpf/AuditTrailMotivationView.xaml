@@ -10,21 +10,21 @@
     <StackPanel HorizontalAlignment="Center" Margin="20">
         <icons:IconView Path="{Binding IconPath}" MaxHeight="30"/>
         <TextBlock HorizontalAlignment="Center" Margin="5" Text="{Binding EntityCaption}"/>
-        <TextBlock Padding="5" Text="{Binding Log}" FontStyle="Italic" Foreground="#80FFFFFF">
-            <TextBlock.Background>
+        <TextBox IsReadOnly="True" MaxHeight="250" MaxWidth="800" BorderThickness="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Padding="5" Text="{Binding Log}" FontStyle="Italic" Foreground="#80FFFFFF" BorderBrush="Transparent">
+            <TextBox.Background>
                 <LinearGradientBrush>
                     <GradientStop Color="#10FFFFFF" Offset="0"/>
                     <GradientStop Color="#10000000" Offset="1"/>
                 </LinearGradientBrush>
-            </TextBlock.Background>
-            </TextBlock>
-
+            </TextBox.Background>
+            </TextBox>
         <TextBox 
             MinWidth="400" 
             TextWrapping="Wrap" 
             AcceptsReturn="True" 
             SpellCheck.IsEnabled="True"  
             MinHeight="50"  
+            MaxHeight="150"
             Text="{Binding Motivation}"
             >
     <TextBox.Style>
@@ -32,7 +32,7 @@
             <Style.Resources>
                 <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
                     <VisualBrush.Visual>
-                        <Label Content="Enter audit trail justification" Foreground="Black" />
+                        <Label Content="Enter audit trail justification" Foreground="#A0FFFFFF" />
                     </VisualBrush.Visual>
                 </VisualBrush>
             </Style.Resources>

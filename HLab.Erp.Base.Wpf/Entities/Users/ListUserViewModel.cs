@@ -27,7 +27,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
                 .Column("{Initials}", u=>u.Initials)
                 ;
 
-            List.Update();
+            List.UpdateAsync();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Profiles
 
 //            List.AddFilter(() => e => e.UserId == user.Id);
 
-            List.Update();
+            List.UpdateAsync();
         }        
         public ListProfileViewModel()
         {
@@ -27,7 +27,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Profiles
 
 //            List.AddFilter(() => e => e.UserId == user.Id);
 
-            List.Update();
+            List.UpdateAsync();
         }        
     }
 }

@@ -32,7 +32,7 @@ namespace HLab.Erp.Core.EntityLists
 
         public ColumnsProvider<T> Icon(string caption, Func<T,string> iconPath,Expression<Func<T,object>> orderBy=null,double height=25.0, string id=null)
         {
-            return Column(caption, async (s) =>
+            return ColumnAsync(caption, async (s) =>
             {
                 var icon = await _icons.GetIconAsync(iconPath(s));
                 if (icon is FrameworkElement fe) fe.MaxHeight = height;
@@ -41,7 +41,7 @@ namespace HLab.Erp.Core.EntityLists
             }, orderBy);
         }
 
-        public ColumnsProvider<T> Column(string caption, Func<T,Task<object>> f,Expression<Func<T,object>> orderBy,string id=null)
+        public ColumnsProvider<T> ColumnAsync(string caption, Func<T,Task<object>> f,Expression<Func<T,object>> orderBy,string id=null)
         {
             var c = new Column<T>(caption,t => new AsyncView{Getter = async () => await f(t)} ,orderBy, id, false);
             _dict.Add(c.Id,c);
@@ -102,7 +102,7 @@ namespace HLab.Erp.Core.EntityLists
                 {
                     //TODO : click is never called and so sorting does not work 
                     _list.OrderBy = column.OrderBy;
-                    _list.Update();
+                    _list.UpdateAsync();
                 };
  
                 var c = new GridViewColumn

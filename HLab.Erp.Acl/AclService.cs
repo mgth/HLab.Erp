@@ -72,7 +72,7 @@ namespace HLab.Erp.Acl
             if (connection != null /*&& user.CryptedPassword == password*/)
             {
                 Connection = connection;
-                await PopulateRights();
+                await PopulateRightsAsync();
                 _msg.Publish(new UserLoggedInMessage(connection));
                 return Connection.User.FirstName + " " + Connection.User.Name + " Connecté.";
             }
@@ -105,7 +105,7 @@ namespace HLab.Erp.Acl
             else return null;
 
 
-            var node = await _data.GetOrAdd<AclNode>(
+            var node = await _data.GetOrAddAsync<AclNode>(
                 e => e.TargetClass == aclClass && e.TargetId == id,
                 e =>
                 {
@@ -123,19 +123,19 @@ namespace HLab.Erp.Acl
             return CurrentRights.Contains(right);
         }
 
-        private async Task PopulateRights()
+        private async Task PopulateRightsAsync()
         {
             List<AclRight> rights = new List<AclRight>();
 
             var userId = Connection.UserId;
-            var profiles = await _data.FetchWhereAsync<UserProfile>(e => e.UserId == userId, e => e.Id);
-            foreach (var profile in profiles)
+            var profiles = _data.FetchWhereAsync<UserProfile>(e => e.UserId == userId, e => e.Id);
+            await foreach (var profile in profiles)
             {
-                var profileRights = await _data.FetchWhereAsync<AclRightProfile>(e => e.ProfileId == profile.Id, e => e.Id);
-                foreach(var rightProfile in profileRights)
+                var profileRights = _data.FetchWhereAsync<AclRightProfile>(e => e.ProfileId == profile.Id, e => e.Id);
+                await foreach(var rightProfile in profileRights)
                 {
                     if(rights.Any(r => r.Id == rightProfile.AclRightId)) continue;
-                    var right = await _data.FetchOne<AclRight>(rightProfile.AclRightId.Value);
+                    var right = await _data.FetchOneAsync<AclRight>(rightProfile.AclRightId.Value).ConfigureAwait(false);
 
                     rights.Add(right);
                 }
@@ -153,7 +153,7 @@ namespace HLab.Erp.Acl
             if (toNode == null) return false;
             if (onNode == null) return false;
 
-            return await toNode.IsGranted(right, onNode).ConfigureAwait(false);
+            return await toNode.IsGrantedAsync(right, onNode).ConfigureAwait(false);
         }
 
 

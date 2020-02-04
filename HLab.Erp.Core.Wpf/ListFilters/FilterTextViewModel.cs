@@ -35,7 +35,7 @@ namespace HLab.Erp.Core.ListFilters
         {
             //var entity = getter.Parameters[0];
             q.AddFilter(Title,()=> Match(getter));
-            Update = async ()=> await q.Update();
+            Update = ()=> q.UpdateAsync();
             return this;
         }
 

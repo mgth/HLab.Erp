@@ -18,13 +18,13 @@ namespace HLab.Erp.Core.WebService
         private readonly IErpServices _erp;
 
         public ICommand OpenCommand { get; } = H.Command(c => c
-        .Action(e => e._erp.Docs.OpenDocument(e))
+        .Action(e => e._erp.Docs.OpenDocumentAsync(e))
         );
 
         public string Title => "Internet";
         public void Navigate(string url)
         {
-            _erp.Docs.OpenDocument(this);
+            _erp.Docs.OpenDocumentAsync(this);
             WebBrowser.Navigate(url);
         }
 

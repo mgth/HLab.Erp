@@ -20,7 +20,7 @@ namespace HLab.Erp.Core.Localization
         public ICommand LocalizationOpenDocumentCommand { get; } = H.Command(c => c
             .Action(e =>
             {
-                e._erp.Docs.OpenDocument(typeof(LocalizationViewModel));
+                e._erp.Docs.OpenDocumentAsync(typeof(LocalizationViewModel));
             })
         );
 

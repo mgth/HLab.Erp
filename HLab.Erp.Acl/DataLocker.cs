@@ -142,7 +142,7 @@ namespace HLab.Erp.Acl
                     _lockPersister = _getLockPersister(_lock);
 
                     //Reload entity to be sure no changes occured before locking
-                    await _db.ReFetchOne(_entity).ConfigureAwait(true);
+                    await _db.ReFetchOneAsync(_entity).ConfigureAwait(true);
                 }
                 catch (Exception e)
                 {
@@ -204,7 +204,7 @@ namespace HLab.Erp.Acl
             try
             {
                 Message = null;
-                await _db.ReFetchOne(_entity).ConfigureAwait(true);
+                await _db.ReFetchOneAsync(_entity).ConfigureAwait(true);
                 Persister.Reset();
                 _timer.Change(Timeout.Infinite,Timeout.Infinite);
                 _db.Delete(_lock);

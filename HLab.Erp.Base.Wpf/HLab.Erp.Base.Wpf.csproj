@@ -21,6 +21,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>C:\Users\mathieu.AD\.nuget\packages\avalonedit\6.0.0\lib\netcoreapp3.0\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Icons\Cancel.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>

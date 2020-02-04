@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
@@ -7,31 +8,30 @@ using HLab.Mvvm.Icons;
 
 namespace HLab.Erp.Base.Wpf
 {
-    //[Export(typeof(IIconService))]
-    class DbIconService : IIconService
+    public class DbIconModule : IBootloader
     {
         [Import]
-        private IconService _base;
+        private IconService _icons;
         [Import]
         private IDataService _db;
 
-        public async Task<object> GetIconAsync(string name)
+        public async void Load()
         {
-            var icon = await _db.FetchOneAsync<Icon>(i => i.Name==name);
-            if (icon != null)
+            var icons =  _db.FetchAsync<Icon>().ConfigureAwait(true);
+
+            await foreach (var icon in icons)
             {
-                return _base.FromSvgStringAsync(icon.Source);
+                switch (icon.SourceXaml)
+                {
+                    case "svg":
+                        _icons.AddIconProvider(icon.Path, new IconProviderSvgFromSource(icon.SourceSvg, icon.Path));                
+                        break;
+                    case "xaml":
+                        _icons.AddIconProvider(icon.Path, new IconProviderXamlFromSource(icon.SourceSvg, icon.Path));                
+                        break;
+                }
             }
-
-            return _base.GetIconAsync(name);
         }
-
-        public object GetFromHtml(string html) => _base.GetFromHtml(html); 
-
-        public async Task<object> FromSvgStringAsync(string svg) => await _base.FromSvgStringAsync(svg).ConfigureAwait(false);
-
-        public void AddIconProvider(string name, IIconProvider provider) => _base.AddIconProvider(name,provider);
-
-        public dynamic Icon => _base.Icon;
     }
+
 }

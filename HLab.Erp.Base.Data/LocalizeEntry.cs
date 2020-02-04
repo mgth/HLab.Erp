@@ -1,10 +1,11 @@
 ﻿using HLab.Erp.Data;
+using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
 
 
 namespace HLab.Erp.Base.Data
 {
-    public class LocalizeEntry : Entity<LocalizeEntry>
+    public class LocalizeEntry : Entity<LocalizeEntry>, ILocalizeEntry
     {
         public string Tag
         {

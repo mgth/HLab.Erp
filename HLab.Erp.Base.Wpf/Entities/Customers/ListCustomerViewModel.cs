@@ -37,7 +37,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
             //    "Pays",
             //    c => c.Country,List
             //    ));
-            List.Update();
+            List.UpdateAsync();
         }
 
 

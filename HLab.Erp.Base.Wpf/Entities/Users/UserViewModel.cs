@@ -58,7 +58,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
         private void RemoveProfile(UserProfile userProfile)
         {
             var n = _data.Delete<UserProfile>(userProfile);
-            if(n>0) UserProfiles.List.Update();
+            if(n>0) UserProfiles.List.UpdateAsync();
         }
 
         private void AddProfile(Profile profile)
@@ -73,7 +73,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
             });
             if(userProfile!=null)
             {
-                UserProfiles.List.Update();
+                UserProfiles.List.UpdateAsync();
             }
         }
 

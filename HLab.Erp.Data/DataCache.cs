@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using HLab.Base;
 using HLab.DependencyInjection;
@@ -24,54 +26,49 @@ namespace HLab.Erp.Data
         private bool _fullCache = false;
 
 
-        public async Task<List<T>> Fetch(Expression<Func<T, bool>> expression)
+        public async IAsyncEnumerable<T> FetchAsync(Expression<Func<T, bool>> expression)
         {
             var e = expression.Compile();
 
             if (!_fullCache)
             {
-                var list = new List<T>();
                 using var db = DataService.Get();
-                var dbList = await db.FetchAsync<T>().ConfigureAwait(false);
+                var dbList = db.FetchAsync<T>().ConfigureAwait(false);
 
                 // TODO : bof
-                foreach (var obj in dbList)
+                await foreach (var obj in dbList)
                 {
-                    var cached = await GetOrAdd(obj).ConfigureAwait(false);
-                    if(e(cached)) list.Add(cached);
+                    var cached = await GetOrAddAsync(obj).ConfigureAwait(false);
+                    if(e(cached)) yield return cached;
                 }
 
                 _fullCache = true;
-                return list;
             }
-            return await _cache.Where(expression).ConfigureAwait(false);
+            
+            await foreach (var item in _cache.WhereAsync(expression)) yield return item;
         }
 
-        public async Task<T> GetOrAdd(object key, Func<object, Task<T>> factory) 
-            => await _cache.GetOrAdd(key, factory).ConfigureAwait(false);
+        public Task<T> GetOrAddAsync(object key, Func<object, Task<T>> factory) 
+            => _cache.GetOrAddAsync(key, factory);
 
-        public async Task<bool> Forget(T obj)
+        public async Task<bool> ForgetAsync(T obj)
         {
-            var r = await _cache.TryRemove(obj.Id).ConfigureAwait(false);
+            var r = await _cache.TryRemoveAsync(obj.Id).ConfigureAwait(false);
             return r.Item1;
         }
 
-        public async Task<List<T>> GetOrAdd(List<T> list)
+        public async IAsyncEnumerable<T> GetOrAddAsync(IAsyncEnumerable<T> list)
         {
-            var listOut = new List<T>();
-            foreach (var e in list)
+            await foreach (var e in list)
             {
-                var obj = await GetOrAdd(e).ConfigureAwait(true);
-                listOut.Add(obj);
+                var obj = await GetOrAddAsync(e).ConfigureAwait(true);
+                yield return obj;
             }
-            //await Task.Run(()=>
-            //})).ConfigureAwait(true);
-            return listOut;
         }
 
-        public async Task<T> GetOrAdd(T obj)
+        public async Task<T> GetOrAddAsync(T obj)
         {
-            var result = await _cache.GetOrAdd(obj.Id,
+            var result = await _cache.GetOrAddAsync(obj.Id,
                 async k => obj).ConfigureAwait(true);
 
             obj.CopyPrimitivesTo(result);

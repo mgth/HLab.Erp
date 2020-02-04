@@ -13,7 +13,7 @@ namespace HLab.Erp.Base.Wpf.Entities
         private readonly IErpServices _erp;
 
         public ICommand OpenCommand { get; } = H.Command(c => c.Action(
-            e => e._erp.Docs.OpenDocument(typeof(TList))
+            e => e._erp.Docs.OpenDocumentAsync(typeof(TList))
         ).CanExecute(e => true));
 
         private string Name

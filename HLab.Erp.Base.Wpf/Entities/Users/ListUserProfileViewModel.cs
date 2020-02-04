@@ -12,7 +12,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
 
             List.AddFilter(() => e => e.AclRightId == right.Id);
 
-            List.Update();
+            List.UpdateAsync();
         }        
         public ListAclRightProfileViewModel(Profile profile)
         {
@@ -21,7 +21,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
 
             List.AddFilter(() => e => e.ProfileId == profile.Id);
 
-            List.Update();
+            List.UpdateAsync();
         }        
     }
 
@@ -35,7 +35,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
 
             List.AddFilter(() => e => e.UserId == user.Id);
 
-            List.Update();
+            List.UpdateAsync();
         }        
         public ListUserProfileViewModel(Profile profile)
         {
@@ -44,7 +44,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
 
             List.AddFilter(() => e => e.ProfileId == profile.Id);
 
-            List.Update();
+            List.UpdateAsync();
         }        
     }
 }

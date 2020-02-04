@@ -45,7 +45,7 @@ namespace HLab.Erp.Data.Observables
         public static ObservableQuery<T> FluentUpdate<T>(this ObservableQuery<T> oq, bool force = true)
             where T : class, IEntity
         {
-            oq.Update(force);
+            oq.UpdateAsync(force);
             return oq;
         }
     }
@@ -59,7 +59,7 @@ namespace HLab.Erp.Data.Observables
         {
             _db = db;
             H.Initialize(this,OnPropertyChanged);
-            Suspender = new Suspender(()=>Update());
+            Suspender = new Suspender(()=>UpdateAsync());
         }
 
         protected new class H : NotifyHelper<ObservableQuery<T>> { }
@@ -70,7 +70,7 @@ namespace HLab.Erp.Data.Observables
         //public ModelCommand CreateCommand => this.GetCommand(Create, ()=>true);
         //public ModelCommand DeleteCommand => this.GetCommand(Delete, ()=>false);
 
-        private IEnumerable<T> _source = null;
+        private IAsyncEnumerable<T> _source = null;
 
         public class CreateHelper : IDisposable
         {
@@ -94,7 +94,7 @@ namespace HLab.Erp.Data.Observables
         {
             public string Name { get; set; }
             public Func<T, bool> Expression { get; set; } = null;
-            public Func<IEnumerable<T>, IEnumerable<T>> Func { get; set; }
+            public Func<IAsyncEnumerable<T>, IAsyncEnumerable<T>> Func { get; set; }
             public int Order { get; set; }
         }
 
@@ -117,7 +117,7 @@ namespace HLab.Erp.Data.Observables
         //    .On(e => e.Selected)
         //    .Set(e => e.Selected)
         //    );
-        public ObservableQuery<T> SetSource(Func<IEnumerable<T>> src)
+        public ObservableQuery<T> SetSource(Func<IAsyncEnumerable<T>> src)
         {
             SourceEnumerable = src;
             return this;
@@ -138,12 +138,12 @@ namespace HLab.Erp.Data.Observables
            .Set(e =>(Func<IQueryable<T>, IQueryable<T>>)(q => q))
         );
 
-        public Func<IEnumerable<T>> SourceEnumerable
+        public Func<IAsyncEnumerable<T>> SourceEnumerable
         {
             get => _sourceEnumerable.Get();
             set => _sourceEnumerable.Set(value);
         }
-        private readonly IProperty<Func<IEnumerable<T>>> _sourceEnumerable = H.Property<Func<IEnumerable<T>>>();
+        private readonly IProperty<Func<IAsyncEnumerable<T>>> _sourceEnumerable = H.Property<Func<IAsyncEnumerable<T>>>();
 
 
         //private IQueryable<T> Query(IQueryable<T> s)
@@ -188,7 +188,7 @@ namespace HLab.Erp.Data.Observables
         }
 
         //TODO : use where function to compile expression and cache it
-        private IEnumerable<T> PostQuery(IEnumerable<T> q)
+        private IAsyncEnumerable<T> PostQuery(IAsyncEnumerable<T> q)
         {
             if (q == null) return null;
             _lockFilters.EnterReadLock();
@@ -206,7 +206,7 @@ namespace HLab.Erp.Data.Observables
 
             return q;
         }
-        private async Task<List<T>> PostQuery(bool force = true)
+        private IAsyncEnumerable<T> PostQueryAsync(bool force = true)
         {
             if (_source == null || force)
             {
@@ -216,12 +216,10 @@ namespace HLab.Erp.Data.Observables
                 }
                 else
                 {
-                    _source = await _db.FetchWhereAsync(Where(),_orderBy).ConfigureAwait(true);
+                    _source = _db.FetchWhereAsync(Where(),_orderBy);
                 }                
             }
-            var list = PostQuery(_source).ToList();
-
-            return list;
+            return PostQuery(_source);
         }
 
 
@@ -293,7 +291,7 @@ namespace HLab.Erp.Data.Observables
             //return AddPostFilter(s => s.Where(expression), order, name);
         }
 
-        public ObservableQuery<T> AddPostFilter(Func<IEnumerable<T>, IEnumerable<T>> func, int order = 0, string name = null)
+        public ObservableQuery<T> AddPostFilter(Func<IAsyncEnumerable<T>, IAsyncEnumerable<T>> func, int order = 0, string name = null)
         {
             _lockFilters.EnterWriteLock(); 
             try
@@ -384,7 +382,7 @@ namespace HLab.Erp.Data.Observables
             }))
             {
                 _db.Delete(Selected);
-                Update();
+                UpdateAsync();
 
                 Exec(OnDeleted, new CreateHelper
                 {
@@ -488,7 +486,7 @@ namespace HLab.Erp.Data.Observables
 
                 oldThread?.Join();
 
-                Update(force);
+                UpdateAsync(force);
             });
             _updateThread.Start();
             return this;
@@ -507,31 +505,32 @@ namespace HLab.Erp.Data.Observables
         {
             if (!_initialized)
             {
-                Update();
+                UpdateAsync();
             }
             return this;
         }
 
-        public async Task  Update() => await Update(true,false).ConfigureAwait(true);
-        public async Task  Update(bool force) => await Update(force,false).ConfigureAwait(true);
-        public async Task  Refresh() => await Update(true,true).ConfigureAwait(true);
+        public Task  UpdateAsync() => UpdateAsync(true,false);
+        public Task  UpdateAsync(bool force) => UpdateAsync(force,false);
+        public Task  RefreshAsync() => UpdateAsync(true,true);
 
-        public async Task Update(bool force,bool refresh)
+        public async Task UpdateAsync(bool force,bool refresh)
         {
             if (Suspender.Suspended) return;
 
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             lock (_lockUpdate)
             {
                 _updateNeeded = false;
             }
 
+            var removed = new Dictionary<object,T>();
+
             Lock.EnterWriteLock();
             try
             {
-                var changed = false;
                 {
-                    List<T> list = await PostQuery(force).ConfigureAwait(true) /*.ToList()*/;
+                    var list = PostQueryAsync(force) /*.ToList()*/;
 
                     Console.WriteLine("Query : " + stopwatch.ElapsedMilliseconds);
 
@@ -540,14 +539,13 @@ namespace HLab.Erp.Data.Observables
                     if(refresh)
                     {
                         while(Count>0)
-                            RemoveAt(0);
+                            RemoveAtNoLock(0);
                     }
 
-                    var count = list.Count;
-
-                    for (var n = 0; n < count; n++)
+                    var n = 0;
+                    await foreach (var item in list)
                     {
-                        var item = list[n];
+                        //var item = list[n];
                         var id = item.Id;
 
                         if (_updateNeeded)
@@ -564,55 +562,43 @@ namespace HLab.Erp.Data.Observables
                         // while list is consistent
                         if (n < Count)
                         {
-                            if (Equals(id, this[n].Id)) continue;
-
-                        }
-
-                        //next item exists elsewhere in collection
-                        var n2 = n;
-                        while (n2 < Count)
-                        {
-                            var i = this[n2];
-                            if (Equals(i.Id, id))
+                            if (Equals(id, this[n].Id))
                             {
-                                RemoveAtNolock(n2);
-                                InsertNoLock(n, i);
-                                break;
+                                n++;
+                                continue;
                             }
-                            if(list.Exists(e => Equals(this[n2].Id,e.Id)))
-                                n2++;
-                            else
-                                RemoveAtNolock(n);
 
-                        }
-                        if(n2==Count)
-                            InsertNoLock(n, item);
+                            if (this.Any(e => Equals(e.Id, item.Id)))
+                            {
+                                var old = this[n];
+                                while (!Equals(old.Id,item.Id))
+                                {
+                                    RemoveAtNoLock(n);
+                                    old = this[n];
+                                }
 
-                        changed = true;
+                                n++;
+                                continue;
+                            }
+                        } 
+                        
+                        InsertNoLock(n, item);
+                        n++;
                     }
 
                     Console.WriteLine("Update : " + stopwatch.ElapsedMilliseconds);
 
                     //remove remaining items
-                    while (count < Count)
+                    while (n < Count)
                     {
-                        RemoveAtNolock(count);
+                        RemoveAtNoLock(n);
                     }
 
                     Console.WriteLine("Cleanup : " + stopwatch.ElapsedMilliseconds);
-                    Debug.Assert(Count == count);
+                    Debug.Assert(Count == n);
 
                 }
-/*
-            foreach (var i in this)
-            {
-                Debug.Assert(this.Count(e => Equals(e.Id, i.Id)) == 1);
-            }
-            */
-                if (!changed)
-                {
-                }
-
+                
                 _initialized = true;
                 _updating = false;
             }
@@ -642,7 +628,7 @@ namespace HLab.Erp.Data.Observables
 
         public void OnTriggered()
         {
-            Update();
+            UpdateAsync();
         }
 
         public override void Add(T item)

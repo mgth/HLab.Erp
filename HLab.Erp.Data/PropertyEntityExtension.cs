@@ -30,7 +30,7 @@ namespace HLab.Erp.Data
                     var id = getter(e);
                     if (id == null) return default(T);
 
-                        var task = Task.Run(() => e.DataService.FetchOne<T>(id.Value));
+                        var task = Task.Run(() => e.DataService.FetchOneAsync<T>(id.Value));
                         task.Wait();
                         var result = task.Result;
                         return result;

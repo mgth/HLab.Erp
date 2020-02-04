@@ -90,7 +90,7 @@ namespace HLab.Erp.Core.ApplicationServices
             .Action(e => Application.Current.Shutdown())
         );
         public ICommand OpenUserCommand  { get; } = H.Command(c => c
-            .Action(e => e._doc.OpenDocument(e.Acl.Connection.User))
+            .Action(e => e._doc.OpenDocumentAsync(e.Acl.Connection.User))
         );
 
         public bool RegisterMenu(string[] parents, MenuItem newMenuItem, ItemCollection items=null)

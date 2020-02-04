@@ -73,7 +73,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Profiles
                 u.User = user;
             });
             if (up != null)
-                UserProfiles.List.Update();
+                UserProfiles.List.UpdateAsync();
         }
         private void AddRight(AclRight right)
         {
@@ -86,7 +86,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Profiles
                 u.AclRight = right;
             });
             if (up != null)
-                ProfileRights.List.Update();
+                ProfileRights.List.UpdateAsync();
         }
 
         private void RemoveUser(UserProfile userProfile)
@@ -96,7 +96,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Profiles
 
             if(_data.Delete<UserProfile>(userProfile)>0)
             {
-                UserProfiles.List.Update();
+                UserProfiles.List.UpdateAsync();
             }
         }
         private void RemoveRight(AclRightProfile right)
@@ -106,7 +106,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Profiles
 
             if(_data.Delete<AclRightProfile>(right)>0)
             {
-                ProfileRights.List.Update();
+                ProfileRights.List.UpdateAsync();
             }
         }
     }

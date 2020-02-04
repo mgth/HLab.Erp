@@ -14,7 +14,7 @@ namespace HLab.Erp.Core
 
         public object MainViewModel {get;set;}
 
-        public async Task OpenDocument(object obj)
+        public async Task OpenDocumentAsync(object obj)
         {
             if (obj is Type t)
             {

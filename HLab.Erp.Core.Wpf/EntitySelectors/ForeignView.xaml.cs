@@ -165,7 +165,7 @@ namespace HLab.Erp.Core.EntitySelectors
 
         private void OpenButton_OnClick(object sender, RoutedEventArgs e)
         {
-            ViewLocator.GetMvvmContext(this).Scope.Locate<IDocumentService>().OpenDocument(Model);
+            ViewLocator.GetMvvmContext(this).Scope.Locate<IDocumentService>().OpenDocumentAsync(Model);
         }
     }
 }

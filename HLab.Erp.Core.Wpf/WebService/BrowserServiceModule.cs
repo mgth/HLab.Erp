@@ -19,7 +19,7 @@ namespace HLab.Erp.Core.WebService
         }
 
         public ICommand OpenDocumentCommand = H.Command(c => c
-            .Action(e => e._erp.Docs.OpenDocument(typeof(IBrowserService)))
+            .Action(e => e._erp.Docs.OpenDocumentAsync(typeof(IBrowserService)))
         );
 
         public void Load()

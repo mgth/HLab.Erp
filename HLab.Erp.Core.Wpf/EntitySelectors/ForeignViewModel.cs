@@ -13,7 +13,7 @@ namespace HLab.Erp.Core.EntitySelectors
 
         [Import] private IDocumentService _doc;
         public ICommand OpenCommand { get; } = H.Command(c => c.Action(
-            e => e._doc.OpenDocument(e.Model) )
+            e => e._doc.OpenDocumentAsync(e.Model) )
         );
         public ICommand SelectCommand { get; } = H.Command(c => c);
     }

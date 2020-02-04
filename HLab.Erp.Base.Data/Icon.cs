@@ -1,36 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
+using NPoco;
 
 namespace HLab.Erp.Base.Data
 {
-    public class Icon : Entity<Icon>
+    public class Icon : Entity<Icon>, IListableModel
     {
         [Column]
-        public string Name
+        public string Path
         {
-            get => _name.Get();
-            set => _name.Set(value);
+            get => _path.Get();
+            set => _path.Set(value);
         }
-        private readonly IProperty<string> _name = H.Property<string>(c => c.Default(""));
+        private readonly IProperty<string> _path = H.Property<string>(c => c.Default(""));
 
         [Column]
-        public string Source
+        public string SourceSvg
         {
-            get => _source.Get();
-            set => _source.Set(value);
+            get => _sourceSvg.Get();
+            set => _sourceSvg.Set(value);
         }
-        private readonly IProperty<string> _source = H.Property<string>(c => c.Default(""));
+        private readonly IProperty<string> _sourceSvg = H.Property<string>(c => c.Default(""));
 
         [Column]
-        public string Format
+        public string SourceXaml
         {
-            get => _format.Get();
-            set => _format.Set(value);
+            get => _sourceXaml.Get();
+            set => _sourceXaml.Set(value);
         }
-        private readonly IProperty<string> _format = H.Property<string>(c => c.Default(""));
+        private readonly IProperty<string> _sourceXaml = H.Property<string>(c => c.Default(""));
+
+        [Ignore]
+        public string Caption => Path;
+        [Ignore]
+        public string IconPath => Path;
     }
 }

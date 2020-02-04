@@ -13,7 +13,6 @@ using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Core.Tools.Details;
-using HLab.Erp.Core.ViewModels;
 using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
@@ -31,7 +30,7 @@ namespace HLab.Erp.Core.EntityLists
                 .Icon("",e => e.IconPath)
                 .Column("{Name}", e => e.Caption);
 
-            List.Update();
+            List.UpdateAsync();
         }
         public ListableEntityListViewModel(Expression<Func<T,bool>> filter)
         {
@@ -41,7 +40,7 @@ namespace HLab.Erp.Core.EntityLists
                 .Icon("",e => e.IconPath)
                 .Column("{Name}", e => e.Caption);
 
-            List.Update();
+            List.UpdateAsync();
         }
     }
 
@@ -90,7 +89,7 @@ namespace HLab.Erp.Core.EntityLists
             List.CollectionChanged += List_CollectionChanged;
             H.Initialize((TClass)this,OnPropertyChanged);
 
-            OpenAction = target => _docs.OpenDocument(target);
+            OpenAction = target => _docs.OpenDocumentAsync(target);
         }
 
         public ICommand OpenCommand { get; } = H.Command(c => c
@@ -114,7 +113,7 @@ namespace HLab.Erp.Core.EntityLists
 
         public ICommand AddCommand { get; } = H.Command(c => c
 //            .CanExecute(e=>e.Selected!=null)
-            .Action(async e => await e.OnAddCommand(e.Selected))
+            .Action(e => e.OnAddCommandAsync(e.Selected))
 //            .On(e => e.Selected).CheckCanExecute()
         );
 
@@ -122,19 +121,19 @@ namespace HLab.Erp.Core.EntityLists
         [Import]
         protected Func<T> CreateInstance;
 
-        protected virtual async Task OnAddCommand(T target)
+        protected virtual Task OnAddCommandAsync(T target)
         {
             var entity = CreateInstance();
 
             if(entity is IEntity<int> e) e.Id=-1;
-            await _docs.OpenDocument(entity);
+            return _docs.OpenDocumentAsync(entity);
         }
 
         public bool AddAllowed {get => _addAllowed.Get(); set => _addAllowed.Set(value);}
-        private IProperty<bool> _addAllowed = H.Property<bool>();
+        private readonly IProperty<bool> _addAllowed = H.Property<bool>();
 
         public bool DeleteAllowed {get => _deleteAllowed.Get(); set => _deleteAllowed.Set(value);}
-        private IProperty<bool> _deleteAllowed = H.Property<bool>();
+        private readonly IProperty<bool> _deleteAllowed = H.Property<bool>();
 
         private void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -150,31 +149,17 @@ namespace HLab.Erp.Core.EntityLists
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (var n in e.OldItems.OfType<T>())
+                    foreach (var item in e.OldItems.OfType<T>())
                     {
                         //TODO should keep deleted elements in cache for some times
-                        if (_cache.TryRemove(n, out var h))
+                        if (_cache.TryRemove(item, out var h))
                             ListViewModel.Remove(h);
                         else
                         {
-                            var hh = ListViewModel.FirstOrDefault(x =>
-                            {
-                                if (x is ObjectMapper<T> om)
-                                {
-                                    if (om.Model.Id == n.Id) return true;
-                                }
+                            var mapper = ListViewModel.FirstOrDefault(x => (x is ObjectMapper<T> om) && Equals(om.Model.Id,item.Id));
 
-                                return false;
-                            });
-
-                            if (hh != null)
-                            {
-                                ListViewModel.Remove(hh);
-                            }
-                            else
-                            {
-                                var test = ListViewModel[e.OldStartingIndex];
-                            }
+                            if (mapper != null)
+                                ListViewModel.Remove(mapper);
                         }
                     }
 
