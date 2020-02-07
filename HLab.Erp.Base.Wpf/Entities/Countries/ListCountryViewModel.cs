@@ -12,6 +12,8 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
     {
         [Import]
         private IIconService _icons;
+        [Import]
+        private ILocalizationService _localize;
 
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
@@ -38,7 +40,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
             Filters.Add(new FilterTextViewModel()
             {
                 Title = "{Name}",
-            }.Link(List, s => s.Name));
+            }.PostLink(List, s =>  _localize.LocalizeAsync(s.Name).Result));
 
             //Filters.Add(new EntityFilterViewModel<Continent>()
             //{
