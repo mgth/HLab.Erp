@@ -84,6 +84,7 @@
                     </StackPanel>
                 </DataTemplate>
             </xcad:DockingManager.AnchorableHeaderTemplate>
+
             <xcad:DockingManager.LayoutItemContainerStyle>
              <!--you can add additional bindings from the layoutitem to the DockWindowViewModel--> 
                 <Style TargetType="{x:Type xcad:LayoutItem}">
