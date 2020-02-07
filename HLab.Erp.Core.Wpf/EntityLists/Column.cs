@@ -21,7 +21,14 @@ namespace HLab.Erp.Core.EntityLists
 
         public object Get(T value)
         {
-            return _getter(value);
+            try
+            {
+                return _getter(value);
+            }
+            catch(NullReferenceException)
+            {
+                return null;
+            }
         }
 
         public string Id { get; }
