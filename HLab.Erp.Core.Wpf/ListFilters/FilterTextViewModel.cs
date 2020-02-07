@@ -38,6 +38,14 @@ namespace HLab.Erp.Core.ListFilters
             Update = ()=> q.UpdateAsync();
             return this;
         }
+        public FilterTextViewModel PostLink<T>(ObservableQuery<T> q, Func<T, string> getter)
+            where T : class, IEntity
+        {
+            //var entity = getter.Parameters[0];
+            q.AddPostFilter(Title,s => Value==null || getter(s).Contains(Value));
+            Update = ()=> q.UpdateAsync();
+            return this;
+        }
 
         public Action Update
         {
