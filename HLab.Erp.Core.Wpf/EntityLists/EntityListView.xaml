@@ -7,7 +7,9 @@
              xmlns:annotations="clr-namespace:HLab.Mvvm.Annotations;assembly=HLab.Mvvm.Annotations"
              xmlns:interactions="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
+             xmlns:entityLists="clr-namespace:HLab.Erp.Core.EntityLists"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=entityLists:IEntityListViewModel, IsDesignTimeCreatable=false}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid >
         <Grid.RowDefinitions>

@@ -51,6 +51,12 @@ namespace HLab.Erp.Core.EntityLists
 
         public abstract void SetOpenAction(Action<object> action);
         public abstract void SetSelectAction(Action<object> action);
+        public ObservableCollection<IFilterViewModel> Filters { get; } = new ObservableCollection<IFilterViewModel>();
+        public ICommand AddCommand { get; } = H.Command(c => c
+                .Action(async e => await e.OnAddCommandAsync())
+        );
+
+        protected abstract Task OnAddCommandAsync();
     }
 
     public abstract class EntityListViewModel<TClass,T> : EntityListViewModel<TClass>, IEntityListViewModel<T>
@@ -65,17 +71,14 @@ namespace HLab.Erp.Core.EntityLists
 
         public override Type ModelType => typeof(T);
 
-        [Import]
-        private IDocumentService _docs;
-        [Import]
-        private IMessageBus _msg;
-        [Import]
-        private IDataService _data;
+        
+        [Import] private IDocumentService _docs;
+        [Import] private IMessageBus _msg;
+        [Import] private IDataService _data;
 
-        [Import]
-        public ObservableQuery<T> List { get; }
+        
+        [Import] public ObservableQuery<T> List { get; }
         public ColumnsProvider<T> Columns { get; }
-        public ObservableCollection<IFilterViewModel> Filters { get; } = new ObservableCollection<IFilterViewModel>();
 
         public ObservableCollection<dynamic> ListViewModel { get; } = new ObservableCollection<dynamic>();
         private readonly ConcurrentDictionary<T,dynamic> _cache = new ConcurrentDictionary<T, dynamic>();
@@ -111,17 +114,11 @@ namespace HLab.Erp.Core.EntityLists
         }
 
 
-        public ICommand AddCommand { get; } = H.Command(c => c
-//            .CanExecute(e=>e.Selected!=null)
-            .Action(e => e.OnAddCommandAsync(e.Selected))
-//            .On(e => e.Selected).CheckCanExecute()
-        );
 
 
-        [Import]
-        protected Func<T> CreateInstance;
+        [Import] protected Func<T> CreateInstance;
 
-        protected virtual Task OnAddCommandAsync(T target)
+        protected override Task OnAddCommandAsync()
         {
             var entity = CreateInstance();
 
