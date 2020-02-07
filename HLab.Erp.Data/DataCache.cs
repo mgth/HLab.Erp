@@ -44,8 +44,8 @@ namespace HLab.Erp.Data
 
                 _fullCache = true;
             }
-            
-            await foreach (var item in _cache.WhereAsync(expression)) yield return item;
+            else
+                await foreach (var item in _cache.WhereAsync(expression)) yield return item;
         }
 
         public Task<T> GetOrAddAsync(object key, Func<object, Task<T>> factory) 
