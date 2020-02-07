@@ -39,13 +39,10 @@ namespace HLab.Erp.Acl
     public class DataLocker<T> : N<DataLocker<T>>, IDataLocker
     where T : class,IEntity<int>
     {
-
         private const int HeartBeat = 10000;
 
-        [Import]
-        private readonly IDataService _db;
-        [Import]
-        private readonly IAclService _acl;
+        [Import] private readonly IDataService _db;
+        [Import] private readonly IAclService _acl;
         private DataLock _lock = null;
         private readonly string _entityClass;
         private readonly int _entityId;
@@ -60,10 +57,8 @@ namespace HLab.Erp.Acl
 
         private EntityPersister<DataLock> _lockPersister;
 
-        [Import]
-        private Func<T,EntityPersister<T>> _getPersister;
-        [Import]
-        private Func<DataLock,EntityPersister<DataLock>> _getLockPersister;
+        [Import] private Func<T,EntityPersister<T>> _getPersister;
+        [Import] private Func<DataLock,EntityPersister<DataLock>> _getLockPersister;
 
         public DataLocker(T entity):base(false)
         {
@@ -79,6 +74,7 @@ namespace HLab.Erp.Acl
 
             Persister = _getPersister(entity);
 
+            // default to edit mode when entity is new and not saved.
             if (entity.Id < 0)
                 IsActive = true;
         }
@@ -112,11 +108,12 @@ namespace HLab.Erp.Acl
 
             var existing =
                 await _db.FetchOneAsync<DataLock>(e => e.EntityClass == _entityClass && e.EntityId == _entityId).ConfigureAwait(true);
+
             if (existing != null)
             {
                 if ((DateTime.Now - existing.HeartbeatTime).TotalMilliseconds < HeartBeat)
                 {
-                    _message.Set(String.Format("Object locked by {0}", existing.User.Initials));
+                    Message = $"{{Object locked by}} {existing.User.Initials}";
                     return;
                 }
 
@@ -128,7 +125,7 @@ namespace HLab.Erp.Acl
                 try
                 {
                     //Clear error message
-                    _message.Set(null);
+                    Message = null;
 
                     //Generate data lock token
                     _lock = await _db.AddAsync<DataLock>(t =>
@@ -149,11 +146,9 @@ namespace HLab.Erp.Acl
                     if(_lock!=null) _db.Delete(_lock);
                     _lock = null;
 
-                    if(_lockPersister!=null) {
-                        _lockPersister=null;
-                    }
+                    _lockPersister=null;
 
-                    _message.Set(e.Message);
+                    Message = e.Message;
                     return;
                 }
 
@@ -163,8 +158,7 @@ namespace HLab.Erp.Acl
             IsActive = true;
         }
 
-        [Import]
-        private Func<IAuditTrailProvider> _getAudit;
+        [Import] private Func<IAuditTrailProvider> _getAudit;
 
         public Action<T> BeforeSavingAction { get; set; }
 

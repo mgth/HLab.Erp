@@ -10,7 +10,8 @@ namespace HLab.Erp.Core
         [Import] private IMvvmService _mvvm { get; }
         [Import] private Func<Type, object> _getter { get; }
 
-        public abstract Task OpenDocument(IView content);
+        public abstract Task OpenDocumentAsync(IView content);
+        public abstract Task CloseDocumentAsync(object content);
 
         public object MainViewModel {get;set;}
 
@@ -22,11 +23,11 @@ namespace HLab.Erp.Core
             }
 
             if (obj is IView view)
-                await OpenDocument(view);
+                await OpenDocumentAsync(view);
             else
             {
                 var doc = _mvvm.MainContext.GetView(obj, typeof(ViewModeDefault), typeof(IViewClassDocument));
-                await OpenDocument(doc);
+                await OpenDocumentAsync(doc);
             }
         }
     }

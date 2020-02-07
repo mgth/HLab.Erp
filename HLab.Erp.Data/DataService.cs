@@ -194,6 +194,8 @@ namespace HLab.Erp.Data
             var result = await db.QueryAsync<T>().Where(expression).FirstOrDefault().ConfigureAwait(false);
             return result == null ? null : await GetCache<T>().GetOrAddAsync(result).ConfigureAwait(false);
         }
+
+
         public T FetchOne<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity
         {
@@ -319,6 +321,11 @@ namespace HLab.Erp.Data
         {
             using var d = Get();
                 d.Update(value,columns);
+        }
+        public async Task UpdateAsync<T>(T value, IEnumerable<string> columns) where T : class, IEntity
+        {
+            using var d = Get();
+            await d.UpdateAsync(value,columns);
         }
     }
 }
