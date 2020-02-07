@@ -21,14 +21,13 @@ namespace HLab.Erp.Base.Wpf
 
             await foreach (var icon in icons)
             {
-                switch (icon.SourceXaml)
+                if (!string.IsNullOrWhiteSpace(icon.SourceXaml))
                 {
-                    case "svg":
-                        _icons.AddIconProvider(icon.Path, new IconProviderSvgFromSource(icon.SourceSvg, icon.Path));                
-                        break;
-                    case "xaml":
-                        _icons.AddIconProvider(icon.Path, new IconProviderXamlFromSource(icon.SourceSvg, icon.Path));                
-                        break;
+                    _icons.AddIconProvider(icon.Path, new IconProviderSvgFromSource(icon.SourceSvg, icon.Path));
+                }
+                else if (!string.IsNullOrWhiteSpace(icon.SourceSvg))
+                {
+                    _icons.AddIconProvider(icon.Path, new IconProviderXamlFromSource(icon.SourceSvg, icon.Path));
                 }
             }
         }
