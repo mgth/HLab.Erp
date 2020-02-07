@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using HLab.Base;
 using HLab.DependencyInjection.Annotations;
 using HLab.Notify.PropertyChanged;
@@ -46,11 +47,41 @@ namespace HLab.Erp.Data
                     return;
                 }
                 _db.Update(Target, columns.Select(e => e.Name));
+                IsDirty = false;
             }
             catch
             {
                 foreach(var p in columns)
                     Dirty.Add(p);
+                throw;
+            }
+        }
+        public override async Task SaveAsync()
+        {
+            var columns = new List<PropertyInfo>();
+            while (Dirty.TryTake(out var e))
+            {
+                columns.Add(e);
+            }
+
+            try
+            {
+                if(Target is IEntity<int> ei && ei.Id<0)
+                {
+                    var t = await _db.AddAsync<T>(e => Target.CopyPrimitivesTo(e));
+                    ei.Id = (int)t.Id;
+                    return;
+                }
+                await _db.UpdateAsync(Target, columns.Select(e => e.Name));
+
+                IsDirty = false;
+            }
+            catch
+            {
+                foreach (var p in columns)
+                {
+                    Dirty.Add(p);
+                }
                 throw;
             }
         }
