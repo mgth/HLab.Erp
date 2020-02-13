@@ -10,7 +10,7 @@
              xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <Grid Background="Transparent">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
@@ -26,9 +26,13 @@
             <StackPanel>
                 <icons:IconView x:Name="Label" Path="Icons/SelectForeign" MaxHeight="10"/>
                 <Popup x:Name="Popup" Height="500" StaysOpen="False">
-                    <Grid>
-                        <ContentPresenter x:Name="PopupContent"/>
-                    </Grid>
+                    
+                    <Border CornerRadius="10" Margin="10" BorderBrush="White" BorderThickness="1">
+                        <Grid Background="Transparent">
+                            <ContentPresenter x:Name="PopupContent"/>
+                        </Grid>
+                    </Border>
+                    
                 </Popup>
             </StackPanel>
         </Button>
