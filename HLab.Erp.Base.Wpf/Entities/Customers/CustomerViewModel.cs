@@ -19,17 +19,12 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
     where T : class, IEntity<int>, INotifyPropertyChanged, ICorporation, IListableModel
     {
         [Import]
-        private readonly IIconService _iconService;
-        [Import]
         public IErpServices Erp { get; }
 
         public string Title => _title.Get();
         private readonly IProperty<string> _title = H.Property<string>(c => c
             .OneWayBind(e => e.Model.Caption)
         );
-
-
-        public object Icon => _iconService.GetIconAsync(Model.IconPath);
 
         ICorporation ICorporationViewModel.Model => Model;
     }

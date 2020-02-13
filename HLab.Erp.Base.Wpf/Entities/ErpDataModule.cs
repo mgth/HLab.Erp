@@ -1,7 +1,9 @@
-﻿using System.Windows.Input;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Windows.Input;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core;
+using HLab.Erp.Core.EntityLists;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf.Entities
@@ -30,8 +32,26 @@ namespace HLab.Erp.Base.Wpf.Entities
             }
         }
 
+        private string EntityName()
+        {
+            var interfaces = typeof(TList).GetInterfaces();
+
+            foreach (var i in interfaces)
+            {
+                if (i.IsConstructedGenericType)
+                {
+                    if (i.GetGenericTypeDefinition() == typeof(IEntityListViewModel<>))
+                    {
+                        return i.GenericTypeArguments[0].Name;
+                    }
+                }
+            }
+
+            return "";
+        }
+
         protected virtual string Header => "{" + Name + "}";
-        protected virtual string IconPath => "Icons/Entities/" + Name;
+        protected virtual string IconPath => "Icons/Entities/" + EntityName();
 
         public virtual void Load()
         {

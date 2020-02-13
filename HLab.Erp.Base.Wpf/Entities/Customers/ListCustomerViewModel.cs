@@ -6,15 +6,14 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf.Entities.Customers
 {
-    public class ListCustomerViewModel : EntityListViewModel<ListCustomerViewModel,Customer>, IMvvmContextProvider
+    public class CustomersListViewModel : EntityListViewModel<CustomersListViewModel,Customer>, IMvvmContextProvider
     {
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
 
-        public string Title => "{Customers}";
 
-        public ListCustomerViewModel()
+        public CustomersListViewModel()
         {
             AddAllowed = true;
             DeleteAllowed = true;

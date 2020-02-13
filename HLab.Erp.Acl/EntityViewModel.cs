@@ -27,9 +27,9 @@ namespace HLab.Erp.Acl
             //.Set(e => e._getLocker(e.Model))
         );
 
-        public virtual string EntityName => typeof(T).Name;
+        public virtual string EntityName => "{" + typeof(T).Name + "}";
 
-        public virtual string EntityIconPath => "icons/entities/" + EntityName;
+        public virtual string EntityIconPath => "icons/entities/" + typeof(T).Name;
 
         public ICommand CloseCommand { get; } = H.Command(c => c
             .Action(e =>
