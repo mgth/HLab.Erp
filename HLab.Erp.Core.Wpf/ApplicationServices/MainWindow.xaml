@@ -67,9 +67,9 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" >
                         <Viewbox HorizontalAlignment="Left" Height="16">
-                            <icons:IconView Path="{Binding IconPath}"/>
+                            <icons:IconView Opacity="0.75" Foreground="White" Path="{Binding Content.DataContext.IconPath}"/>
                         </Viewbox>
-                        <lang:Localize TextBlock.FontSize="14" Id="{Binding Title}"/>
+                        <lang:Localize Margin="10,0,0,0" FontSize="14" Id="{Binding Content.DataContext.Title}"/>
                     </StackPanel>
                 </DataTemplate>
             </xcad:DockingManager.DocumentHeaderTemplate>
@@ -78,9 +78,9 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Viewbox HorizontalAlignment="Left" Height="16">
-                            <ContentControl Content="{Binding Content.DataContext.Icon}"/>
+                            <ContentControl Content="{Binding Content.DataContext.IconPath}"/>
                         </Viewbox>
-                        <TextBlock Margin="10,0,0,0" Text="{Binding Title, FallbackValue=Undefined}" />
+                        <lang:Localize Margin="10,0,0,0" FontSize="14" Id="{Binding Content.DataContext.Title}"/>
                     </StackPanel>
                 </DataTemplate>
             </xcad:DockingManager.AnchorableHeaderTemplate>
