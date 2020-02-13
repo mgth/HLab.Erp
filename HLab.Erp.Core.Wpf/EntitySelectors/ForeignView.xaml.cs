@@ -117,9 +117,9 @@ namespace HLab.Erp.Core.EntitySelectors
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            Popup.IsOpen = !Popup.IsOpen;
-            if (Popup.IsOpen)
+            if (!Popup.IsOpen)
             {
+                Popup.IsOpen = true;
                 var type = ListClass;
                 if (type == null)
                 {
