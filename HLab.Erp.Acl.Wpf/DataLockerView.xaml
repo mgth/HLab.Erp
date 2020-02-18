@@ -15,6 +15,9 @@
         <StackPanel>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Height="30">
     <Button Command="{Binding ActivateCommand}" Background="#40000000">
+        <Button.ToolTip>
+            <lang:Localize Id="{}{Edit}"></lang:Localize>
+        </Button.ToolTip>
         <StackPanel Orientation="Vertical">
             <icons:IconView Path="icons/Locked" Height="25"/>
         </StackPanel>
@@ -31,6 +34,9 @@
     </Button>
         
     <Button Command="{Binding CancelCommand}"  BorderThickness="0" Background="Transparent">
+        <Button.ToolTip>
+            <lang:Localize Id="{}{Cancel}"></lang:Localize>
+        </Button.ToolTip>
         <StackPanel Orientation="Vertical">
             <icons:IconView Path="Icons/Cancel" Height="25"/>
         </StackPanel>
@@ -47,6 +53,9 @@
     </Button>
         <Label></Label>
     <Button Command="{Binding SaveCommand}" BorderThickness="0" Background="Transparent">
+        <Button.ToolTip>
+            <lang:Localize Id="{}{Save}"></lang:Localize>
+        </Button.ToolTip>
         <StackPanel Orientation="Vertical">
             <icons:IconView Path="icons/Save" Height="25"/>
         </StackPanel>
