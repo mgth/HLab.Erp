@@ -123,6 +123,21 @@ namespace HLab.Erp.Workflows
         }
 
         /// <summary>
+        /// Add Icon factory to a workflow element
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="getter"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            SubIcon<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<TWf, string> getter)
+            where TWf : NotifierBase, IWorkflow<TWf>
+        {
+            t?.Target.SetSubIconPath(getter);
+            return t;
+        }
+
+        /// <summary>
         /// Add Icon path to a workflow element.
         /// </summary>
         /// <typeparam name="TWf"></typeparam>
@@ -133,6 +148,18 @@ namespace HLab.Erp.Workflows
             Icon<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, string icon)
             where TWf : NotifierBase, IWorkflow<TWf>
             => t.Icon<TWf>(e => icon);
+
+        /// <summary>
+        /// Add Icon path to a workflow element.
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="icon"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            SubIcon<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, string icon)
+            where TWf : NotifierBase, IWorkflow<TWf>
+            => t.SubIcon<TWf>(e => icon);
 
         /// <summary>
         /// Enable an action when some state is allowed

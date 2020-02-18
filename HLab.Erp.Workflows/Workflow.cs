@@ -1,17 +1,14 @@
 ﻿
+using HLab.Base.Fluent;
+using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
-using HLab.Mvvm.Annotations;
+using HLab.Notify.PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Dynamic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using HLab.Base.Fluent;
-using HLab.DependencyInjection.Annotations;
-using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Workflows
 {
@@ -25,19 +22,19 @@ namespace HLab.Erp.Workflows
     public abstract class Workflow<T> : N<T>, IWorkflow<T>
         where T : /*Workflow<T>, */class, IWorkflow<T>
     {
-        protected Workflow():base()
-        {
-            this.PropertyChanged += Workflow_PropertyChanged;
-        }
-
-        private void Workflow_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if(e.PropertyName=="CurrentState")
-            { }
-        }
-
         public class State : WorkflowConditionalObject<T> 
         {
+            public static State CreateDefault(
+                Action<IFluentConfigurator<State>> configure, 
+                [CallerMemberName]string name="")
+            {
+                var state =  new State(name);
+                var configurator = new FluentConfigurator<State>(state);
+                configure?.Invoke(configurator);
+                AddDefaultState(state);
+                return state;
+            }
+
             public static State Create(
                 Action<IFluentConfigurator<State>> configure, 
                 [CallerMemberName]string name="")
@@ -60,6 +57,7 @@ namespace HLab.Erp.Workflows
 
         public class Action : WorkflowConditionalObject<T> , IWorkflowAction
         {
+
             public static Action Create(Action<IFluentConfigurator<Action>> configure)
             {
                 var action = new Action();
@@ -77,26 +75,41 @@ namespace HLab.Erp.Workflows
         public User User { get; set; }
         public object Target { get; protected set; }
 
-        private static readonly List<State> WorkflowStates = new List<State>();
-        private static readonly List<Action> WorkflowActions = new List<Action>();
+        protected static readonly List<State> WorkflowStates = new List<State>();
+        protected static readonly List<Action> WorkflowActions = new List<Action>();
 
         public string Caption => _caption.Get();
         private readonly IProperty<string> _caption = H.Property<string>(c => c
             .On(e => e.CurrentState)
             .Set(e => e.CurrentState.GetCaption(e))
-            .Set(e => e.CurrentState.GetCaption(e))
+            //.NotNull(e =>e.CurrentState)
+            .Set(e => e.CurrentState?.GetCaption(e))
         );
 
         public string IconPath => _iconPath.Get();
         private readonly IProperty<string> _iconPath = H.Property<string>(c => c
             .On(e => e.CurrentState)
             .Set(e => e.CurrentState.GetIconPath(e))
-            .Set(e => e.CurrentState.GetIconPath(e))
+            //.NotNull(e =>e.CurrentState)
+            .Set(e => e.CurrentState?.GetIconPath(e))
+        );
+
+        public string SubIconPath => _subIconPath.Get();
+        private readonly IProperty<string> _subIconPath = H.Property<string>(c => c
+            .On(e => e.CurrentState)
+            .Set(e => e.CurrentState.GetSubIconPath(e))
+            //.NotNull(e =>e.CurrentState)
+            .Set(e => e.CurrentState?.GetSubIconPath(e))
         );
 
         internal static void AddState(State state)
         {
             WorkflowStates.Add(state);
+        }
+        internal static void AddDefaultState(State state)
+        {
+            WorkflowStates.Add(state);
+            DefaultState = state;
         }
 
         public static void AddAction(Action state)
@@ -104,6 +117,7 @@ namespace HLab.Erp.Workflows
             WorkflowActions.Add(state);
         }
 
+        public static State DefaultState { get; private set; }
 
         public State CurrentState
         {
@@ -124,17 +138,18 @@ namespace HLab.Erp.Workflows
 
             if (state.Check(this as T) == WorkflowConditionResult.Passed)
             {
-                CurrentState = state;
-                OnSetState(state);
-                Update();
-                return true;
+                if (OnSetState(state))
+                {
+                    CurrentState = state;
+                    Update();
+                    return true;
+                }
             }
 
             return false;
         }
 
-        public virtual void OnSetState(State state)
-        { }
+        protected virtual bool OnSetState(State state) => true;
 
         public ObservableCollection<WorkflowAction> Actions { get; } = new ObservableCollection<WorkflowAction>();
 
@@ -166,6 +181,7 @@ namespace HLab.Erp.Workflows
         {
             Update();
         }
+        protected void SetState(string state) => CurrentState = WorkflowStates.Find(e => e.Name == state)??DefaultState;
 
         public new TTarget Target => (TTarget)base.Target;
     }

@@ -10,6 +10,7 @@ namespace HLab.Erp.Workflows
         User User { get; set; }
         string Caption { get; }
         string IconPath { get; }
+        string SubIconPath { get; }
         ObservableCollection<WorkflowAction> Actions { get; }
         object Target { get; }
     }

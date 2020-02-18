@@ -9,51 +9,84 @@
              mc:Ignorable="d" 
              d:DesignHeight="70" d:DesignWidth="300" 
              d:DataContext="{d:DesignInstance {x:Type workflows:WorkflowViewModel}}"
-              Foreground="Aqua"
              >
-    <StackPanel Orientation="Horizontal">
-        <ListView
-            ItemsSource="{Binding BackwardActions}"
-            Background="Transparent"/>
-        <Grid Height="50"                
+        <Grid MinHeight="50"                
 >
             <Grid.Effect>
                 <DropShadowEffect 
                     ShadowDepth="0"
-                    Color="Aqua"
+                    Color="#E0000000"
                     Opacity="1"
-                    BlurRadius="5"
+                    BlurRadius="10"
                 />
             </Grid.Effect>
 
             <Border
-                BorderBrush="Aqua"
+                BorderBrush="#A0FFFFFF"
                 BorderThickness="2"
-                Background="Transparent" 
+                Background="#50000000" 
                 CornerRadius="10">
             </Border>
 
-            <StackPanel Orientation="Horizontal">
-                <icons:IconView Margin="5" Width="40" Path="{Binding Model.IconPath}"/>
-            <Label
-                Margin="5"
-                VerticalAlignment="Center" 
-                HorizontalAlignment="Center" 
-                FontSize="16"
-                FontWeight="Black" 
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Border
+                    BorderBrush="#A0FFFFFF"
+                    BorderThickness="0"
+                    Background="#FFFFFFFF" 
+                    CornerRadius="10,0,0,10">
+                </Border>
 
-                ><StackPanel>
-                    <lang:Localize Id="{Binding Model.Caption}"/>
+                <Label Grid.Column="0" Margin="-5" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Label.LayoutTransform><RotateTransform Angle="-90"></RotateTransform></Label.LayoutTransform>
+                    <Grid Width="50" Height="20">
+                        <StackPanel Orientation="Vertical">
+                            <lang:Localize HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" Id="{}{Workflow}"/>
+                        </StackPanel>
+                    </Grid>
+                </Label>
+
+                <ListView Grid.Column="1"
+                    ItemsSource="{Binding BackwardActions}"
+                    Background="Transparent"/>
+
+                <StackPanel HorizontalAlignment="Center"  Orientation="Horizontal" Grid.Column="2">
+                    <Grid Margin="5" Width="40" Height="40">
+                        <icons:IconView 
+                            HorizontalAlignment="Right" 
+                            Foreground="#E0FFFFFF" 
+                            Width="40" Height="40"
+                            Path="{Binding Model.IconPath}"/>
+                        <icons:IconView 
+                            VerticalAlignment="Bottom" 
+                            HorizontalAlignment="Right" 
+                            Foreground="#FFFFFFFF" 
+                            Width="20" Height="20"
+                            Path="{Binding Model.SubIconPath}"/>
+                    </Grid>
+                    <Label
+                        Margin="5"
+                        VerticalAlignment="Center" 
+                        HorizontalAlignment="Left" 
+                        FontSize="16"
+                        FontWeight="Black" 
+                        Foreground="White"
+                        ><StackPanel>
+                            <lang:Localize Id="{Binding Model.Caption}"/>
+                        </StackPanel>
+                    </Label>
                 </StackPanel>
-            </Label>
-            </StackPanel>
+                <ListView
+                    Margin="5"
+                    ItemsSource="{Binding Actions}"
+                    Background="Transparent"
+                    Grid.Column="3">
+                </ListView>
+            </Grid>
         </Grid>
-
-        <ListView
-            ItemsSource="{Binding Actions}"
-            Background="Transparent"
-            Grid.Column="1">
-        </ListView>
-
-    </StackPanel>
 </UserControl>

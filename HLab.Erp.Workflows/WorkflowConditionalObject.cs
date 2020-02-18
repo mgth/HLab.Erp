@@ -12,6 +12,7 @@ namespace HLab.Erp.Workflows
         void AddCondition(WorkflowCondition<T> condition);
         void SetCaption(Func<T, string> getCaption);
         void SetIconPath(Func<T, string> getIcon);
+        void SetSubIconPath(Func<T, string> getIcon);
         void SetAction(Action<T> action);
         WorkflowCondition<T> Condition { get; }
     }
@@ -38,6 +39,10 @@ namespace HLab.Erp.Workflows
         private Func<T,string> _getIconPath;
         void IWorkflowConditionalObject<T>.SetIconPath(Func<T, string> getIcon) => _getIconPath = getIcon;
         public string GetIconPath(IWorkflow workflow) => _getIconPath?.Invoke((T)workflow) ?? "";
+
+        private Func<T,string> _getSubIconPath;
+        void IWorkflowConditionalObject<T>.SetSubIconPath(Func<T, string> getIcon) => _getSubIconPath = getIcon;
+        public string GetSubIconPath(IWorkflow workflow) => _getSubIconPath?.Invoke((T)workflow) ?? "";
 
 
         private Func<T,string> _getCaption;

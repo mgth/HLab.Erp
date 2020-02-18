@@ -25,10 +25,10 @@
         <Button Grid.Column="3" x:Name="Button" Click="ButtonBase_OnClick">
             <StackPanel>
                 <icons:IconView x:Name="Label" Path="Icons/SelectForeign" MaxHeight="10"/>
-                <Popup x:Name="Popup" Height="500" StaysOpen="False">
+                <Popup x:Name="Popup" Height="500" StaysOpen="False" AllowsTransparency="True">
                     
-                    <Border CornerRadius="10" Margin="10" BorderBrush="White" BorderThickness="1">
-                        <Grid Background="Transparent">
+                    <Border CornerRadius="10" BorderBrush="White" Background="#F0000000" BorderThickness="0">
+                        <Grid Margin="10">
                             <ContentPresenter x:Name="PopupContent"/>
                         </Grid>
                     </Border>

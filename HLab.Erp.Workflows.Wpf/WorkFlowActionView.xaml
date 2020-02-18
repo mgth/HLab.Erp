@@ -15,24 +15,27 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
             <Button
-                Foreground="Aqua"
+                Foreground="White"
                 Background="Transparent"
                 VerticalAlignment="Center" 
-                BorderBrush="Transparent"
-                HorizontalAlignment="Center" 
+                HorizontalAlignment="Stretch" 
                 FontWeight="Black" 
                 Command="{Binding Command}"
                 >
-                <StackPanel Orientation="Horizontal">
-                    <icons:IconView Width="20" Height="20" Path="{Binding Model.IconPath}"/>
-                    <Label/>
-                    <lang:Localize VerticalAlignment="Center" Id="{Binding Model.Caption}"/>
-                </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <icons:IconView Foreground="White" Width="20" Height="20" Path="{Binding Model.IconPath}"/>
+                    <lang:Localize Grid.Column="2" VerticalAlignment="Center" Id="{Binding Model.Caption}"/>
+                </Grid>
             </Button>
         <ListView ItemsSource="{Binding Model.Messages}"  Grid.Row ="1" MaxHeight="50">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                        <lang:Localize HorizontalAlignment="Center" Foreground="Red" VerticalAlignment="Center" Id="{Binding}"/>
+                        <lang:Localize HorizontalAlignment="Left" Foreground="Red" VerticalAlignment="Center" Id="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
