@@ -25,6 +25,26 @@ namespace HLab.Erp.Core.Views
         }
         public static readonly DependencyProperty EditModeProperty = H.Property<bool>().Register();
 
+        public string IconPath
+        {
+            get => (string)GetValue(IconPathProperty);
+            set => SetValue(IconPathProperty, value);
+        }
+        public static readonly DependencyProperty IconPathProperty = 
+            H.Property<string>()
+                //.OnChange((s, e) => s.IconView.Path = e.NewValue)
+                .Register();
+
+        public string Text
+        {
+            get => (string)GetValue(TextProperty);
+            set => SetValue(TextProperty, value);
+        }
+        public static readonly DependencyProperty TextProperty = 
+            H.Property<string>()
+                //.OnChange((s, e) => s.Localize.Id = e.NewValue)
+                .Register();
+
         public UIElementCollection Children
         {
             get => (UIElementCollection)GetValue(ChildrenProperty.DependencyProperty);
@@ -32,40 +52,5 @@ namespace HLab.Erp.Core.Views
         }
         public static readonly DependencyPropertyKey ChildrenProperty = H.Property<UIElementCollection>().RegisterReadOnly();
 
-
-        private void UpdateChildren()
-        {
-            //if (Children.Count == _count) return;
-            //_count = Children.Count;
-
-            var rowSize = PART_Host.RowDefinitions.Count;
-            var colSize = PART_Host.ColumnDefinitions.Count;
-
-            var col = 0;
-            var row = 0;
-            for (var index = 0; index < Children.Count; index++)
-            {
-                var child = Children[index];
-                if (child == null) continue;
-
-                if (Grid.GetRow(child) != row)
-                    Grid.SetRow(child, row);
-
-                if (Grid.GetColumn(child) != col)
-                    Grid.SetColumn(child, col);
-
-                if (!(child is Border))
-                {
-                    col += Grid.GetColumnSpan(child);
-                    if (col >= colSize)
-                    {
-                        col = 0;
-                        row++;
-                        //if(row >= rowSize)
-                        //    RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
-                    }
-                }
-            }
-        }
     }
 }

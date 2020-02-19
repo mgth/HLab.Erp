@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
     <ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj" />
     <ProjectReference Include="..\HLab.Erp.Core.Wpf\HLab.Erp.Core.Wpf.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Workflows.Wpf\HLab.Erp.Workflows.Wpf.csproj" />
   </ItemGroup>
 
   <ItemGroup>

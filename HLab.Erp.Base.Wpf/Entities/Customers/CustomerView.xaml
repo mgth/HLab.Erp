@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HLab.Erp.Base.Wpf.CustomerView"
+﻿<UserControl x:Class="HLab.Erp.Base.Wpf.Entities.Customers.CustomerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -15,6 +15,7 @@
              xmlns:countries="clr-namespace:HLab.Erp.Base.Wpf.Entities.Countries"
              xmlns:entities="clr-namespace:HLab.Erp.Base.Wpf.Entities"
              xmlns:views="clr-namespace:HLab.Erp.Core.Views;assembly=HLab.Erp.Core.Wpf"
+             xmlns:workflows="clr-namespace:HLab.Erp.Workflows;assembly=HLab.Erp.Workflows.Wpf"
              d:DataContext="{d:DesignInstance {x:Type customers:CustomerViewModelDesign}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -24,35 +25,22 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <workflows:WorkflowLockerView/>
 
 
-        <views:DetailView>
-                <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
+        <views:DetailView Grid.Row="1" IconPath="{Binding EntityIconPath}" Text="{Binding EntityName}">
 
-                <!--<Label>
-                    <lang:Localize Id="Workflow" Margin="50,0,0,0"/>
-                </Label>
-                <ContentPresenter Content="{Binding Workflow}"/>-->
-
-            <entities:DetailSeparator Grid.ColumnSpan="2" IconPath="{Binding EntityIconPath}" Text="{Binding EntityName}"/>
-
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}{Name}" StringFormat="{}{0} : " />
-            </Label>
+            <lang:LocalizedLabel Text="{}{Name} : "/>
             <TextBox Text="{Binding Model.Name,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
 
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}{Address} : "/>
-            </Label>
+            <lang:LocalizedLabel Text="{}{Address} : "/>
             <TextBox 
                 Text="{Binding Model.Address,UpdateSourceTrigger=PropertyChanged}"
                 AcceptsReturn="True" 
                 TextWrapping="Wrap"
                 HorizontalContentAlignment="Left" />
 
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}{Country} : "/>
-            </Label>
+            <lang:LocalizedLabel Text="{}{Country} : "/>
             <entitySelectors:ForeignView 
                 HorizontalAlignment="Left"
                 IsReadOnly="{Binding Locker.IsReadOnly}"
@@ -61,24 +49,16 @@
                 ListClass="{x:Type countries:ListCountryPopupViewModel}"
                 />
             
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}{eMail} : "/>
-            </Label>
+            <lang:LocalizedLabel Text="{}{eMail} : "/>
             <TextBox Text="{Binding Model.Email,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
 
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}{Phone} : "/>
-            </Label>
+            <lang:LocalizedLabel Text="{}{Phone} : "/>
             <TextBox Text="{Binding Model.Phone,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
 
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}{Fax}"/>
-            </Label>
+            <lang:LocalizedLabel Text="{}{Fax} : "/>
             <TextBox Text="{Binding Model.Fax,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
 
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}{Contacts} : "/>
-            </Label>
+            <lang:LocalizedLabel Text="{}{Contacts} : "/>
             <DataGrid 
                 Margin="10,19,0,14" 
                 Background="#CFFFFFFF" 
@@ -96,22 +76,7 @@
             </DataGrid>
         </views:DetailView>
 
-        <views:DetailView Grid.Row="2">
-            
-            <Label Style="{DynamicResource Separator}" >
-                <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                    <Canvas>
-                        <icons:IconView  
-                            Path="Icons/Edit" 
-                            Height="35" 
-                            Opacity="0.8"
-                            />
-                    </Canvas>
-                    <ContentControl Width="50"></ContentControl>
-                    <lang:Localize  Id="{}{Note}"/>
-                </StackPanel>
-            </Label>
-
+        <views:DetailView Grid.Row="2" IconPath="Icons/Edit" Text="{}{Note}">
 
             <TextBox 
                 Margin="50,0,15,0"
