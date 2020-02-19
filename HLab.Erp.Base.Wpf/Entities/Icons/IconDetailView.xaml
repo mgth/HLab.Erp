@@ -4,15 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HLab.Erp.Base.Wpf.Entities.Icons"
-             xmlns:base="clr-namespace:HLab.Base;assembly=HLab.Base.Wpf"
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
+             xmlns:views="clr-namespace:HLab.Erp.Core.Views;assembly=HLab.Erp.Core.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance local:IconViewModel}"
              >
     <Grid>
-        <base:DetailView>
+        <views:DetailView>
             <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="{}{Path} : "/>
@@ -29,6 +29,6 @@
             </Label>
             <TextBox Text="{Binding Model.SourceXaml}"/>-->
             
-        </base:DetailView>
+        </views:DetailView>
     </Grid>
 </UserControl>

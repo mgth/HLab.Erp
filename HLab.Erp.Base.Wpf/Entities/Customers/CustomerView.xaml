@@ -14,6 +14,7 @@
              xmlns:customers="clr-namespace:HLab.Erp.Base.Wpf.Entities.Customers"
              xmlns:countries="clr-namespace:HLab.Erp.Base.Wpf.Entities.Countries"
              xmlns:entities="clr-namespace:HLab.Erp.Base.Wpf.Entities"
+             xmlns:views="clr-namespace:HLab.Erp.Core.Views;assembly=HLab.Erp.Core.Wpf"
              d:DataContext="{d:DesignInstance {x:Type customers:CustomerViewModelDesign}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -22,7 +23,10 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <base:DetailView>
+
+
+
+        <views:DetailView>
                 <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
 
                 <!--<Label>
@@ -90,9 +94,9 @@
                 </DataGrid.Columns>
                 
             </DataGrid>
-        </base:DetailView>
+        </views:DetailView>
 
-        <base:DetailView Grid.Row="2">
+        <views:DetailView Grid.Row="2">
             
             <Label Style="{DynamicResource Separator}" >
                 <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
@@ -119,7 +123,7 @@
                 />
             <Label />
 
-        </base:DetailView>
+        </views:DetailView>
 
     </Grid>
 </UserControl>

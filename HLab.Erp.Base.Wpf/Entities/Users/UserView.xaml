@@ -12,6 +12,7 @@
              xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
              xmlns:data="clr-namespace:HLab.Erp.Acl;assembly=HLab.Erp.Acl"
              xmlns:profiles="clr-namespace:HLab.Erp.Base.Wpf.Entities.Profiles"
+             xmlns:views="clr-namespace:HLab.Erp.Core.Views;assembly=HLab.Erp.Core.Wpf"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type users:UserViewModel}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
@@ -21,7 +22,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <base:DetailView>
+        <views:DetailView>
             <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
 
             <Label Style="{DynamicResource Separator}" >
@@ -110,9 +111,9 @@
             <Label/>
             <mvvm:ViewLocator Model="{Binding UserProfiles}"/>
 
-        </base:DetailView>
+        </views:DetailView>
 
-        <base:DetailView Grid.Row="2">
+        <views:DetailView Grid.Row="2">
             <Label Style="{DynamicResource Separator}" >
                 <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                     <Canvas>
@@ -129,7 +130,7 @@
             <Label />
 
 
-        </base:DetailView>
+        </views:DetailView>
 
     </Grid>
 </UserControl>

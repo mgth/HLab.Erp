@@ -621,6 +621,9 @@
     <Compile Update="Views\DefaultView.xaml.cs">
       <DependentUpon>DefaultView.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\DetailView.xaml.cs">
+      <DependentUpon>DetailView.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\ListItemView.xaml.cs">
       <DependentUpon>ListItemView.xaml</DependentUpon>
     </Compile>
@@ -691,6 +694,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="EntityLists\EntityListView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\DetailView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ListItemView.xaml">
