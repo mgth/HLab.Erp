@@ -22,6 +22,12 @@ namespace HLab.Erp.Workflows
     public abstract class Workflow<T> : N<T>, IWorkflow<T>
         where T : /*Workflow<T>, */class, IWorkflow<T>
     {
+        protected Workflow(object target, IDataLocker locker)
+        {
+            Target = target;
+            Locker = locker;
+        }
+
         public class State : WorkflowConditionalObject<T> 
         {
             public static State CreateDefault(
@@ -73,7 +79,10 @@ namespace HLab.Erp.Workflows
         }
 
         public User User { get; set; }
-        public object Target { get; protected set; }
+        public object Target { get; }
+        protected IDataLocker Locker { get; }
+
+        private readonly IProperty<object> _locker = H.Property<object>();
 
         protected static readonly List<State> WorkflowStates = new List<State>();
         protected static readonly List<Action> WorkflowActions = new List<Action>();
@@ -149,7 +158,24 @@ namespace HLab.Erp.Workflows
             return false;
         }
 
-        protected virtual bool OnSetState(State state) => true;
+        protected abstract string StateName { get; set; }
+
+        protected virtual bool OnSetState(State state)
+        {
+            if (StateName != state.Name)
+            {
+                var old = StateName;
+                StateName = state.Name;
+                Locker.SaveCommand.Execute(null);
+                if (Locker.IsActive)
+                {
+                    StateName = old;
+                    return false;
+                }
+                return true;
+            }
+            return true;
+        }
 
         public ObservableCollection<WorkflowAction> Actions { get; } = new ObservableCollection<WorkflowAction>();
 
@@ -167,13 +193,12 @@ namespace HLab.Erp.Workflows
         }
     }
 
-    public class Workflow<T, TTarget> : Workflow<T> 
+    public abstract class Workflow<T, TTarget> : Workflow<T> 
         where T : Workflow<T, TTarget>
         where TTarget : INotifyPropertyChanged
     {
-        public Workflow(TTarget target)
+        public Workflow(TTarget target, IDataLocker locker):base(target,locker)
         {
-            base.Target = target;
             Target.PropertyChanged += Target_PropertyChanged;
         }
 
