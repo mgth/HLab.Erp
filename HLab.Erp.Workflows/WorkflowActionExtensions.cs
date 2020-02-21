@@ -234,11 +234,11 @@ namespace HLab.Erp.Workflows
         /// <typeparam name="TWf"></typeparam>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static TC Backward<TC, TWf>(this TC t)
-            where TWf : Workflow<TWf>
-            where TC : IFluentConfigurator<Workflow<TWf>.Action>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> Backward<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t)
+            where TWf : class, IWorkflow<TWf>
         {
-            t.Target.Direction = WorkflowDirection.Backward;
+            if(t.Target is Workflow<TWf>.Action action)
+                action.Direction = WorkflowDirection.Backward;
             return t;
         }
     }
