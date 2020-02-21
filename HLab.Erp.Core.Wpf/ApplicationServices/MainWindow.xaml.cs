@@ -128,18 +128,29 @@ namespace HLab.Erp.Core.ApplicationServices
                         var xRatio = pos.X / width;
 
                         var absPos = PointToScreen(pos);
-                        Matrix m = PresentationSource.FromVisual(w).CompositionTarget.TransformToDevice;
+
+                        var ct = PresentationSource.FromVisual(w)?.CompositionTarget;
+
+                        if (ct != null)
+                        {
+                            var m = ct.TransformToDevice;
 
 
-                        w.Top = (absPos.Y / m.M22) - pos.Y * (w.Height / height);
+                            w.Top = (absPos.Y / m.M22) - pos.Y * (w.Height / height);
 
-                        w.Left = (absPos.X / m.M11) - pos.X * (w.Width / width); 
+                            w.Left = (absPos.X / m.M11) - pos.X * (w.Width / width); 
 
-                        w.WindowState = WindowState.Normal;
+                            w.WindowState = WindowState.Normal;
+                        }
+
                     }
 
                     _clicked = false;
-                    w.DragMove();
+                    try
+                    {
+                        w.DragMove();
+                    }
+                    catch(InvalidOperationException){}
                 }
             }
         }
