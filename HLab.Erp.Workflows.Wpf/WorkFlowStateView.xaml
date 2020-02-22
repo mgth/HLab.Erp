@@ -51,9 +51,12 @@
                     </Grid>
                 </Label>
 
-                <ListView Grid.Column="1"
+                <ListView 
+                    Grid.Column="1"
+                    Margin="5"
                     ItemsSource="{Binding BackwardActions}"
-                    Background="Transparent"/>
+                    Background="Transparent"
+                    />
 
                 <StackPanel HorizontalAlignment="Center"  Orientation="Horizontal" Grid.Column="2">
                     <Grid Margin="5" Width="40" Height="40">
@@ -81,12 +84,12 @@
                         </StackPanel>
                     </Label>
                 </StackPanel>
-                <ListView
+                <ListView 
+                    Grid.Column="3"
                     Margin="5"
                     ItemsSource="{Binding Actions}"
                     Background="Transparent"
-                    Grid.Column="3">
-                </ListView>
+                    />
             </Grid>
         </Grid>
 </UserControl>
