@@ -14,8 +14,6 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
     public class UserViewModel: EntityViewModel<UserViewModel,User>
     {
 
-        [Import]
-        private IAclService _acl;
 
         public string Title => _title.Get();
         public IProperty<string> _title = H.Property<string>( c=> c
@@ -42,11 +40,11 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
         );
 
         public ICommand ChangePasswordCommand { get; } = H.Command(c => c
-            .CanExecute(e => e.Model.Id == e._acl.Connection.UserId)
+            .CanExecute(e => e.Model.Id == e.Acl.Connection.UserId)
         );
 
         public ICommand AddProfileCommand { get; } = H.Command(c => c
-            .CanExecute(e => e.Model.Id == e._acl.Connection.UserId)
+            .CanExecute(e => e.Acl.IsGranted(e.EditRight))
             .Action((e,p) => e.AddProfile(p as Profile) )
         );
         public ICommand RemoveProfileCommand { get; } = H.Command(c => c
@@ -76,6 +74,15 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
                 UserProfiles.List.UpdateAsync();
             }
         }
+
+        public override AclRight EditRight => AclRights.ManageUser;
+
+
+        public bool EditMode => _editMode.Get();
+        private IProperty<bool> _editMode = H.Property<bool>(c => c
+            .On(e => e.Locker.IsActive)
+            .Set(e => e.Locker.IsActive)
+        );
 
         [Import]
         private IDataService _data; 

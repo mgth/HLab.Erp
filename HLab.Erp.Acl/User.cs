@@ -36,6 +36,12 @@ namespace HLab.Erp.Acl
             set => _login.Set(value);
         }
         private readonly IProperty<string> _login = H.Property<string>(c => c.Default(""));
+        public string Domain
+        {
+            get => _domain.Get();
+            set => _domain.Set(value);
+        }
+        private readonly IProperty<string> _domain = H.Property<string>(c => c.Default(""));
 
         public string HashedPassword
         {

@@ -10,22 +10,22 @@ namespace HLab.Erp.Acl
     {
         public override async Task<User> GetUser(NetworkCredential credential)
         {
-#if !DEBUG
-            bool valid = false;
+            var user =  await Data.FetchOneAsync<User>(u => u.Login == credential.UserName).ConfigureAwait(false);
+            if(user!=null && !string.IsNullOrWhiteSpace(user.Domain))
+            {
+                bool valid = false;
                 try
                 {
-                    using (PrincipalContext context = new PrincipalContext(ContextType.Domain,"DCM"))
-                    {
-                        valid = context.ValidateCredentials(credential.UserName, credential.Password);
-                    }
+                    using PrincipalContext context = new PrincipalContext(ContextType.Domain, user.Domain);
+                    valid = context.ValidateCredentials(credential.UserName, credential.Password);
                 }
                 catch
                 {
                     valid = false;
                 }
 
-            if (valid) return await Data.FetchOneAsync<User>(u => u.Login == credential.UserName).ConfigureAwait(false);
-#endif            
+                if (valid) return user;
+            }
             return await base.GetUser(credential).ConfigureAwait(false);
         }
     }

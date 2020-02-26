@@ -7,7 +7,7 @@ namespace HLab.Erp.Core.Views
 {
     using H = DependencyHelper<DetailView>;
     /// <summary>
-    /// Logique d'interaction pour UserDetailView.xaml
+    /// Logique d'interaction pour DetailView.xaml
     /// </summary>
     [ContentProperty(nameof(Children))]
     public partial class DetailView : UserControl

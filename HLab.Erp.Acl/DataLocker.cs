@@ -86,6 +86,12 @@ namespace HLab.Erp.Acl
             private set => _isActive.Set(value);
         }
         private readonly IProperty<bool> _isActive = H.Property<bool>(c => c.Default(false));
+        public bool IsEnabled
+        {
+            get => _isEnabled.Get();
+            set => _isEnabled.Set(value);
+        }
+        private readonly IProperty<bool> _isEnabled = H.Property<bool>(c => c.Default(false));
 
         public ICommand ActivateCommand { get; } = H.Command(c => c
             .Action(async e => await e.ActivateAsync().ConfigureAwait(false))
