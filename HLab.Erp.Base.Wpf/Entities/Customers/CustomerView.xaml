@@ -2,18 +2,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:HLab.Erp.Base.Wpf"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             xmlns:base="clr-namespace:HLab.Base;assembly=HLab.Base.Wpf"
-             xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
              xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
-             xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
              xmlns:data="clr-namespace:HLab.Erp.Base.Data;assembly=HLab.Erp.Base.Data"
              xmlns:customers="clr-namespace:HLab.Erp.Base.Wpf.Entities.Customers"
              xmlns:countries="clr-namespace:HLab.Erp.Base.Wpf.Entities.Countries"
-             xmlns:entities="clr-namespace:HLab.Erp.Base.Wpf.Entities"
              xmlns:views="clr-namespace:HLab.Erp.Core.Views;assembly=HLab.Erp.Core.Wpf"
              xmlns:workflows="clr-namespace:HLab.Erp.Workflows;assembly=HLab.Erp.Workflows.Wpf"
              d:DataContext="{d:DesignInstance {x:Type customers:CustomerViewModelDesign}, IsDesignTimeCreatable=True}"             
@@ -28,7 +23,7 @@
         <workflows:WorkflowLockerView/>
 
 
-        <views:DetailView Grid.Row="1" IconPath="{Binding EntityIconPath}" Text="{Binding EntityName}">
+        <views:DetailView Grid.Row="1" IconPath="{Binding EntityIconPath}" Text="{Binding EntityName}" EditMode="{Binding Locker.IsActive}">
 
             <lang:LocalizedLabel Text="{}{Name} : "/>
             <TextBox Text="{Binding Model.Name,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />
@@ -76,7 +71,7 @@
             </DataGrid>
         </views:DetailView>
 
-        <views:DetailView Grid.Row="2" IconPath="Icons/Edit" Text="{}{Note}">
+        <views:DetailView Grid.Row="2" IconPath="Icons/Edit" Text="{}{Note}" EditMode="{Binding Locker.IsActive}">
 
             <TextBox 
                 Margin="50,0,15,0"
