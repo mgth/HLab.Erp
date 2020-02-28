@@ -45,8 +45,9 @@ namespace HLab.Erp.Acl
         );
 
         public virtual string EntityName => "{" + typeof(T).Name + "}";
+        public virtual string Title => EntityName;
 
-        public virtual string EntityIconPath => "icons/entities/" + typeof(T).Name;
+        public virtual string IconPath => "icons/entities/" + typeof(T).Name;
 
         public ICommand CloseCommand { get; } = H.Command(c => c
             .Action(e =>

@@ -23,7 +23,11 @@
         <workflows:WorkflowLockerView/>
 
 
-        <views:DetailView Grid.Row="1" IconPath="{Binding EntityIconPath}" Text="{Binding EntityName}" EditMode="{Binding Locker.IsActive}">
+        <views:DetailView 
+            Grid.Row="1" 
+            Text="{Binding EntityName}" 
+            IconPath="{Binding IconPath}" 
+            EditMode="{Binding Locker.IsActive}">
 
             <lang:LocalizedLabel Text="{}{Name} : "/>
             <TextBox Text="{Binding Model.Name,UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Left" />

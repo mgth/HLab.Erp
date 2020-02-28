@@ -14,8 +14,8 @@
              d:DataContext="{d:DesignInstance {x:Type users:UserViewModel}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="ToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed"/>
-        <converters:BooleanToVisibilityConverter x:Key="ToCollapsedConverter" TrueValue="Collapsed" FalseValue="Visible"/>
+        <converters:ToVisibilityConverter x:Key="ToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed"/>
+        <converters:ToVisibilityConverter x:Key="ToCollapsedConverter" TrueValue="Collapsed" FalseValue="Visible"/>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>

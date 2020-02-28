@@ -14,7 +14,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
-            <converters:BooleanToBooleanConverter TrueValue="false" FalseValue="true" x:Key="InvertBooleanConverter" />
+            <converters:ToBooleanConverter TrueValue="false" FalseValue="true" x:Key="InvertBooleanConverter" />
             <Style TargetType="base:DateEx">
                 <Setter Property="Width" Value="500"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>

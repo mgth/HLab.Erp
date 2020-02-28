@@ -63,11 +63,14 @@ namespace HLab.Erp.Core.EntityLists
     where TClass : EntityListViewModel<TClass, T>
         where T : class, IEntity, new()
     {
-        public string Title => "{" + GetName() + "}";
+        public virtual string Title => _title.Get();
+        private IProperty<string> _title = H.Property<string>(c => c
+            .Set(e => "{" + e.GetTitle() + "}")
+        );
 
         public string IconPath => "icons/entities/" + typeof(T).Name;
 
-        private string GetName()
+        private string GetTitle()
         {
             var n = GetType().Name;
             var i = n.IndexOf("ListViewModel");

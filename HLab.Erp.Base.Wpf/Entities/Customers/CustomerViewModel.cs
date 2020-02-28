@@ -21,7 +21,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
         [Import]
         public IErpServices Erp { get; }
 
-        public string Title => _title.Get();
+        public override string Title => _title.Get();
         private readonly IProperty<string> _title = H.Property<string>(c => c
             .OneWayBind(e => e.Model.Caption)
         );

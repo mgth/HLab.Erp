@@ -6,12 +6,15 @@
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
         xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
-        xmlns:applicationServices="clr-namespace:HLab.Erp.Core.ApplicationServices"
-        mc:Ignorable="d"
+        xmlns:applicationServices="clr-namespace:HLab.Erp.Core.ApplicationServices" xmlns:converters="clr-namespace:HLab.Base.Converters;assembly=HLab.Base.Wpf"
+             mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=applicationServices:MainWpfViewModel, IsDesignTimeCreatable=True}"
         icons:IconView.IconService="{Binding IconService}"
         lang:Localize.LocalizationService="{Binding LocalizationService}"
 >
+    <UserControl.Resources>
+        <converters:ToVisibilityConverter x:Key="ToVisibility"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -65,11 +68,16 @@
 
             <xcad:DockingManager.DocumentHeaderTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" >
-                        <Viewbox HorizontalAlignment="Left" Height="16">
-                            <icons:IconView Opacity="0.75" Foreground="White" Path="{Binding Content.DataContext.IconPath}"/>
-                        </Viewbox>
-                        <lang:Localize Margin="10,0,0,0" FontSize="14" Id="{Binding Content.DataContext.Title}"/>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                            <Viewbox HorizontalAlignment="Left" Height="16">
+                                 <icons:IconView Opacity="1" Foreground="White" Path="{Binding Content.DataContext.IconPath}"/>
+                            </Viewbox>
+                            <lang:LocalizedLabel Margin="10,0,0,0" FontSize="14" FontWeight="Bold" Text="{Binding Content.DataContext.Title}"/>
+                        </StackPanel>
+                        <StackPanel Background="#80000000" Visibility="{Binding Content.DataContext.SubTitle,Converter={StaticResource ToVisibility},FallbackValue=Collapsed}">
+                            <lang:LocalizedLabel Margin="3,0" FontSize="12" FontStyle="Italic" Text="{Binding Content.DataContext.SubTitle}"/>
+                        </StackPanel>                        
                     </StackPanel>
                 </DataTemplate>
             </xcad:DockingManager.DocumentHeaderTemplate>
