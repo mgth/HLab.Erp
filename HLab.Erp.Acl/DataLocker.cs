@@ -204,10 +204,13 @@ namespace HLab.Erp.Acl
             try
             {
                 Message = null;
-                await _db.ReFetchOneAsync(_entity).ConfigureAwait(true);
-                Persister.Reset();
-                _timer.Change(Timeout.Infinite,Timeout.Infinite);
-                _db.Delete(_lock);
+                if(_lock != null)
+                {
+                    await _db.ReFetchOneAsync(_entity).ConfigureAwait(true);
+                    Persister.Reset();
+                    _timer.Change(Timeout.Infinite,Timeout.Infinite);
+                    _db.Delete(_lock);
+                }
                 IsActive = false;
             }
             catch (Exception e)
