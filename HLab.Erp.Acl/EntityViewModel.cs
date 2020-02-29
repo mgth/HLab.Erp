@@ -26,9 +26,30 @@ namespace HLab.Erp.Acl
         private readonly IProperty<DataLocker<T>> _locker = H.Property<DataLocker<T>>(c => c
             .On(e => e.Model)
             .NotNull(e => e.Model)
-            .Set(e => e._getLocker(e.Model))
+            .Set(e => e.GetLocker())
             //.Set(e => e._getLocker(e.Model))
         );
+
+        private DataLocker<T> GetLocker()
+        {
+            var locker = _getLocker(Model);
+            locker.PropertyChanged += Locker_PropertyChanged;
+            return locker;
+        }
+
+        private void Locker_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName=="IsActive")
+            {
+                if (Locker.IsActive==false)
+                {
+                    if(Model.Id==-1)
+                    {
+                        CloseCommand.Execute(null);
+                    }
+                }
+            }
+        }
 
         public virtual AclRight EditRight => null;
 
