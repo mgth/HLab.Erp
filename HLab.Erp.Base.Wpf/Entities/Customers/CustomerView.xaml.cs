@@ -7,9 +7,9 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
     /// <summary>
     /// Logique d'interaction pour CustomerView.xaml
     /// </summary>
-    public partial class CustomerView : UserControl, IView<ICorporationViewModel>, IViewClassDocument
+    public partial class CorporationView : UserControl, IView<ICorporationViewModel>, IViewClassDocument
     {
-        public CustomerView()
+        public CorporationView()
         {
             InitializeComponent();
         }

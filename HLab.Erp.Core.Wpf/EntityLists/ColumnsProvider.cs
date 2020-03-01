@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using System.Windows.Media;
 using System.Xml;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.ViewModels;
