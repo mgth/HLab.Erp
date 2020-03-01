@@ -41,8 +41,15 @@ namespace HLab.Erp.Core.EntitySelectors
 
         public static readonly DependencyProperty ModelProperty = H.Property<object>()
             .BindsTwoWayByDefault
-            .OnChange((s,a) => s.Locator.SetValue(ViewLocator.ModelProperty, a.NewValue))
+            .OnChange((v,a) => v.OnModelChanged(a))
             .Register();
+
+        private void OnModelChanged(ChangedEventArg<object> args)
+        {
+            var value = args.NewValue;
+            Locator.SetValue(ViewLocator.ModelProperty, args.NewValue);
+            OpenButton.IsEnabled = value!=null;
+        }
 
         public static readonly DependencyProperty ModelClassProperty = H.Property<Type>()
             .Register();
@@ -165,6 +172,7 @@ namespace HLab.Erp.Core.EntitySelectors
 
         private void OpenButton_OnClick(object sender, RoutedEventArgs e)
         {
+            if(Model == null) return;
             ViewLocator.GetMvvmContext(this).Scope.Locate<IDocumentService>().OpenDocumentAsync(Model);
         }
     }
