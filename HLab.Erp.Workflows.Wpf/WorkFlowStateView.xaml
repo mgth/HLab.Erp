@@ -79,9 +79,8 @@
                         FontSize="16"
                         FontWeight="Black" 
                         Foreground="White"
-                        ><StackPanel>
-                            <lang:Localize Id="{Binding Model.Caption}"/>
-                        </StackPanel>
+                        >
+                        <lang:Localize TextWrapping="Wrap" Id="{Binding Model.Caption}"/>
                     </Label>
                 </StackPanel>
                 <ListView 
