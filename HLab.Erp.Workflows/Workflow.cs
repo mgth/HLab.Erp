@@ -26,7 +26,16 @@ namespace HLab.Erp.Workflows
         {
             Target = target;
             Locker = locker;
+
+            if(target is INotifyPropertyChanged n)
+                n.PropertyChanged += Target_PropertyChanged;
         }
+
+        private void Target_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Update();
+        }
+
 
         public class State : WorkflowConditionalObject<T> 
         {
@@ -84,8 +93,14 @@ namespace HLab.Erp.Workflows
 
         private readonly IProperty<object> _locker = H.Property<object>();
 
-        protected static readonly List<State> WorkflowStates = new List<State>();
-        protected static readonly List<Action> WorkflowActions = new List<Action>();
+        private static List<State> _workflowState;
+        private static List<Action> _workflowAction;
+        private static List<State> WorkflowStates => _workflowState??(_workflowState=new List<State>());
+        private static List<Action> WorkflowActions => _workflowAction??(_workflowAction=new List<Action>());
+        
+        public static State StateFromName(string name) => WorkflowStates.Find(e => e.Name == name)??DefaultState;
+        protected void SetState(string state) => CurrentState = StateFromName(state);
+
 
         public string Caption => _caption.Get();
         private readonly IProperty<string> _caption = H.Property<string>(c => c
@@ -117,7 +132,7 @@ namespace HLab.Erp.Workflows
         }
         internal static void AddDefaultState(State state)
         {
-            WorkflowStates.Add(state);
+            AddState(state);
             DefaultState = state;
         }
 
@@ -199,15 +214,9 @@ namespace HLab.Erp.Workflows
     {
         public Workflow(TTarget target, IDataLocker locker):base(target,locker)
         {
-            Target.PropertyChanged += Target_PropertyChanged;
         }
-
-        private void Target_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            Update();
-        }
-        protected void SetState(string state) => CurrentState = WorkflowStates.Find(e => e.Name == state)??DefaultState;
 
         public new TTarget Target => (TTarget)base.Target;
+
     }
 }
