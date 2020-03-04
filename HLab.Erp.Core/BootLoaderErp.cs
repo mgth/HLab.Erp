@@ -7,7 +7,7 @@ namespace HLab.Erp.Core
 {
 
 
-    public abstract class BootLoaderErp : IPostBootloader
+    public abstract class BootLoaderErp : IBootloader //postboot
     {
         public virtual void Load()
         {

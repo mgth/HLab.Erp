@@ -8,7 +8,7 @@ using HLab.Notify.PropertyChanged;
 using H = HLab.Notify.PropertyChanged.NotifyHelper<HLab.Erp.Core.WebService.BrowserServiceModule>;
 namespace HLab.Erp.Core.WebService
 {
-    public class BrowserServiceModule : IPostBootloader
+    public class BrowserServiceModule : IBootloader //postboot
     {
         private readonly IErpServices _erp;
 
