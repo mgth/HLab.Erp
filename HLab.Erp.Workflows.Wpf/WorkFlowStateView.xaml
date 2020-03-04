@@ -31,9 +31,7 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Border
                     BorderBrush="#A0FFFFFF"
@@ -51,14 +49,12 @@
                     </Grid>
                 </Label>
 
-                <ListView 
-                    Grid.Column="1"
-                    Margin="5"
-                    ItemsSource="{Binding BackwardActions}"
-                    Background="Transparent"
-                    />
-
-                <StackPanel HorizontalAlignment="Center"  Orientation="Horizontal" Grid.Column="2">
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel HorizontalAlignment="Center"  Orientation="Horizontal">
                     <Grid Margin="5" Width="40" Height="40">
                         <icons:IconView 
                             HorizontalAlignment="Right" 
@@ -83,12 +79,31 @@
                         <lang:Localize TextWrapping="Wrap" Id="{Binding Model.Caption}"/>
                     </Label>
                 </StackPanel>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
                 <ListView 
-                    Grid.Column="3"
+                    Grid.Column="0"
+                    Margin="5"
+                    ItemsSource="{Binding BackwardActions}"
+                    Background="Transparent"
+                    />
+
+                <ListView 
+                    Grid.Column="1"
                     Margin="5"
                     ItemsSource="{Binding Actions}"
                     Background="Transparent"
                     />
+                        
+                        
+                    </Grid>
+                </Grid>
+                
+                
             </Grid>
         </Grid>
 </UserControl>
