@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="HLab.Erp.Acl.ImportUsers"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HLab.Erp.Acl" xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf" xmlns:converters="clr-namespace:HLab.Base.Converters;assembly=HLab.Base.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:ToBrushConverter x:Key="ToBrushConverter" TrueValue="DarkGreen" FalseValue="Red" NullValue="White"/>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel>
+            <lang:LocalizedLabel Text="{}{Domain} : "/>
+            <TextBox Text="{Binding Domain}"/>
+            
+            <lang:LocalizedLabel Text="{}{User Name} : "/>
+            <TextBox Text="{Binding UserName}"/>
+            
+            <lang:LocalizedLabel Text="{}{Password} : "/>
+            <PasswordBox x:Name="PasswordBox"/>
+            
+            <lang:Localize Id="{Binding Message}" FontSize="16" Foreground="{Binding Success,Converter={StaticResource ToBrushConverter}}"/>
+            
+            <Button Command="{Binding RetrievetUsersCommand}" CommandParameter="{Binding ElementName=PasswordBox}">
+                <lang:Localize Id="{}{Retrieve Users}"/>
+            </Button>
+            <ListView ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}"/>
+            <Button Command="{Binding ImportUserCommand}">
+                <lang:Localize Id="{}{Import User}"/>
+            </Button>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>
