@@ -94,7 +94,7 @@ namespace HLab.Erp.Data
                 sb
                     .Append(p.Name)
                     .Append("=")
-                    .Append(p.GetValue(Target).ToString())
+                    .Append(p.GetValue(Target)?.ToString()??"null")
                     .Append("\n");
             return sb.ToString();
         }
