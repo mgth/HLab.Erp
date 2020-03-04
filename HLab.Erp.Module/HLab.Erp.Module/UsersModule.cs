@@ -10,7 +10,7 @@ using HLab.Notify.PropertyChanged;
 using H = HLab.Notify.PropertyChanged.NotifyHelper<HLab.Erp.Module.UsersModule>;
 namespace HLab.Erp.Module
 {
-    public class UsersModule : IPostBootloader
+    public class UsersModule : IBootloader //postboot
     {
         [Import]
         private readonly IErpServices _erp;

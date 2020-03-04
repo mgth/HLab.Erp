@@ -6,7 +6,7 @@ using HLab.Notify.PropertyChanged;
 using H = HLab.Notify.PropertyChanged.NotifyHelper<HLab.Erp.Core.Localization.LocalizeWpfBootloader>;
 namespace HLab.Erp.Core.Localization
 {
-    public class LocalizeWpfBootloader : IPostBootloader
+    public class LocalizeWpfBootloader : IBootloader //postboot
     {
         
         private readonly IErpServices _erp;

@@ -18,7 +18,7 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf
 {
-    public class ErpBaseModule : N<ErpBaseModule>, IPostBootloader
+    public class ErpBaseModule : N<ErpBaseModule>, IBootloader //postboot
     {
         
         private readonly IErpServices _erp;

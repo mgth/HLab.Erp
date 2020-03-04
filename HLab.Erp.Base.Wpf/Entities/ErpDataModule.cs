@@ -8,7 +8,7 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf.Entities
 {
-    public abstract class ErpDataModule<T,TList> : N<T>, IPostBootloader 
+    public abstract class ErpDataModule<T,TList> : N<T>, IBootloader 
         where T:ErpDataModule<T,TList>
     {
         [Import]
