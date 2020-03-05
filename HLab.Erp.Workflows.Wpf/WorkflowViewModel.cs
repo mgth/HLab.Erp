@@ -35,9 +35,7 @@ namespace HLab.Erp.Workflows
                             switch (m.Direction)
                             {
                                 case WorkflowDirection.Forward:
-                                    if(Actions.Any(a => a.Caption == m.Caption))
-                                    { }
-                                    else Actions.Add(m);
+                                    Actions.Add(m);
                                     break;
                                 case WorkflowDirection.Backward:
                                     BackwardActions.Add(m);
