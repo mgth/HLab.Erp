@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using HLab.Mvvm;
 using HLab.Notify.Annotations;
@@ -19,25 +20,31 @@ namespace HLab.Erp.Workflows
             Model.Actions.CollectionChanged += Actions_CollectionChanged;
         }
 
+        private object _lock = new object();
         private void Actions_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             Application.Current.Dispatcher.Invoke(
             () =>
                 {
-                    Actions.Clear();
-                    BackwardActions.Clear();
-                    foreach (var m in Model.Actions)
+                    lock(_lock)
                     {
-                        switch (m.Direction)
+                        Actions.Clear();
+                        BackwardActions.Clear();
+                        foreach (var m in Model.Actions)
                         {
-                            case WorkflowDirection.Forward:
-                                Actions.Add(m);
-                                break;
-                            case WorkflowDirection.Backward:
-                                BackwardActions.Add(m);
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
+                            switch (m.Direction)
+                            {
+                                case WorkflowDirection.Forward:
+                                    if(Actions.Any(a => a.Caption == m.Caption))
+                                    { }
+                                    else Actions.Add(m);
+                                    break;
+                                case WorkflowDirection.Backward:
+                                    BackwardActions.Add(m);
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
                         }
                     }
                 }

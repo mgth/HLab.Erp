@@ -126,19 +126,30 @@ namespace HLab.Erp.Workflows
             .Set(e => e.CurrentState?.GetSubIconPath(e))
         );
 
-        internal static void AddState(State state)
+        internal static bool AddState(State state)
         {
-            WorkflowStates.Add(state);
+            if (!WorkflowStates.Contains(state))
+            {
+                WorkflowStates.Add(state);
+                return true;
+            }
+            return false;
         }
-        internal static void AddDefaultState(State state)
+        internal static bool AddDefaultState(State state)
         {
-            AddState(state);
-            DefaultState = state;
+            if (DefaultState != null) throw new Exception("Default state declared twice");
+            if (AddState(state))
+            {
+                DefaultState = state;
+                return true;
+            }
+            return false;
         }
 
-        public static void AddAction(Action state)
+        public static void AddAction(Action action)
         {
-            WorkflowActions.Add(state);
+            if(!WorkflowActions.Contains(action))
+                WorkflowActions.Add(action);
         }
 
         public static State DefaultState { get; private set; }
@@ -194,16 +205,16 @@ namespace HLab.Erp.Workflows
 
         public ObservableCollection<WorkflowAction> Actions { get; } = new ObservableCollection<WorkflowAction>();
 
+
+        private object _lock = new object();
         protected void Update()
         {
-            Actions.Clear();
-            var actions = WorkflowActions
-                .Where(a => a.Check(this as T) != WorkflowConditionResult.Hidden)
-                .Select(e => e.GetAction(this as T) );
-
-            foreach (var action in actions)
+            lock(_lock)
             {
-                Actions.Add(action);
+                Actions.Clear();
+                WorkflowActions
+                    .Where(a => a.Check(this as T) != WorkflowConditionResult.Hidden)
+                    .ToList().ForEach(e => Actions.Add(e.GetAction(this as T)) );
             }
         }
     }
