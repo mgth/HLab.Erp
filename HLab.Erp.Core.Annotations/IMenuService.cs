@@ -4,6 +4,6 @@ namespace HLab.Erp.Core
 {
     public interface IMenuService
     {
-        void RegisterMenu(string parent, string newName, object header, ICommand cmd, string getIcon);
+        void RegisterMenu(string path, object header, ICommand cmd, string getIcon);
     }
 }

@@ -21,7 +21,9 @@ namespace HLab.Erp.Acl
 
         public virtual void Load()
         {
-            _erp.Menu.RegisterMenu("tools", "ImportUsers", "{Import Users}",
+            if(!_erp.Acl.IsGranted(AclRights.ManageUser)) return;
+
+            _erp.Menu.RegisterMenu("tools/ImportUsers", "{Import Users}",
                 OpenCommand,
                 "icons/tools/ImportUsers");
         }

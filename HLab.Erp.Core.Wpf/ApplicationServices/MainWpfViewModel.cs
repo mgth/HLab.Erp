@@ -91,25 +91,6 @@ namespace HLab.Erp.Core.ApplicationServices
             .Action(e => e._doc.OpenDocumentAsync(e.Acl.Connection.User))
         );
 
-        public bool RegisterMenu(string[] parents, MenuItem newMenuItem, ItemCollection items=null)
-        {
-            if (items == null) items = Menu.Items;
-
-            if (!parents.Any())
-            {
-                items.Add(newMenuItem);
-                return true;
-            }
-
-            foreach (MenuItem menu in items)
-            {
-                if (menu.Name == parents[0])
-                {
-                    return RegisterMenu(parents.Skip(1).ToArray(),newMenuItem, menu.Items);
-                }
-            }
-            return false;
-        }
 
     }
 }

@@ -44,19 +44,19 @@ namespace HLab.Erp.Base.Wpf
         public void Load()
         {
 
-            _erp.Menu.RegisterMenu("param", "country", "{Country}",
+            _erp.Menu.RegisterMenu("param/country", "{Country}",
                 CountryCommand,
                 "Icons/Entities/Country");
 
-            _erp.Menu.RegisterMenu("param", "icons", "{Icons}",
+            _erp.Menu.RegisterMenu("param/icons", "{Icons}",
                 IconCommand,
                 "Icons/Icon");
 
-            _erp.Menu.RegisterMenu("param", "users", "{Users}",
+            _erp.Menu.RegisterMenu("param/users", "{Users}",
                 UserCommand,
                 "Icons/Entities/User");
 
-            _erp.Menu.RegisterMenu("param", "profiles", "{Profiles}",
+            _erp.Menu.RegisterMenu("param/profiles", "{Profiles}",
                 ProfileCommand,
                 "Icons/Entities/Profile");
         }

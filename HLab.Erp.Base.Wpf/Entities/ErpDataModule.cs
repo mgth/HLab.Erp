@@ -55,7 +55,7 @@ namespace HLab.Erp.Base.Wpf.Entities
 
         public virtual void Load()
         {
-            _erp.Menu.RegisterMenu("data", Name, Header,
+            _erp.Menu.RegisterMenu("data/"+ Name, Header,
                 OpenCommand,
                 IconPath);
         }
