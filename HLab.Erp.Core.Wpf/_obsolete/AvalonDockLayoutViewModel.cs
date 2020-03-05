@@ -7,7 +7,7 @@ using HLab.DependencyInjection.Annotations;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
-using Xceed.Wpf.AvalonDock;
+using AvalonDock;
 
 namespace HLab.Erp.Core.ApplicationServices
 {

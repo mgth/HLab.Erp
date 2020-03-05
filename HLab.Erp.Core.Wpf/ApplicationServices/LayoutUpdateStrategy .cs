@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Reflection;
-using Xceed.Wpf.AvalonDock.Layout;
+using AvalonDock.Layout;
 
 namespace HLab.Erp.Core.ApplicationServices
 {

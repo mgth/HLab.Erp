@@ -1,4 +1,5 @@
-﻿using Xceed.Wpf.AvalonDock.Layout;
+﻿
+using AvalonDock.Layout;
 
 namespace HLab.Erp.Core.Services
 {

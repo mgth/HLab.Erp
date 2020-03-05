@@ -1,4 +1,5 @@
-﻿using Xceed.Wpf.AvalonDock.Layout.Serialization;
+﻿
+using AvalonDock.Layout.Serialization;
 
 namespace HLab.Erp.Core.ApplicationServices
 {
