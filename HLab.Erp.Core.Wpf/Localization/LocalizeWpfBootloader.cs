@@ -24,9 +24,9 @@ namespace HLab.Erp.Core.Localization
             })
         );
 
-        public void Load()
+        public bool Load()
         {
-            _erp.Menu.RegisterMenu("tools/localization", "{Localization}",
+            return _erp.Menu.RegisterMenu("tools/localization", "{Localization}",
                 LocalizationOpenDocumentCommand,
                 "icons/localize");
         }

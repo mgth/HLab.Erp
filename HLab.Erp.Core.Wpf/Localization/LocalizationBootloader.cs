@@ -12,9 +12,10 @@ namespace HLab.Erp.Core.Localization
         [Import]
         private ILocalizationService _service;
 
-        public void Load()
+        public bool Load()
         {
             _service.Register(_get());
+            return true;
         }
     }
 }

@@ -119,6 +119,7 @@ namespace HLab.Erp.Acl
 
         public bool IsGranted(AclRight right, object grantedTo = null, object grantedOn = null)
         {
+            if(Connection==null) return false;
             if(Connection.User.Login=="admin") return true;
             return CurrentRights.Contains(right);
         }

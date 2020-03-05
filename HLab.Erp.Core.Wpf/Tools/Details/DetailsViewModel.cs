@@ -12,11 +12,11 @@ namespace HLab.Erp.Core.Tools.Details
         [Import] private readonly IDocumentService _docs;
         [Import] private readonly Func<DetailsViewModel> _getDetails;
 
-        public void Load()
-        {
-            //TODO :
-            //_docs.OpenDocument(_getDetails());
-        }
+        public bool Load() => true;
+        //{
+        //    //TODO :
+        //    //_docs.OpenDocument(_getDetails());
+        //}
     }
 
     public class DetailsViewModel : ViewModel<DetailsViewModel>

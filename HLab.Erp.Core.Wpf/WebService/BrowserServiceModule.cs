@@ -22,9 +22,7 @@ namespace HLab.Erp.Core.WebService
             .Action(e => e._erp.Docs.OpenDocumentAsync(typeof(IBrowserService)))
         );
 
-        public void Load()
-        {
-            _erp.Menu.RegisterMenu("tools/internet", "{Internet}", OpenDocumentCommand, "icons/internet");
-        }
+        public bool Load() => _erp.Menu.RegisterMenu("tools/internet", "{Internet}", OpenDocumentCommand, "icons/internet");
+        
     }
 }

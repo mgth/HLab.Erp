@@ -16,13 +16,14 @@ namespace HLab.Erp.Data
             _opt = opt;
         }
 
-        public void Load()
+        public bool Load()
         {
             _db.RegisterEntities(_container);
             var connectionString = _opt.GetOptionString("Connection");
-            var driver = _opt.GetOptionString("Driver");
+            //var driver = _opt.GetOptionString("Driver");
 
-            _db.Register(connectionString,driver);
+            _db.Register(connectionString,"");
+            return true;
         }
     }
 }

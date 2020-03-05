@@ -15,7 +15,13 @@ namespace HLab.Erp.Base.Wpf
         [Import]
         private IDataService _db;
 
-        public async void Load()
+        public bool Load()
+        {
+            LoadAsync();
+            return true;
+        }
+
+        public async void LoadAsync()
         {
             var icons =  _db.FetchAsync<Icon>().ConfigureAwait(true);
 

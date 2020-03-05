@@ -25,11 +25,8 @@ namespace HLab.Erp.Module
             .Action(e => e._erp.Docs.OpenDocumentAsync(typeof(ListUserViewModel)))
         );
 
-        public void Load()
-        {
-            _erp.Menu.RegisterMenu("tools/users", "{Users}",
+        public bool Load() => _erp.Menu.RegisterMenu("tools/users", "{Users}",
                 ListUsersOpenDocumentCommand,
                 "icons/Users");
-        }
     }
 }

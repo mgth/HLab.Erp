@@ -29,10 +29,10 @@ namespace HLab.Erp.Core.ApplicationServices
         [Import]
         private MainWpfViewModel _viewModel;
 
-        public void RegisterMenu(string path, object header, ICommand command, string iconPath) 
+        public bool RegisterMenu(string path, object header, ICommand command, string iconPath) 
             => RegisterMenu(new MenuPath(path),_viewModel.Menu.Items, header, command, iconPath);
 
-        private void RegisterMenu(MenuPath path, ItemCollection items, object header, ICommand command, string iconPath)
+        private bool RegisterMenu(MenuPath path, ItemCollection items, object header, ICommand command, string iconPath)
         {
             if (path.Next==null)
             {
@@ -53,21 +53,8 @@ namespace HLab.Erp.Core.ApplicationServices
                     }
                 };
 
-                foreach(MenuItem menu in items)
-                {
-                    if (menu.Name == path.Name)
-                    {
-                        items.Remove(menu);
-                        foreach(var sub in menu.Items)
-                        {
-                            m.Items.Add(sub);
-                        }
-                    }
-                }
-
                 items.Add(m);
-                return;
-
+                return true;
             }
 
             MenuItem child = null;
@@ -80,12 +67,8 @@ namespace HLab.Erp.Core.ApplicationServices
                 }
             }
 
-            if(child==null) 
-            {
-                child = new MenuItem{Name = path.Name};
-                items.Add(child);
-            }
-            RegisterMenu(path.Next, child.Items, header,command,iconPath);
+            if(child==null) return false;
+            return RegisterMenu(path.Next, child.Items, header,command,iconPath);
         }
 
     }

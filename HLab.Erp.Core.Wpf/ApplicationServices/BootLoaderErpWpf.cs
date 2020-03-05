@@ -52,8 +52,9 @@ namespace HLab.Erp.Core.ApplicationServices
 
 
 
-        public override void Load()
+        public override bool Load()
         {
+            if (!base.Load()) return false;
             MainWindow = new DefaultWindow()
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
@@ -62,8 +63,6 @@ namespace HLab.Erp.Core.ApplicationServices
 
             MainWindow.Closing += (sender, args) => Application.Current.Shutdown();
             MainWindow.Show();
-
-            base.Load();
 
             _erp.Info.Version = Assembly.GetCallingAssembly().GetName().Version;
 
@@ -79,7 +78,7 @@ namespace HLab.Erp.Core.ApplicationServices
             if (_erp.Acl.Connection == null)
             {
                 Application.Current.Shutdown();
-                return;
+                return true;
             }
 
             if (Updater != null )
@@ -97,7 +96,7 @@ namespace HLab.Erp.Core.ApplicationServices
                     if (Updater.Updated)
                     {
                         Application.Current.Shutdown();
-                        return;
+                        return true;;
                     }
                 }
             }
@@ -146,6 +145,8 @@ namespace HLab.Erp.Core.ApplicationServices
             _erp.Menu.RegisterMenu("file/exit","{Exit}", ViewModel.Exit,null);
 
             MainWindow.Content = w;
+
+            return true;
         }
     }
 }

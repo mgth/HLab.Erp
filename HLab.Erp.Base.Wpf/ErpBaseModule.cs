@@ -41,24 +41,40 @@ namespace HLab.Erp.Base.Wpf
         public ICommand ProfileCommand { get; } = H.Command(c => c.Action(
                 e => e._erp.Docs.OpenDocumentAsync(typeof(ListProfileViewModel))
             ));
-        public void Load()
+
+        private int step = 0;
+        public bool Load()
         {
+            if(step<1)
+            {
+                if(!_erp.Menu.RegisterMenu("param/country", "{Country}",
+                    CountryCommand,
+                    "Icons/Entities/Country")) return false;
+                step = 1;
+            }
+            if(step<2)
+            {            
+                if(!_erp.Menu.RegisterMenu("param/icons", "{Icons}",
+                    IconCommand,
+                    "Icons/Icon")) return false;
+                step=2;
+            }
+            if(step<3)
+            {
+                if(!_erp.Menu.RegisterMenu("param/users", "{Users}",
+                    UserCommand,
+                    "Icons/Entities/User")) return false;
+                step=3;
+            }
+            if(step<4)
+            {
+                if(!_erp.Menu.RegisterMenu("param/profiles", "{Profiles}",
+                    ProfileCommand,
+                    "Icons/Entities/Profile")) return false;
+                step = 4;
+            }
 
-            _erp.Menu.RegisterMenu("param/country", "{Country}",
-                CountryCommand,
-                "Icons/Entities/Country");
-
-            _erp.Menu.RegisterMenu("param/icons", "{Icons}",
-                IconCommand,
-                "Icons/Icon");
-
-            _erp.Menu.RegisterMenu("param/users", "{Users}",
-                UserCommand,
-                "Icons/Entities/User");
-
-            _erp.Menu.RegisterMenu("param/profiles", "{Profiles}",
-                ProfileCommand,
-                "Icons/Entities/Profile");
+            return true;
         }
     }
 }
