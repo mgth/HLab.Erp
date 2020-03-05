@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace HLab.Erp.Workflows
 {
@@ -24,6 +25,8 @@ namespace HLab.Erp.Workflows
     {
         protected Workflow(object target, IDataLocker locker)
         {
+            Actions = new ReadOnlyObservableCollection<WorkflowAction>(_actions);
+
             Target = target;
             Locker = locker;
 
@@ -203,18 +206,42 @@ namespace HLab.Erp.Workflows
             return true;
         }
 
-        public ObservableCollection<WorkflowAction> Actions { get; } = new ObservableCollection<WorkflowAction>();
 
+        private readonly ObservableCollection<WorkflowAction> _actions = new ObservableCollection<WorkflowAction>();
+        public ReadOnlyObservableCollection<WorkflowAction> Actions { get; }
 
-        private object _lock = new object();
+        ObservableCollection<WorkflowAction> IWorkflow.Actions => throw new NotImplementedException();
+
+        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         protected void Update()
         {
-            lock(_lock)
-            {
-                Actions.Clear();
-                WorkflowActions
+                var list = WorkflowActions
                     .Where(a => a.Check(this as T) != WorkflowConditionResult.Hidden)
-                    .ToList().ForEach(e => Actions.Add(e.GetAction(this as T)) );
+                    .ToList();
+
+            _lock.EnterWriteLock();
+            try
+            {
+                _actions.Clear();
+
+                    
+                    if(_actions.Count>0) { }
+
+                    foreach(var action in list) _actions.Add(action.GetAction(this as T));
+
+                    if(_actions.Count>list.Count()) { }
+                    //list.ForEach(e =>
+                    //{
+                    //    var l = list;
+                    //    if(_actions.Any(a => a.Caption==e.GetAction(this as T).Caption))
+                    //    { }
+                    //    else
+                    //    _actions.Add(e.GetAction(this as T));
+                    //});
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
             }
         }
     }

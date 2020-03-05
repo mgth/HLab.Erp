@@ -9,9 +9,17 @@ namespace HLab.Erp.Workflows
 {
     public class WorkflowViewModel:ViewModel<WorkflowViewModel,IWorkflow>
     {
+        private ObservableCollection<WorkflowAction> _backwardActions = new ObservableCollection<WorkflowAction>();
+        private ObservableCollection<WorkflowAction> _actions = new ObservableCollection<WorkflowAction>();
+        public ReadOnlyObservableCollection<WorkflowAction> BackwardActions { get; }
+        public ReadOnlyObservableCollection<WorkflowAction> Actions { get; }
 
-        public ObservableCollection<WorkflowAction> BackwardActions { get; } = new ObservableCollection<WorkflowAction>();
-        public ObservableCollection<WorkflowAction> Actions { get; } = new ObservableCollection<WorkflowAction>();
+        public WorkflowViewModel()
+        {
+            BackwardActions = new ReadOnlyObservableCollection<WorkflowAction>(_backwardActions);
+            Actions = new ReadOnlyObservableCollection<WorkflowAction>(_actions);
+        }
+
 
         [TriggerOn(nameof(Model))]
         public void UpdateActions()
@@ -28,17 +36,17 @@ namespace HLab.Erp.Workflows
                 {
                     lock(_lock)
                     {
-                        Actions.Clear();
-                        BackwardActions.Clear();
+                        _actions.Clear();
+                        _backwardActions.Clear();
                         foreach (var m in Model.Actions)
                         {
                             switch (m.Direction)
                             {
                                 case WorkflowDirection.Forward:
-                                    Actions.Add(m);
+                                    _actions.Add(m);
                                     break;
                                 case WorkflowDirection.Backward:
-                                    BackwardActions.Add(m);
+                                    _backwardActions.Add(m);
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException();
