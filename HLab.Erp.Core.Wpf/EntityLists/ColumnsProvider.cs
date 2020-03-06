@@ -22,6 +22,8 @@ namespace HLab.Erp.Core.EntityLists
     {
         [Import]
         private IIconService _icons;
+        [Import]
+        private ILocalizationService _lang;
 
         private readonly Dictionary<string,Column<T>> _dict = new Dictionary<string, Column<T>>();
         private ObservableQuery<T> _list;
@@ -38,6 +40,16 @@ namespace HLab.Erp.Core.EntityLists
                 var icon = await _icons.GetIconAsync(iconPath(s));
                 if (icon is FrameworkElement fe) fe.MaxHeight = height;
                 return icon;
+
+            }, orderBy);
+        }
+        public ColumnsProvider<T> Localize(string caption, Func<T,string> text,Expression<Func<T,object>> orderBy=null,double height=25.0, string id=null)
+        {
+            return ColumnAsync(caption, async (s) =>
+            {
+
+                var localized = await _lang.LocalizeAsync(text(s));
+                return new Label { Content = localized };
 
             }, orderBy);
         }
