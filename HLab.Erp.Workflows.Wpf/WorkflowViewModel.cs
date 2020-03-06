@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using HLab.Mvvm;
@@ -25,7 +27,7 @@ namespace HLab.Erp.Workflows
         public void UpdateActions()
         {
             Actions_CollectionChanged(null,null);
-            Model.Actions.CollectionChanged += Actions_CollectionChanged;
+            ((INotifyCollectionChanged)Model.Actions).CollectionChanged += Actions_CollectionChanged;
         }
 
         private object _lock = new object();

@@ -210,7 +210,6 @@ namespace HLab.Erp.Workflows
         private readonly ObservableCollection<WorkflowAction> _actions = new ObservableCollection<WorkflowAction>();
         public ReadOnlyObservableCollection<WorkflowAction> Actions { get; }
 
-        ObservableCollection<WorkflowAction> IWorkflow.Actions => throw new NotImplementedException();
 
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         protected void Update()
