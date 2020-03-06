@@ -41,6 +41,12 @@ namespace HLab.Erp.Data.Observables
             oq.AddFilter(expression, order, name);
             return oq;
         }
+        public static ObservableQuery<T> AddFilter<T>(this ObservableQuery<T> oq, string name, Expression<Func<T, bool>> expression, int order = 0)
+        where T : class, IEntity
+        {
+            oq.AddFilter(expression, order, name);
+            return oq;
+        }
 
         public static ObservableQuery<T> FluentUpdate<T>(this ObservableQuery<T> oq, bool force = true)
             where T : class, IEntity
@@ -55,7 +61,7 @@ namespace HLab.Erp.Data.Observables
         where T : class, IEntity
     {
         [Import]
-        public ObservableQuery(IDataService db)
+        public ObservableQuery(IDataService db):base(false)
         {
             _db = db;
             H.Initialize(this,OnPropertyChanged);
@@ -222,7 +228,8 @@ namespace HLab.Erp.Data.Observables
             return PostQuery(_source);
         }
 
-
+        public ObservableQuery<T> AddFilter(Expression<Func<T, bool>> expression, int order = 0, string name = null)
+            => AddFilter(() => expression, order, name);
         public ObservableQuery<T> AddFilter(Func<Expression<Func<T, bool>>> expression, int order = 0, string name = null)
         {
             _lockFilters.EnterWriteLock();
@@ -239,7 +246,6 @@ namespace HLab.Erp.Data.Observables
             }
             finally
             {
-                if(_lockFilters.IsWriteLockHeld) 
                     _lockFilters.ExitWriteLock();
             }
         }
