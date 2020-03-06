@@ -11,7 +11,7 @@ namespace HLab.Erp.Workflows
         string Caption { get; }
         string IconPath { get; }
         string SubIconPath { get; }
-        ObservableCollection<WorkflowAction> Actions { get; }
+        ReadOnlyObservableCollection<WorkflowAction> Actions { get; }
         object Target { get; }
     }
 
