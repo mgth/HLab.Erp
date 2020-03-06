@@ -197,6 +197,17 @@ namespace HLab.Erp.Workflows
                 (w.CurrentState == getState()) ? WorkflowConditionResult.Passed : WorkflowConditionResult.Hidden));
             return t;
         }
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> FromStates<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, params Func<Workflow<TWf>.State>[] getters)
+            where TWf : class,IWorkflow<TWf>
+        {
+                t?.Target.AddCondition(new WorkflowCondition<TWf>(w => {
+                    foreach (var getState in getters)
+                        if (w.CurrentState == getState()) return WorkflowConditionResult.Passed;
+                    
+                    return WorkflowConditionResult.Hidden;
+                }));
+            return t;
+        }
 
         /// <summary>
         /// Define action for a workflow element
