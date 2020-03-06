@@ -25,6 +25,7 @@ namespace HLab.Erp.Workflows
         public void Action(IWorkflow workflow) => _action?.Invoke((T)workflow);
         void IWorkflowConditionalObject<T>.SetAction(Action<T> action) => _action = action;
 
+        public bool HasAction => _action != null;
 
         public WorkflowCondition<T> Condition { get; private set; } = null;
 

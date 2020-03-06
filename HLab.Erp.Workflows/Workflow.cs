@@ -59,7 +59,17 @@ namespace HLab.Erp.Workflows
             {
                 var state =  new State(name);
                 var configurator = new FluentConfigurator<State>(state);
+
                 configure?.Invoke(configurator);
+
+                if(!state.HasAction)
+                {
+                    var c = new Action<IFluentConfigurator<State>>(c => c
+                        .WhenStateAllowed(() => state)
+                        .Action(w => w.SetState(() => state)));
+                    c(new FluentConfigurator<State>(state));
+                }
+
                 AddState(state);
                 return state;
             }
@@ -210,7 +220,6 @@ namespace HLab.Erp.Workflows
         private readonly ObservableCollection<WorkflowAction> _actions = new ObservableCollection<WorkflowAction>();
         public ReadOnlyObservableCollection<WorkflowAction> Actions { get; }
 
-        ObservableCollection<WorkflowAction> IWorkflow.Actions => throw new NotImplementedException();
 
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         protected void Update()
