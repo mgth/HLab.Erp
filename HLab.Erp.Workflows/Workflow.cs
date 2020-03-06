@@ -65,7 +65,7 @@ namespace HLab.Erp.Workflows
                 if(!state.HasAction)
                 {
                     var c = new Action<IFluentConfigurator<State>>(c => c
-                        .WhenStateAllowed(() => state)
+                        //.WhenStateAllowed(() => state)
                         .Action(w => w.SetState(() => state)));
                     c(new FluentConfigurator<State>(state));
                 }
