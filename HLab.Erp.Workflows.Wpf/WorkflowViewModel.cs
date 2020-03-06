@@ -25,7 +25,7 @@ namespace HLab.Erp.Workflows
         public void UpdateActions()
         {
             Actions_CollectionChanged(null,null);
-            Model.Actions.CollectionChanged += Actions_CollectionChanged;
+            ((INotifyCollectionChanged)Model.Actions).CollectionChanged += Actions_CollectionChanged;
         }
 
         private object _lock = new object();
