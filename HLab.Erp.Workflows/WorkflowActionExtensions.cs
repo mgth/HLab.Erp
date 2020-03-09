@@ -190,14 +190,14 @@ namespace HLab.Erp.Workflows
         /// <param name="t"></param>
         /// <param name="getState"></param>
         /// <returns></returns>
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> FromState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.State> getState)
-            where TWf : class,IWorkflow<TWf>
-        {
-                t?.Target.AddCondition(new WorkflowCondition<TWf>(w =>
-                (w.CurrentState == getState()) ? WorkflowConditionResult.Passed : WorkflowConditionResult.Hidden));
-            return t;
-        }
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> FromStates<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, params Func<Workflow<TWf>.State>[] getters)
+        //public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> FromState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.State> getState)
+        //    where TWf : class,IWorkflow<TWf>
+        //{
+        //        t?.Target.AddCondition(new WorkflowCondition<TWf>(w =>
+        //        (w.CurrentState == getState()) ? WorkflowConditionResult.Passed : WorkflowConditionResult.Hidden));
+        //    return t;
+        //}
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> FromState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, params Func<Workflow<TWf>.State>[] getters)
             where TWf : class,IWorkflow<TWf>
         {
                 t?.Target.AddCondition(new WorkflowCondition<TWf>(w => {
