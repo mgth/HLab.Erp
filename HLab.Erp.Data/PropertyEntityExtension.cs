@@ -47,9 +47,6 @@ namespace HLab.Erp.Data
             var getter = idGetter.Compile();
 
             return c
-            //    .TriggerExpression(idGetter)
-            //    .Do((a, p) => p.Get().OnTriggered())
-            //    .Do((a, p) => p.Get());
                 .Set(e => new ObservableQuery<T>(e.DataService)
                    .AddFilter(() => f => getter(f) == e.Id).FluentUpdate());
         }
