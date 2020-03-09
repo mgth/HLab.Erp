@@ -53,10 +53,9 @@ namespace HLab.Erp.Core.EntityLists
         public abstract void SetSelectAction(Action<object> action);
         public ObservableCollection<IFilterViewModel> Filters { get; } = new ObservableCollection<IFilterViewModel>();
         public ICommand AddCommand { get; } = H.Command(c => c
-                .Action(async e => await e.OnAddCommandAsync())
+                .Action(async e => await e.AddEntityAsync())
         );
-
-        protected abstract Task OnAddCommandAsync();
+        protected abstract Task AddEntityAsync();
     }
 
     public abstract class EntityListViewModel<TClass,T> : EntityListViewModel<TClass>, IEntityListViewModel<T>
@@ -134,13 +133,16 @@ namespace HLab.Erp.Core.EntityLists
 
         [Import] protected Func<T> CreateInstance;
 
-        protected override Task OnAddCommandAsync()
+        protected override Task AddEntityAsync()
         {
             var entity = CreateInstance();
 
-            if(entity is IEntity<int> e) e.Id=-1;
+            ConfigureEntity(entity);
+
             return _docs.OpenDocumentAsync(entity);
         }
+
+        protected virtual void ConfigureEntity(T entity) { }
 
         public bool AddAllowed {get => _addAllowed.Get(); set => _addAllowed.Set(value);}
         private readonly IProperty<bool> _addAllowed = H.Property<bool>();
