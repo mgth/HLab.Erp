@@ -8,9 +8,6 @@ using System.Text;
 namespace HLab.Erp.Acl
 {
 
-
-
-
     public interface IAuditTrailProvider
     {
         bool Audit(string action,AclRight rightNeeded, string log, object entity);
