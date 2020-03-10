@@ -62,7 +62,7 @@ namespace HLab.Erp.Workflows
 
                 configure?.Invoke(configurator);
 
-                if(!state.HasAction)
+                //if(!state.HasAction)
                 {
                     var c = new Action<IFluentConfigurator<State>>(c => c
                         //.WhenStateAllowed(() => state)
