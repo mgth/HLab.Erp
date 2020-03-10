@@ -58,6 +58,10 @@
                     </Button.Style>
                 <lang:Localize Id="{}{Delete}"/>
             </Button>
+            
+            <Button Command="{Binding RefreshCommand}" Foreground="Black">                    
+                <lang:Localize Id="{}{Refresh}"/>
+            </Button>
 
             <!--<Button Command="{Binding OpenCommand}">
                 <Button.Style>

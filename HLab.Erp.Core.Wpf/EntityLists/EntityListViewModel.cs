@@ -115,6 +115,9 @@ namespace HLab.Erp.Core.EntityLists
             .Action(e => e.OpenAction.Invoke(e.Selected))
             .On(e => e.Selected).CheckCanExecute()
         );
+        public ICommand RefreshCommand { get; } = H.Command(c => c
+            .Action(async e => await e.List.UpdateAsync())
+        );
 
         protected Action<T> OpenAction;
         public override void SetOpenAction(Action<object> action)
