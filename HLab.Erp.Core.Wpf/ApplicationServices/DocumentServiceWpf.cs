@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using HLab.Core;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Mvvm.Annotations;
@@ -66,12 +65,21 @@ namespace HLab.Erp.Core.ApplicationServices
                     {
                         vm.Documents.Remove(document);
                     }
+
+                    else if (document.DataContext is IViewModel mvm && ReferenceEquals(mvm.Model, content))
+                    {
+                        vm.Documents.Remove(document);
+                    }
                 }
 
                 var anchorables = vm.Anchorables.OfType<FrameworkElement>().ToList();
                 foreach (var anchorable in anchorables)
                 {
                     if (ReferenceEquals(anchorable.DataContext, content))
+                    {
+                        vm.Anchorables.Remove(anchorable);
+                    }
+                    else if (anchorable.DataContext is IViewModel mvm && ReferenceEquals(mvm.Model, content))
                     {
                         vm.Anchorables.Remove(anchorable);
                     }
