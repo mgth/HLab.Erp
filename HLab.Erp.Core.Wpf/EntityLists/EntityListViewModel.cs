@@ -89,9 +89,9 @@ namespace HLab.Erp.Core.EntityLists
         public override Type ModelType => typeof(T);
 
         
-        [Import] private IDocumentService _docs;
-        [Import] private IMessageBus _msg;
-        [Import] private IDataService _data;
+        [Import] protected IDocumentService _docs;
+        [Import] protected IMessageBus _msg;
+        [Import] protected IDataService _data;
 
         
         [Import] public ObservableQuery<T> List { get; }

@@ -39,6 +39,61 @@ namespace HLab.Erp.Core.ApplicationServices
                 vm.ActiveDocument = content as FrameworkElement;
             }
         }
+
+        public override async Task OpenDocumentAsync(object content)
+        {
+
+            if (MainViewModel is MainWpfViewModel vm)
+            {
+                if (content is IView view)
+                {
+                    if (vm.Documents.Contains(view))
+                    {
+                        vm.ActiveDocument = view as FrameworkElement;
+                        return;
+                    }
+
+                    if (vm.Anchorables.Contains(view))
+                    {
+//                        vm.Anchorables.Remove(view);
+                        return;
+                    }
+                }
+
+                var documents = vm.Documents.OfType<FrameworkElement>().ToList();
+                foreach (var document in documents)
+                {
+                    if (ReferenceEquals(document.DataContext, content))
+                    {
+                        vm.ActiveDocument = document;
+                        return;
+                    }
+
+                    else if (document.DataContext is IViewModel mvm && ReferenceEquals(mvm.Model, content))
+                    {
+                        vm.ActiveDocument = document;
+                        return;
+                    }
+                }
+
+                var anchorables = vm.Anchorables.OfType<FrameworkElement>().ToList();
+                foreach (var anchorable in anchorables)
+                {
+                    if (ReferenceEquals(anchorable.DataContext, content))
+                    {
+                        return;
+                    }
+                    else if (anchorable.DataContext is IViewModel mvm && ReferenceEquals(mvm.Model, content))
+                    {
+                        return;
+                    }
+                }
+            }
+
+
+            await base.OpenDocumentAsync(content);
+        }
+
         public override async Task CloseDocumentAsync(object content)
         {
             if (MainViewModel is MainWpfViewModel vm)
