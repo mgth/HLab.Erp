@@ -114,6 +114,30 @@ namespace HLab.Erp.Data
 
             return result;
         }
+        public async Task<int> DeleteAsync<T>(T entity, Action<T> deleted = null)
+            where T : class, IEntity
+        {
+            int result = 0;
+            using (var db = Get())
+            {
+                try
+                {
+                    result = await db.DeleteAsync(entity);
+
+                    if(result>0)
+                        await GetCache<T>().ForgetAsync(entity);
+                }
+                catch (Exception e)
+                {
+                }
+                finally
+                {
+                    if (result > 0) deleted?.Invoke((T)entity);
+                }
+                return result;
+            }
+
+        }
         public async Task<T> GetOrAddAsync<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {

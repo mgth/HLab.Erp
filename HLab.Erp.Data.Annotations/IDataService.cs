@@ -39,6 +39,8 @@ namespace HLab.Erp.Data
 
         int Delete<T>(T entity, Action<T> deleted = null)
             where T : class, IEntity;
+        Task<int> DeleteAsync<T>(T entity, Action<T> deleted = null)
+            where T : class, IEntity;
 
         //void Execute(Action<IDatabase> action);
         IAsyncEnumerable<T> FetchAsync<T>() where T : class, IEntity;
