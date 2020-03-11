@@ -11,7 +11,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
         {
         }
 
-        public String Title => "{Users}";
+        public override String Title => "{Users}";
         public string Icon => "Icons/entities/Users";
 
         public ListUserViewModel()

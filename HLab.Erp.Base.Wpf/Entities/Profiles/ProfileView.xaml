@@ -20,121 +20,86 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <views:DetailView>
-            <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
+        <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
 
-            <Label Style="{DynamicResource Separator}" >
-                <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                    <Canvas>
-                        <icons:IconView Path = "Icons/users" Height="35" Opacity="0.8"/>
-                    </Canvas>
-                    <lang:Localize Id="{}{Profile}" Margin="50,0,0,0"/>
-                </StackPanel>
-            </Label>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel>
+                <views:DetailView Text="{}{Profile}" IconPath="Icons/users">
 
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}{Name} : "/>
-            </Label>
-            <TextBox Text="{Binding Model.Name}" HorizontalContentAlignment="Left" />
-
-
-            <Label Style="{DynamicResource Separator}" >
-                <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                    <Canvas>
-                        <icons:IconView  Path="Icons/Entities/User" Height="35" Opacity="0.8"/>
-                    </Canvas>
-                    <ContentControl Width="50"></ContentControl>
-                    <lang:Localize  Id="{}{Users}"/>
-                </StackPanel>
-            </Label>
-
-            <ContentControl/>
-
-            <StackPanel Orientation="Horizontal">
-                <StackPanel.Style>
-                    <Style TargetType="{x:Type StackPanel}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=Locker.IsActive}" Value="False">
-                                <Setter Property="Visibility" Value="Hidden"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </StackPanel.Style>
+                    <lang:LocalizedLabel Text="{}{Name} : "/>
+                    <TextBox Text="{Binding Model.Name}" HorizontalContentAlignment="Left" />
+                </views:DetailView>
                 
-                
-                <entitySelectors:ForeignView 
+                <views:DetailView Text="{}{Users}" IconPath="Icons/Entities/User">
+                    <Label/>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Locker.IsActive}" Value="False">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+
+
+                        <entitySelectors:ForeignView 
                     HorizontalAlignment="Left"
                     IsReadOnly="{Binding Locker.IsReadOnly}"
                     ModelClass="{x:Type data:User}" 
                     Command="{Binding AddUserCommand}"
                 >
-                    <lang:Localize Id="{}{Add}"/>
-                </entitySelectors:ForeignView>
+                            <lang:Localize Id="{}{Add}"/>
+                        </entitySelectors:ForeignView>
 
-                <Button Command="{Binding RemoveUserCommand}">
-                    <lang:Localize Id="{}{Remove}"/>
-                </Button>
-                
-            </StackPanel>
+                        <Button Command="{Binding RemoveUserCommand}">
+                            <lang:Localize Id="{}{Remove}"/>
+                        </Button>
 
-            <Label/>
-            <mvvm:ViewLocator Model="{Binding UserProfiles}"/>
-            
-            <Label Style="{DynamicResource Separator}" >
-                <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                    <Canvas>
-                        <icons:IconView  Path="Icons/Locked" Height="35" Opacity="0.8"/>
-                    </Canvas>
-                    <ContentControl Width="50"></ContentControl>
-                    <lang:Localize  Id="{}{Rights}"/>
-                </StackPanel>
-            </Label>
+                    </StackPanel>
+                    <Label/>
+                    <mvvm:ViewLocator Model="{Binding UserProfiles}"/>
 
-            <Label/>
-            <StackPanel Orientation="Horizontal">
-                <StackPanel.Style>
-                    <Style TargetType="{x:Type StackPanel}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=Locker.IsActive}" Value="False">
-                                <Setter Property="Visibility" Value="Hidden"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </StackPanel.Style>
-                <entitySelectors:ForeignView 
+                </views:DetailView>
+
+                <views:DetailView Text="{}{Rights}" IconPath="Icons/Locked">
+                <Label/>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Locker.IsActive}" Value="False">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <entitySelectors:ForeignView 
                     HorizontalAlignment="Left"
                     IsReadOnly="{Binding Locker.IsReadOnly}"
                     ModelClass="{x:Type data:AclRight}" 
                     Command="{Binding AddAclRightCommand}"
                 >
-                    <lang:Localize  Id="{}{Add Right}"/>
-                </entitySelectors:ForeignView>
-                <Button Command="{Binding RemoveRightCommand}"><lang:Localize Id="{}{Remove}"/></Button>
+                            <lang:Localize  Id="{}{Add Right}"/>
+                        </entitySelectors:ForeignView>
+                        <Button Command="{Binding RemoveRightCommand}">
+                            <lang:Localize Id="{}{Remove}"/>
+                        </Button>
+                    </StackPanel>
+
+                    <Label/>
+
+                    <mvvm:ViewLocator Model="{Binding ProfileRights}"/>
+
+                </views:DetailView>
             </StackPanel>
-            <!--ListClass="{x:Type users:ListUserViewModel}"-->
+        </ScrollViewer>
 
-
-            <Label/>
-
-            <mvvm:ViewLocator Model="{Binding ProfileRights}"/>
-        </views:DetailView>
-
-        <views:DetailView Grid.Row="2">
-            <Label Style="{DynamicResource Separator}" >
-                <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                    <Canvas>
-                        <icons:IconView  Path="Icons/Edit" Height="35" Opacity="0.8"/>
-                    </Canvas>
-                    <ContentControl Width="50"></ContentControl>
-                    <lang:Localize  Id="{}{Note}"/>
-                </StackPanel>
-            </Label>
-
-
+        <views:DetailView Grid.Row="2" Text="{}{Note}" IconPath="Icons/Edit">
 
             <TextBox Margin="50,0,15,0"  Grid.ColumnSpan="2"  Text="{Binding Model.Note}" AcceptsReturn="True" TextWrapping="Wrap"/>
             <Label />
-
 
         </views:DetailView>
 

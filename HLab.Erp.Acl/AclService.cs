@@ -121,6 +121,7 @@ namespace HLab.Erp.Acl
         {
             if(Connection==null) return false;
             if(Connection.User.Login=="admin") return true;
+            if (right == null) return true;
             return CurrentRights.Contains(right);
         }
 
