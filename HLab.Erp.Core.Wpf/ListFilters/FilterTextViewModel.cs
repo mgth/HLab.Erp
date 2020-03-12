@@ -16,6 +16,7 @@ namespace HLab.Erp.Core.ListFilters
         private readonly IProperty<string> _value = H.Property<string>();
 
         private static readonly MethodInfo ContainsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+        private static readonly MethodInfo ToLowerMethod = typeof(string).GetMethod("ToLower", new Type[]{ });
 
         public Expression<Func<T,bool>> Match<T>(Expression<Func<T, string>> getter)
         {
@@ -25,7 +26,9 @@ namespace HLab.Erp.Core.ListFilters
             var entity = getter.Parameters[0];
             var value = Expression.Constant(Value,typeof(string));
 
-            var ex = Expression.Call(getter.Body,ContainsMethod,value);
+            var ex1 = Expression.Call(getter.Body,ToLowerMethod);
+            var ex = Expression.Call(ex1,ContainsMethod,value);
+            //var ex = Expression.Call(getter.Body,ContainsMethod,value);
 
             return Expression.Lambda<Func<T, bool>>(ex,entity);
         }
