@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -76,7 +77,17 @@ namespace HLab.Erp.Core.EntityLists
             var n = GetType().Name;
             var i = n.IndexOf("ListViewModel");
             if (i >= 0) n = n.Substring(0, i);
+            n = FromCamelCase(n);
             return n;
+        }
+
+        private static string FromCamelCase(string s)
+        {
+            var r = new Regex(@"
+                (?<=[A-Z])(?=[A-Z][a-z]) |
+                 (?<=[^A-Z])(?=[A-Z]) |
+                 (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
+            return r.Replace(s," ");
         }
 
 
