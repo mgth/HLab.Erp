@@ -108,7 +108,7 @@ namespace HLab.Erp.Data.Observables
         private readonly List<Filter> _filters = new List<Filter>();
         private readonly List<PostFilter> _postFilters = new List<PostFilter>();
 
-        public Expression<Func<T, object>> OrderBy
+        public Func<T, object> OrderBy
         {
             get => _orderBy;
             set => _orderBy = value;
@@ -222,7 +222,7 @@ namespace HLab.Erp.Data.Observables
                 }
                 else
                 {
-                    _source = _db.FetchWhereAsync(Where(),_orderBy);
+                    _source = _db.FetchWhereAsync(Where());
                 }                
             }
             return PostQuery(_source);
@@ -505,7 +505,7 @@ namespace HLab.Erp.Data.Observables
         private volatile bool _updating = false;
 
         private bool _initialized = false;
-        private Expression<Func<T, object>> _orderBy;
+        private Func<T, object> _orderBy;
 
         public ObservableQuery<T> Init()
         {
@@ -536,7 +536,11 @@ namespace HLab.Erp.Data.Observables
             try
             {
                 {
-                    var list = PostQueryAsync(force) /*.ToList()*/;
+                    var list = PostQueryAsync(force)/*.ToListAsync()*/;
+
+//                    var list2 = list.OrderBy(OrderBy.Compile());
+
+                    if (OrderBy != null) list = list.OrderBy(OrderBy);
 
                     Console.WriteLine("Query : " + stopwatch.ElapsedMilliseconds);
 
@@ -549,7 +553,8 @@ namespace HLab.Erp.Data.Observables
                     }
 
                     var n = 0;
-                    await foreach (var item in list)
+                    await 
+                        foreach (var item in list)
                     {
                         //var item = list[n];
                         var id = item.Id;

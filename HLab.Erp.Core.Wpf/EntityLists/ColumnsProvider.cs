@@ -33,7 +33,7 @@ namespace HLab.Erp.Core.EntityLists
             _list = list;
         }
 
-        public ColumnsProvider<T> Icon(string caption, Func<T,string> iconPath,Expression<Func<T,object>> orderBy=null,double height=25.0, string id=null)
+        public ColumnsProvider<T> Icon(string caption, Func<T,string> iconPath,Func<T,object> orderBy=null,double height=25.0, string id=null)
         {
             return ColumnAsync(caption, async (s) =>
             {
@@ -43,7 +43,7 @@ namespace HLab.Erp.Core.EntityLists
 
             }, orderBy);
         }
-        public ColumnsProvider<T> Localize(string caption, Func<T,string> text,Expression<Func<T,object>> orderBy=null,double height=25.0, string id=null)
+        public ColumnsProvider<T> Localize(string caption, Func<T,string> text,Func<T,object> orderBy=null,double height=25.0, string id=null)
         {
             return ColumnAsync(caption, async (s) =>
             {
@@ -54,19 +54,19 @@ namespace HLab.Erp.Core.EntityLists
             }, orderBy);
         }
 
-        public ColumnsProvider<T> ColumnAsync(string caption, Func<T,Task<object>> f,Expression<Func<T,object>> orderBy,string id=null)
+        public ColumnsProvider<T> ColumnAsync(string caption, Func<T,Task<object>> f,Func<T,object> orderBy,string id=null)
         {
             var c = new Column<T>(caption,t => new AsyncView{Getter = async () => await f(t)} ,orderBy, id, false);
             _dict.Add(c.Id,c);
             return this;
         }
-        public ColumnsProvider<T> Column(string caption, Expression<Func<T,object>> f,string id=null)
+        public ColumnsProvider<T> Column(string caption, Func<T,object> f,string id=null)
         {
-            var c = new Column<T>(caption,f.Compile(),f, id, false);
+            var c = new Column<T>(caption,f,f, id, false);
             _dict.Add(c.Id,c);
             return this;
         }
-        public ColumnsProvider<T> Column(string caption,Func<T,object> getter, Expression<Func<T,object>> orderBy,string id=null)
+        public ColumnsProvider<T> Column(string caption,Func<T,object> getter, Func<T,object> orderBy,string id=null)
         {
             var c = new Column<T>(caption,getter,orderBy, id, false);
             _dict.Add(c.Id,c);
@@ -92,6 +92,44 @@ namespace HLab.Erp.Core.EntityLists
                 return _dict[name].Get(obj);
             }
             else return null;
+        }
+
+        public void PopulateGridView(DataGrid grid)
+        {
+            foreach (var column in _dict.Values)
+            {
+                if (column.Hidden) continue;
+
+                object content;
+                if (column.Caption is string s)
+                    content = new Localize { Id = s };
+                else
+                {
+                    content = column.Caption;
+                }
+
+                var header = new Button {
+                    Content = content,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    HorizontalContentAlignment = HorizontalAlignment.Stretch
+                };
+                header.Click += (a, b) =>
+                {
+                    //TODO : click is never called and so sorting does not work 
+                    _list.OrderBy = column.OrderBy;
+                    _list.UpdateAsync();
+                };
+
+                var c = new DataGridTemplateColumn
+                {
+                    Header = header,
+                    //DisplayMemberBinding = new Binding(column.Id),
+                    CellTemplate = CreateColumnTemplate(column.Id),
+                };
+
+                grid.Columns.Add(c);
+            }
+
         }
 
         public GridView GetView()

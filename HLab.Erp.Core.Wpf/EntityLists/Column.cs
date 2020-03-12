@@ -5,7 +5,7 @@ namespace HLab.Erp.Core.EntityLists
 {
     public class Column<T>
     {
-        public Column(object caption, Func<T, object> getter,Expression<Func<T, object>> orderBy, string id, bool hidden)
+        public Column(object caption, Func<T, object> getter,Func<T, object> orderBy, string id, bool hidden)
         {
             Id = id ?? ("C" + Guid.NewGuid().ToString().Replace('-', '_'));
             Caption = caption;
@@ -16,7 +16,7 @@ namespace HLab.Erp.Core.EntityLists
 
         public bool Hidden { get; }
         public object Caption { get; }
-        public Expression<Func<T, object>> OrderBy { get; }
+        public Func<T, object> OrderBy { get; }
         private readonly Func<T, object> _getter;
 
         public object Get(T value)

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using HLab.Erp.Core.ViewModels;
 using HLab.Mvvm.Annotations;
 
@@ -26,5 +27,13 @@ namespace HLab.Erp.Core.EntityLists
         }
 
         public string ContentId => nameof(EntityListView);
+
+        private void DataGridColumnHeader_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+                if (sender is DataGridColumnHeader header)
+                {
+//                    header.Tag
+                }
+        }
     }
 }

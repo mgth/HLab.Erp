@@ -118,7 +118,8 @@ namespace HLab.Erp.Core.EntityLists
             Columns = _getColumnsProvider(List);
             List_CollectionChanged(null,new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add,List,0));
             List.CollectionChanged += List_CollectionChanged;
-            H.Initialize((TClass)this,OnPropertyChanged);
+            
+            //H.Initialize((TClass)this,OnPropertyChanged);
 
             OpenAction = target => _docs.OpenDocumentAsync(target);
         }
@@ -231,15 +232,19 @@ namespace HLab.Erp.Core.EntityLists
                 }
             };
 
+            Columns.PopulateGridView(grid);
 
-            foreach (var col in View.Columns)
-            {
-                grid.Columns.Add(new DataGridTemplateColumn
-                {
-                    Header = (col.Header as GridViewColumnHeader)?.Content,
-                    CellTemplate = col.CellTemplate
-                });
-            }
+            //foreach (var col in View.Columns)
+            //{
+            //    var h = col.Header as GridViewColumnHeader;
+
+
+            //    grid.Columns.Add(new DataGridTemplateColumn
+            //    {
+            //        Header = h?.Content,
+            //        CellTemplate = col.CellTemplate
+            //    }) ;
+            //}
         }
 
         public T Selected

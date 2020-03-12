@@ -88,7 +88,13 @@
             AlternationCount="2"
             Background="Black"
          ><!--AlternatingRowBackground="#08FFFFFF"-->
-             <DataGrid.RowStyle>
+            <DataGrid.Resources>
+                <Style TargetType="DataGridColumnHeader">
+                    <EventSetter Event="Click" Handler="DataGridColumnHeader_Click" />
+                </Style>
+            </DataGrid.Resources>
+
+            <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource {x:Type DataGridRow}}">
                      <Style.Triggers>
                          <DataTrigger Binding="{Binding IsValid}" Value="False">
@@ -112,6 +118,15 @@
                      </Style.Triggers>
                  </Style>
              </DataGrid.RowStyle>
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="FontWeight" Value="Black" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
             <interactions:Interaction.Triggers>
                  <interactions:EventTrigger EventName="MouseDoubleClick">
                      <interactions:InvokeCommandAction Command="{Binding OpenCommand}"/>

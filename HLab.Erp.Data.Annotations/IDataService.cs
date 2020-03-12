@@ -34,7 +34,7 @@ namespace HLab.Erp.Data
 
         IAsyncEnumerable<T> FetchWhereAsync<T>(
             Expression<Func<T, bool>> expression,
-            Expression<Func<T,object>> orderBy
+            Expression<Func<T,object>> orderBy = null
             ) where T : class, IEntity;
 
         int Delete<T>(T entity, Action<T> deleted = null)

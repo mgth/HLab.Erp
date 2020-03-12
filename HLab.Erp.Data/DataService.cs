@@ -180,7 +180,7 @@ namespace HLab.Erp.Data
         }
 
 //        public List<T> FetchQuery<T>(Func<IQueryable<T>, IQueryable<T>> q)
-        public IAsyncEnumerable<T> FetchWhereAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy)
+        public IAsyncEnumerable<T> FetchWhereAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy = null)
             where T : class, IEntity
         {
             var cache = GetCache<T>();
