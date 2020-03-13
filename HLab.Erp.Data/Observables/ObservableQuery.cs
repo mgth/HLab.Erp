@@ -613,6 +613,8 @@ namespace HLab.Erp.Data.Observables
                 _initialized = true;
                 _updating = false;
             }
+            catch(Exception e)
+            { }
             finally
             {
                 Lock.ExitWriteLock();
