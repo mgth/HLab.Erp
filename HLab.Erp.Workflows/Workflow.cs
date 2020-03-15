@@ -28,7 +28,7 @@ namespace HLab.Erp.Workflows
             Actions = new ReadOnlyObservableCollection<WorkflowAction>(_actions);
 
             Target = target;
-            Locker = locker;
+            _locker.Set(locker);
 
             if(target is INotifyPropertyChanged n)
                 n.PropertyChanged += Target_PropertyChanged;
@@ -102,9 +102,10 @@ namespace HLab.Erp.Workflows
 
         public User User { get; set; }
         public object Target { get; }
-        protected IDataLocker Locker { get; }
+        public IDataLocker Locker => _locker.Get();
+        private readonly IProperty<IDataLocker> _locker = H.Property<IDataLocker>();
 
-        private readonly IProperty<object> _locker = H.Property<object>();
+        //private readonly IProperty<object> _locker = H.Property<object>();
 
         private static List<State> _workflowState;
         private static List<Action> _workflowAction;
@@ -224,29 +225,15 @@ namespace HLab.Erp.Workflows
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         protected void Update()
         {
-                var list = WorkflowActions
-                    .Where(a => a.Check(this as T) != WorkflowConditionResult.Hidden)
-                    .ToList();
+            var list = WorkflowActions
+                .Where(a => a.Check(this as T) != WorkflowConditionResult.Hidden)
+                .ToList();
 
             _lock.EnterWriteLock();
             try
             {
                 _actions.Clear();
-
-                    
-                    if(_actions.Count>0) { }
-
-                    foreach(var action in list) _actions.Add(action.GetAction(this as T));
-
-                    if(_actions.Count>list.Count()) { }
-                    //list.ForEach(e =>
-                    //{
-                    //    var l = list;
-                    //    if(_actions.Any(a => a.Caption==e.GetAction(this as T).Caption))
-                    //    { }
-                    //    else
-                    //    _actions.Add(e.GetAction(this as T));
-                    //});
+                foreach(var action in list) _actions.Add(action.GetAction(this as T));
             }
             finally
             {
