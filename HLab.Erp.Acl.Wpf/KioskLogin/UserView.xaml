@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="500"
              >
-    <Grid Background="AliceBlue" >
+    <Grid Background="#80FFFFFF" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120"/>
             <ColumnDefinition Width="*"/>
@@ -17,10 +17,10 @@
             </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Label FontWeight="Bold" Content="{Binding FirstName,FallbackValue=machin}"/>
-                <Label FontWeight="Bold" Content="{Binding Name,FallbackValue=bidule}"/>
+                <Label Foreground="Black" FontWeight="Bold" Content="{Binding FirstName,FallbackValue=machin}"/>
+                <Label Foreground="Black" FontWeight="Bold" Content="{Binding Name,FallbackValue=bidule}"/>
             </StackPanel>
-            <Label FontStyle="Italic" Content="{Binding Function, FallbackValue=responsable}" HorizontalAlignment="Center"/>
+            <Label Foreground="Black" FontStyle="Italic" Content="{Binding Function, FallbackValue=responsable}" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </UserControl>
