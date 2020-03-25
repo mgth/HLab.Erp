@@ -5,11 +5,12 @@ using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using HLab.DependencyInjection.Annotations;
 using HLab.Base;
+using Npgsql;
 using NPoco;
-using NPoco.Linq;
 
 namespace HLab.Erp.Data
 {
@@ -20,8 +21,6 @@ namespace HLab.Erp.Data
         public async Task<T> AddAsync<T>(Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {
-            using var db = Get();
-
             var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
             if(t is IEntity<int> tt) tt.Id=-1;
 
@@ -32,17 +31,22 @@ namespace HLab.Erp.Data
             {
                 if (t is IEntity<int> ti)
                 {
-                    var ids = await db.QueryAsync<T>().OrderByDescending(d => ((IEntity<int>)d).Id).FirstOrDefault().ConfigureAwait(false);
+                    await DbAsync(async db =>
+                    {
+                        var ids = await db.QueryAsync<T>().OrderByDescending(d => ((IEntity<int>) d).Id)
+                            .FirstOrDefault().ConfigureAwait(false);
 
-                    var id = ((IEntity<int>)ids)?.Id ?? 0;
+                        var id = ((IEntity<int>) ids)?.Id ?? 0;
 
-                    id++;
+                        id++;
 
-                    ti.Id = id;
+                        ti.Id = id;
+
+                    });
                 }
             }
 
-            e = await db.InsertAsync(t).ConfigureAwait(false);
+            e = await DbGetAsync(async db => await db.InsertAsync(t).ConfigureAwait(false));
 
             if (e != null)
             {
@@ -55,8 +59,6 @@ namespace HLab.Erp.Data
         public T Add<T>(Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {
-            using var db = Get();
-
             var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
             //if(t is IEntity<int> tt) tt.Id=-1;
 
@@ -67,17 +69,20 @@ namespace HLab.Erp.Data
             {
                 if (t is IEntity<int> ti)
                 {
-                    var ids = db.Query<T>().OrderByDescending(d => ((IEntity<int>)d).Id).FirstOrDefault();
+                    Db(db =>
+                    {
+                        var ids = db.Query<T>().OrderByDescending(d => ((IEntity<int>)d).Id).FirstOrDefault();
 
-                    var id = ((IEntity<int>)ids)?.Id ?? 0;
+                        var id = ((IEntity<int>)ids)?.Id ?? 0;
 
-                    id++;
+                        id++;
 
-                    ti.Id = id;
+                        ti.Id = id;
+                    });
                 }
             }
 
-            e = db.Insert(t);
+            e = DbGet(db => db.Insert(t));
 
             if (e != null)
             {
@@ -95,20 +100,10 @@ namespace HLab.Erp.Data
         public int Delete<T>(T entity, Action<T> deleted = null)
             where T : class, IEntity
         {
-            int result = 0;
-            using (var db = Get())
-            {
-                try
-                {
-                    result = db.Delete<T>(entity);
+            var result = DbGet(db => db.Delete<T>(entity));
 
-                    if(result>0)
-                        GetCache<T>().ForgetAsync(entity);
-                }
-                catch (Exception e)
-                {
-                }
-            }
+            if(result>0)
+                GetCache<T>().ForgetAsync(entity);
 
             if (result > 0) deleted?.Invoke((T)entity);
 
@@ -117,27 +112,17 @@ namespace HLab.Erp.Data
         public async Task<int> DeleteAsync<T>(T entity, Action<T> deleted = null)
             where T : class, IEntity
         {
-            int result = 0;
-            using (var db = Get())
-            {
-                try
-                {
-                    result = await db.DeleteAsync(entity);
+            var result = await DbGetAsync(async db => await db.DeleteAsync(entity));
 
-                    if(result>0)
-                        await GetCache<T>().ForgetAsync(entity);
-                }
-                catch (Exception e)
-                {
-                }
-                finally
-                {
-                    if (result > 0) deleted?.Invoke((T)entity);
-                }
-                return result;
-            }
+            if (result > 0) 
+                await GetCache<T>().ForgetAsync(entity);
 
+            if (result > 0) 
+                deleted?.Invoke((T)entity);
+            
+            return result;
         }
+
         public async Task<T> GetOrAddAsync<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {
@@ -175,8 +160,7 @@ namespace HLab.Erp.Data
 
         public void Execute(Action<IDatabase> action)
         {
-            using var db = Get();
-            action(db);
+            Db(action);
         }
 
 //        public List<T> FetchQuery<T>(Func<IQueryable<T>, IQueryable<T>> q)
@@ -212,10 +196,9 @@ namespace HLab.Erp.Data
         public async Task<T> FetchOneAsync<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity
         {
-            using var db = Get();
-            //TODO : connection Timeout
-            //var result = db.FirstOrDefault<T>(expression);
-            var result = await db.QueryAsync<T>().Where(expression).FirstOrDefault().ConfigureAwait(false);
+            var result = await DbGetAsync(async db =>
+                await db.QueryAsync<T>().Where(expression).FirstOrDefault().ConfigureAwait(false)).ConfigureAwait(false);
+
             return result == null ? null : await GetCache<T>().GetOrAddAsync(result).ConfigureAwait(false);
         }
 
@@ -223,10 +206,7 @@ namespace HLab.Erp.Data
         public T FetchOne<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity
         {
-            using var db = Get();
-            //TODO : connection Timeout
-            //var result = db.FirstOrDefault<T>(expression);
-            var result = db.Query<T>().Where(expression).FirstOrDefault();
+            var result = DbGet(db => db.Query<T>().Where(expression).FirstOrDefault());
             return result == null ? null : GetCache<T>().GetOrAddAsync(result).Result;
         }
 
@@ -245,9 +225,8 @@ namespace HLab.Erp.Data
         {
             if(entity==null) return null;
 
-            using var db = Get();
-            var re = await db.SingleByIdAsync<T>(entity.Id).ConfigureAwait(true);
-            return await GetCache<T>().GetOrAddAsync(re).ConfigureAwait(true);
+            var result = await DbGetAsync(async db => await db.SingleByIdAsync<T>(entity.Id).ConfigureAwait(false)).ConfigureAwait(true);
+            return await GetCache<T>().GetOrAddAsync(result).ConfigureAwait(true);
         }
 
         public async Task<T> FetchOneAsync<T>(object id)
@@ -259,8 +238,7 @@ namespace HLab.Erp.Data
                  async k =>
                 {
                     subscribe = true;
-                    var o = await Get().SingleOrDefaultByIdAsync<T>(k).ConfigureAwait(false);
-                    return o;
+                    return await DbGetAsync(async db => await db.SingleOrDefaultByIdAsync<T>(k).ConfigureAwait(false)).ConfigureAwait(false);
                 }).ConfigureAwait(false);
 
             //if(subscribe && obj is INotifierObject nobj) nobj.GetNotifier().Subscribe();
@@ -274,10 +252,7 @@ namespace HLab.Erp.Data
         public bool Any<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity
         {
-            using (var db = Get())
-            {
-                return db.Query<T>().Any(expression);
-            }
+                return DbGet<bool>(db => db.Query<T>().Any(expression));
         }
 
         private readonly ConcurrentDictionary<Type, DataCache> _caches = new ConcurrentDictionary<Type, DataCache>();
@@ -337,25 +312,88 @@ namespace HLab.Erp.Data
 
         public void Save<T>(T value) where T : class, IEntity
         {
-            using var d = Get();
-                d.Save(value);
+            Db(d => d.Save(value));
         }
 
         public void Update<T>(T value, IEnumerable<string> columns) where T : class, IEntity
         {
-            using var d = Get();
-                d.Update(value,columns);
+            DbGet(d => d.Update(value, columns));
         }
         public async Task UpdateAsync<T>(T value, IEnumerable<string> columns) where T : class, IEntity
         {
-            using var d = Get();
-            await d.UpdateAsync(value,columns);
+            await DbGetAsync(d => d.UpdateAsync(value,columns));
         }
 
         public IAsyncEnumerable<TSelect> SelectDistinctAsync<T, TSelect>(Func<T, bool> expression, Func<T, TSelect> select)
         {
             using var d = Get();
             return d.FetchAsync<T>().Where(expression).Select(select).Distinct();
+        }
+
+        private bool Retry()
+        {
+            return true;
+        }
+
+
+        private void Db(Action<IDatabase> action) => DbGet(db =>
+        {
+            action(db);
+            return true;
+        });
+        private T DbGet<T>(Func<IDatabase,T> action)
+        {
+            while (true)
+            {
+                try
+                {
+                    using var d = Get();
+                    return action(d);
+                }
+                catch (NpgsqlException exception)
+                {
+                    Thread.Sleep(5000); 
+                }
+            }
+        }
+
+        //private async Task DbTryAsync(Func<IDatabase,Task> action)
+        //{
+        //    while (true)
+        //    {
+        //        try
+        //        {
+        //            using var d = Get();
+        //            await action(d);
+        //            return;
+        //        }
+        //        catch (NpgsqlException exception)
+        //        {
+        //            Thread.Sleep(5000); 
+        //        }
+        //    }
+
+        //}
+        private async Task DbAsync(Func<IDatabase,Task> action) => await DbGetAsync(async db =>
+        {
+            await action(db);
+            return true;
+        });
+        private async Task<T> DbGetAsync<T>(Func<IDatabase,Task<T>> action)
+        {
+            while (true)
+            {
+                try
+                {
+                    using var d = Get();
+                    return await action(d);
+                }
+                catch (NpgsqlException exception)
+                {
+                    Thread.Sleep(5000); 
+                }
+            }
+
         }
     }
 }
