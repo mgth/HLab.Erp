@@ -284,7 +284,7 @@
   <ItemGroup>
     <PackageReference Include="Dirkster.AvalonDock" Version="4.0.0" />
     <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.0.0" />
-    <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0660" />
+    <PackageReference Include="MahApps.Metro" Version="2.0.0-alpha0748" />
   </ItemGroup>
 
   <ItemGroup>
