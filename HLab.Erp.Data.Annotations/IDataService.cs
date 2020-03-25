@@ -37,6 +37,11 @@ namespace HLab.Erp.Data
             Expression<Func<T,object>> orderBy = null
             ) where T : class, IEntity;
 
+        IAsyncEnumerable<TSelect> SelectDistinctAsync<T,TSelect>(
+            Func<T, bool> expression,
+            Func<T,TSelect> select
+        );
+
         int Delete<T>(T entity, Action<T> deleted = null)
             where T : class, IEntity;
         Task<int> DeleteAsync<T>(T entity, Action<T> deleted = null)

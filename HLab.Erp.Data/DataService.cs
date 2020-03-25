@@ -351,5 +351,11 @@ namespace HLab.Erp.Data
             using var d = Get();
             await d.UpdateAsync(value,columns);
         }
+
+        public IAsyncEnumerable<TSelect> SelectDistinctAsync<T, TSelect>(Func<T, bool> expression, Func<T, TSelect> select)
+        {
+            using var d = Get();
+            return d.FetchAsync<T>().Where(expression).Select(select).Distinct();
+        }
     }
 }
