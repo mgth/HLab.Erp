@@ -78,5 +78,16 @@ namespace HLab.Erp.Data
 
             return result;
         }
+        public T GetOrAdd(T obj)
+        {
+            var result = _cache.GetOrAdd(obj.Id, k => obj);
+
+            obj.CopyPrimitivesTo(result);
+
+            if (result is IDataProvider dbf && dbf.DataService==null) 
+                dbf.DataService = DataService;
+
+            return result;
+        }
     }
 }

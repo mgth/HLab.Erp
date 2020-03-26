@@ -26,11 +26,12 @@ namespace HLab.Erp.Acl
 
         [Import]
         private IMvvmService _mvvm;
-        [Import]
-        private IDataService _data;
 
-        public AuditTrailMotivationViewModel()
+        private IDataTransaction _transaction;
+
+        public AuditTrailMotivationViewModel(IDataTransaction transaction)
         {
+            _transaction = transaction;
             User = Acl.Connection.User;
         }
 
@@ -112,7 +113,7 @@ namespace HLab.Erp.Acl
             var view = _mvvm.MainContext.GetView<ViewModeDefault>(this).AsDialog();
             if(view.ShowDialog()??false)
             {
-                var audit = _data.Add<AuditTrail>(e =>
+                var audit = _transaction.Add<AuditTrail>(e =>
                 {
                     e.Action = action;
                     e.Motivation = Motivation;

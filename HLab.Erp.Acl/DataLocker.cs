@@ -164,7 +164,7 @@ namespace HLab.Erp.Acl
             IsActive = true;
         }
 
-        [Import] private Func<IAuditTrailProvider> _getAudit;
+        [Import] private Func<IDataTransaction,IAuditTrailProvider> _getAudit;
 
         public Action<T> BeforeSavingAction { get; set; }
 
@@ -172,6 +172,7 @@ namespace HLab.Erp.Acl
         {
             BeforeSavingAction?.Invoke(_entity);
 
+            var transaction = _db.GetTransaction();
             try
             {
                 Message = null;
@@ -181,21 +182,27 @@ namespace HLab.Erp.Acl
                 var action = _entityId < 0 ? "Create" : "Update";
 
                 //TODO : add AclRight needed to do the action
-                if(_getAudit().Audit(action,null,log,_entity))
+                if (_getAudit(transaction).Audit(action, null, log, _entity))
                 {
-                    Persister.Save();
-                    _timer.Change(Timeout.Infinite,Timeout.Infinite);
+                    await Persister.SaveAsync(transaction);
+                    _timer.Change(Timeout.Infinite, Timeout.Infinite);
 
-                    if(_lock!=null)
-                        _db.Delete(_lock);
+                    if (_lock != null)
+                        transaction.Delete(_lock);
 
                     IsActive = false;
                     _lock = null;
+
+                    transaction.Done();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Message = e.Message;
+            }
+            finally
+            {
+                transaction?.Dispose();
             }
         }
 

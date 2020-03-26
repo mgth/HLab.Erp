@@ -49,7 +49,15 @@ namespace HLab.Erp.Acl
 
         public virtual async Task<User> GetUser(NetworkCredential credential)
         {
-            return await Data.FetchOneAsync<User>(u => u.Login == credential.UserName && u.HashedPassword == Crypt(credential.SecurePassword));
+            try
+            {
+                return await Data.FetchOneAsync<User>(u =>
+                    u.Login == credential.UserName && u.HashedPassword == Crypt(credential.SecurePassword));
+            }
+            catch (DataException ex)
+            {
+                throw new AclException(ex.InnerException?.Message,ex);
+            }
         }
 
         private async Task<Connection> GetConnection(User user)

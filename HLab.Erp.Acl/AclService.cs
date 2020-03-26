@@ -13,6 +13,13 @@ using HLab.Erp.Data;
 
 namespace HLab.Erp.Acl
 {
+    public class AclException : Exception
+    {
+        public AclException(String message, Exception inner) : base(message, inner)
+        {
+
+        }
+    }
     public interface IAclTarget
     {
         string GetAclClass();

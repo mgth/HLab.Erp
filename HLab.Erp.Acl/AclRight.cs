@@ -35,7 +35,7 @@ namespace HLab.Erp.Acl
 
         public static  AclRight Get([CallerMemberName] string name = null)
         {
-            return Data.GetOrAddAsync<AclRight>(e => e.Name == name, e => e.Name = name).Result;
+            return Data.GetOrAdd<AclRight>(e => e.Name == name, e => e.Name = name);
         }
 
 

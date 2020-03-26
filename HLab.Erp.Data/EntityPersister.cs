@@ -56,8 +56,12 @@ namespace HLab.Erp.Data
                 throw;
             }
         }
-        public override async Task SaveAsync()
+
+        public override Task SaveAsync() => SaveAsync(null);
+        public async Task SaveAsync(IDataTransaction transaction)
         {
+            var tr =  transaction??_db.GetTransaction();
+
             var columns = new List<PropertyInfo>();
             while (Dirty.TryTake(out var e))
             {
@@ -66,13 +70,16 @@ namespace HLab.Erp.Data
 
             try
             {
-                if(Target is IEntity<int> ei && ei.Id<0)
+                if (Target is IEntity<int> ei && ei.Id < 0)
                 {
-                    var t = await _db.AddAsync<T>(e => Target.CopyPrimitivesTo(e));
-                    ei.Id = (int)t.Id;
+                    var t = await tr.AddAsync<T>(e => Target.CopyPrimitivesTo(e));
+                    if (transaction == null) tr.Done();
+                    ei.Id = (int) t.Id;
                     return;
                 }
-                await _db.UpdateAsync(Target, columns.Select(e => e.Name));
+
+                await tr.UpdateAsync(Target, columns.Select(e => e.Name));
+                if (transaction == null) tr.Done();
 
                 IsDirty = false;
             }
@@ -82,7 +89,12 @@ namespace HLab.Erp.Data
                 {
                     Dirty.Add(p);
                 }
+
                 throw;
+            }
+            finally
+            {
+                if (transaction == null) tr.Dispose();
             }
         }
 
