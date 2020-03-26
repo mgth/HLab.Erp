@@ -9,7 +9,8 @@
                       mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 <Grid>
-    <Viewbox Grid.Row="2" Opacity="0.1"><icons:IconView Path="icons/LogoBackground"/></Viewbox>    <StackPanel Margin="20,20,20,0" VerticalAlignment="Center">
+    <Viewbox Opacity="0.1"><icons:IconView Path="icons/LogoBackground"/></Viewbox>    
+    <StackPanel Margin="20,20,20,0" VerticalAlignment="Center">
         <Grid
            
             Height="175"
@@ -28,12 +29,10 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Row="0">
-                <lang:Localize Id="{}{Name}"/>
-            </Label>
-            <Label Grid.Row="1" Grid.Column="0">
-                <lang:Localize Id="{}{Password}"/>
-            </Label>
+
+            <lang:LocalizedLabel Text="{}{Name}" Grid.Row="0"/>
+            <lang:LocalizedLabel Text="{}{Password}" Grid.Row="1" Grid.Column="0"/>
+            
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Login}"/>
             <PasswordBox x:Name="PasswordBox" Grid.Column="1" Grid.Row="1" PasswordChar="*" PasswordChanged="PasswordBox_OnPasswordChanged"/>
             <TextBox Visibility="{Binding DebugVisibility}" Text="{Binding Password}" x:Name="CryptedPassword" Grid.Column="1" Grid.Row="2"/>
