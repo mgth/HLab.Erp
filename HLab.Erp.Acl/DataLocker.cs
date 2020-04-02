@@ -66,9 +66,17 @@ namespace HLab.Erp.Acl
             _entityClass = entity.GetType().Name;
             _entityId = (int)entity.Id;
             _timer = new Timer((o) => {
-                _lock?.Heartbeat(HeartBeat); 
-                _lockPersister?.Save();
-                }, null,Timeout.Infinite,Timeout.Infinite);
+                _lock?.Heartbeat(HeartBeat);
+                try
+                {
+                    _lockPersister?.Save();
+                    IsConnected = true;
+                }
+                catch (DataException ex)
+                {
+                    IsConnected = false;
+                }
+            }, null,Timeout.Infinite,Timeout.Infinite);
 
             Initialize();
 
@@ -92,6 +100,12 @@ namespace HLab.Erp.Acl
             set => _isEnabled.Set(value);
         }
         private readonly IProperty<bool> _isEnabled = H.Property<bool>(c => c.Default(false));
+        public bool IsConnected
+        {
+            get => _isConnected.Get();
+            set => _isConnected.Set(value);
+        }
+        private readonly IProperty<bool> _isConnected = H.Property<bool>(c => c.Default(false));
 
         public ICommand ActivateCommand { get; } = H.Command(c => c
             .Action(async e => await e.ActivateAsync().ConfigureAwait(false))
