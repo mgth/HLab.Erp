@@ -1,13 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Net;
-using System.Runtime.CompilerServices;
-using System.Security;
-using System.Windows;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Data.Observables;
-using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
 
@@ -16,7 +11,7 @@ namespace HLab.Erp.Acl.LoginServices
     [Export(typeof(LoginViewModel))]
     public class LoginViewModel : AuthenticationViewModel<LoginViewModel>
     {
-        public string Title => "Connexion";
+        public string Title => "{Connection}";
 
         [Import]
         public ILocalizationService LocalizationService { get; }
@@ -57,7 +52,7 @@ namespace HLab.Erp.Acl.LoginServices
             .CanExecute(e => (e.Login?.Length??0)>0)
             .Action(async e =>
                 {
-                    e.Message = await e.Acl.Login(e.Credential);
+                    e.Message = await Task.Run(()=>e.Acl.Login(e.Credential));
                 })                      
             .On(e => e.Login).CheckCanExecute()
         );

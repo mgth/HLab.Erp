@@ -33,7 +33,7 @@ namespace HLab.Erp.Acl.LoginServices
                 _messageBus.Subscribe<UserLoggedInMessage>(m =>
                 {
                     win.Closed -= LoginView_Closed;
-                    win.Close();
+                    Application.Current.Dispatcher.InvokeAsync(win.Close) ;
                 });
 
                 win.Closed += LoginView_Closed;

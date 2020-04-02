@@ -7,17 +7,14 @@
                       xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
                       xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
                       mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="500" >
 <Grid>
     <Viewbox Opacity="0.1"><icons:IconView Path="icons/LogoBackground"/></Viewbox>    
     <StackPanel Margin="20,20,20,0" VerticalAlignment="Center">
-        <Grid
-           
-            Height="175"
-            Width="400"
-        >
             
-        <Grid>
+        <Grid
+            Height="175"
+            Width="400">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -54,7 +51,6 @@
                 Command="{Binding LoginCommand}">
                 <lang:Localize Id="{}{Connection}"/>
             </Button>
-        </Grid>
         </Grid>
     </StackPanel>
 </Grid>
