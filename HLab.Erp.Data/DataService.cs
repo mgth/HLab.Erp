@@ -5,10 +5,12 @@ using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using HLab.DependencyInjection.Annotations;
 using HLab.Base;
+using HLab.Core.Annotations;
 using Npgsql;
 using NPoco;
 
@@ -321,11 +323,22 @@ namespace HLab.Erp.Data
 
             using var db = Get();
 
-            var listOut = new List<T>();
+            await using var enumerator = db.FetchAsync<T>().GetAsyncEnumerator();
 
-            await foreach (var item in db.FetchAsync<T>())
+            var more = true;
+
+            while(more)
             {
-                yield return await cache.GetOrAddAsync(item).ConfigureAwait(false);
+                try
+                {
+                    more = await enumerator.MoveNextAsync();
+                }
+                catch (NpgsqlException e)
+                {
+                    throw new DataException(e.Message,e);
+                }
+
+                if (more) yield return await cache.GetOrAddAsync(enumerator.Current).ConfigureAwait(false);
             }
         }
 
@@ -441,6 +454,16 @@ namespace HLab.Erp.Data
         public object Locate<T>(DbDataReader d) => _Locate(typeof(T));
 
         private IExportLocatorScope _container;
+
+        [Import(InjectLocation.AfterConstructor)]
+        public void Inject(IExportLocatorScope container, IOptionsService opt)
+        {
+            opt.SetDataService(this);
+            RegisterEntities(container);
+            var connectionString = opt.GetOptionString("Connection");
+            Register(connectionString,"");
+        }
+
 
         public void RegisterEntities(IExportLocatorScope container)
         {

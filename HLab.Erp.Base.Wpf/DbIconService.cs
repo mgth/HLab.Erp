@@ -25,16 +25,23 @@ namespace HLab.Erp.Base.Wpf
         {
             var icons =  _db.FetchAsync<Icon>().ConfigureAwait(true);
 
-            await foreach (var icon in icons)
+            try
             {
-                if (!string.IsNullOrWhiteSpace(icon.SourceXaml))
+                await foreach (var icon in icons)
                 {
-                    _icons.AddIconProvider(icon.Path, new IconProviderSvgFromSource(icon.SourceSvg, icon.Path));
+                    if (!string.IsNullOrWhiteSpace(icon.SourceXaml))
+                    {
+                        _icons.AddIconProvider(icon.Path, new IconProviderSvgFromSource(icon.SourceSvg, icon.Path));
+                    }
+                    else if (!string.IsNullOrWhiteSpace(icon.SourceSvg))
+                    {
+                        _icons.AddIconProvider(icon.Path, new IconProviderXamlFromSource(icon.SourceSvg, icon.Path));
+                    }
                 }
-                else if (!string.IsNullOrWhiteSpace(icon.SourceSvg))
-                {
-                    _icons.AddIconProvider(icon.Path, new IconProviderXamlFromSource(icon.SourceSvg, icon.Path));
-                }
+            }
+            catch (DataException)
+            {
+
             }
         }
     }
