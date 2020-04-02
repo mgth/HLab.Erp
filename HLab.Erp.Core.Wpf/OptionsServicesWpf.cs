@@ -46,7 +46,7 @@ namespace HLab.Erp.Core
             return new StreamWriter(fileName);
         }
 
-        [Import]
+        public void SetDataService(IDataService data) => _data = data;
         private IDataService _data;
 
         public async Task<T> GetValue<T>(string name, int? userid, Func<T> defaultValue = null)
