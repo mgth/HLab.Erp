@@ -69,11 +69,17 @@ namespace HLab.Erp.Acl
                 _lock?.Heartbeat(HeartBeat);
                 try
                 {
-                    _lockPersister?.Save();
-                    IsConnected = true;
+                    Message = null;
+                    if (_lockPersister.Save())
+                    {
+                        IsConnected = true;
+                        return;
+                    }
+                    else CancelAsync();
                 }
                 catch (DataException ex)
                 {
+                    Message = "{Disconnected}";
                     IsConnected = false;
                 }
             }, null,Timeout.Infinite,Timeout.Infinite);
@@ -131,6 +137,7 @@ namespace HLab.Erp.Acl
 
             if (existing != null)
             {
+                //Already locked
                 if ((DateTime.Now - existing.HeartbeatTime).TotalMilliseconds < HeartBeat)
                 {
                     Message = $"{{Object locked by}} {existing.User.Initials}";
@@ -163,12 +170,12 @@ namespace HLab.Erp.Acl
                 }
                 catch (Exception e)
                 {
+                    Message = e.Message;
                     if(_lock!=null) _db.Delete(_lock);
                     _lock = null;
 
                     _lockPersister=null;
 
-                    Message = e.Message;
                     return;
                 }
 
@@ -225,14 +232,19 @@ namespace HLab.Erp.Acl
             try
             {
                 Message = null;
-                if(_lock != null)
+                if (_lock != null)
                 {
+                    _timer.Change(Timeout.Infinite, Timeout.Infinite);
                     await _db.ReFetchOneAsync(_entity).ConfigureAwait(true);
                     Persister.Reset();
-                    _timer.Change(Timeout.Infinite,Timeout.Infinite);
                     _db.Delete(_lock);
                 }
+
                 IsActive = false;
+            }
+            catch (DataException e)
+            {
+                Message = e.Message;
             }
             catch (Exception e)
             {
