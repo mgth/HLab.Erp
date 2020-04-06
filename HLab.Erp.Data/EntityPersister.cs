@@ -30,7 +30,7 @@ namespace HLab.Erp.Data
 
             return property.GetCustomAttributes().OfType<IgnoreAttribute>().Any() ? Persistency.None : Persistency.OnSave;
         }
-        public override void Save()
+        public override bool Save()
         {
             var columns = new List<PropertyInfo>();
             while (Dirty.TryTake(out var e))
@@ -44,10 +44,14 @@ namespace HLab.Erp.Data
                 {
                     var t = _db.Add<T>(e => Target.CopyPrimitivesTo(e));
                     ei.Id = (int)t.Id;
-                    return;
+                    return true;
                 }
-                _db.Update(Target, columns.Select(e => e.Name));
-                IsDirty = false;
+                if(_db.Update(Target, columns.Select(e => e.Name)))
+                {
+                    IsDirty = false;
+                    return true;
+                }
+                return false;
             }
             catch
             {
@@ -57,8 +61,8 @@ namespace HLab.Erp.Data
             }
         }
 
-        public override Task SaveAsync() => SaveAsync(null);
-        public async Task SaveAsync(IDataTransaction transaction)
+        public override Task<bool> SaveAsync() => SaveAsync(null);
+        public async Task<bool> SaveAsync(IDataTransaction transaction)
         {
             var tr =  transaction??_db.GetTransaction();
 
@@ -75,13 +79,18 @@ namespace HLab.Erp.Data
                     var t = await tr.AddAsync<T>(e => Target.CopyPrimitivesTo(e));
                     if (transaction == null) tr.Done();
                     ei.Id = (int) t.Id;
-                    return;
+                    return true;
                 }
 
-                await tr.UpdateAsync(Target, columns.Select(e => e.Name));
-                if (transaction == null) tr.Done();
+                if (await tr.UpdateAsync(Target, columns.Select(e => e.Name)))
+                {
+                    if (transaction == null) tr.Done();
 
-                IsDirty = false;
+                    IsDirty = false;
+                    return true;
+                }
+
+                return false;
             }
             catch
             {

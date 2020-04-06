@@ -14,65 +14,67 @@
              >
     <Grid>
         <StackPanel>
-        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Height="30">
-    <Button Command="{Binding ActivateCommand}" Background="#40000000">
-        <Button.ToolTip>
-            <lang:Localize Id="{}{Edit}"></lang:Localize>
-        </Button.ToolTip>
-        <StackPanel Orientation="Vertical">
-            <icons:IconView Path="icons/Locked" Height="25"/>
-        </StackPanel>
-        <Button.Style>
-            <Style TargetType="Button">
-                <Setter Property="Visibility" Value ="Collapsed"/>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsActive}" Value="False">
-                        <Setter Property="Visibility" Value ="Visible"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </Button.Style>
-    </Button>
-        
-    <Button Command="{Binding CancelCommand}"  BorderThickness="0" Background="Transparent">
-        <Button.ToolTip>
-            <lang:Localize Id="{}{Cancel}"></lang:Localize>
-        </Button.ToolTip>
-        <StackPanel Orientation="Vertical">
-            <icons:IconView Path="Icons/Cancel" Height="25"/>
-        </StackPanel>
-        <Button.Style>
-            <Style TargetType="Button">
-                <Setter Property="Visibility" Value ="Collapsed"/>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsActive}" Value="True">
-                        <Setter Property="Visibility" Value ="Visible"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </Button.Style>
-    </Button>
-        <Label></Label>
-    <Button Command="{Binding SaveCommand}" BorderThickness="0" Background="Transparent">
-        <Button.ToolTip>
-            <lang:Localize Id="{}{Save}"></lang:Localize>
-        </Button.ToolTip>
-        <StackPanel Orientation="Vertical">
-            <icons:IconView Path="icons/Save" Height="25"/>
-        </StackPanel>
-        <Button.Style>
-            <Style TargetType="Button">
-                <Setter Property="Visibility" Value ="Collapsed"/>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsActive}" Value="True">
-                        <Setter Property="Visibility" Value ="Visible"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </Button.Style>
-    </Button>
-        </StackPanel>
-            <lang:Localize HorizontalAlignment="Right" Foreground="DarkRed" Text="{Binding Message}"/>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Height="30">
+                <Button Command="{Binding ActivateCommand}" Background="#40000000">
+                    <Button.ToolTip>
+                        <lang:Localize Id="{}{Edit}"></lang:Localize>
+                    </Button.ToolTip>
+                    <StackPanel Orientation="Vertical">
+                        <icons:IconView Path="icons/Locked" Height="25"/>
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Visibility" Value ="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                    <Setter Property="Visibility" Value ="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            
+                <Button Command="{Binding CancelCommand}"  BorderThickness="0" Background="Transparent">
+                    <Button.ToolTip>
+                        <lang:Localize Id="{}{Cancel}"></lang:Localize>
+                    </Button.ToolTip>
+                    <StackPanel Orientation="Vertical">
+                        <icons:IconView Path="Icons/Cancel" Height="25"/>
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Visibility" Value ="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                    <Setter Property="Visibility" Value ="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Label></Label>
+                <Button Command="{Binding SaveCommand}" BorderThickness="0" Background="Transparent">
+                    <Button.ToolTip>
+                        <lang:Localize Id="{}{Save}"></lang:Localize>
+                    </Button.ToolTip>
+                    <StackPanel Orientation="Vertical">
+                        <icons:IconView Path="icons/Save" Height="25"/>
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Visibility" Value ="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                    <Setter Property="Visibility" Value ="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+            <Label Foreground="DarkRed">
+                <lang:Localize HorizontalAlignment="Right" Id="{Binding Message}"/>
+            </Label>
         </StackPanel>
     </Grid>
 </UserControl>

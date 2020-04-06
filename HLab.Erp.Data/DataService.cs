@@ -112,9 +112,10 @@ namespace HLab.Erp.Data
             Database.Update(value, columns);
         }
 
-        public Task UpdateAsync<T>(T value, IEnumerable<string> columns) where T : class, IEntity
+        public async Task<bool> UpdateAsync<T>(T value, IEnumerable<string> columns) where T : class, IEntity
         {
-            return Database.UpdateAsync(value, columns);
+            var n = await Database.UpdateAsync(value, columns);
+            return n > 0;
         }
 
         public void Save<T>(T value) where T : class, IEntity
@@ -517,13 +518,15 @@ namespace HLab.Erp.Data
             await DbAsync(async d => await Task.Run(() => d.Save(value)));
         }
 
-        public void Update<T>(T value, IEnumerable<string> columns) where T : class, IEntity
+        public bool Update<T>(T value, IEnumerable<string> columns) where T : class, IEntity
         {
-            DbGet(d => d.Update(value, columns));
+            var n = DbGet(d => d.Update(value, columns));
+            return (n > 0);
         }
-        public async Task UpdateAsync<T>(T value, IEnumerable<string> columns) where T : class, IEntity
+        public async Task<bool> UpdateAsync<T>(T value, IEnumerable<string> columns) where T : class, IEntity
         {
-            await DbGetAsync(d => d.UpdateAsync(value,columns));
+            var n = await DbGetAsync(d => d.UpdateAsync(value,columns));
+            return (n > 0);
         }
 
         public IAsyncEnumerable<TSelect> SelectDistinctAsync<T, TSelect>(Func<T, bool> expression, Func<T, TSelect> select)

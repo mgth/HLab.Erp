@@ -14,7 +14,7 @@ namespace HLab.Erp.Data
         Task<T> AddAsync<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity;
 
         void Update<T>(T value, IEnumerable<string> columns) where T : class, IEntity;
-        Task UpdateAsync<T>(T value, IEnumerable<string> columns) where T : class, IEntity;
+        Task<bool> UpdateAsync<T>(T value, IEnumerable<string> columns) where T : class, IEntity;
 
         void Save<T>(T value) where T : class, IEntity;
         Task SaveAsync<T>(T value) where T : class, IEntity;
@@ -40,8 +40,8 @@ namespace HLab.Erp.Data
         void Save<T>(T value) where T : class, IEntity;
         Task SaveAsync<T>(T value) where T : class, IEntity;
 
-        void Update<T>(T value, IEnumerable<string> columns) where T : class, IEntity;
-        Task UpdateAsync<T>(T value, IEnumerable<string> columns) where T : class, IEntity;
+        bool Update<T>(T value, IEnumerable<string> columns) where T : class, IEntity;
+        Task<bool> UpdateAsync<T>(T value, IEnumerable<string> columns) where T : class, IEntity;
 
         T FetchOne<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
         Task<T> FetchOneAsync<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
