@@ -46,8 +46,15 @@ namespace HLab.Erp.Core.Localization
 
         public async Task<string> LocalizeAsync(string language, string code)
         {
-            var entry = await GetLocalizeEntryAsync(language, code).ConfigureAwait(false);
-            return entry?.Value;
+            try
+            {
+                var entry = await GetLocalizeEntryAsync(language, code).ConfigureAwait(false);
+                return entry?.Value;
+            }
+            catch
+            {
+                return code;
+            }
         }
 
         public async Task<ILocalizeEntry> GetLocalizeEntryAsync(string language, string code)
