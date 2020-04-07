@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -7,6 +8,7 @@ using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
+using Nito.AsyncEx;
 
 namespace HLab.Erp.Acl
 {
@@ -75,7 +77,7 @@ namespace HLab.Erp.Acl
                         IsConnected = true;
                         return;
                     }
-                    else CancelAsync();
+                    else DirtyCancel();
                 }
                 catch (DataException ex)
                 {
@@ -227,20 +229,49 @@ namespace HLab.Erp.Acl
             }
         }
 
+        private readonly AsyncReaderWriterLock _cancelLock = new AsyncReaderWriterLock();
+
+        private void DirtyCancel()
+        {
+            using(_cancelLock.WriterLock())
+            {
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+
+                try
+                {
+                    _db.ReFetchOneAsync(_entity).ConfigureAwait(true);
+                }
+                catch{}
+
+                _lock = null;
+                Persister.Reset();
+                IsActive = false;
+            }
+        }
+
+
         public async Task CancelAsync()
         {
             try
             {
-                Message = null;
-                if (_lock != null)
+                var lck = await _cancelLock.WriterLockAsync();
+                using (lck)
                 {
-                    _timer.Change(Timeout.Infinite, Timeout.Infinite);
-                    await _db.ReFetchOneAsync(_entity).ConfigureAwait(true);
-                    Persister.Reset();
-                    _db.Delete(_lock);
-                }
+                    Message = null;
+                    if (_lock != null)
+                    {
+                        _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                        if (_db.Delete(_lock))
+                        {
+                            _lock = null;
+                            await _db.ReFetchOneAsync(_entity).ConfigureAwait(true);
+                            Persister.Reset();
+                            IsActive = false;
+                        }
+                    }
 
-                IsActive = false;
+                    else IsActive = false;
+                }
             }
             catch (DataException e)
             {

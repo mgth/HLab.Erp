@@ -530,19 +530,18 @@ namespace HLab.Erp.Data.Observables
                 _updateNeeded = false;
             }
 
-            var removed = new Dictionary<object,T>();
 
-            Lock.EnterWriteLock();
+
+            var lck = await Lock.WriterLockAsync();
             try
             {
+                using (lck)
                 {
-                    var list = PostQueryAsync(force)/*.ToListAsync()*/;
-
-//                    var list2 = list.OrderBy(OrderBy.Compile());
+                    var list = PostQueryAsync(force);
 
                     if (OrderBy != null) list = list.OrderBy(OrderBy);
 
-                    Console.WriteLine("Query : " + stopwatch.ElapsedMilliseconds);
+                    Debug.WriteLine("Query : " + stopwatch.ElapsedMilliseconds);
 
                     if (list == null) return;
 
@@ -554,9 +553,8 @@ namespace HLab.Erp.Data.Observables
 
                     var n = 0;
                     await 
-                        foreach (var item in list)
+                        foreach (var item in list.ConfigureAwait(false))
                     {
-                        //var item = list[n];
                         var id = item.Id;
 
                         if (_updateNeeded)
@@ -573,7 +571,9 @@ namespace HLab.Erp.Data.Observables
                         // while list is consistent
                         if (n < Count)
                         {
-                            if (Equals(id, this[n].Id))
+                            var old = GetNoLock(n);
+
+                            if (Equals(id, old.Id))
                             {
                                 n++;
                                 continue;
@@ -581,11 +581,10 @@ namespace HLab.Erp.Data.Observables
 
                             if (this.Any(e => Equals(e.Id, item.Id)))
                             {
-                                var old = this[n];
                                 while (!Equals(old.Id,item.Id))
                                 {
                                     RemoveAtNoLock(n);
-                                    old = this[n];
+                                    old = GetNoLock(n);
                                 }
 
                                 n++;
@@ -597,7 +596,7 @@ namespace HLab.Erp.Data.Observables
                         n++;
                     }
 
-                    Console.WriteLine("Update : " + stopwatch.ElapsedMilliseconds);
+                    Debug.WriteLine("Update : " + stopwatch.ElapsedMilliseconds);
 
                     //remove remaining items
                     while (n < Count)
@@ -605,7 +604,7 @@ namespace HLab.Erp.Data.Observables
                         RemoveAtNoLock(n);
                     }
 
-                    Console.WriteLine("Cleanup : " + stopwatch.ElapsedMilliseconds);
+                    Debug.WriteLine("Cleanup : " + stopwatch.ElapsedMilliseconds);
                     Debug.Assert(Count == n);
 
                 }
@@ -613,11 +612,8 @@ namespace HLab.Erp.Data.Observables
                 _initialized = true;
                 _updating = false;
             }
-            catch(Exception e)
-            { }
             finally
             {
-                Lock.ExitWriteLock();
                 OnCollectionChanged();
             }
         }

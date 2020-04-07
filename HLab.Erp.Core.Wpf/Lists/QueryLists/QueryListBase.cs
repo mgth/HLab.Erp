@@ -109,25 +109,15 @@ namespace HLab.Erp.Core.Lists.QueryLists
         {
             get
             {
-                Lock.EnterReadLock();
-                try
+                using(Lock.ReaderLock())
                 {
                     return Selected.Model;
                 }
-                finally
-                {
-                    Lock.ExitReadLock();
-                }
             }
             set { 
-                Lock.EnterWriteLock();
-                try
+                using(Lock.WriterLock())
                 {
                     _selected.Set(this.FirstOrDefault(e => e.Model.Equals(value)));
-                }
-                finally
-                {
-                    Lock.ExitWriteLock();
                 }
             }
         }
