@@ -280,8 +280,10 @@ namespace HLab.Erp.Core.EntityLists
         protected async Task DeleteEntityAsync(T entity)
         {
             await _docs.CloseDocumentAsync(entity);
-            var n = await _data.DeleteAsync(entity);
-            if(n>0) await List.UpdateAsync();
+            if (await _data.DeleteAsync(entity))
+            {
+                await List.UpdateAsync();
+            }
         }
 
         protected virtual bool CanExecuteDelete() => false;

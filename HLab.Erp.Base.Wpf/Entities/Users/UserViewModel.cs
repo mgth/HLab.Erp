@@ -55,8 +55,10 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
 
         private void RemoveProfile(UserProfile userProfile)
         {
-            var n = _data.Delete<UserProfile>(userProfile);
-            if(n>0) UserProfiles.List.UpdateAsync();
+            if (_data.Delete<UserProfile>(userProfile))
+            {
+                UserProfiles.List.UpdateAsync();
+            }
         }
 
         private void AddProfile(Profile profile)

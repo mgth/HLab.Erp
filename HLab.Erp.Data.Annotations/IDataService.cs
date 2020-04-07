@@ -63,9 +63,9 @@ namespace HLab.Erp.Data
             Func<T,TSelect> select
         );
 
-        int Delete<T>(T entity, Action<T> deleted = null)
+        bool Delete<T>(T entity, Action<T> deleted = null)
             where T : class, IEntity;
-        Task<int> DeleteAsync<T>(T entity, Action<T> deleted = null)
+        Task<bool> DeleteAsync<T>(T entity, Action<T> deleted = null)
             where T : class, IEntity;
 
         //void Execute(Action<IDatabase> action);

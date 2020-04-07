@@ -94,7 +94,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Profiles
             if(userProfile==null) return;
             if(!UserProfiles.List.Contains(userProfile)) return;
 
-            if(_data.Delete<UserProfile>(userProfile)>0)
+            if(_data.Delete<UserProfile>(userProfile))
             {
                 UserProfiles.List.UpdateAsync();
             }
@@ -104,7 +104,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Profiles
             if(right==null) return;
             if(!ProfileRights.List.Contains(right)) return;
 
-            if(_data.Delete<AclRightProfile>(right)>0)
+            if(_data.Delete<AclRightProfile>(right))
             {
                 ProfileRights.List.UpdateAsync();
             }
