@@ -553,7 +553,7 @@ namespace HLab.Erp.Data.Observables
 
                     var n = 0;
                     await 
-                        foreach (var item in list.ConfigureAwait(false))
+                        foreach (var item in list.ConfigureAwait(true))
                     {
                         var id = item.Id;
 
