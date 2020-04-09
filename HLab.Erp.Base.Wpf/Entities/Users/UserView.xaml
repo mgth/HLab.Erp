@@ -77,7 +77,7 @@
                         <entitySelectors:ForeignView 
                             HorizontalAlignment="Left"
                             ModelClass="{x:Type data:Profile}"
-                            ListClass="{x:Type profiles:ListProfileViewModel}"
+                            ListClass="{x:Type profiles:ProfilesListViewModel}"
                             Command="{Binding AddProfileCommand}"
                         />
                     </StackPanel>

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Windows.Input;
+using HLab.Base.Extensions;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core;
@@ -18,19 +19,7 @@ namespace HLab.Erp.Base.Wpf.Entities
             e => e._erp.Docs.OpenDocumentAsync(typeof(TList))
         ).CanExecute(e => true));
 
-        private string Name
-        {
-            get
-            {
-                var n =GetType().Name;
-                var i = n.IndexOf("DataModule");
-                if (i > 0)
-                {
-                    n = n.Substring(0, i);
-                }
-                return n;
-            }
-        }
+        private string Name => GetType().Name.BeforeSuffix("DataModule").FromCamelCase();
 
         private string EntityName()
         {

@@ -31,10 +31,10 @@ namespace HLab.Erp.Base.Wpf.Entities.Users
         );
 
         [Import]
-        private readonly Func<User, ListProfileViewModel> _getProfiles;
+        private readonly Func<User, ProfilesListViewModel> _getProfiles;
 
-        public ListProfileViewModel Profiles => _profiles.Get();
-        private readonly IProperty<ListProfileViewModel> _profiles = H.Property<ListProfileViewModel>(c => c
+        public ProfilesListViewModel Profiles => _profiles.Get();
+        private readonly IProperty<ProfilesListViewModel> _profiles = H.Property<ProfilesListViewModel>(c => c
             .On(e => e.Model)
             .Set(e => e._getProfiles(e.Model))
         );

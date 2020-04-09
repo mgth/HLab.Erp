@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
+﻿using HLab.Base.Extensions;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.ListFilters;
@@ -19,6 +8,17 @@ using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace HLab.Erp.Core.EntityLists
 {
@@ -70,26 +70,9 @@ namespace HLab.Erp.Core.EntityLists
             .Set(e => "{" + e.GetTitle() + "}")
         );
 
-        public string IconPath => "icons/entities/" + typeof(T).Name;
+        public string IconPath => "Icons/Entities/" + typeof(T).Name;
 
-        private string GetTitle()
-        {
-            var n = GetType().Name;
-            var i = n.IndexOf("ListViewModel");
-            if (i >= 0) n = n.Substring(0, i);
-            n = FromCamelCase(n);
-            return n;
-        }
-
-        private static string FromCamelCase(string s)
-        {
-            var r = new Regex(@"
-                (?<=[A-Z])(?=[A-Z][a-z]) |
-                 (?<=[^A-Z])(?=[A-Z]) |
-                 (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
-            return r.Replace(s," ");
-        }
-
+        private string GetTitle() => GetType().Name.BeforeSuffix("ListViewModel").FromCamelCase();
 
         public new T Model
         {
@@ -118,8 +101,6 @@ namespace HLab.Erp.Core.EntityLists
             Columns = _getColumnsProvider(List);
             List_CollectionChanged(null,new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add,List,0));
             List.CollectionChanged += List_CollectionChanged;
-            
-            //H.Initialize((TClass)this,OnPropertyChanged);
 
             OpenAction = target => _docs.OpenDocumentAsync(target);
         }
@@ -167,6 +148,7 @@ namespace HLab.Erp.Core.EntityLists
         public bool DeleteAllowed {get => _deleteAllowed.Get(); set => _deleteAllowed.Set(value);}
         private readonly IProperty<bool> _deleteAllowed = H.Property<bool>();
 
+
         private void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
@@ -175,17 +157,21 @@ namespace HLab.Erp.Core.EntityLists
                     var newIndex = e.NewStartingIndex;
                     foreach (var n in e.NewItems.OfType<T>())
                     {
-                        ObjectMapper<T> h = _cache.GetOrAdd(n,o => new ObjectMapper<T>(o, Columns));
-                        ListViewModel.Insert(newIndex++,h);
+                        ObjectMapper<T> om = _cache.GetOrAdd(n,o => new ObjectMapper<T>(o, Columns));
+                        ListViewModel.Insert(newIndex++,om);
                     }
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var item in e.OldItems.OfType<T>())
                     {
+
+
                         //TODO should keep deleted elements in cache for some times
-                        if (_cache.TryRemove(item, out var h))
-                            ListViewModel.Remove(h);
+                        if (_cache.TryRemove(item, out var m))
+                        {
+                            ListViewModel.Remove(m);
+                        }
                         else
                         {
                             var mapper = ListViewModel.FirstOrDefault(x => (x is ObjectMapper<T> om) && Equals(om.Model.Id,item.Id));

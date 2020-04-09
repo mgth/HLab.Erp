@@ -8,12 +8,11 @@ using HLab.Mvvm.Icons;
 
 namespace HLab.Erp.Base.Wpf.Entities.Icons
 {
-    public class ListIconViewModel : EntityListViewModel<ListIconViewModel,Icon>, IMvvmContextProvider
+    public class IconsListViewModel : EntityListViewModel<IconsListViewModel,Icon>, IMvvmContextProvider
     {
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
-        public string Title => "{Icons}";
 
         private async Task<object> GetSvgIconAsync(string source)
         {
@@ -34,7 +33,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             };
         }
 
-        public ListIconViewModel()
+        public IconsListViewModel()
         {
             Columns
                 .Column("{Path}", s => s.Path)

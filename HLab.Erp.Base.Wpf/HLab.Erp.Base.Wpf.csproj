@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Icons\Entities\Country.svg" />
+    <None Remove="Icons\Entities\Icon.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Remove="Icons\cancel.xaml" />
     <Page Remove="Icons\Entities\Customer.xaml" />
     <Page Remove="Icons\Entities\Customers.xaml" />
@@ -32,6 +37,7 @@
     <Resource Include="Icons\Cancel.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>
+    <Resource Include="Icons\Entities\Country.svg" />
     <Resource Include="Icons\Entities\Customers.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -39,6 +45,7 @@
     <Resource Include="Icons\Entities\Customer.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>
+    <Resource Include="Icons\Entities\Icon.svg" />
     <Resource Include="Icons\OpenForeign.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>
