@@ -64,6 +64,9 @@
     <Page Update="Entities\Customers\CustomerView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Icons\Entities\Profile.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>
