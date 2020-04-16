@@ -9,6 +9,8 @@ namespace HLab.Erp.Core
 
     public abstract class BootLoaderErp : IBootloader //postboot
     {
-        public virtual bool Load() => true;
+        public virtual void Load(IBootContext b)
+        {
+        }
     }
 }

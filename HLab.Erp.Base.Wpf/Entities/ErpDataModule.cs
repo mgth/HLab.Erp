@@ -42,7 +42,7 @@ namespace HLab.Erp.Base.Wpf.Entities
         protected virtual string Header => "{" + Name + "}";
         protected virtual string IconPath => "Icons/Entities/" + EntityName();
 
-        public virtual bool Load() => _erp.Menu.RegisterMenu("data/"+ Name, Header,
+        public virtual void Load(IBootContext b) => _erp.Menu.RegisterMenu("data/"+ Name, Header,
                 OpenCommand,
                 IconPath);
         

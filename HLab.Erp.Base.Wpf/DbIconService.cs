@@ -15,10 +15,9 @@ namespace HLab.Erp.Base.Wpf
         [Import]
         private IDataService _db;
 
-        public bool Load()
+        public void Load(IBootContext b)
         {
             LoadAsync();
-            return true;
         }
 
         public async void LoadAsync()

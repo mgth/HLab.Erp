@@ -6,6 +6,7 @@ using System.Resources;
 using System.Windows;
 using System.Windows.Markup;
 using HLab.Base;
+using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
 using HLab.Erp.Acl.LoginServices;
@@ -52,9 +53,16 @@ namespace HLab.Erp.Core.ApplicationServices
 
 
 
-        public override bool Load()
+        public override void Load(IBootContext b)
         {
-            if (!base.Load()) return false;
+            if (b.Contains("LocalizeBootloader"))
+            {
+                b.Requeue();
+                return;
+            }
+
+            base.Load(b);
+
             MainWindow = new DefaultWindow()
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
@@ -78,7 +86,7 @@ namespace HLab.Erp.Core.ApplicationServices
             if (_erp.Acl.Connection == null)
             {
                 Application.Current.Shutdown();
-                return true;
+                return;
             }
 
             if (Updater != null )
@@ -96,7 +104,7 @@ namespace HLab.Erp.Core.ApplicationServices
                     if (Updater.Updated)
                     {
                         Application.Current.Shutdown();
-                        return true;;
+                        return;;
                     }
                 }
             }
@@ -146,7 +154,7 @@ namespace HLab.Erp.Core.ApplicationServices
 
             MainWindow.Content = w;
 
-            return true;
+            return;
         }
     }
 }

@@ -19,15 +19,18 @@ namespace HLab.Erp.Acl
 
         protected virtual string IconPath => "Icons/Entities/";
 
-        public virtual bool Load()
+        public virtual void Load(IBootContext b)
         {
-            if(_erp.Acl.Connection==null) return false;
-            if(!_erp.Acl.IsGranted(AclRights.ManageUser)) return true;;
+            if (_erp.Acl.Connection == null)
+            {
+                b.Requeue();
+                return;
+            }
+            if(!_erp.Acl.IsGranted(AclRights.ManageUser)) return;
 
             _erp.Menu.RegisterMenu("tools/ImportUsers", "{Import Users}",
                 OpenCommand,
                 "icons/tools/ImportUsers");
-            return true;
         }
     }
 }

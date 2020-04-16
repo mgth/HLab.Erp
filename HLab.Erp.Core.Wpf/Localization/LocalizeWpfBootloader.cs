@@ -9,13 +9,8 @@ namespace HLab.Erp.Core.Localization
     public class LocalizeWpfBootloader : IBootloader //postboot
     {
         
-        private readonly IErpServices _erp;
+        [Import] private readonly IErpServices _erp;
 
-        [Import] public LocalizeWpfBootloader(IErpServices erp)
-        {
-            _erp = erp;
-            H.Initialize(this);
-        }
 
         public ICommand LocalizationOpenDocumentCommand { get; } = H.Command(c => c
             .Action(e =>
@@ -24,11 +19,11 @@ namespace HLab.Erp.Core.Localization
             })
         );
 
-        public bool Load()
+        public void Load(IBootContext b)
         {
-            return _erp.Menu.RegisterMenu("tools/localization", "{Localization}",
+            _erp.Menu.RegisterMenu("tools/localization", "{Localization}",
                 LocalizationOpenDocumentCommand,
-                "icons/localize");
+                "Icons/Entities/Localize");
         }
     }
 }
