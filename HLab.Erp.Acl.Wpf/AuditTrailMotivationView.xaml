@@ -32,7 +32,7 @@
             <Style.Resources>
                 <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
                     <VisualBrush.Visual>
-                        <Label Content="Enter audit trail justification" Foreground="#A0FFFFFF" />
+                        <lang:Localize Id="{}{Enter audit trail justification}" Foreground="#A0FFFFFF" />
                     </VisualBrush.Visual>
                 </VisualBrush>
             </Style.Resources>
@@ -54,9 +54,7 @@
         <TextBlock Text="{Binding User.Caption}"/>
 
         <DockPanel Margin="0,5">
-            <Label>
-                <lang:Localize>Password : </lang:Localize>
-            </Label>
+            <lang:LocalizedLabel Text="{}{Password} :"/>
             <Label/>
             <PasswordBox DockPanel.Dock="Right" Height="23" x:Name="PasswordBox" VerticalAlignment="Center" PasswordChanged="PasswordBox_OnTextChanged"/>
         </DockPanel>
