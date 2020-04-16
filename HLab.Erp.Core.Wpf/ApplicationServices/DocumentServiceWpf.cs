@@ -102,7 +102,7 @@ namespace HLab.Erp.Core.ApplicationServices
                 {
                     if (vm.Documents.Contains(view))
                     {
-                        vm.Documents.Remove(view);
+                        vm.RemoveDocument((FrameworkElement)view);
                         return;
                     }
 
@@ -118,12 +118,12 @@ namespace HLab.Erp.Core.ApplicationServices
                 {
                     if (ReferenceEquals(document.DataContext, content))
                     {
-                        vm.Documents.Remove(document);
+                        vm.RemoveDocument(document);
                     }
 
                     else if (document.DataContext is IViewModel mvm && ReferenceEquals(mvm.Model, content))
                     {
-                        vm.Documents.Remove(document);
+                        vm.RemoveDocument(document);
                     }
                 }
 

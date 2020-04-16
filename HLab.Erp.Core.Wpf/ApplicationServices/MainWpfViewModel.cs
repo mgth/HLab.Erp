@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -48,6 +49,8 @@ namespace HLab.Erp.Core.ApplicationServices
         public ObservableCollection<object> Anchorables { get; } = new ObservableCollection<object>();
         public ObservableCollection<object> Documents { get; } = new ObservableCollection<object>();
 
+
+
         public bool IsActive
         {
             get => _isActive.Get();
@@ -55,11 +58,34 @@ namespace HLab.Erp.Core.ApplicationServices
         }
         private readonly IProperty<bool> _isActive = H.Property<bool>(c => c.Default(true));
 
+
+        public bool RemoveDocument(FrameworkElement document)
+        {
+            if (Documents.Contains(document))
+            {
+                if (_documentHistory.Count > 0 && ReferenceEquals(_documentHistory[0], document))
+                {
+                    _documentHistory.Remove(document);
+                    if (_documentHistory.Count > 0)
+                    {
+                        ActiveDocument = _documentHistory[0];
+                    }
+                    Documents.Remove(document);
+                }
+            }
+
+            return false;
+        }
+
+        private readonly List<FrameworkElement> _documentHistory = new List<FrameworkElement>();
         public FrameworkElement ActiveDocument
         {
             get => _activeDocument.Get();
             set
             {
+                _documentHistory.Remove(value);
+                _documentHistory.Insert(0,value);
+
                 if (_activeDocument.Set(value))
                 {
                     var message = _getSelectedMessage(value);
