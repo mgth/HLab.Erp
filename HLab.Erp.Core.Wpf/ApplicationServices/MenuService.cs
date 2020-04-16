@@ -32,44 +32,45 @@ namespace HLab.Erp.Core.ApplicationServices
         public bool RegisterMenu(string path, object header, ICommand command, string iconPath) 
             => RegisterMenu(new MenuPath(path),_viewModel.Menu.Items, header, command, iconPath);
 
-        private bool RegisterMenu(MenuPath path, ItemCollection items, object header, ICommand command, string iconPath)
+        private static bool RegisterMenu(MenuPath path, ItemCollection items, object header, ICommand command, string iconPath)
         {
-            if (path.Next==null)
+            while (true)
             {
-                if (header is string s)
+                if (path.Next == null)
                 {
-                    header = new Localize {Id = s};
-                }
-
-                var m = new MenuItem
-                {
-                    Name = path.Name,
-                    Header = header,
-                    Command = command,
-                    Icon = new IconView
+                    if (header is string s)
                     {
-                        Height = 25,
-                        Path = iconPath
+                        header = new Localize {Id = s};
                     }
-                };
 
-                items.Add(m);
-                return true;
-            }
+                    var m = new MenuItem {Name = path.Name, Header = header, Command = command, Icon = new IconView {Height = 25, Path = iconPath}};
 
-            MenuItem child = null;
-            foreach (MenuItem menu in items)
-            {
-                if (menu.Name == path.Name)
-                {
-                    child = menu;
-                    break;
+                    var old = items.Cast<MenuItem>().FirstOrDefault(menu => menu.Name == path.Name);
+                    if (old != null)
+                    {
+                        items.Remove(old);
+                        while (old.HasItems)
+                        {
+                            var item = old.Items[0];
+                            old.Items.Remove(item);
+                            m.Items.Add(item);
+                        }
+                    }
+
+                    items.Add(m);
+                    return true;
                 }
+
+                var child = items.Cast<MenuItem>().FirstOrDefault(menu => menu.Name == path.Name);
+
+                if (child == null)
+                {
+                    child = new MenuItem{Name = path.Name};
+                    items.Add(child);
+                }
+                path = path.Next;
+                items = child.Items;
             }
-
-            if(child==null) return false;
-            return RegisterMenu(path.Next, child.Items, header,command,iconPath);
         }
-
     }
 }
