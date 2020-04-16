@@ -17,9 +17,9 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
 {
     public class IconViewModel : EntityViewModel<IconViewModel, Icon>
     {
-        public string Title => _title.Get();
+        public override string Title => _title.Get();
 
-        private IProperty<string> _title = H.Property<string>(c => c
+        private readonly IProperty<string> _title = H.Property<string>(c => c
             .On(e => e.Model.Caption)
             .Set(e => e.Model.Caption)
         );

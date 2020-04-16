@@ -14,7 +14,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         {
         }
 
-        private async Task<object> GetSvgIconAsync(string source)
+        private static async Task<object> GetSvgIconAsync(string source)
         {
             var icon = (UIElement)await XamlTools.FromSvgStringAsync(source).ConfigureAwait(true);
             return new Viewbox
@@ -23,7 +23,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
                 MaxHeight = 30
             };
         }
-        private async Task<object> GetXamlIconAsync(string source)
+        private static async Task<object> GetXamlIconAsync(string source)
         {
             var icon = (UIElement)await XamlTools.FromXamlStringAsync(source).ConfigureAwait(true);
             return new Viewbox
