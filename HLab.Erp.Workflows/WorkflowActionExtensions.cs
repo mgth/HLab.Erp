@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using HLab.Base.Fluent;
 using HLab.Notify.PropertyChanged;
 
@@ -61,6 +63,25 @@ namespace HLab.Erp.Workflows
             where TWf : NotifierBase, IWorkflow<TWf>
         {
             t?.Target.Condition?.SetMessage(w => new List<string>{getter(w)});
+            return t;
+        }
+        /// <summary>
+        /// Add message factory to inform about why the action is not possible
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="getter"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            HighlightField<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Expression<Func<TWf, object>> getter)
+            where TWf : NotifierBase, IWorkflow<TWf>
+        {
+            Expression body = getter.Body;
+            if (body.NodeType == ExpressionType.Convert)
+                body = ((UnaryExpression) body).Operand;
+
+            var name = body.ToString().Split('.').Last();
+            t?.Target.Condition?.SetHighlights(w => new List<string>{name});
             return t;
         }
 
@@ -178,6 +199,7 @@ namespace HLab.Erp.Workflows
                         : WorkflowConditionResult.Failed);
 
                 cond.SetMessage(w => getState().GetMessages(w));
+                cond.SetHighlights(w => getState().GetHighlights(w));
 
                 t?.Target.AddCondition(cond);
             return t;

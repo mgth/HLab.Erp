@@ -20,12 +20,13 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.EntitySelectors
 {
+
     using H = DependencyHelper<ForeignView>;
     /// <summary>
     /// Logique d'interaction pour ForeignView.xaml
     /// </summary>
     [ContentProperty(nameof(ButtonContent))]
-    public partial class ForeignView : UserControl, IView<IForeignViewModel>, IViewClassForeign
+    public partial class ForeignView : UserControl, IView<IForeignViewModel>, IViewClassForeign, IMandatoryNotFilled
     {
         [Import]
         private IMvvmService Mvvm;
@@ -70,6 +71,10 @@ namespace HLab.Erp.Core.EntitySelectors
             .OnChange( (s,a) => s.SetButtonContent(a.NewValue) )
             .Register();
 
+        public static readonly DependencyProperty MandatoryNotFilledProperty = H.Property<bool>()
+            .OnChange( (s,a) => s.SetMandatoryNotFilled(a.NewValue) )
+            .Register();
+
         private void SetCommand(ICommand command)
         {
             Locator.Visibility = command == null ? Visibility.Visible : Visibility.Collapsed;
@@ -98,6 +103,14 @@ namespace HLab.Erp.Core.EntitySelectors
             get => (bool)GetValue(IsReadOnlyProperty);
             set => SetValue(IsReadOnlyProperty, value);
         }
+
+        public DependencyProperty MandatoryProperty => ForeignView.ModelProperty;
+
+        public bool MandatoryNotFilled
+        {
+            get => (bool)GetValue(MandatoryNotFilledProperty);
+            set => SetValue(MandatoryNotFilledProperty, value);
+        }
         public ICommand Command
         {
             get => (ICommand)GetValue(CommandProperty);
@@ -116,6 +129,10 @@ namespace HLab.Erp.Core.EntitySelectors
 
         private void SetList()
         {
+        }
+        private void SetMandatoryNotFilled(bool mnf)
+        {
+            Mandatory.Visibility = mnf ? Visibility.Visible : Visibility.Collapsed;
         }
         private void SetReadOnly(bool ro)
         {

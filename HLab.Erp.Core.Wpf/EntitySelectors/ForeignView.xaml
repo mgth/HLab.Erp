@@ -10,6 +10,13 @@
              xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/HLab.Base.Wpf;component/Calendar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid Background="Transparent">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -18,6 +25,15 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <mvvm:ViewLocator x:Name="Locator" ViewClass="{x:Type annotations:IViewClassListItem}"/>
+        <!--<Label Background="#200000" HorizontalContentAlignment="Center">
+            <lang:Localize 
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                
+                Id="{}{Mandatory field}" 
+                Foreground="DarkRed"
+                Opacity="1"/>
+        </Label>-->
         <Label Grid.Column="1"/>
         <Button Grid.Column="2" x:Name="OpenButton" Click="OpenButton_OnClick" IsEnabled="False">
             <icons:IconView Path="Icons/OpenForeign" MaxHeight="10"/>
@@ -36,6 +52,10 @@
                 </Popup>
             </StackPanel>
         </Button>
+        <Grid x:Name="Mandatory" Grid.Row="0" Grid.Column="0"  Visibility="Collapsed" Grid.ColumnSpan="2" IsHitTestVisible="False">
+            <Border Background="#A0800000" IsHitTestVisible="False" BorderThickness="2" Opacity="0.5" BorderBrush="DarkRed"/>
+            <ContentControl Margin="5,0,0,0" HorizontalAlignment="Left" IsHitTestVisible="False" Content="{StaticResource Edit}" Foreground="DarkRed" Height="15"/>
+        </Grid>
 
     </Grid>
 </UserControl>

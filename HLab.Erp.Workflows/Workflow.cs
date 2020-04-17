@@ -26,6 +26,7 @@ namespace HLab.Erp.Workflows
         protected Workflow(object target, IDataLocker locker)
         {
             Actions = new ReadOnlyObservableCollection<WorkflowAction>(_actions);
+            Highlights = new ReadOnlyObservableCollection<string>(_highlights);
 
             Target = target;
             _locker.Set(locker);
@@ -109,8 +110,8 @@ namespace HLab.Erp.Workflows
 
         private static List<State> _workflowState;
         private static List<Action> _workflowAction;
-        private static List<State> WorkflowStates => _workflowState??(_workflowState=new List<State>());
-        private static List<Action> WorkflowActions => _workflowAction??(_workflowAction=new List<Action>());
+        private static List<State> WorkflowStates => _workflowState ??= new List<State>();
+        private static List<Action> WorkflowActions => _workflowAction ??= new List<Action>();
         
         public static State StateFromName(string name) => WorkflowStates.Find(e => e.Name == name)??DefaultState;
         protected void SetState(string state) => CurrentState = StateFromName(state);
@@ -219,10 +220,12 @@ namespace HLab.Erp.Workflows
 
 
         private readonly ObservableCollection<WorkflowAction> _actions = new ObservableCollection<WorkflowAction>();
+        private readonly ObservableCollection<string> _highlights = new ObservableCollection<string>();
         public ReadOnlyObservableCollection<WorkflowAction> Actions { get; }
+        public ReadOnlyObservableCollection<string> Highlights { get; }
 
 
-        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         protected void Update()
         {
             var list = WorkflowActions
@@ -233,7 +236,14 @@ namespace HLab.Erp.Workflows
             try
             {
                 _actions.Clear();
-                foreach(var action in list) _actions.Add(action.GetAction(this as T));
+                _highlights.Clear();
+                foreach (var action in list)
+                {
+                    var a = action.GetAction(this as T);
+                    _actions.Add(a);
+                    foreach(var h in a.Highlights) _highlights.Add(h);
+                }
+
             }
             finally
             {

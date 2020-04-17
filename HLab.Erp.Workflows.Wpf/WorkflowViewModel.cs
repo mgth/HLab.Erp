@@ -13,13 +13,16 @@ namespace HLab.Erp.Workflows
     {
         private readonly ObservableCollection<WorkflowAction> _backwardActions = new ObservableCollection<WorkflowAction>();
         private readonly ObservableCollection<WorkflowAction> _actions = new ObservableCollection<WorkflowAction>();
+        private readonly ObservableCollection<string> _highlights = new ObservableCollection<string>();
         public ReadOnlyObservableCollection<WorkflowAction> BackwardActions { get; }
         public ReadOnlyObservableCollection<WorkflowAction> Actions { get; }
+        public ReadOnlyObservableCollection<string> Highlights { get; }
 
         public WorkflowViewModel()
         {
             BackwardActions = new ReadOnlyObservableCollection<WorkflowAction>(_backwardActions);
             Actions = new ReadOnlyObservableCollection<WorkflowAction>(_actions);
+            Highlights = new ReadOnlyObservableCollection<string>(_highlights);
         }
 
 
@@ -31,7 +34,7 @@ namespace HLab.Erp.Workflows
         }
 
         private readonly object _lock = new object();
-        private void Actions_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Actions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Application.Current.Dispatcher.Invoke(
             () =>
@@ -39,6 +42,7 @@ namespace HLab.Erp.Workflows
                     lock(_lock)
                     {
                         _actions.Clear();
+                        _highlights.Clear();
                         _backwardActions.Clear();
                         foreach (var m in Model.Actions)
                         {
@@ -46,6 +50,10 @@ namespace HLab.Erp.Workflows
                             {
                                 case WorkflowDirection.Forward:
                                     _actions.Add(m);
+                                    foreach (var item in Model.Highlights)
+                                    {
+                                        _highlights.Add(item);
+                                    }
                                     break;
                                 case WorkflowDirection.Backward:
                                     _backwardActions.Add(m);

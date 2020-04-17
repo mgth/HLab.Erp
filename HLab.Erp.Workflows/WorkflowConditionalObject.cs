@@ -70,6 +70,16 @@ namespace HLab.Erp.Workflows
                 }
             }
         }
+        public IEnumerable<string> GetHighlights(IWorkflow workflow)
+        {
+            if (workflow is T wf)
+            {
+                foreach (var m in Condition.GetHighlights(wf))
+                {
+                    yield return m;
+                }
+            }
+        }
 
     }
 }

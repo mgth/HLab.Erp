@@ -12,6 +12,7 @@ namespace HLab.Erp.Workflows
         string GetCaption(IWorkflow workflow);
         string GetIconPath(IWorkflow workflow);
         IEnumerable<string> GetMessages(IWorkflow workflow);
+        IEnumerable<string> GetHighlights(IWorkflow workflow);
     }
 
     public interface IWorkflowAction : IWorkflowConditional
@@ -34,6 +35,7 @@ namespace HLab.Erp.Workflows
         public void Action() => _action.Action(_workflow);
         public WorkflowConditionResult Check() => _action.Check(_workflow);
         public IEnumerable<string> Messages => _action.GetMessages(_workflow);
+        public IEnumerable<string> Highlights => _action.GetHighlights(_workflow);
         public WorkflowDirection Direction => _action.Direction;
 
     }
