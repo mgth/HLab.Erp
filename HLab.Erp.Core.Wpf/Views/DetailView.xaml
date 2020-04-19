@@ -107,10 +107,10 @@
                         <Setter Property="Width" Value="120"/>
                         <Style.Triggers>
                         <Trigger Property="IsReadOnly" Value="True">
-                            <Setter Property="Background" Value="#48000000"/>
+                            <Setter Property="ContentBackground" Value="#80000000"/>
                         </Trigger>
                         <Trigger Property="IsReadOnly" Value="False">
-                            <Setter Property="Background" Value="#FF252525"/>
+                            <Setter Property="ContentBackground" Value="#FF252525"/>
                         </Trigger>
                         </Style.Triggers>
                     </Style>
