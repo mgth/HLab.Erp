@@ -36,7 +36,7 @@ namespace HLab.Erp.Base.Wpf
                 e => e._erp.Docs.OpenDocumentAsync(typeof(IconsListViewModel))
             ));
         public ICommand UserCommand { get; } = H.Command(c => c.Action(
-                e => e._erp.Docs.OpenDocumentAsync(typeof(ListUserViewModel))
+                e => e._erp.Docs.OpenDocumentAsync(typeof(UsersListViewModel))
             ));
         public ICommand ProfileCommand { get; } = H.Command(c => c.Action(
                 e => e._erp.Docs.OpenDocumentAsync(typeof(ProfilesListViewModel))

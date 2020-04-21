@@ -22,7 +22,7 @@ namespace HLab.Erp.Module
         }
 
         public ICommand ListUsersOpenDocumentCommand { get; } = H.Command(c => c
-            .Action(e => e._erp.Docs.OpenDocumentAsync(typeof(ListUserViewModel)))
+            .Action(e => e._erp.Docs.OpenDocumentAsync(typeof(UsersListViewModel)))
         );
 
         public void Load(IBootContext b) => _erp.Menu.RegisterMenu("tools/users", "{Users}",

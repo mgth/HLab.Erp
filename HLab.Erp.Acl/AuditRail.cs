@@ -1,8 +1,7 @@
-﻿using HLab.DependencyInjection.Annotations;
+﻿using System;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 using NPoco;
-using System;
 
 namespace HLab.Erp.Acl
 {

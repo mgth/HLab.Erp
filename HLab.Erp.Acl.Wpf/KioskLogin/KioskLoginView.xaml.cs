@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using HLab.Core;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
+using HLab.Erp.Acl.Annotations;
 using HLab.Erp.Acl.LoginServices;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Extensions;

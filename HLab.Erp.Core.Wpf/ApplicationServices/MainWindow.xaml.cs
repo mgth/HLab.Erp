@@ -10,6 +10,7 @@ using AvalonDock.Layout.Serialization;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
+using HLab.Erp.Acl.Annotations;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using MessageBox = System.Windows.MessageBox;

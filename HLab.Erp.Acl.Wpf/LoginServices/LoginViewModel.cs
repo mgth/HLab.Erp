@@ -3,13 +3,14 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
+using HLab.Erp.Acl.AuditTrails;
 using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl.LoginServices
 {
-    [Export(typeof(LoginViewModel))]
-    public class LoginViewModel : AuthenticationViewModel<LoginViewModel>
+    [Export(typeof(ILoginViewModel))]
+    public class LoginViewModel : AuthenticationViewModel<LoginViewModel>, ILoginViewModel
     {
         public string Title => "{Connection}";
 

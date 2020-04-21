@@ -5,16 +5,13 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf.Entities.Users
 {
-    public class ListUserViewModel : EntityListViewModel<ListUserViewModel,User>, IMvvmContextProvider
+    public class UsersListViewModel : EntityListViewModel<UsersListViewModel,User>, IMvvmContextProvider
     {
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
 
-        public override String Title => "{Users}";
-        public string Icon => "Icons/entities/Users";
-
-        public ListUserViewModel()
+        public UsersListViewModel()
         {
             DeleteAllowed = true;
             AddAllowed = true;

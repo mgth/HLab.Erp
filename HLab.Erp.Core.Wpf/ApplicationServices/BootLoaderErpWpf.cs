@@ -9,7 +9,6 @@ using HLab.Base;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
-using HLab.Erp.Acl.LoginServices;
 using HLab.Erp.Core.DragDrops;
 using HLab.Erp.Core.Update;
 using HLab.Mvvm;
@@ -46,7 +45,7 @@ namespace HLab.Erp.Core.ApplicationServices
 
 
         [Import]
-        public Func<LoginViewModel> GetLoginViewModel { get; set; }
+        public Func<ILoginViewModel> GetLoginViewModel { get; set; }
 
         [Import]
         public Func<ProgressLoadingViewModel> GetProgressLoadingViewModel { get; set; }
