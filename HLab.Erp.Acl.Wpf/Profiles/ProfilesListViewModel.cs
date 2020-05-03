@@ -1,7 +1,6 @@
-﻿using HLab.Erp.Acl;
-using HLab.Erp.Core.EntityLists;
+﻿using HLab.Erp.Core.EntityLists;
 
-namespace HLab.Erp.Base.Wpf.Entities.Profiles
+namespace HLab.Erp.Acl.Profiles
 {
     public class ProfilesListViewModel : EntityListViewModel<ProfilesListViewModel,Profile>
     {

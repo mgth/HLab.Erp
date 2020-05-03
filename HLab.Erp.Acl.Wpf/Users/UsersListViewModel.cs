@@ -1,9 +1,7 @@
-﻿using System;
-using HLab.Erp.Acl;
-using HLab.Erp.Core.EntityLists;
+﻿using HLab.Erp.Core.EntityLists;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Base.Wpf.Entities.Users
+namespace HLab.Erp.Acl.Users
 {
     public class UsersListViewModel : EntityListViewModel<UsersListViewModel,User>, IMvvmContextProvider
     {

@@ -2,20 +2,15 @@
 using System.Linq;
 using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Acl;
-using HLab.Erp.Base.Data;
-using HLab.Erp.Base.Wpf.Entities.Profiles;
+using HLab.Erp.Acl.Profiles;
 using HLab.Erp.Data;
-using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Base.Wpf.Entities.Users
+namespace HLab.Erp.Acl.Users
 {
     public class UserViewModel: EntityViewModel<UserViewModel,User>
     {
-
-
-        public string Title => _title.Get();
+        public override string Title => _title.Get();
         public IProperty<string> _title = H.Property<string>( c=> c
             .OneWayBind(e => e.Model.Name)
         );

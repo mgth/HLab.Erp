@@ -18,7 +18,7 @@ using HLab.Mvvm.Lang;
 
 namespace HLab.Erp.Core.EntityLists
 {
-    public class ColumnsProvider<T> where T:class, IEntity
+    public class ColumnsProvider<T> : IColumnsProvider<T> where T:class, IEntity
     {
         [Import]
         private IIconService _icons;
@@ -33,7 +33,7 @@ namespace HLab.Erp.Core.EntityLists
             _list = list;
         }
 
-        public ColumnsProvider<T> Icon(string caption, Func<T,string> iconPath,Func<T,object> orderBy=null,double height=25.0, string id=null)
+        public IColumnsProvider<T> Icon(string caption, Func<T,string> iconPath,Func<T,object> orderBy=null,double height=25.0, string id=null)
         {
             return ColumnAsync(caption, async (s) =>
             {
@@ -43,7 +43,7 @@ namespace HLab.Erp.Core.EntityLists
 
             }, orderBy);
         }
-        public ColumnsProvider<T> Localize(string caption, Func<T,string> text,Func<T,object> orderBy=null,double height=25.0, string id=null)
+        public IColumnsProvider<T> Localize(string caption, Func<T,string> text,Func<T,object> orderBy=null,double height=25.0, string id=null)
         {
             return ColumnAsync(caption, async (s) =>
             {
@@ -54,19 +54,19 @@ namespace HLab.Erp.Core.EntityLists
             }, orderBy);
         }
 
-        public ColumnsProvider<T> ColumnAsync(string caption, Func<T,Task<object>> f,Func<T,object> orderBy,string id=null)
+        public IColumnsProvider<T> ColumnAsync(string caption, Func<T,Task<object>> f,Func<T,object> orderBy,string id=null)
         {
             var c = new Column<T>(caption,t => new AsyncView{Getter = async () => await f(t)} ,orderBy, id, false);
             _dict.Add(c.Id,c);
             return this;
         }
-        public ColumnsProvider<T> Column(string caption, Func<T,object> f,string id=null)
+        public IColumnsProvider<T> Column(string caption, Func<T,object> f,string id=null)
         {
             var c = new Column<T>(caption,f,f, id, false);
             _dict.Add(c.Id,c);
             return this;
         }
-        public ColumnsProvider<T> Column(string caption,Func<T,object> getter, Func<T,object> orderBy,string id=null)
+        public IColumnsProvider<T> Column(string caption,Func<T,object> getter, Func<T,object> orderBy,string id=null)
         {
             var c = new Column<T>(caption,getter,orderBy, id, false);
             _dict.Add(c.Id,c);
@@ -78,7 +78,7 @@ namespace HLab.Erp.Core.EntityLists
         //    _dict.Add(c.Id,c);
         //    return this;
         //}
-        public ColumnsProvider<T> Hidden(string id, Func<T,object> f)
+        public IColumnsProvider<T> Hidden(string id, Func<T,object> f)
         {
             var c = new Column<T>("", f,null, id, true);
             _dict.Add(c.Id,c);
@@ -94,7 +94,7 @@ namespace HLab.Erp.Core.EntityLists
             else return null;
         }
 
-        public void PopulateGridView(DataGrid grid)
+        public void Populate(object grid)
         {
             foreach (var column in _dict.Values)
             {
@@ -127,12 +127,13 @@ namespace HLab.Erp.Core.EntityLists
                     CellTemplate = CreateColumnTemplate(column.Id),
                 };
 
-                grid.Columns.Add(c);
+                if(grid is DataGrid dataGrid)
+                    dataGrid.Columns.Add(c);
             }
 
         }
 
-        public GridView GetView()
+        public object GetView()
         {
             var gv = new GridView();
 

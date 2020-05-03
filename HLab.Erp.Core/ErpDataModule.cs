@@ -1,14 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using HLab.Base.Extensions;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Core;
-using HLab.Erp.Core.EntityLists;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Base.Wpf.Entities
+namespace HLab.Erp.Core
 {
+    public abstract class ErpParamModule<T, TList> : ErpDataModule<T,TList>
+        where T : ErpDataModule<T, TList>
+    {
+        protected override string MenuPath => "param";
+    }
     public abstract class ErpDataModule<T,TList> : N<T>, IBootloader 
         where T:ErpDataModule<T,TList>
     {
@@ -19,7 +21,8 @@ namespace HLab.Erp.Base.Wpf.Entities
             e => e._erp.Docs.OpenDocumentAsync(typeof(TList))
         ).CanExecute(e => true));
 
-        private string Name => GetType().Name.BeforeSuffix("DataModule").FromCamelCase();
+        private string Caption => Name.FromCamelCase();
+        private string Name => GetType().Name.BeforeSuffix("DataModule");
 
         private string EntityName()
         {
@@ -39,10 +42,11 @@ namespace HLab.Erp.Base.Wpf.Entities
             return "";
         }
 
-        protected virtual string Header => "{" + Name + "}";
+        protected virtual string Header => "{" + Caption + "}";
         protected virtual string IconPath => "Icons/Entities/" + EntityName();
 
-        public virtual void Load(IBootContext b) => _erp.Menu.RegisterMenu("data/"+ Name, Header,
+        protected virtual string MenuPath => "data";
+        public virtual void Load(IBootContext b) => _erp.Menu.RegisterMenu(MenuPath + "/" + Name, Header,
                 OpenCommand,
                 IconPath);
         

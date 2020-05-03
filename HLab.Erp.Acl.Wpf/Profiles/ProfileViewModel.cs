@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Acl;
-using HLab.Erp.Base.Wpf.Entities.Users;
-using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Acl.Users;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Base.Wpf.Entities.Profiles
+namespace HLab.Erp.Acl.Profiles
 {
     public class ProfileViewModel : EntityViewModel<ProfileViewModel,Profile>
     {
@@ -35,9 +31,9 @@ namespace HLab.Erp.Base.Wpf.Entities.Profiles
         );
 
         [Import]
-        private readonly Func<Profile, ListAclRightProfileViewModel> _getRightProfiles;
-        public ListAclRightProfileViewModel ProfileRights => _profileRights.Get();
-        private readonly IProperty<ListAclRightProfileViewModel> _profileRights = H.Property<ListAclRightProfileViewModel>(c => c
+        private readonly Func<Profile, AclRightProfileListViewModel> _getRightProfiles;
+        public AclRightProfileListViewModel ProfileRights => _profileRights.Get();
+        private readonly IProperty<AclRightProfileListViewModel> _profileRights = H.Property<AclRightProfileListViewModel>(c => c
             .On(e => e.Model)
             .NotNull(e => e.Model)
             .Set(e => e._getRightProfiles(e.Model))

@@ -22,7 +22,7 @@ namespace HLab.Erp.Core.EntityLists
         {
             if (e.NewValue is IEntityListViewModel vm)
             {
-                vm.PopulateDataGrid(DataGrid);
+                vm.Populate(DataGrid);
             }
         }
 

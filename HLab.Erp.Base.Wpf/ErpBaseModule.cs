@@ -9,8 +9,6 @@ using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Wpf.Entities.Countries;
 using HLab.Erp.Base.Wpf.Entities.Customers;
 using HLab.Erp.Base.Wpf.Entities.Icons;
-using HLab.Erp.Base.Wpf.Entities.Profiles;
-using HLab.Erp.Base.Wpf.Entities.Users;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
@@ -35,13 +33,6 @@ namespace HLab.Erp.Base.Wpf
         public ICommand IconCommand { get; } = H.Command(c => c.Action(
                 e => e._erp.Docs.OpenDocumentAsync(typeof(IconsListViewModel))
             ));
-        public ICommand UserCommand { get; } = H.Command(c => c.Action(
-                e => e._erp.Docs.OpenDocumentAsync(typeof(UsersListViewModel))
-            ));
-        public ICommand ProfileCommand { get; } = H.Command(c => c.Action(
-                e => e._erp.Docs.OpenDocumentAsync(typeof(ProfilesListViewModel))
-            ));
-
         public void Load(IBootContext b)
         {
                 _erp.Menu.RegisterMenu("param/country", "{Country}",
@@ -52,14 +43,6 @@ namespace HLab.Erp.Base.Wpf
                     IconCommand,
                     "Icons/Entities/Icon");
 
-                _erp.Menu.RegisterMenu("param/users", "{Users}",
-                    UserCommand,
-                    "Icons/Entities/User");
-
-                _erp.Menu.RegisterMenu("param/profiles", "{Profiles}",
-                    ProfileCommand,
-                    "Icons/Entities/Profile");
-            
         }
     }
 }

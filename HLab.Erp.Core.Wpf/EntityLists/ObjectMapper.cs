@@ -8,11 +8,11 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
         where T : class, IEntity
     {
         private readonly T _model;
-        private readonly ColumnsProvider<T> _columns;
+        private readonly IColumnsProvider<T> _columns;
 
         public T Model => _model;
 
-        public ObjectMapper(T model, ColumnsProvider<T> columns)
+        public ObjectMapper(T model, IColumnsProvider<T> columns)
         {
             _model = model;
             _columns = columns;

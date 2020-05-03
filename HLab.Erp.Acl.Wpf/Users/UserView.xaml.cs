@@ -2,7 +2,7 @@
 using HLab.Erp.Core;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Base.Wpf.Entities.Users
+namespace HLab.Erp.Acl.Users
 {
     /// <summary>
     /// Logique d'interaction pour UserView.xaml

@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using HLab.Base.Fluent;
 
 namespace HLab.Erp.Core.EntityLists
 {
@@ -48,7 +49,7 @@ namespace HLab.Erp.Core.EntityLists
     public abstract class EntityListViewModel<TClass> : ViewModel<TClass>, IEntityListViewModel
     where TClass : EntityListViewModel<TClass>
     {
-        public abstract void PopulateDataGrid(DataGrid grid);
+        public abstract void Populate(object grid);
 
         public abstract void SetOpenAction(Action<object> action);
         public abstract void SetSelectAction(Action<object> action);
@@ -89,7 +90,17 @@ namespace HLab.Erp.Core.EntityLists
 
         
         [Import] public ObservableQuery<T> List { get; }
-        public ColumnsProvider<T> Columns { get; }
+        public IColumnsProvider<T> Columns { get; }
+
+
+        public IEntityListViewModel<T> AddFilter<TFilter>(Action<FiltersFluentConfigurator<T,TFilter>> configure)
+            where TFilter : IFilterViewModel, new()
+        {
+            var c = new FiltersFluentConfigurator<T,TFilter>(List,new TFilter());
+            configure(c);
+            Filters.Add(c.Target);
+            return this;
+        }
 
         public ObservableCollection<dynamic> ListViewModel { get; } = new ObservableCollection<dynamic>();
         private readonly ConcurrentDictionary<T,dynamic> _cache = new ConcurrentDictionary<T, dynamic>();
@@ -195,7 +206,8 @@ namespace HLab.Erp.Core.EntityLists
 
         public GridView View => _view.Get();
         private readonly IProperty<GridView> _view = H.Property<GridView>(c => c
-            .Set(e => e.Columns.GetView()));
+            .Set(e => e.Columns.GetView() as GridView));
+
         public ListCollectionView ListCollectionView => _listCollectionView.Get();
         private readonly IProperty<ListCollectionView> _listCollectionView = H.Property<ListCollectionView>(c => c
             .Set(setter: e =>
@@ -205,32 +217,22 @@ namespace HLab.Erp.Core.EntityLists
                 return lcv;
             }));
 
-        public override void PopulateDataGrid(DataGrid grid)
+        public override void Populate(object grid)
         {
-
-            grid.SourceUpdated += delegate(object sender, DataTransferEventArgs args)
+            if (grid is DataGrid dataGrid)
             {
-                ICollectionView cv = CollectionViewSource.GetDefaultView(grid.ItemsSource);
-                if (cv != null)
+                dataGrid.SourceUpdated += delegate(object sender, DataTransferEventArgs args)
                 {
-                    cv.GroupDescriptions.Clear();
-                    cv.GroupDescriptions.Add(new PropertyGroupDescription("Group"));
-                }
-            };
+                    ICollectionView cv = CollectionViewSource.GetDefaultView(dataGrid.ItemsSource);
+                    if (cv != null)
+                    {
+                        cv.GroupDescriptions.Clear();
+                        cv.GroupDescriptions.Add(new PropertyGroupDescription("Group"));
+                    }
+                };
 
-            Columns.PopulateGridView(grid);
-
-            //foreach (var col in View.Columns)
-            //{
-            //    var h = col.Header as GridViewColumnHeader;
-
-
-            //    grid.Columns.Add(new DataGridTemplateColumn
-            //    {
-            //        Header = h?.Content,
-            //        CellTemplate = col.CellTemplate
-            //    }) ;
-            //}
+                Columns.Populate(grid);
+            }
         }
 
         public T Selected

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <RootNamespace>HLab.Erp.Acl</RootNamespace>
     <Platforms>AnyCPU;x64;x86</Platforms>
@@ -30,6 +30,7 @@
     <ProjectReference Include="..\HLab.Erp.Acl.Annotations\HLab.Erp.Acl.Annotations.csproj" />
     <ProjectReference Include="..\HLab.Erp.Acl\HLab.Erp.Acl.csproj" />
     <ProjectReference Include="..\HLab.Erp.Core.Annotations\HLab.Erp.Core.Annotations.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Core.Wpf\HLab.Erp.Core.Wpf.csproj" />
     <ProjectReference Include="..\HLab.Erp.Core\HLab.Erp.Core.csproj" />
     <ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj" />
   </ItemGroup>
