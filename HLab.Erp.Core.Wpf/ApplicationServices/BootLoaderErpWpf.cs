@@ -62,7 +62,7 @@ namespace HLab.Erp.Core.ApplicationServices
 
             base.Load(b);
 
-            MainWindow = new DefaultWindow()
+            MainWindow = new /*Default*/Window()
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 WindowState =  WindowState.Maximized
@@ -78,7 +78,7 @@ namespace HLab.Erp.Core.ApplicationServices
 
             var vm = GetLoginViewModel();
             var loginWindow = _erp.Mvvm.MainContext.GetView(vm,MainViewMode).AsWindow();
-            loginWindow.WindowState = WindowState.Maximized;
+            //loginWindow.WindowState = WindowState.Maximized;
 
             loginWindow.ShowDialog();
 

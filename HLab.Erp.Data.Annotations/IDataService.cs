@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 
 namespace HLab.Erp.Data
@@ -27,7 +28,7 @@ namespace HLab.Erp.Data
         void Done();
     }
 
-    public interface IDataService //: IService
+    public interface IDataService : IService
     {
         IDataTransaction GetTransaction();
         //T Get<T>();
@@ -77,5 +78,6 @@ namespace HLab.Erp.Data
         string ConnectionString { get; }
 
         DbTransaction BeginTransaction();
+        void SetConfigureAction(Func<string> action);
     }
 }

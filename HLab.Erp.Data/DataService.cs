@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HLab.DependencyInjection.Annotations;
 using HLab.Base;
+using HLab.Core;
 using HLab.Core.Annotations;
 using Npgsql;
 using NPoco;
@@ -167,8 +168,14 @@ namespace HLab.Erp.Data
 
 
     [Export(typeof(IDataService)), Singleton]
-    public class DataService : IDataService
+    public class DataService : Service, IDataService
     {
+        public DataService()
+        {
+            ServiceState = ServiceState.NotConfigured;
+        }
+
+
         public async Task<T> AddAsync<T>(Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {
@@ -324,24 +331,37 @@ namespace HLab.Erp.Data
         {
             var cache = GetCache<T>();
 
-            using var db = Get();
-
-            await using var enumerator = db.FetchAsync<T>().GetAsyncEnumerator();
-
-            var more = true;
-
-            while(more)
+            var retry = true;
+            while (retry)
             {
-                try
+                retry = false;
+                using (var db = Get())
                 {
-                    more = await enumerator.MoveNextAsync();
-                }
-                catch (NpgsqlException e)
-                {
-                    throw new DataException(e.Message,e);
-                }
+                    await using var enumerator = db.FetchAsync<T>().GetAsyncEnumerator();
+                    {
+                        var more = true;
 
-                if (more) yield return await cache.GetOrAddAsync(enumerator.Current).ConfigureAwait(false);
+                        while(more)
+                        {
+                            try
+                            {
+                                more = await enumerator.MoveNextAsync();
+                            }
+                            catch (ArgumentException e)
+                            {
+                                more = false;
+                                retry = Configure(e);
+                            }
+                            catch (NpgsqlException e)
+                            {
+                                throw new DataException(e.Message,e);
+                            }
+
+                            if (more) yield return await cache.GetOrAddAsync(enumerator.Current).ConfigureAwait(false);
+                        }
+
+                    }
+                }
             }
         }
 
@@ -350,7 +370,6 @@ namespace HLab.Erp.Data
             Db(action);
         }
 
-//        public List<T> FetchQuery<T>(Func<IQueryable<T>, IQueryable<T>> q)
         public IAsyncEnumerable<T> FetchWhereAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy = null)
             where T : class, IEntity
         {
@@ -376,7 +395,24 @@ namespace HLab.Erp.Data
 
                 if (orderBy != null) list = list.OrderBy(orderBy);
 
-                return cache.GetOrAddAsync(list.ToEnumerable());
+                var retry = true;
+                Exception ex = null;
+                while (retry)
+                {
+                    retry = false;
+                    try
+                    {
+                        return cache.GetOrAddAsync(list.ToEnumerable());
+
+                    }
+                    catch (ArgumentException e)
+                    {
+                        ex = e;
+                        retry = Configure(e);
+                    }
+                }
+
+                throw new DataException(ex.Message,ex);
             }
         }
 
@@ -458,13 +494,13 @@ namespace HLab.Erp.Data
 
         private IExportLocatorScope _container;
 
+        [Import] private IOptionsService _options;
+
         [Import(InjectLocation.AfterConstructor)]
-        public void Inject(IExportLocatorScope container, IOptionsService opt)
+        public void Inject(IExportLocatorScope container)
         {
-            opt.SetDataService(this);
+            _options.SetDataService(this);
             RegisterEntities(container);
-            var connectionString = opt.GetOptionString("Connection");
-            Register(connectionString,"");
         }
 
 
@@ -507,6 +543,7 @@ namespace HLab.Erp.Data
         {
             ConnectionString = connectionString;
             _driver = driver;
+            ServiceState = ServiceState.Available;
         }
 
         public DbTransaction BeginTransaction() => Get().Transaction;
@@ -559,29 +596,12 @@ namespace HLab.Erp.Data
                 }
                 catch (NpgsqlException exception)
                 {
-                    throw new DataException("Data connection failed",exception);
+                     throw new DataException("Data connection failed",exception);
                     Thread.Sleep(5000); 
                 }
             }
         }
 
-        //private async Task DbTryAsync(Func<IDatabase,Task> action)
-        //{
-        //    while (true)
-        //    {
-        //        try
-        //        {
-        //            using var d = Get();
-        //            await action(d);
-        //            return;
-        //        }
-        //        catch (NpgsqlException exception)
-        //        {
-        //            Thread.Sleep(5000); 
-        //        }
-        //    }
-
-        //}
         private async Task DbAsync(Func<IDatabase,Task> action) => await DbGetAsync(async db =>
         {
             await action(db);
@@ -602,6 +622,27 @@ namespace HLab.Erp.Data
                 }
             }
 
+        }
+
+        private Func<string> _getConnectionString = null;
+
+        public void SetConfigureAction(Func<string> action)
+        {
+            _getConnectionString = action;
+            var connectionString = _options.GetOptionString("Connection");
+            if (connectionString == null)
+            {
+                if (_getConnectionString == null) throw  new DataException("Invalid configuration",null);
+                connectionString = _getConnectionString();
+            }
+
+            Register(connectionString,"");
+
+        }
+
+        private bool Configure(Exception exception=null)
+        {   
+            return true;
         }
     }
 }

@@ -165,6 +165,7 @@ namespace HLab.Erp.Acl
             return await toNode.IsGrantedAsync(right, onNode).ConfigureAwait(false);
         }
 
+        public ServiceState ServiceState { get; internal set; } = ServiceState.Available;
 
         //private ConcurrentDictionary<string,DataLock> _locks = new ConcurrentDictionary<string,DataLock>();
 

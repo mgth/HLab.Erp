@@ -11,18 +11,23 @@ namespace HLab.Erp.Base.Wpf
     public class DbIconModule : IBootloader
     {
         [Import]
-        private IconService _icons;
+        private IIconService _icons;
         [Import]
-        private IDataService _db;
+        private IDataService _data;
 
         public void Load(IBootContext b)
         {
+            if (_data.ServiceState != ServiceState.Available)
+            {
+                b.Requeue(); return;
+            }
+
             LoadAsync();
         }
 
         public async void LoadAsync()
         {
-            var icons =  _db.FetchAsync<Icon>().ConfigureAwait(true);
+            var icons =  _data.FetchAsync<Icon>().ConfigureAwait(true);
 
             try
             {

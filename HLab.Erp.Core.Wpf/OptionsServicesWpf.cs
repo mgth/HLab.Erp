@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using HLab.Core;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
@@ -10,7 +11,7 @@ using Microsoft.Win32;
 namespace HLab.Erp.Core
 {
     [Export(typeof(IOptionsService)), Singleton]
-    public class OptionsServicesWpf : IOptionsService
+    public class OptionsServicesWpf : Service, IOptionsService
     {
         public void SetRegistryPath(string registryPath)
         {
@@ -46,7 +47,7 @@ namespace HLab.Erp.Core
             return new StreamWriter(fileName);
         }
 
-        public void SetDataService(IDataService data) => _data = data;
+        public void SetDataService(IService data) => _data = data as IDataService;
         private IDataService _data;
 
         public async Task<T> GetValue<T>(string name, int? userid, Func<T> defaultValue = null)
