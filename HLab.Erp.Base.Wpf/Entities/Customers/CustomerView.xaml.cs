@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
 using HLab.Erp.Core;
 using HLab.Mvvm.Annotations;
+using HLab.Mvvm.Application;
 
 namespace HLab.Erp.Base.Wpf.Entities.Customers
 {

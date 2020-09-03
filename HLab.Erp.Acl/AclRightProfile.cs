@@ -7,8 +7,11 @@ using NPoco;
 
 namespace HLab.Erp.Acl
 {
-    public class AclRightProfile : Entity<AclRightProfile>
+    using H = HD<AclRightProfile>;
+    public class AclRightProfile : Entity
     {
+        public AclRightProfile() => H.Initialize(this);
+
         public int? ProfileId
         {
             get => _profile.Id.Get();

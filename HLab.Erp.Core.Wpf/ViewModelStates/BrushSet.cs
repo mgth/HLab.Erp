@@ -4,8 +4,12 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.ViewModelStates
 {
-    public class BrushSet : ViewModel<BrushSet>
+    using H = H<BrushSet>;
+
+    public class BrushSet : ViewModel
     {
+        public BrushSet() => H.Initialize(this);
+
         public BrushSet Configure(State state, ViewModelState vmState)
         {
             State = state;

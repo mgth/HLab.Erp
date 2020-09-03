@@ -5,8 +5,12 @@ using NPoco;
 
 namespace HLab.Erp.Acl
 {
-    public class AuditTrail : Entity<AuditTrail>
+    using H = HD<AuditTrail>;
+
+    public class AuditTrail : Entity
     {
+        public AuditTrail() => H.Initialize(this);
+
         public string EntityClass 
         { 
             get => _entityClass.Get();

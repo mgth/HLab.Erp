@@ -8,7 +8,7 @@ using HLab.Mvvm.Icons;
 
 namespace HLab.Erp.Base.Wpf.Entities.Icons
 {
-    public class IconsListViewModel : EntityListViewModel<IconsListViewModel,Icon>, IMvvmContextProvider
+    public class IconsListViewModel : EntityListViewModel<Icon>, IMvvmContextProvider
     {
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {

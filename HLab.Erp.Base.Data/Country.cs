@@ -7,9 +7,12 @@ using NPoco;
 
 namespace HLab.Erp.Base.Data
 {
+    using H = HD<Country>;
 
-    public class Country : Entity<Country>,IListableModel
+    public class Country : Entity,IListableModel
     {
+        public Country() => H.Initialize(this);
+
         public string Name
         {
             get => _name.Get();

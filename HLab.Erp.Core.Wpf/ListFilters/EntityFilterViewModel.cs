@@ -7,8 +7,11 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.ListFilters
 {
-    public class EntityFilterViewModel : FilterViewModel<EntityFilterViewModel>, IEntityFilterViewModel
+    using H = H<EntityFilterViewModel>;
+
+    public class EntityFilterViewModel : FilterViewModel, IEntityFilterViewModel
     {
+        public EntityFilterViewModel() => H.Initialize(this);
 
         public INotifyCollectionChanged Query
         {

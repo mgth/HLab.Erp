@@ -7,6 +7,8 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.ViewModelStates
 {
+    using H = H<State>;
+ 
     public enum ViewModelState
     {
         Default,
@@ -26,8 +28,10 @@ namespace HLab.Erp.Core.ViewModelStates
         Text,
         TextBackground
     }
-    public class State : ViewModel<State>, ITriggerable
+    public class State : ViewModel, ITriggerable
     {
+        public State() => H.Initialize(this);
+
         private Func<Color> _getter;
         public State SetColor(Func<Color> getter)
         {

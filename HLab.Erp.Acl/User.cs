@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
@@ -7,8 +6,12 @@ using NPoco;
 
 namespace HLab.Erp.Acl
 {
-    public class User : Entity<User>, IListableModel
+    using H = HD<User>;
+
+    public class User : Entity, IListableModel
     {
+        public User() => H.Initialize(this);
+
         public string Name
         {
             get => _name.Get();

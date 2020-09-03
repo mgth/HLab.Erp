@@ -6,7 +6,7 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf.Entities.Customers
 {
-    public class CustomersListViewModel : EntityListViewModel<CustomersListViewModel,Customer>, IMvvmContextProvider
+    public class CustomersListViewModel : EntityListViewModel<Customer>, IMvvmContextProvider
     {
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {

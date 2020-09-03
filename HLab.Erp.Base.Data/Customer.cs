@@ -7,8 +7,13 @@ using NPoco;
 
 namespace HLab.Erp.Base.Data
 {
-    public class Customer : Corporation<Customer>, ILocalCache, IListableModel
+    using H = H<Customer>;
+
+    public class Customer : Corporation, ILocalCache, IListableModel
     {
+        public Customer() => H.Initialize(this); 
+
+
         [Ignore]
         public string Caption => _caption.Get();
         private readonly IProperty<string> _caption = H.Property<string>(c => c

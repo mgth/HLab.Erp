@@ -20,7 +20,7 @@ namespace HLab.Erp.Workflows
 
 
 
-    public abstract class Workflow<T> : N<T>, IWorkflow<T>
+    public abstract class Workflow<T> : NotifierBase, IWorkflow<T>
         where T : /*Workflow<T>, */class, IWorkflow<T>
     {
         protected Workflow(object target, IDataLocker locker)
@@ -30,6 +30,8 @@ namespace HLab.Erp.Workflows
 
             Target = target;
             _locker.Set(locker);
+
+            H<Workflow<T>>.Initialize(this);
 
             if(target is INotifyPropertyChanged n)
                 n.PropertyChanged += Target_PropertyChanged;
@@ -104,7 +106,7 @@ namespace HLab.Erp.Workflows
         public User User { get; set; }
         public object Target { get; }
         public IDataLocker Locker => _locker.Get();
-        private readonly IProperty<IDataLocker> _locker = H.Property<IDataLocker>();
+        private readonly IProperty<IDataLocker> _locker = H<Workflow<T>>.Property<IDataLocker>();
 
         //private readonly IProperty<object> _locker = H.Property<object>();
 
@@ -118,7 +120,7 @@ namespace HLab.Erp.Workflows
 
 
         public string Caption => _caption.Get();
-        private readonly IProperty<string> _caption = H.Property<string>(c => c
+        private readonly IProperty<string> _caption = H<Workflow<T>>.Property<string>(c => c
             .On(e => e.CurrentState)
             .Set(e => e.CurrentState.GetCaption(e))
             //.NotNull(e =>e.CurrentState)
@@ -126,7 +128,7 @@ namespace HLab.Erp.Workflows
         );
 
         public string IconPath => _iconPath.Get();
-        private readonly IProperty<string> _iconPath = H.Property<string>(c => c
+        private readonly IProperty<string> _iconPath = H<Workflow<T>>.Property<string>(c => c
             .On(e => e.CurrentState)
             .Set(e => e.CurrentState.GetIconPath(e))
             //.NotNull(e =>e.CurrentState)
@@ -134,7 +136,7 @@ namespace HLab.Erp.Workflows
         );
 
         public string SubIconPath => _subIconPath.Get();
-        private readonly IProperty<string> _subIconPath = H.Property<string>(c => c
+        private readonly IProperty<string> _subIconPath = H<Workflow<T>>.Property<string>(c => c
             .On(e => e.CurrentState)
             .Set(e => e.CurrentState.GetSubIconPath(e))
             //.NotNull(e =>e.CurrentState)
@@ -178,7 +180,7 @@ namespace HLab.Erp.Workflows
                     value?.Action(this as T);
             }
         }
-        private readonly IProperty<State> _currentState = H.Property<State>();
+        private readonly IProperty<State> _currentState = H<Workflow<T>>.Property<State>();
 
         public bool SetState(Func<State> setState)
         {

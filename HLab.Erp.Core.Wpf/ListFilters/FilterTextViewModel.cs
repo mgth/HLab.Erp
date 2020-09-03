@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using HLab.Base.Fluent;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
@@ -10,30 +9,12 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.ListFilters
 {
+    using H = H<FilterTextViewModel>;
 
-    public static class FilterTextExtension
+    public class FilterTextViewModel : FilterViewModel
     {
-        public static T Title<T>(this T c, string title)
-            where T : IFluentConfigurator<FilterTextViewModel>
-            => c.Set<T,FilterTextViewModel>(f => f.Title = title);
+        public FilterTextViewModel() => H.Initialize(this);
 
-        public static T Value<T>(this T c, string value)
-            where T : IFluentConfigurator<FilterTextViewModel>
-            => c.Set<T,FilterTextViewModel>(f => f.Value = value);
-
-        public static TConf Link<TConf,T>(this TConf c,IEntityListViewModel<T> vm, Expression<Func<T, string>> getter)
-            where TConf : IFiltersFluentConfigurator<T>, IFluentConfigurator<FilterTextViewModel>
-            where T : class, IEntity
-            => c.Set<TConf,FilterTextViewModel>(f =>
-            {
-                c.List.AddFilter(f.Title,()=> f.Match(getter));
-                f.Update = ()=> c.List.UpdateAsync();
-            });
-    }
-
-
-    public class FilterTextViewModel : FilterViewModel<FilterTextViewModel>
-    {
         public string Value {
             get => _value.Get();
             set => _value.Set(value);

@@ -5,8 +5,12 @@ using NPoco;
 
 namespace HLab.Erp.Acl
 {
-    public class AclGranted : Entity<AclGranted>
+    using H = HD<AclGranted> ;
+
+    public class AclGranted : Entity
     {
+        public AclGranted() => H.Initialize(this);
+
         public bool Deny
         {
             get => _aclGranted.Get();

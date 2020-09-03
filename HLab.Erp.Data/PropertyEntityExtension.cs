@@ -3,24 +3,25 @@ using HLab.Notify.PropertyChanged;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using HLab.Erp.Data.Observables;
+using HLab.Notify.PropertyChanged.PropertyHelpers;
 
 namespace HLab.Erp.Data
 {
     public static class PropertyEntityExtension
     {
-        public static NotifyConfigurator<TClass,PropertyHolder<TClass,T>> 
-            Foreign<TClass, T>(this NotifyConfigurator<TClass, PropertyHolder<TClass,T>> c,
+        public static NotifyConfigurator<TClass,PropertyHolder<T>> 
+            Foreign<TClass, T>(this NotifyConfigurator<TClass, PropertyHolder<T>> c,
             Expression<Func<TClass, int?>> idGetter
             )
             where TClass : NotifierBase,IEntity,IDataProvider
-            where T : Entity<T>
+            where T : Entity
         {
             var getter = idGetter.Compile();
 
 
 
             return c
-                .TriggerExpression(idGetter)
+                    .AddTriggerExpression(idGetter)
                 .On(e => e.DataService)
                 .NotNull(e => e.DataService)
                 .Set(e =>
@@ -38,11 +39,11 @@ namespace HLab.Erp.Data
             ;
         }
 
-        public static NotifyConfigurator<TClass, PropertyHolder<TClass,ObservableQuery<T>>> Foreign<TClass, T>(this NotifyConfigurator<TClass, PropertyHolder<TClass,ObservableQuery<T>>> c,
+        public static NotifyConfigurator<TClass, PropertyHolder<ObservableQuery<T>>> Foreign<TClass, T>(this NotifyConfigurator<TClass, PropertyHolder<ObservableQuery<T>>> c,
             Expression<Func<T, int?>> idGetter
             )
-            where TClass : Entity<TClass>,IDataProvider //NotifierBase,IEntity
-            where T : Entity<T>
+            where TClass : Entity,IDataProvider //NotifierBase,IEntity
+            where T : Entity
         {
             var getter = idGetter.Compile();
 

@@ -8,8 +8,12 @@ using NPoco;
 
 namespace HLab.Erp.Acl
 {
-    public class AclLink : Entity<AclLink>
+    using H = HD<AclLink>;
+
+    public class AclLink : Entity
     {
+        public AclLink() => H.Initialize(this);
+
         public int? GroupId
         {
             get => _group.Id.Get();

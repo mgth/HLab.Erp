@@ -7,14 +7,15 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.EntitySelectors
 {
-    public class ForeignViewModel<T> : EntityViewModel<ForeignViewModel<T>,T>, IForeignViewModel
+    public class ForeignViewModel<T> : EntityViewModel<T>, IForeignViewModel
         where T : class, IEntity<int>, INotifyPropertyChanged
     {
+        public ForeignViewModel() => H<ForeignViewModel<T>>.Initialize(this);
 
         [Import] private IDocumentService _doc;
-        public ICommand OpenCommand { get; } = H.Command(c => c.Action(
+        public ICommand OpenCommand { get; } = H<ForeignViewModel<T>>.Command(c => c.Action(
             e => e._doc.OpenDocumentAsync(e.Model) )
         );
-        public ICommand SelectCommand { get; } = H.Command(c => c);
+        public ICommand SelectCommand { get; } = H<ForeignViewModel<T>>.Command(c => c);
     }
 }

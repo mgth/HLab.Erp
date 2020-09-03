@@ -8,14 +8,15 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.Localization
 {
-    class LocalizationViewModel : ViewModel<LocalizationViewModel>
+    using H = H<LocalizationViewModel>;
+    class LocalizationViewModel : ViewModel
     {
         [Import]
         public ObservableQuery<LocalizeEntry> Entries { get; }
 
-        public IObservableFilter<LocalizeEntry> Base { get; } = H.Filter<LocalizeEntry>((e, f) => f
+        public IObservableFilter<LocalizeEntry> Base { get; } = H.Filter<LocalizeEntry>(c => c
             .AddFilter(p => p.Tag == "en-US")
-            .Link(() => e.Entries)
+            .Link(e => e.Entries)
         );
 
         public ObservableCollection<string> Tags = new ObservableCollection<string>();

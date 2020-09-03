@@ -283,8 +283,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dirkster.AvalonDock" Version="4.20.0" />
-    <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.20.0" />
+    <PackageReference Include="Dirkster.AvalonDock" Version="4.30.0" />
+    <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.30.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -293,8 +293,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
     <ProjectReference Include="..\HLab.Erp.Acl.Annotations\HLab.Erp.Acl.Annotations.csproj" />
-    <ProjectReference Include="..\HLab.Erp.Acl\HLab.Erp.Acl.csproj" />
-    <ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj" />
     <ProjectReference Include="..\HLab.Erp.Core.Annotations\HLab.Erp.Core.Annotations.csproj" />
     <ProjectReference Include="..\HLab.Erp.Core\HLab.Erp.Core.csproj" />
   </ItemGroup>
@@ -565,9 +563,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="ApplicationServices\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Update="EntitySelectors\EntitySelector.xaml.cs">
       <DependentUpon>EntitySelector.xaml</DependentUpon>
     </Compile>
@@ -613,9 +608,6 @@
     <Compile Update="Tools\Details\DetailView.xaml.cs">
       <DependentUpon>DetailView.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Update\ApplicationUpdateView.xaml.cs">
-      <DependentUpon>ApplicationUpdateView.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Views\DefaultSelectorView.xaml.cs">
       <DependentUpon>DefaultSelectorView.xaml</DependentUpon>
     </Compile>
@@ -637,9 +629,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="ApplicationServices\MainWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="EntitySelectors\EntitySelector.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -683,9 +672,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Tools\Details\DetailView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Update\ApplicationUpdateView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\DefaultSelectorView.xaml">

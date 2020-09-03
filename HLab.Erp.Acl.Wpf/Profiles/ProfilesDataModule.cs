@@ -2,6 +2,6 @@
 
 namespace HLab.Erp.Acl.Profiles
 {
-    public class ProfilesDataModule : ErpParamModule<ProfilesDataModule,ProfilesListViewModel>
+    public class ProfilesDataModule : ErpParamModule<ProfilesListViewModel>
     { }
 }

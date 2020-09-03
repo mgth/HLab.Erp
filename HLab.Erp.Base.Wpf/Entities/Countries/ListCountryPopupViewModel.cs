@@ -6,7 +6,7 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf.Entities.Countries
 {
-    class ListCountryPopupViewModel : EntityListViewModel<ListCountryPopupViewModel, Country>, IMvvmContextProvider
+    class ListCountryPopupViewModel : EntityListViewModel<Country>, IMvvmContextProvider
     {
         [Import]
         private ILocalizationService _localization;

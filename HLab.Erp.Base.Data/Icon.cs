@@ -8,8 +8,12 @@ using NPoco;
 
 namespace HLab.Erp.Base.Data
 {
-    public class Icon : Entity<Icon>, IListableModel
+    using H = H<Icon>;
+
+    public class Icon : Entity, IListableModel
     {
+        public Icon() => H.Initialize(this);
+
         [Column]
         public string Path
         {

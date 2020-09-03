@@ -1,15 +1,16 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using HLab.Erp.Data;
-using HLab.Notify;
-using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 using NPoco;
 
 namespace HLab.Erp.Acl
 {
-    public class DataLock : Entity<DataLock>
+    using H = HD<DataLock>;
+
+    public class DataLock : Entity
     {
+        public DataLock() => H.Initialize(this);
+
         public string EntityClass        {
             get => _entityClass.Get();
             set => _entityClass.Set(value);

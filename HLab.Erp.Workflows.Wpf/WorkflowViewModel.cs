@@ -6,10 +6,12 @@ using System.Linq;
 using System.Windows;
 using HLab.Mvvm;
 using HLab.Notify.Annotations;
+using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Workflows
 {
-    public class WorkflowViewModel:ViewModel<WorkflowViewModel,IWorkflow>
+    using H = H<WorkflowViewModel>;
+    public class WorkflowViewModel:ViewModel<IWorkflow>
     {
         private readonly ObservableCollection<WorkflowAction> _backwardActions = new ObservableCollection<WorkflowAction>();
         private readonly ObservableCollection<WorkflowAction> _actions = new ObservableCollection<WorkflowAction>();
@@ -23,6 +25,8 @@ namespace HLab.Erp.Workflows
             BackwardActions = new ReadOnlyObservableCollection<WorkflowAction>(_backwardActions);
             Actions = new ReadOnlyObservableCollection<WorkflowAction>(_actions);
             Highlights = new ReadOnlyObservableCollection<string>(_highlights);
+
+            H.Initialize(this);
         }
 
 

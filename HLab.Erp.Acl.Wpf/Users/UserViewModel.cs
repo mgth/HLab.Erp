@@ -8,8 +8,12 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl.Users
 {
-    public class UserViewModel: EntityViewModel<UserViewModel,User>
+    using H = H<UserViewModel>;
+
+    public class UserViewModel: EntityViewModel<User>
     {
+        public UserViewModel() => H.Initialize(this);
+
         public override string Title => _title.Get();
         public IProperty<string> _title = H.Property<string>( c=> c
             .OneWayBind(e => e.Model.Name)

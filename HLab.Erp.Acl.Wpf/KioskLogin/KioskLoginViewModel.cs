@@ -12,15 +12,17 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl.KioskLogin
 {
+    using H = H<KioskLoginViewModel>;
+
     [Export(typeof(KioskLoginViewModel))]
-    public class KioskLoginViewModel : ViewModel<KioskLoginViewModel>
+    public class KioskLoginViewModel : ViewModel
     {
        
         private readonly IAclService _logon;
         [Import] public KioskLoginViewModel(IAclService logon)
         {
             _logon = logon;
-            H.Initialize(this,OnPropertyChanged);
+            H.Initialize(this);
         }
 
 #if DEBUG

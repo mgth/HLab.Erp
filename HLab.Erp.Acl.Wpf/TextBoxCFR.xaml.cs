@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using HLab.Base;
 using HLab.Notify.PropertyChanged;
+using HLab.Notify.PropertyChanged.PropertyHelpers;
 
 namespace HLab.Erp.Acl
 {

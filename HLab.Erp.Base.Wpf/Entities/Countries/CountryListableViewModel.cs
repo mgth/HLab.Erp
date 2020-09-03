@@ -1,15 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HLab.Erp.Base.Data;
+﻿using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
 using HLab.Mvvm;
+using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Base.Wpf
+namespace HLab.Erp.Base.Wpf.Entities.Countries
 {
-    public class CountryListableViewModel : ViewModel<CountryListableViewModel,Country>, IListableModel
+    using H = H<CountryListableViewModel>;
+    public class CountryListableViewModel : ViewModel<Country>, IListableModel
     {
-        public string Caption => Model.Name;
-        public string IconPath => Model.IconPath;
+        public CountryListableViewModel() => H.Initialize(this);
+
+        public string Caption => _caption.Get();
+        private readonly IProperty<string> _caption = H.Property<string>(c => c
+            .OneWayBind(e => e.Model.Name));
+
+        public string IconPath => _iconPath.Get();
+        private readonly IProperty<string> _iconPath = H.Property<string>(c => c
+            .OneWayBind(e => e.Model.IconPath));
     }
 }

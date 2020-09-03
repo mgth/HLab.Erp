@@ -8,8 +8,12 @@ using Microsoft.Win32;
 
 namespace HLab.Erp.Base.Wpf.Entities.Countries
 {
-    public class CountryViewModel : EntityViewModel<CountryViewModel,Country>
+    using H = H<CountryViewModel>;
+
+    public class CountryViewModel : EntityViewModel<Country>
     {
+        public CountryViewModel() => H.Initialize(this);
+
         public string Title => _title.Get();
 
         private readonly IProperty<string> _title = H.Property<string>(c => c

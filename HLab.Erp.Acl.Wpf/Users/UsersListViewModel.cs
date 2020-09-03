@@ -3,7 +3,7 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Acl.Users
 {
-    public class UsersListViewModel : EntityListViewModel<UsersListViewModel,User>, IMvvmContextProvider
+    public class UsersListViewModel : EntityListViewModel<User>, IMvvmContextProvider
     {
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {

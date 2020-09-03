@@ -9,9 +9,13 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl.LoginServices
 {
+    using H = H<LoginViewModel>;
+
     [Export(typeof(ILoginViewModel))]
-    public class LoginViewModel : AuthenticationViewModel<LoginViewModel>, ILoginViewModel
+    public class LoginViewModel : AuthenticationViewModel, ILoginViewModel
     {
+        public LoginViewModel() => H.Initialize(this);
+
         public string Title => "{Connection}";
 
         [Import]

@@ -4,8 +4,12 @@ using NPoco;
 
 namespace HLab.Erp.Acl
 {
-    public class UserProfile : Entity<UserProfile>
+    using H = HD<UserProfile>;
+
+    public class UserProfile : Entity
     {
+        public UserProfile() => H.Initialize(this);
+
         public int? ProfileId
         {
             get => _profile.Id.Get();

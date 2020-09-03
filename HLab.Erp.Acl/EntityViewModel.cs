@@ -5,14 +5,11 @@ using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm;
-using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
-using Renci.SshNet;
 
 namespace HLab.Erp.Acl
 {
-    public class EntityViewModel<TClass, T> : ViewModel<TClass, T>
-        where TClass : EntityViewModel<TClass, T>
+    public class EntityViewModel<T> : ViewModel<T>
         where T : class, IEntity<int>, INotifyPropertyChanged
     {
         [Import] private readonly IDocumentService _docs;
@@ -23,7 +20,7 @@ namespace HLab.Erp.Acl
 
         public DataLocker<T> Locker => _locker.Get();
 
-        private readonly IProperty<DataLocker<T>> _locker = H.Property<DataLocker<T>>(c => c
+        private readonly IProperty<DataLocker<T>> _locker = H<EntityViewModel<T>>.Property<DataLocker<T>>(c => c
             .On(e => e.Model)
             .NotNull(e => e.Model)
             .Set(e => e.GetLocker())
@@ -54,11 +51,11 @@ namespace HLab.Erp.Acl
         public virtual AclRight EditRight => null;
 
         public virtual bool EditAllowed => _editAllowed.Get();
-        private IProperty<bool> _editAllowed = H.Property<bool>(c => c
+        private IProperty<bool> _editAllowed = H<EntityViewModel<T>>.Property<bool>(c => c
             .Set(e => e.Acl.IsGranted(e.EditRight))
         );
 
-        private IProperty<bool> _onEditAllowed = H.Property<bool>(c => c
+        private IProperty<bool> _onEditAllowed = H<EntityViewModel<T>>.Property<bool>(c => c
             .On(e => e.EditAllowed)
             .On(e => e.Locker)
             .NotNull(e => e.Locker)
@@ -70,7 +67,7 @@ namespace HLab.Erp.Acl
 
         public virtual string IconPath => "icons/entities/" + typeof(T).Name;
 
-        public ICommand CloseCommand { get; } = H.Command(c => c
+        public ICommand CloseCommand { get; } = H<EntityViewModel<T>>.Command(c => c
             .Action(e =>
             {
                 if (e.Locker.IsActive)
@@ -92,7 +89,7 @@ namespace HLab.Erp.Acl
         );
 
         public bool CanClose => _canClose.Get();
-        private readonly IProperty<bool> _canClose = H.Property<bool>(c => c
+        private readonly IProperty<bool> _canClose = H<EntityViewModel<T>>.Property<bool>(c => c
             .On(e => e.Locker.IsActive)
             .Set(e => !e.Locker.IsActive)
         );

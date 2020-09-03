@@ -1,5 +1,6 @@
 ﻿
 using AvalonDock.Layout.Serialization;
+using HLab.Erp.Core._obsolete;
 
 namespace HLab.Erp.Core.ApplicationServices
 {

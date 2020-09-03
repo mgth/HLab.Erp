@@ -3,7 +3,7 @@ using HLab.Erp.Data;
 
 namespace HLab.Erp.Core
 {
-    public class EntityString : Entity<EntityString,int>, IEntity
+    public class EntityString : Entity<int>, IEntity
     {
 
         private static int _cnt = 0;

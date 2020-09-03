@@ -14,6 +14,7 @@ using HLab.Core;
 using HLab.Core.Annotations;
 using Npgsql;
 using NPoco;
+using HLab.Options;
 
 namespace HLab.Erp.Data
 {
@@ -168,7 +169,7 @@ namespace HLab.Erp.Data
 
 
     [Export(typeof(IDataService)), Singleton]
-    public class DataService : Service, IDataService
+    public class DataService : IDataService, IService
     {
         public DataService()
         {
@@ -499,7 +500,7 @@ namespace HLab.Erp.Data
         [Import(InjectLocation.AfterConstructor)]
         public void Inject(IExportLocatorScope container)
         {
-            _options.SetDataService(this);
+            //TODO : _options.SetDataService(this);
             RegisterEntities(container);
         }
 
@@ -629,7 +630,7 @@ namespace HLab.Erp.Data
         public void SetConfigureAction(Func<string> action)
         {
             _getConnectionString = action;
-            var connectionString = _options.GetOptionString("Connection");
+            var connectionString = _options.GetValue<string>("Connection",null,null,"registry");
             if (connectionString == null)
             {
                 if (_getConnectionString == null) throw  new DataException("Invalid configuration",null);
@@ -644,5 +645,7 @@ namespace HLab.Erp.Data
         {   
             return true;
         }
+
+        public ServiceState ServiceState { get; private set; }
     }
 }

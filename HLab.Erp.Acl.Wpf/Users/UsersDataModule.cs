@@ -2,7 +2,7 @@
 
 namespace HLab.Erp.Acl.Users
 {
-    public class UsersDataModule : ErpParamModule<UsersDataModule, UsersListViewModel>
+    public class UsersDataModule : ErpParamModule<UsersListViewModel>
     {
     }
 }

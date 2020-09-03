@@ -2,6 +2,7 @@
 using System.Windows.Controls.Primitives;
 using HLab.Erp.Core.ViewModels;
 using HLab.Mvvm.Annotations;
+using HLab.Mvvm.Application;
 
 namespace HLab.Erp.Core.EntityLists
 {

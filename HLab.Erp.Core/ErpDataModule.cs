@@ -6,20 +6,21 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core
 {
-    public abstract class ErpParamModule<T, TList> : ErpDataModule<T,TList>
-        where T : ErpDataModule<T, TList>
+    public abstract class ErpParamModule<TList> : ErpDataModule<TList>
     {
         protected override string MenuPath => "param";
     }
-    public abstract class ErpDataModule<T,TList> : N<T>, IBootloader 
-        where T:ErpDataModule<T,TList>
+    public abstract class ErpDataModule<TList> : NotifierBase, IBootloader 
     {
         [Import]
         private readonly IErpServices _erp;
 
-        public ICommand OpenCommand { get; } = H.Command(c => c.Action(
-            e => e._erp.Docs.OpenDocumentAsync(typeof(TList))
-        ).CanExecute(e => true));
+        protected ErpDataModule() => H<ErpDataModule<TList>>.Initialize(this);
+
+        public ICommand OpenCommand { get; } = H<ErpDataModule<TList>>.Command(c => c
+            .Action(e => e._erp.Docs.OpenDocumentAsync(typeof(TList)))
+            .CanExecute(e => true)
+        );
 
         private string Caption => Name.FromCamelCase();
         private string Name => GetType().Name.BeforeSuffix("DataModule");

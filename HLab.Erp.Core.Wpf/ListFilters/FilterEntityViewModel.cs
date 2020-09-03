@@ -10,7 +10,7 @@ using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.ListFilters
 {
-    class FilterEntityViewModel<TClass>: FilterViewModel<FilterEntityViewModel<TClass>>
+    class FilterEntityViewModel<TClass>: FilterViewModel
     where TClass : class, IEntity
     {
 

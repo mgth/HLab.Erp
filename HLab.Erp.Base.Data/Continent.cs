@@ -1,17 +1,18 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Data
 {
-    public class Continent : Entity<Continent>
+    public class Continent : Entity
     {
-        [Column("Nom")]
+        public Continent() => HD<Continent>.Initialize(this);
+
         public string Name
         {
             get => _name.Get();
             set => _name.Set(value);
         }
-        IProperty<string> _name = H.Property<string>(c => c.Default(""));
+
+        private readonly IProperty<string> _name = HD<Continent>.Property<string>(c => c.Default(""));
     }
 }

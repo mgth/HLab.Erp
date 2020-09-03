@@ -3,14 +3,15 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
-using HLab.DependencyInjection.Annotations;
-using HLab.Mvvm;
-using HLab.Mvvm.Annotations;
-using HLab.Notify.PropertyChanged;
 using AvalonDock;
+using HLab.Erp.Core.ApplicationServices;
+using HLab.Mvvm;
+using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.ApplicationServices
+namespace HLab.Erp.Core._obsolete
 {
+    using H = H<AvalonDockLayoutViewModel>;
+
     /// <summary>
     /// Class implements a viewmodel to support the
     /// <seealso cref="AvalonDockLayoutSerializer"/>
@@ -18,7 +19,7 @@ namespace HLab.Erp.Core.ApplicationServices
     /// load/save of layout information on application
     /// start and shut-down.
     /// </summary>
-    public class AvalonDockLayoutViewModel : ViewModel<AvalonDockLayoutViewModel>
+    public class AvalonDockLayoutViewModel : ViewModel
     {
         #region fields
         private const string LayoutFileName = "Layout.config";
@@ -44,6 +45,7 @@ namespace HLab.Erp.Core.ApplicationServices
         public AvalonDockLayoutViewModel(ILayoutViewModelParent parent)
         {
             this._Parent = parent;
+            H.Initialize(this);
         }
 
         #endregion

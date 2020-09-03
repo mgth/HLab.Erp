@@ -9,8 +9,12 @@ using NPoco;
 
 namespace HLab.Erp.Acl
 {
-    public class AclNode : Entity<AclNode>
+    using H = HD<AclNode>;
+
+    public class AclNode : Entity
     {
+        public AclNode() => H.Initialize(this);
+
         public string Name
         {
             get => _name.Get();

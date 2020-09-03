@@ -65,11 +65,9 @@ namespace HLab.Erp.Data.Observables
         public ObservableQuery(IDataService db):base(false)
         {
             _db = db;
-            H.Initialize(this,OnPropertyChanged);
+            H<ObservableQuery<T>>.Initialize(this);
             Suspender = new Suspender(()=>UpdateAsync());
         }
-
-        protected new class H : NotifyHelper<ObservableQuery<T>> { }
 
         private readonly IDataService _db;
         public Suspender Suspender { get; }
@@ -132,7 +130,7 @@ namespace HLab.Erp.Data.Observables
             get => _sourceQuery.Get();
             set => _sourceQuery.Set(value);
         }
-        private readonly IProperty<Func<IQueryable<T>, IQueryable<T>>> _sourceQuery = H.Property<Func<IQueryable<T>, IQueryable<T>>>(c => c
+        private readonly IProperty<Func<IQueryable<T>, IQueryable<T>>> _sourceQuery = H<ObservableQuery<T>>.Property<Func<IQueryable<T>, IQueryable<T>>>(c => c
            .Set(e =>(Func<IQueryable<T>, IQueryable<T>>)(q => q))
         );
 
@@ -141,7 +139,7 @@ namespace HLab.Erp.Data.Observables
             get => _sourceEnumerable.Get();
             set => _sourceEnumerable.Set(value);
         }
-        private readonly IProperty<Func<IAsyncEnumerable<T>>> _sourceEnumerable = H.Property<Func<IAsyncEnumerable<T>>>();
+        private readonly IProperty<Func<IAsyncEnumerable<T>>> _sourceEnumerable = H<ObservableQuery<T>>.Property<Func<IAsyncEnumerable<T>>>();
 
         private Expression<Func<T,bool>> Where()
         {

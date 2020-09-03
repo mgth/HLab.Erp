@@ -8,8 +8,9 @@
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
              xmlns:data="clr-namespace:HLab.Erp.Acl;assembly=HLab.Erp.Acl"
-             xmlns:views="clr-namespace:HLab.Erp.Core.Views;assembly=HLab.Erp.Core.Wpf" xmlns:converters="clr-namespace:HLab.Base.Converters;assembly=HLab.Base.Wpf"
-             xmlns:profiles1="clr-namespace:HLab.Erp.Acl.Profiles"
+             xmlns:views="clr-namespace:HLab.Erp.Core.Views;assembly=HLab.Erp.Core.Wpf"
+             xmlns:profiles="clr-namespace:HLab.Erp.Acl.Profiles"
+             xmlns:converters="clr-namespace:HLab.Base.Wpf.Converters;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type users:UserViewModelDesign}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
@@ -77,7 +78,7 @@
                         <entitySelectors:ForeignView 
                             HorizontalAlignment="Left"
                             ModelClass="{x:Type data:Profile}"
-                            ListClass="{x:Type profiles1:ProfilesListViewModel}"
+                            ListClass="{x:Type profiles:ProfilesListViewModel}"
                             Command="{Binding AddProfileCommand}"
                         />
                     </StackPanel>

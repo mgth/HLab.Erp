@@ -8,8 +8,12 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl.Profiles
 {
-    public class ProfileViewModel : EntityViewModel<ProfileViewModel,Profile>
+    using H = H<ProfileViewModel>;
+
+    public class ProfileViewModel : EntityViewModel<Profile>
     {
+        public ProfileViewModel() => H.Initialize(this);
+
         public string Title => _title.Get();
         private IProperty<string> _title = H.Property<string>(c => c
             .On(e => e.Model.Name).Set(e => "{Profile}\n"+e.Model.Name)

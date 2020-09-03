@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Net;
-using System.Security;
-using System.Windows;
 using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
-using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Views;
@@ -14,8 +10,10 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl.AuditTrails
 {
+    using H = H<AuditTrailMotivationViewModel>;
+
     [Export(typeof(IAuditTrailProvider))]
-    public class AuditTrailMotivationViewModel : AuthenticationViewModel<AuditTrailMotivationViewModel>, IAuditTrailProvider
+    public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrailProvider
     {
         [Import]
         public IIconService IconService {get;}
@@ -132,113 +130,6 @@ namespace HLab.Erp.Acl.AuditTrails
                 Message = "Failed to write audit entry";
             }
             return false;
-        }
-    }
-
-    public class AuthenticationViewModel<T> : ViewModel<T>
-        where T : AuthenticationViewModel<T>
-    {
-        [Import] protected readonly IAclService Acl;
-
-
-        public string Message
-        {
-            get => _message.Get();
-            set => _message.Set(value);
-        }
-        private readonly IProperty<string> _message = H.Property<string>(nameof(Message));
-
-
-        public void SetPassword(SecureString password)
-        {
-            Credential.SecurePassword = password;
-        }
-
-        public string Login
-        {
-            get => _login.Get();
-            set
-            {
-                if(_login.Set(value))
-                {
-                    Credential.UserName = value;
-                }
-            }
-        }
-        private IProperty<string> _login = H.Property<string>(c => c
-#if DEBUG
-                    .Default("admin")
-#else
-                    .Default("")
-#endif
-        );
-
-        public User User
-        {
-            get => _user.Get();
-            set
-            {
-                if (_user.Set(value))
-                {
-                    Login = value?.Login;
-                }
-            }
-        }
-        private IProperty<User> _user = H.Property<User>();
-
-
-        public string Password
-        {
-            get => _password.Get();
-            set => _password.Set(value);
-        }
-        private IProperty<string> _password = H.Property<string>(c => c
-#if DEBUG
-        .Default("VEqwosdLL6ZPetwK5aFlIg")
-#else
-        .Default("")
-
-#endif
-        );
-
-        public NetworkCredential Credential
-        {
-            get => _credential.Get();
-            set
-            {
-                if(_credential.Set(value))
-                {
-                    Login = value?.UserName;
-                    Password = Acl.Crypt(value.SecurePassword);
-                }
-            }
-        }
-        private readonly IProperty<NetworkCredential> _credential = H.Property<NetworkCredential>(c => c
-#if DEBUG
-        
-        .Default(new NetworkCredential("admin", "blagueur"))
-#else
-        .Default(new NetworkCredential("", ""))
-#endif
-        );
-
-
-#if DEBUG
-        public Visibility DebugVisibility => Visibility.Visible;
-#else
-        public Visibility DebugVisibility => Visibility.Collapsed;
-#endif
-        public ObservableQuery<User> UserList => _userList.Get();
-        private readonly IProperty<ObservableQuery<User>> _userList = H.Property<ObservableQuery<User>>(nameof(UserList));
-
-        //TODO : respect template
-        [Import(InjectLocation.AfterConstructor)]
-        private void _setUserList(ObservableQuery<User> userlist)
-        {
-            _userList.Set(userlist
-                .AddFilter(()=>u => u.Note.Contains("<balances>"))
-                .FluentUpdate()            
-            );
         }
     }
 }

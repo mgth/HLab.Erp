@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Linq;
-using HLab.Erp.Acl.Users;
 using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilters;
 using HLab.Mvvm.Annotations;
-using Microsoft.AspNetCore.Http.Features;
 
 namespace HLab.Erp.Acl.AuditTrails
 {
-    public class AuditTrailsDataModule : ErpParamModule<AuditTrailsDataModule, AuditTrailsListViewModel>
+    public class AuditTrailsDataModule : ErpParamModule<AuditTrailsListViewModel>
     {
     }
 
-    public class AuditTrailsListViewModel : EntityListViewModel<AuditTrailsListViewModel,AuditTrail>, IMvvmContextProvider
+    public class AuditTrailsListViewModel : EntityListViewModel<AuditTrail>, IMvvmContextProvider
     {
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
@@ -70,7 +67,7 @@ namespace HLab.Erp.Acl.AuditTrails
             List.UpdateAsync();
         }
     }
-    public class AuditTrailViewModel : EntityViewModel<AuditTrailViewModel, AuditTrail>
+    public class AuditTrailViewModel : EntityViewModel<AuditTrail>
     {
 
     }

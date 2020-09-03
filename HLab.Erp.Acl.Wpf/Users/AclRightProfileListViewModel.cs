@@ -2,7 +2,7 @@
 
 namespace HLab.Erp.Acl.Users
 {
-    public class AclRightProfileListViewModel : EntityListViewModel<AclRightProfileListViewModel,AclRightProfile>
+    public class AclRightProfileListViewModel : EntityListViewModel<AclRightProfile>
     {
         public AclRightProfileListViewModel(AclRight right)
         {

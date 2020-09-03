@@ -5,7 +5,9 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Data
 {
-    public class LocalizeEntry : Entity<LocalizeEntry>, ILocalizeEntry
+    using H = HD<LocalizeEntry>;
+
+    public class LocalizeEntry : Entity, ILocalizeEntry
     {
         public string Tag
         {

@@ -22,10 +22,11 @@ namespace HLab.Erp.Core.Lists.QueryLists
     }
 
     public abstract class QueryListBase<T> : ObservableCollectionNotifier<T>, IQueryList, IViewModel
-        //where T : INotifyPropertyChanged
     {
         //public ModelCommand CreateCommand => this.GetCommand(Create, ()=>true);
         //public ModelCommand DeleteCommand => this.GetCommand(Delete, ()=>false);
+
+        protected QueryListBase() => H<QueryListBase<T>>.Initialize(this);
 
         protected abstract void Create();
         protected abstract void Delete();
@@ -35,7 +36,7 @@ namespace HLab.Erp.Core.Lists.QueryLists
             get => _viewMode.Get();
             set => _viewMode.Set(value);
         }
-        private IProperty<Type> _viewMode = H.Property<Type>(c => c.Default(typeof(ViewModeDefault)));
+        private IProperty<Type> _viewMode = H<QueryListBase<T>>.Property<Type>(c => c.Default(typeof(ViewModeDefault)));
 
         public abstract Type EntityType { get; }
         public IMvvmContext MvvmContext { get; set; }
@@ -129,7 +130,7 @@ namespace HLab.Erp.Core.Lists.QueryLists
             get => _sourceFunc.Get();
             set => _sourceFunc.Set(value);
         }
-        private IProperty<Func<IQueryable<T>>> _sourceFunc = H.Property<Func<IQueryable<T>>>();
+        private IProperty<Func<IQueryable<T>>> _sourceFunc = H<QueryListBase<T, TVm, TThis>>.Property<Func<IQueryable<T>>>();
 
         //public IQueryProvider<T> Source => N.Get(() =>
         //{

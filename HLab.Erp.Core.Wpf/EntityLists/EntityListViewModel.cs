@@ -23,7 +23,7 @@ using HLab.Base.Fluent;
 
 namespace HLab.Erp.Core.EntityLists
 {
-    public class ListableEntityListViewModel<T> : EntityListViewModel<ListableEntityListViewModel<T>, T>
+    public class ListableEntityListViewModel<T> : EntityListViewModel<T>
         where T : class, IEntity, IListableModel, new()
     {
         public ListableEntityListViewModel()
@@ -46,15 +46,15 @@ namespace HLab.Erp.Core.EntityLists
         }
     }
 
-    public abstract class EntityListViewModel<TClass> : ViewModel<TClass>, IEntityListViewModel
-    where TClass : EntityListViewModel<TClass>
+    public abstract class EntityListViewModel : ViewModel, IEntityListViewModel
     {
+        public EntityListViewModel() => H<EntityListViewModel>.Initialize(this);
         public abstract void Populate(object grid);
 
         public abstract void SetOpenAction(Action<object> action);
         public abstract void SetSelectAction(Action<object> action);
         public ObservableCollection<IFilterViewModel> Filters { get; } = new ObservableCollection<IFilterViewModel>();
-        public ICommand AddCommand { get; } = H.Command(c => c
+        public ICommand AddCommand { get; } = H<EntityListViewModel>.Command(c => c
                 .Action(async e => await e.AddEntityAsync())
         );
         protected abstract Task AddEntityAsync();
@@ -62,12 +62,11 @@ namespace HLab.Erp.Core.EntityLists
         public abstract ICommand DeleteCommand { get; }
     }
 
-    public abstract class EntityListViewModel<TClass,T> : EntityListViewModel<TClass>, IEntityListViewModel<T>
-    where TClass : EntityListViewModel<TClass, T>
+    public abstract class EntityListViewModel<T> : EntityListViewModel, IEntityListViewModel<T>
         where T : class, IEntity, new()
     {
         public virtual string Title => _title.Get();
-        private IProperty<string> _title = H.Property<string>(c => c
+        private readonly IProperty<string> _title = H<EntityListViewModel<T>>.Property<string>(c => c
             .Set(e => "{" + e.GetTitle() + "}")
         );
 
@@ -114,14 +113,17 @@ namespace HLab.Erp.Core.EntityLists
             List.CollectionChanged += List_CollectionChanged;
 
             OpenAction = target => _docs.OpenDocumentAsync(target);
+            
+            H<EntityListViewModel<T>>.Initialize(this);
+
         }
 
-        public ICommand OpenCommand { get; } = H.Command(c => c
+        public ICommand OpenCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
             .CanExecute(e=>e.Selected!=null)
             .Action(e => e.OpenAction.Invoke(e.Selected))
             .On(e => e.Selected).CheckCanExecute()
         );
-        public ICommand RefreshCommand { get; } = H.Command(c => c
+        public ICommand RefreshCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
             .Action(async e => await e.List.UpdateAsync())
         );
 
@@ -154,10 +156,10 @@ namespace HLab.Erp.Core.EntityLists
         protected virtual void ConfigureEntity(T entity) { }
 
         public bool AddAllowed {get => _addAllowed.Get(); set => _addAllowed.Set(value);}
-        private readonly IProperty<bool> _addAllowed = H.Property<bool>();
+        private readonly IProperty<bool> _addAllowed = H<EntityListViewModel<T>>.Property<bool>();
 
         public bool DeleteAllowed {get => _deleteAllowed.Get(); set => _deleteAllowed.Set(value);}
-        private readonly IProperty<bool> _deleteAllowed = H.Property<bool>();
+        private readonly IProperty<bool> _deleteAllowed = H<EntityListViewModel<T>>.Property<bool>();
 
 
         private void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -205,11 +207,11 @@ namespace HLab.Erp.Core.EntityLists
         }
 
         public GridView View => _view.Get();
-        private readonly IProperty<GridView> _view = H.Property<GridView>(c => c
+        private readonly IProperty<GridView> _view = H<EntityListViewModel<T>>.Property<GridView>(c => c
             .Set(e => e.Columns.GetView() as GridView));
 
         public ListCollectionView ListCollectionView => _listCollectionView.Get();
-        private readonly IProperty<ListCollectionView> _listCollectionView = H.Property<ListCollectionView>(c => c
+        private readonly IProperty<ListCollectionView> _listCollectionView = H<EntityListViewModel<T>>.Property<ListCollectionView>(c => c
             .Set(setter: e =>
             {
                 var lcv = new ListCollectionView(e.ListViewModel);
@@ -249,7 +251,7 @@ namespace HLab.Erp.Core.EntityLists
             }
         }
 
-        private readonly IProperty<T> _selected = H.Property<T>();
+        private readonly IProperty<T> _selected = H<EntityListViewModel<T>>.Property<T>();
 
         public dynamic SelectedViewModel
         {
@@ -257,10 +259,10 @@ namespace HLab.Erp.Core.EntityLists
             set => Selected = value?.Model;
         }
 
-        private readonly IProperty<dynamic> _selectedViewModel = H.Property<dynamic>(c => c
+        private readonly IProperty<dynamic> _selectedViewModel = H<EntityListViewModel<T>>.Property<dynamic>(c => c
             .On(e => e.Selected)
             .Set(e => e.Selected==null?null:e._cache.GetOrAdd(e.Selected, o => new ObjectMapper<T>(o, e.Columns))));
-        public override ICommand DeleteCommand { get; } = H.Command(c => c
+        public override ICommand DeleteCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
                 .CanExecute(e => e.CanExecuteDelete())
                 .Action(async e => await e.DeleteEntityAsync(e.Selected))
                 .On(e => e.Selected).CheckCanExecute()

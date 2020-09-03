@@ -7,7 +7,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
         ICorporation Model { get; }
     }
 
-    public class CustomerViewModel : CorporationViewModel<CustomerViewModel, Customer>
+    public class CustomerViewModel : CorporationViewModel<Customer>
     {
 
 

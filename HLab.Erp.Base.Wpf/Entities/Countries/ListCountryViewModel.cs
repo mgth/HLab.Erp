@@ -8,7 +8,7 @@ using HLab.Mvvm.Lang;
 
 namespace HLab.Erp.Base.Wpf.Entities.Countries
 {
-    class ListCountryViewModel : EntityListViewModel<ListCountryViewModel,Country>, IMvvmContextProvider
+    class ListCountryViewModel : EntityListViewModel<Country>, IMvvmContextProvider
     {
         [Import]
         private IIconService _icons;

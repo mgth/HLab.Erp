@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
+using HLab.Erp.Acl.Users;
 using HLab.Erp.Core;
 using HLab.Notify.PropertyChanged;
 

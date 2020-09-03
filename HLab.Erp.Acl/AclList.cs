@@ -6,8 +6,12 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl
 {
-    public class AclList : Entity<AclList>
+    using H = HD<AclList>;
+
+    public class AclList : Entity
     {
+        public AclList() => H.Initialize(this);
+
         [Column]
         public string Target
         {

@@ -6,8 +6,12 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl
 {
-    public class Profile : Entity<Profile>
+    using H = HD<Profile>;
+
+    public class Profile : Entity
     {
+        public Profile() => H.Initialize(this);
+
         public string Name
         {
             get => _name.Get();

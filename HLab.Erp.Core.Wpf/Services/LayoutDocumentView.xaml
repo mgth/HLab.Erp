@@ -6,12 +6,12 @@
                        xmlns:xcad="https://github.com/Dirkster99/AvalonDock"
                      xmlns:annotations="clr-namespace:HLab.Mvvm.Annotations;assembly=HLab.Mvvm.Annotations"
                      xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
-                     xmlns:core="clr-namespace:HLab.Erp.Core;assembly=HLab.Erp.Core.Annotations"
+             xmlns:application="clr-namespace:HLab.Mvvm.Application;assembly=HLab.Mvvm.Application"
                      mc:Ignorable="d" 
              >
 
     <mvvm:ViewLocator 
-        ViewClass="{x:Type core:IViewClassDocument}"
+        ViewClass="{x:Type application:IViewClassDocument}"
         ViewMode="{x:Type annotations:ViewModeDefault}" 
         DataContext="{Binding}"/>
 </xcad:LayoutDocument>

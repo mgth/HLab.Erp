@@ -8,6 +8,8 @@ using NPoco;
 
 namespace HLab.Erp.Acl
 {
+
+
     public static class AclRights
     {
         /// <summary>
@@ -28,8 +30,10 @@ namespace HLab.Erp.Acl
         public static readonly AclRight ManageRights = AclRight.Get();
     }
 
-    public class AclRight : Entity<AclRight>, IListableModel
+    public class AclRight : Entity, IListableModel
     {
+        public AclRight() => HD<AclRight>.Initialize(this);
+
         [Import]
         public static IDataService Data { get; set; }
 
@@ -44,15 +48,11 @@ namespace HLab.Erp.Acl
             get => _name.Get(); 
             set => _name.Set(value);
         }
-        private readonly IProperty<string> _name = H.Property<string>();
-
-        public AclRight()
-        {
-        }
+        private readonly IProperty<string> _name = HD<AclRight>.Property<string>();
 
         [Ignore]
         public string Caption => _caption.Get();
-        private readonly IProperty<string> _caption = H.Property<string>(c => c.OneWayBind(e => e.Name));
+        private readonly IProperty<string> _caption = HD<AclRight>.Property<string>(c => c.OneWayBind(e => e.Name));
 
         [Ignore]
         public string IconPath => "";

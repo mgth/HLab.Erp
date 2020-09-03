@@ -15,8 +15,12 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf.Entities.Icons
 {
-    public class IconViewModel : EntityViewModel<IconViewModel, Icon>
+    using H = H<IconViewModel>;
+
+    public class IconViewModel : EntityViewModel<Icon>
     {
+        public IconViewModel() => H.Initialize(this);
+
         public override string Title => _title.Get();
 
         private readonly IProperty<string> _title = H.Property<string>(c => c

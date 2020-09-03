@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
-using System.Text;
 using System.Windows.Controls;
 using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
@@ -12,8 +10,10 @@ using HLab.Erp.Data;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Acl
+namespace HLab.Erp.Acl.Users
 {
+    using H = H<ImportUsersViewModel>;
+
     public class AdUser
     {
         public string FirstName { get; set; }
@@ -25,8 +25,10 @@ namespace HLab.Erp.Acl
         public override string ToString() => Login + " : " + FirstName + " " + LastName;
     }
 
-    public class ImportUsersViewModel : ViewModel<ImportUsersViewModel>
+    public class ImportUsersViewModel : ViewModel
     {
+        public ImportUsersViewModel() => H.Initialize(this);
+
         public string Title => "{Import Users}";
 
         [Import] private IAclService _acl;
@@ -35,18 +37,18 @@ namespace HLab.Erp.Acl
         public ObservableCollection<AdUser> Users { get; } = new ObservableCollection<AdUser>();
 
         public string Domain { get => _domain.Get(); set => _domain.Set(value); }
-        private IProperty<string> _domain = H.Property<string>();
+        private readonly IProperty<string> _domain = H.Property<string>();
 
         public string Message { get => _message.Get(); set => _message.Set(value); }
-        private IProperty<string> _message = H.Property<string>();
+        private readonly IProperty<string> _message = H.Property<string>();
 
         public bool Success { get => _success.Get(); set => _success.Set(value); }
-        private IProperty<bool> _success = H.Property<bool>();
+        private readonly IProperty<bool> _success = H.Property<bool>();
 
         public string UserName { get => _userName.Get(); set => _userName.Set(value); }
-        private IProperty<string> _userName = H.Property<string>();
+        private readonly IProperty<string> _userName = H.Property<string>();
         public AdUser SelectedUser { get => _selectedUser.Get(); set => _selectedUser.Set(value); }
-        private IProperty<AdUser> _selectedUser = H.Property<AdUser>();
+        private readonly IProperty<AdUser> _selectedUser = H.Property<AdUser>();
 
         public ICommand RetrievetUsersCommand { get; } = H.Command(c => c
               .Action((e, a) => e.RetrieveUsers(a as PasswordBox)));

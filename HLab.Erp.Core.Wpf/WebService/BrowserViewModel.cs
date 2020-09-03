@@ -1,18 +1,18 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
 using HLab.Mvvm;
-using HLab.Mvvm.Annotations;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.WebService
 {
+    using H = H<BrowserViewModel>;
+
     [Export(typeof(IBrowserService)), Singleton]
-    public class BrowserViewModel : ViewModel<BrowserViewModel>, IBrowserService
+    public class BrowserViewModel : ViewModel, IBrowserService
     {
        
         private readonly IErpServices _erp;
@@ -61,7 +61,7 @@ namespace HLab.Erp.Core.WebService
         public BrowserViewModel(IErpServices erp)
         {
             _erp = erp;
-            H.Initialize(this,OnPropertyChanged);
+            H.Initialize(this);
         }
 
         private void Web_Navigating(object sender, WebBrowserNavigatingEventArgs e)

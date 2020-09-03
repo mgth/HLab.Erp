@@ -1,14 +1,16 @@
 ﻿using HLab.Erp.Data;
-using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 using NPoco;
 
 namespace HLab.Erp.Acl
 {
+    using H = H<Connection>;
     //[Key("Id", AutoIncrement = false)]
     //[SoftIncrementAttribut]
-    public class Connection : Entity<Connection>
+    public class Connection : Entity
     {
+        public Connection() => H.Initialize(this);
+
         public int? UserId
         {
             get => _userId.Get();

@@ -3,12 +3,13 @@ using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
-using H = HLab.Notify.PropertyChanged.NotifyHelper<HLab.Erp.Core.Localization.LocalizeWpfBootloader>;
 namespace HLab.Erp.Core.Localization
 {
-    public class LocalizeWpfBootloader : IBootloader //postboot
+    using H = H<LocalizeWpfBootloader>;
+    public class LocalizeWpfBootloader : NotifierBase, IBootloader //postboot
     {
-        
+        public LocalizeWpfBootloader() => H.Initialize(this);
+
         [Import] private readonly IErpServices _erp;
 
 
