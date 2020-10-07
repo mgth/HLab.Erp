@@ -22,7 +22,7 @@ namespace HLab.Erp.Data
 
         public IProperty<T> Value { get; }
 
-        public void SetParent(object parent, INotifyClassParser parser)
+        public void SetParent(object parent, INotifyClassHelper parser)
         {
             Id.SetParent(parent,parser);
             Value.SetParent(parent,parser);
