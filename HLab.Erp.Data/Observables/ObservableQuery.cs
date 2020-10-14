@@ -10,11 +10,9 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using HLab.Base;
-using HLab.Core.DebugTools;
 using HLab.DependencyInjection.Annotations;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
-using Nito.AsyncEx;
 
 ////using System.Data.Entity;
 
@@ -33,29 +31,6 @@ namespace HLab.Erp.Data.Observables
     //    IObservableQuery<T> SetSource(Func<IQueryable<T>, IQueryable<T>> src);
     //    void Update(bool force = true);
     //}
-
-    public static class ObservableQueryExtensions
-    {
-        public static ObservableQuery<T> AddFilter<T>(this ObservableQuery<T> oq, string name, Func<Expression<Func<T, bool>>> expression, int order = 0)
-        where T : class, IEntity
-        {
-            oq.AddFilter(expression, order, name);
-            return oq;
-        }
-        public static ObservableQuery<T> AddFilter<T>(this ObservableQuery<T> oq, string name, Expression<Func<T, bool>> expression, int order = 0)
-        where T : class, IEntity
-        {
-            oq.AddFilter(expression, order, name);
-            return oq;
-        }
-
-        public static ObservableQuery<T> FluentUpdate<T>(this ObservableQuery<T> oq, bool force = true)
-            where T : class, IEntity
-        {
-            oq.UpdateAsync(force);
-            return oq;
-        }
-    }
 
     [Export(typeof(ObservableQuery<>))]
     public class ObservableQuery<T> : ObservableCollectionNotifier<T>, ITriggerable//, IObservableQuery<T>
