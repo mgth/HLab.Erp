@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Text;
+﻿using System.Collections.Specialized;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
@@ -40,7 +37,7 @@ namespace HLab.Erp.Core
             Menu = menu;
             Icon = icon;
             Info = info;
-            Countries = countries.FluentUpdate();
+            Countries = countries;
         }
 
         public IApplicationInfoService Info { get; }
