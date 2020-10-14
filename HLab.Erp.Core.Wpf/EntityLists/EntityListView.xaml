@@ -128,11 +128,12 @@
                     <Setter Property="BorderThickness" Value="0" />
                 </Style>
             </DataGrid.ColumnHeaderStyle>
-            <interactions:Interaction.Triggers>
+             <!-- TODO -->
+            <!--<interactions:Interaction.Triggers>
                  <interactions:EventTrigger EventName="MouseDoubleClick">
                      <interactions:InvokeCommandAction Command="{Binding OpenCommand}"/>
                  </interactions:EventTrigger>
-             </interactions:Interaction.Triggers>
+             </interactions:Interaction.Triggers>-->
          
          </DataGrid>
     </Grid>
