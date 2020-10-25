@@ -17,18 +17,20 @@ namespace HLab.Erp.Acl
         [Import] private readonly Func<T, DataLocker<T>> _getLocker;
         [Import] protected IAclService Acl;
 
+        public EntityViewModel() => H<EntityViewModel<T>>.Initialize(this);
 
         public DataLocker<T> Locker => _locker.Get();
 
         private readonly IProperty<DataLocker<T>> _locker = H<EntityViewModel<T>>.Property<DataLocker<T>>(c => c
+            .Set(e => e.GetLocker())
             .On(e => e.Model)
             .NotNull(e => e.Model)
-            .Set(e => e.GetLocker())
-            //.Set(e => e._getLocker(e.Model))
+            .Update()
         );
 
         private DataLocker<T> GetLocker()
         {
+            if (Model == null) return null;
             var locker = _getLocker(Model);
             locker.PropertyChanged += Locker_PropertyChanged;
             return locker;
@@ -51,7 +53,7 @@ namespace HLab.Erp.Acl
         public virtual AclRight EditRight => null;
 
         public virtual bool EditAllowed => _editAllowed.Get();
-        private IProperty<bool> _editAllowed = H<EntityViewModel<T>>.Property<bool>(c => c
+        private readonly IProperty<bool> _editAllowed = H<EntityViewModel<T>>.Property<bool>(c => c
             .Set(e => e.Acl.IsGranted(e.EditRight))
         );
 

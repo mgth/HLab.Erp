@@ -16,15 +16,17 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf
 {
-    public class ErpBaseModule : N<ErpBaseModule>, IBootloader //postboot
+    using H = H<ErpBaseModule>;
+
+    public class ErpBaseModule : NotifierBase, IBootloader //postboot
     {
         
         private readonly IErpServices _erp;
 
-        [Import]public ErpBaseModule(IErpServices erp):base(true)
+        [Import]public ErpBaseModule(IErpServices erp)
         {
             _erp = erp;
-            Initialize();
+            H.Initialize(this);
         }
 
         public ICommand CountryCommand { get; } = H.Command(c => c.Action(

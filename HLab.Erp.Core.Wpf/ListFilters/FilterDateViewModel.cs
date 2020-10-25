@@ -63,7 +63,8 @@ namespace HLab.Erp.Core.ListFilters
             get => _minDateShift.Get();
             set => _minDateShift.Set(value);
         }
-        private readonly IProperty<int> _minDateShift = H.Property<int>(c => c
+        private readonly IProperty<int> _minDateShift = H.Property<int>();
+        private readonly ITrigger _triggerMinDateShift = H.Trigger(c => c
             .On(e => e.MinDateCalculated)
             .On(e => e.MinDate)
             .When(e => !e.MinDateCalculated)
@@ -120,7 +121,8 @@ namespace HLab.Erp.Core.ListFilters
             set => _maxDateShift.Set(value);
         }
 
-        private readonly IProperty<int> _maxDateShift = H.Property<int>(c => c
+        private readonly IProperty<int> _maxDateShift = H.Property<int>();
+        private readonly ITrigger _triggerMaxDateShift = H.Trigger(c => c
             .On(e => e.MaxDateCalculated)
             .On(e => e.MaxDate)
             .When(e => !e.MaxDateCalculated)

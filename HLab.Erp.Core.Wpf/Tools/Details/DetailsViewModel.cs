@@ -6,7 +6,7 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.Tools.Details
 {
-    public class DetailsViewModel : ViewModel<DetailsViewModel>
+    public class DetailsViewModel : ViewModel
     {
 
         [Import]

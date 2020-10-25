@@ -9,6 +9,8 @@ namespace HLab.Erp.Base.Data
 
     public class LocalizeEntry : Entity, ILocalizeEntry
     {
+        public LocalizeEntry() => H.Initialize(this);
+
         public string Tag
         {
             get => _tag.Get();

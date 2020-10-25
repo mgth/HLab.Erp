@@ -38,7 +38,7 @@ namespace HLab.Erp.Acl
     }
 
     [Export(typeof(IDataLocker))]
-    public class DataLocker<T> : N<DataLocker<T>>, IDataLocker
+    public class DataLocker<T> : NotifierBase, IDataLocker
     where T : class,IEntity<int>
     {
         private const int HeartBeat = 10000;
@@ -55,14 +55,14 @@ namespace HLab.Erp.Acl
             get => _persister.Get(); 
             private set => _persister.Set(value); 
         }
-        private readonly IProperty<EntityPersister<T>> _persister = H.Property<EntityPersister<T>>();
+        private readonly IProperty<EntityPersister<T>> _persister = H<DataLocker<T>>.Property<EntityPersister<T>>();
 
         private EntityPersister<DataLock> _lockPersister;
 
         [Import] private Func<T,EntityPersister<T>> _getPersister;
         [Import] private Func<DataLock,EntityPersister<DataLock>> _getLockPersister;
 
-        public DataLocker(T entity):base(false)
+        public DataLocker(T entity)
         {
             _entity = entity;
             _entityClass = entity.GetType().Name;
@@ -86,7 +86,7 @@ namespace HLab.Erp.Acl
                 }
             }, null,Timeout.Infinite,Timeout.Infinite);
 
-            Initialize();
+            H<DataLocker<T>>.Initialize(this);
 
             Persister = _getPersister(entity);
 
@@ -101,31 +101,31 @@ namespace HLab.Erp.Acl
             get => _isActive.Get();
             private set => _isActive.Set(value);
         }
-        private readonly IProperty<bool> _isActive = H.Property<bool>(c => c.Default(false));
+        private readonly IProperty<bool> _isActive = H<DataLocker<T>>.Property<bool>(c => c.Default(false));
         public bool IsEnabled
         {
             get => _isEnabled.Get();
             set => _isEnabled.Set(value);
         }
-        private readonly IProperty<bool> _isEnabled = H.Property<bool>(c => c.Default(false));
+        private readonly IProperty<bool> _isEnabled = H<DataLocker<T>>.Property<bool>(c => c.Default(false));
         public bool IsConnected
         {
             get => _isConnected.Get();
             set => _isConnected.Set(value);
         }
-        private readonly IProperty<bool> _isConnected = H.Property<bool>(c => c.Default(false));
+        private readonly IProperty<bool> _isConnected = H<DataLocker<T>>.Property<bool>(c => c.Default(false));
 
-        public ICommand ActivateCommand { get; } = H.Command(c => c
+        public ICommand ActivateCommand { get; } = H<DataLocker<T>>.Command(c => c
             .Action(async e => await e.ActivateAsync().ConfigureAwait(false))
         );
 
-        public ICommand SaveCommand { get; } = H.Command(c => c
+        public ICommand SaveCommand { get; } = H<DataLocker<T>>.Command(c => c
             .CanExecute(e => e.Persister.IsDirty)
             .Action(async e => await e.SaveAsync().ConfigureAwait(false))
             .On(e => e.Persister.IsDirty).CheckCanExecute()
         );
 
-        public ICommand CancelCommand { get; } = H.Command(c => c
+        public ICommand CancelCommand { get; } = H<DataLocker<T>>.Command(c => c
             .Action(async e => await e.CancelAsync().ConfigureAwait(false))
         );
 
@@ -289,10 +289,10 @@ namespace HLab.Erp.Acl
             private set => _message.Set(value);
         }
 
-        private readonly IProperty<string> _message = H.Property<string>();
+        private readonly IProperty<string> _message = H<DataLocker<T>>.Property<string>();
 
         public bool IsReadOnly => _isReadOnly.Get();
-        private readonly IProperty<bool> _isReadOnly = H.Property<bool>(c => c
+        private readonly IProperty<bool> _isReadOnly = H<DataLocker<T>>.Property<bool>(c => c
             .On(e => e.IsActive)
             .Set(e => !e.IsActive)
             .Default(true)
@@ -301,7 +301,7 @@ namespace HLab.Erp.Acl
         {
             if(IsActive)
                 await CancelAsync().ConfigureAwait(false);
-            _timer.Dispose();
+            await _timer.DisposeAsync();
         }
 
     }

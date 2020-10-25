@@ -37,7 +37,7 @@ namespace HLab.Erp.Data.Observables
         where T : class, IEntity
     {
         [Import]
-        public ObservableQuery(IDataService db):base(false)
+        public ObservableQuery(IDataService db)
         {
             _db = db;
             H<ObservableQuery<T>>.Initialize(this);

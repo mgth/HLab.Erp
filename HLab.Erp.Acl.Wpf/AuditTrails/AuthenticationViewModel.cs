@@ -13,14 +13,14 @@ namespace HLab.Erp.Acl.AuditTrails
     public class AuthenticationViewModel : ViewModel
     {
         [Import] protected readonly IAclService Acl;
-
+        public AuthenticationViewModel() =>H.Initialize(this);
 
         public string Message
         {
             get => _message.Get();
             set => _message.Set(value);
         }
-        private readonly IProperty<string> _message = H.Property<string>(nameof(Message));
+        private readonly IProperty<string> _message = H.Property<string>();
 
 
         public void SetPassword(SecureString password)
@@ -87,7 +87,7 @@ namespace HLab.Erp.Acl.AuditTrails
                 }
             }
         }
-        private readonly IProperty<NetworkCredential> _credential = H<AuditTrailMotivationViewModel>.Property<NetworkCredential>(c => c
+        private readonly IProperty<NetworkCredential> _credential = H.Property<NetworkCredential>(c => c
 #if DEBUG
         
                 .Default(new NetworkCredential("admin", "blagueur"))
@@ -97,22 +97,24 @@ namespace HLab.Erp.Acl.AuditTrails
         );
 
 
+
 #if DEBUG
         public Visibility DebugVisibility => Visibility.Visible;
 #else
         public Visibility DebugVisibility => Visibility.Collapsed;
 #endif
-        public ObservableQuery<User> UserList => _userList.Get();
-        private readonly IProperty<ObservableQuery<User>> _userList = H.Property<ObservableQuery<User>>(nameof(UserList));
+        //public ObservableQuery<User> UserList { get; } = H.Query<User>(c => c
+        
+        //);
 
-        //TODO : respect template
-        [Import(InjectLocation.AfterConstructor)]
-        private void _setUserList(ObservableQuery<User> userlist)
-        {
-            _userList.Set(userlist
-                .AddFilter(()=>u => u.Note.Contains("<balances>"))
-                .FluentUpdate()            
-            );
-        }
+        ////TODO : respect template
+        //[Import(InjectLocation.AfterConstructor)]
+        //private void _setUserList(ObservableQuery<User> userlist)
+        //{
+        //    _userList.Set(userlist
+        //        .AddFilter(()=>u => u.Note.Contains("<balances>"))
+        //        .FluentUpdate()            
+        //    );
+        //}
     }
 }

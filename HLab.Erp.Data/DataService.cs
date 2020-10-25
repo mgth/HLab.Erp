@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -21,7 +22,7 @@ namespace HLab.Erp.Data
     {
         public DataService()
         {
-            ServiceState = ServiceState.NotConfigured;
+            ServiceState = ServiceState.Available;
         }
 
 
@@ -29,7 +30,7 @@ namespace HLab.Erp.Data
             where T : class, IEntity
         {
             var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
-            if(t is IEntity<int> tt) tt.Id=-1;
+            if (t is IEntity<int> tt) tt.Id = -1;
 
             setter?.Invoke(t);
 
@@ -40,10 +41,10 @@ namespace HLab.Erp.Data
                 {
                     await DbAsync(async db =>
                     {
-                        var ids = await db.QueryAsync<T>().OrderByDescending(d => ((IEntity<int>) d).Id)
+                        var ids = await db.QueryAsync<T>().OrderByDescending(d => ((IEntity<int>)d).Id)
                             .FirstOrDefault().ConfigureAwait(false);
 
-                        var id = ((IEntity<int>) ids)?.Id ?? 0;
+                        var id = ((IEntity<int>)ids)?.Id ?? 0;
 
                         id++;
 
@@ -109,7 +110,8 @@ namespace HLab.Erp.Data
         {
             var result = DbGet(db => db.Delete<T>(entity));
 
-            if (result > 0) {
+            if (result > 0)
+            {
                 var b = GetCache<T>().ForgetAsync(entity).Result;
                 deleted?.Invoke((T)entity);
                 return true;
@@ -128,14 +130,14 @@ namespace HLab.Erp.Data
                 deleted?.Invoke((T)entity);
                 return true;
             }
-            
+
             return false;
         }
 
         public async Task<T> GetOrAddAsync<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {
-            using(var transaction = GetTransaction() as DataTransaction)
+            using (var transaction = GetTransaction() as DataTransaction)
             {
                 var t = await transaction.Database.QueryAsync<T>().FirstOrDefault(getter);
 
@@ -154,7 +156,7 @@ namespace HLab.Erp.Data
         public T GetOrAdd<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {
-            using(var transaction = GetTransaction() as DataTransaction)
+            using (var transaction = GetTransaction() as DataTransaction)
             {
                 var t = transaction.Database.Query<T>().FirstOrDefault(getter);
 
@@ -190,7 +192,7 @@ namespace HLab.Erp.Data
                     {
                         var more = true;
 
-                        while(more)
+                        while (more)
                         {
                             try
                             {
@@ -203,7 +205,7 @@ namespace HLab.Erp.Data
                             }
                             catch (NpgsqlException e)
                             {
-                                throw new DataException(e.Message,e);
+                                throw new DataException(e.Message, e);
                             }
 
                             if (more) yield return await cache.GetOrAddAsync(enumerator.Current).ConfigureAwait(false);
@@ -261,7 +263,7 @@ namespace HLab.Erp.Data
                     }
                 }
 
-                throw new DataException(ex.Message,ex);
+                throw new DataException(ex.Message, ex);
             }
         }
 
@@ -294,7 +296,7 @@ namespace HLab.Erp.Data
         public async Task<T> ReFetchOneAsync<T>(T entity)
             where T : class, IEntity
         {
-            if(entity==null) return null;
+            if (entity == null) return null;
 
             var result = await DbGetAsync(async db => await db.SingleByIdAsync<T>(entity.Id).ConfigureAwait(false)).ConfigureAwait(true);
             return await GetCache<T>().GetOrAddAsync(result).ConfigureAwait(true);
@@ -323,7 +325,7 @@ namespace HLab.Erp.Data
         public bool Any<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity
         {
-                return DbGet<bool>(db => db.Query<T>().Any(expression));
+            return DbGet<bool>(db => db.Query<T>().Any(expression));
         }
 
         private readonly ConcurrentDictionary<Type, DataCache> _caches = new ConcurrentDictionary<Type, DataCache>();
@@ -338,11 +340,11 @@ namespace HLab.Erp.Data
             {
                 if (string.IsNullOrWhiteSpace(_connectionString))
                 {
-                    _connectionString = _options.GetValue<string>("Connection",null,null,"registry");
+                    _connectionString = _options.GetValue<string>("Connection", null, null, "registry");
                     if (string.IsNullOrWhiteSpace(_connectionString))
                     {
                         _connectionString = _getConnectionString();
-                        _options.SetValue("connection",_connectionString);
+                        _options.SetValue("connection", _connectionString);
                     }
                 }
                 return _connectionString;
@@ -386,7 +388,7 @@ namespace HLab.Erp.Data
         {
             var db = new Database(
                 ConnectionString,
-                DatabaseType.PostgreSQL, 
+                DatabaseType.PostgreSQL,
                 //DatabaseType.MySQL,
                 //MySql.Data.MySqlClient.MySqlClientFactory.Instance,
                 Npgsql.NpgsqlFactory.Instance
@@ -397,7 +399,7 @@ namespace HLab.Erp.Data
 
         public IDataTransaction GetTransaction()
         {
-            return new DataTransaction(this,Get());
+            return new DataTransaction(this, Get());
         }
 
 
@@ -419,7 +421,7 @@ namespace HLab.Erp.Data
         }
         public async Task<bool> UpdateAsync<T>(T value, IEnumerable<string> columns) where T : class, IEntity
         {
-            var n = await DbGetAsync(d => d.UpdateAsync(value,columns));
+            var n = await DbGetAsync(d => d.UpdateAsync(value, columns));
             return (n > 0);
         }
 
@@ -440,7 +442,7 @@ namespace HLab.Erp.Data
             action(db);
             return true;
         });
-        private T DbGet<T>(Func<IDatabase,T> action)
+        private T DbGet<T>(Func<IDatabase, T> action)
         {
             while (true)
             {
@@ -451,18 +453,18 @@ namespace HLab.Erp.Data
                 }
                 catch (NpgsqlException exception)
                 {
-                     throw new DataException("Data connection failed",exception);
-                    Thread.Sleep(5000); 
+                    throw new DataException("Data connection failed", exception);
+                    Thread.Sleep(5000);
                 }
             }
         }
 
-        private async Task DbAsync(Func<IDatabase,Task> action) => await DbGetAsync(async db =>
-        {
-            await action(db);
-            return true;
-        });
-        private async Task<T> DbGetAsync<T>(Func<IDatabase,Task<T>> action)
+        private async Task DbAsync(Func<IDatabase, Task> action) => await DbGetAsync(async db =>
+         {
+             await action(db);
+             return true;
+         });
+        private async Task<T> DbGetAsync<T>(Func<IDatabase, Task<T>> action)
         {
             while (true)
             {
@@ -473,7 +475,7 @@ namespace HLab.Erp.Data
                 }
                 catch (NpgsqlException exception)
                 {
-                    throw new DataException("Data connection failed",exception);
+                    throw new DataException("Data connection failed", exception);
                 }
             }
 
@@ -483,9 +485,70 @@ namespace HLab.Erp.Data
 
         public void SetConfigureAction(Func<string> action) => _getConnectionString = action;
 
-        private bool Configure(Exception exception=null)
-        {   
+        private bool Configure(Exception exception = null)
+        {
             return true;
+        }
+
+        public async IAsyncEnumerable<string> GetDatabasesAsync(string host, string login, string password)
+        {
+            var connString = $"Host={host};Username={login};Password={password};Database=postgres";
+
+            await using var conn = new NpgsqlConnection(connString);
+            await conn.OpenAsync().ConfigureAwait(false);
+            List<string> databases = new List<string>();
+            // Retrieve all rows
+            await using (var cmd = new NpgsqlCommand("SELECT datname FROM pg_database;", conn))
+            await using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+                while (await reader.ReadAsync().ConfigureAwait(false))
+                {
+                    var database = reader.GetString(0);
+                    databases.Add(database);
+                }
+
+            foreach (var database in databases)
+            {
+                if (!await IsHLabDatabasesAsync(host, database, login, password).ConfigureAwait(false)) continue;
+
+                Debug.WriteLine($"Database : {database}");
+                yield return database;
+            }
+
+            await conn.CloseAsync().ConfigureAwait(false);
+        }
+        public async Task<bool> IsHLabDatabasesAsync(string host, string database, string login, string password)
+        {
+            var connectionString = $"Host={host};Username={login};Password={password};Database={database}";
+
+            await using var connection = new NpgsqlConnection(connectionString);
+
+            // Retrieve all rows
+            try
+            {
+                await connection.OpenAsync();
+                await using var cmd =
+                    new NpgsqlCommand($"SELECT \"Name\",\"Version\" FROM public.\"Module\";", connection);
+                await using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+                while (await reader.ReadAsync().ConfigureAwait(false))
+                {
+                    var module = reader.GetString(0);
+                    var version = reader.GetString(1);
+                    if (module == "HLab.Erp") return true;
+                }
+            }
+            catch (PostgresException e)
+
+            {
+                Debug.WriteLine(e.Message);
+            }
+            finally
+            { 
+                await connection.CloseAsync().ConfigureAwait(false);
+            }
+            
+            Debug.WriteLine(database);
+
+            return false;
         }
 
         public ServiceState ServiceState { get; private set; }

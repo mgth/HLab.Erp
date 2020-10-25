@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using HLab.Core.Annotations;
@@ -59,5 +58,7 @@ namespace HLab.Erp.Data
 
         DbTransaction BeginTransaction();
         void SetConfigureAction(Func<string> action);
+
+        IAsyncEnumerable<string> GetDatabasesAsync(string host, string login, string password);
     }
 }

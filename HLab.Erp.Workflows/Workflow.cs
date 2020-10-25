@@ -28,10 +28,11 @@ namespace HLab.Erp.Workflows
             Actions = new ReadOnlyObservableCollection<WorkflowAction>(_actions);
             Highlights = new ReadOnlyObservableCollection<string>(_highlights);
 
+            H<Workflow<T>>.Initialize(this);
+
             Target = target;
             _locker.Set(locker);
 
-            H<Workflow<T>>.Initialize(this);
 
             if(target is INotifyPropertyChanged n)
                 n.PropertyChanged += Target_PropertyChanged;

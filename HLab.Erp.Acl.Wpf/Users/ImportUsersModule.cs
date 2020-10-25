@@ -1,16 +1,23 @@
 ﻿using System.Windows.Input;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Acl.Users;
 using HLab.Erp.Core;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Acl
+namespace HLab.Erp.Acl.Users
 {
-    public class ImportUsersModule : N<ImportUsersModule>, IBootloaderDependent
+    using H = H<ImportUsersModule>;
+
+    public class ImportUsersModule : NotifierBase, IBootloaderDependent
     {
-        [Import]
+        
         private readonly IErpServices _erp;
+
+        [Import] public ImportUsersModule(IErpServices erp)
+        {
+            _erp = erp; 
+            H.Initialize(this);
+        }
 
         public string[] DependsOn => new []{"BootLoaderErpWpf"};
 

@@ -5,22 +5,31 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core
 {
-    public class AboutViewModel : N<AboutViewModel>
+    public class AboutViewModel : NotifierBase
     {
-        private IErpServices _erp;
+        #region Constructors
+
+        public AboutViewModel(IErpServices erp)
+        {
+            _erp = erp;
+            H<AboutViewModel>.Initialize(this);
+        }
+
+        #endregion
+        #region Properties
+
         public string Note
         {
             get => _note.Get();
             set => _note.Set(value);
         }
-        private readonly IProperty<string> _note = H.Property<string>();
+        private readonly IProperty<string> _note = H<AboutViewModel>.Property<string>();
+        
+        #endregion
+        #region Data
 
-//        public object Icon => _erp.
+        private IErpServices _erp;
 
-
-        public AboutViewModel(IErpServices erp)
-        {
-            _erp = erp;
-        }
+        #endregion
     }
 }

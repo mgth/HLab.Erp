@@ -36,40 +36,40 @@ namespace HLab.Erp.Acl.AuditTrails
             get => _motivationMandatory.Get();
             set => _motivationMandatory.Set(value);
         }
-        private IProperty<bool> _motivationMandatory = H.Property<bool>();
+        private readonly IProperty<bool> _motivationMandatory = H.Property<bool>();
 
         public string Motivation
         {
             get => _motivation.Get();
             set => _motivation.Set(value);
         }
-        private IProperty<string> _motivation = H.Property<string>();
+        private readonly IProperty<string> _motivation = H.Property<string>();
         public string IconPath
         {
             get => _iconPath.Get();
             set => _iconPath.Set(value);
         }
-        private IProperty<string> _iconPath = H.Property<string>();
+        private readonly IProperty<string> _iconPath = H.Property<string>();
         public string EntityCaption
         {
             get => _entityCaption.Get();
             set => _entityCaption.Set(value);
         }
-        private IProperty<string> _entityCaption = H.Property<string>();
+        private readonly IProperty<string> _entityCaption = H.Property<string>();
 
         public string Log
         {
             get => _log.Get();
             set => _log.Set(value);
         }
-        private IProperty<string> _log = H.Property<string>();
+        private readonly IProperty<string> _log = H.Property<string>();
 
         public bool? Result
         {
             get => _result.Get();
             set => _result.Set(value);
         }
-        private IProperty<bool?> _result = H.Property<bool?>();
+        private readonly IProperty<bool?> _result = H.Property<bool?>();
 
         public ICommand OkCommand { get; } = H.Command( c => c
             .CanExecute(e => !e.MotivationMandatory || (e.Motivation?.Length??0)>0)

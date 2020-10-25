@@ -19,9 +19,9 @@ namespace HLab.Erp.Data
     {
             public static IForeign<TF> Foreign<TF>([CallerMemberName] string name = null) where TF : Entity, IEntity<int>
             {
-                name = GetNameFromCallerName(name) ;
+                var propertyName = GetNameFromCallerName(name) ;
 
-                var property = typeof(TClass).GetProperty(name+ "Id");
+                var property = typeof(TClass).GetProperty(propertyName+ "Id");
                 
                 var parameter = Expression.Parameter(typeof(TClass), "e");
                 var member = Expression.Property(parameter, property);
@@ -31,7 +31,7 @@ namespace HLab.Erp.Data
             }
             public static IForeign<TF> Foreign<TF>(Expression<Func<TClass,int?>> e,[CallerMemberName] string name = null) where TF : Entity, IEntity<int>
             {
-                name = GetNameFromCallerName(name) ;
+                //var propertyName = GetNameFromCallerName(name) ;
                 var id = Property<int?>(name+"Id");
                 var v = Property<TF>(c => c.Foreign(e),name);
                 return new ForeignProperty<TF>(id,v);

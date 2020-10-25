@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HLab.Base;
+using HLab.Base.Wpf;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ViewModels;
@@ -45,7 +46,7 @@ namespace HLab.Erp.Core.EntitySelectors
             .OnChange((v,a) => v.OnModelChanged(a))
             .Register();
 
-        private void OnModelChanged(ChangedEventArg<object> args)
+        private void OnModelChanged(DependencyPropertyChangedEventArgs<object> args)
         {
             var value = args.NewValue;
             Locator.SetValue(ViewLocator.ModelProperty, args.NewValue);
@@ -56,7 +57,7 @@ namespace HLab.Erp.Core.EntitySelectors
             .Register();
 
         public static readonly DependencyProperty ListClassProperty = H.Property<Type>()
-            .OnChange( (s,a) => s.SetList() )
+            .OnChange( s => s.SetList() )
             .Register();
 
         public static readonly DependencyProperty IsReadOnlyProperty = H.Property<bool>()
