@@ -101,5 +101,17 @@ namespace HLab.Erp.Acl
         [Ignore]
         public string IconPath => "Icon/User";
 
+        public static User DesignModel => new User
+        {
+            Name = "Ouedraogo",
+            FirstName = "Michel",
+            Initials = "MO",
+            Login="o.ouedraogo",
+            Domain="hlab.org",
+            Function = "Technician",
+            Phone = "+200 547 684",
+            Email = "o.ouedraogo@hlab.org",
+
+        };
     }
 }
