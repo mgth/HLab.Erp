@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
-    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="5.0.0-preview.4.20251.6" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

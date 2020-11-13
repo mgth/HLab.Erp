@@ -28,6 +28,7 @@ namespace HLab.Erp.Acl.AuditTrails
         public AuditTrailMotivationViewModel(IDataTransaction transaction)
         {
             _transaction = transaction;
+            H.Initialize(this);
             User = Acl.Connection.User;
         }
 

@@ -22,10 +22,16 @@ namespace HLab.Erp.Data
 
         public IProperty<T> Value { get; }
 
-        public void SetParent(object parent, INotifyClassHelper parser)
+
+        public void Dispose()
         {
-            Id.SetParent(parent,parser);
-            Value.SetParent(parent,parser);
+            throw new System.NotImplementedException();
+        }
+
+        public void SetParent(INotifyPropertyChangedWithHelper parent)
+        {
+            Id.SetParent(parent);
+            Value.SetParent(parent);
         }
     }
 }
