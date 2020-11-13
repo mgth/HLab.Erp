@@ -14,11 +14,15 @@ namespace HLab.Erp.Acl.LoginServices
     [Export(typeof(ILoginViewModel))]
     public class LoginViewModel : AuthenticationViewModel, ILoginViewModel
     {
-        public LoginViewModel() => H.Initialize(this);
+        [Import] public LoginViewModel(ILocalizationService localizationService)
+        {
+            LocalizationService = localizationService;
+            H.Initialize(this);
+        }
 
         public string Title => "{Connection}";
 
-        [Import]
+        
         public ILocalizationService LocalizationService { get; }
 
         public string PinView
@@ -60,6 +64,14 @@ namespace HLab.Erp.Acl.LoginServices
                     e.Message = await Task.Run(()=>e.Acl.Login(e.Credential));
                 })                      
             .On(e => e.Login).CheckCanExecute()
+        );
+        public ICommand CancelCommand { get; } = H.Command( c => c
+            .CanExecute(e => true)
+            .Action(async e =>
+            {
+                e.Acl.CancelLogin();
+            })                      
+//            .On(e => e.Login).CheckCanExecute()
         );
     }
 }

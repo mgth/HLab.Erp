@@ -31,7 +31,7 @@ namespace HLab.Erp.Acl.Users
         {
             if (_erp.Acl.Connection == null)
             {
-                b.Requeue();
+                if(!_erp.Acl.Cancelled) b.Requeue();
                 return;
             }
             if(!_erp.Acl.IsGranted(AclRights.ManageUser)) return;

@@ -42,15 +42,15 @@ namespace HLab.Erp.Acl.LoginServices
 
         private void LoginView_Closed(object sender, EventArgs e)
         {
+            if (DataContext is LoginViewModel l)
+            {
+                l.CancelCommand.Execute(null);
+            }
             Application.Current.Shutdown();
         }
 
         private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (DataContext is LoginViewModel l)
-            {
-                l.SetPassword(PasswordBox.SecurePassword);
-            }
         }
 
     }

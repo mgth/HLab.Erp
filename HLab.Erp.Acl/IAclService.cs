@@ -8,6 +8,8 @@ namespace HLab.Erp.Acl
     public interface IAclService : IService
     {
         Connection Connection { get; }
+
+        bool Cancelled { get; }
         //string Login(string login, string password);
         Task<string> Login(NetworkCredential credential, bool pin = false);
         Task<User> Check(NetworkCredential credential, bool pin = false);
@@ -22,5 +24,6 @@ namespace HLab.Erp.Acl
         Task<AclNode> GetAclNode(object target);
 
         bool IsGranted(AclRight right, object grantedTo = null, object grantedOn = null);
+        void CancelLogin();
     }
 }

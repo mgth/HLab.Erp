@@ -42,6 +42,7 @@ namespace HLab.Erp.Acl
 
         public Connection Connection { get; private set; } = null;
 
+        public bool Cancelled { get; private set; } = false;
 
         public string PinLogin(string pin)
         {
@@ -130,6 +131,11 @@ namespace HLab.Erp.Acl
             if(Connection.User.Login=="admin") return true;
             if (right == null) return true;
             return CurrentRights.Contains(right);
+        }
+
+        public void CancelLogin()
+        {
+            Cancelled = true;
         }
 
         private async Task PopulateRightsAsync()
