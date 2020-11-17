@@ -57,6 +57,8 @@ namespace HLab.Erp.Core.EntityLists
         public ICommand AddCommand { get; } = H<EntityListViewModel>.Command(c => c
                 .Action(async e => await e.AddEntityAsync())
         );
+
+        public dynamic SelectedViewModel { get; set; }
         protected abstract Task AddEntityAsync();
 
         public abstract ICommand DeleteCommand { get; }
@@ -260,8 +262,10 @@ namespace HLab.Erp.Core.EntityLists
         }
 
         private readonly IProperty<dynamic> _selectedViewModel = H<EntityListViewModel<T>>.Property<dynamic>(c => c
-            .On(e => e.Selected)
-            .Set(e => e.Selected==null?null:e._cache.GetOrAdd(e.Selected, o => new ObjectMapper<T>(o, e.Columns))));
+            .Set(e => e.Selected==null?null:e._cache.GetOrAdd(e.Selected, o => new ObjectMapper<T>(o, e.Columns)))
+            .On(e => e.Selected).Update()
+        );
+
         public override ICommand DeleteCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
                 .CanExecute(e => e.CanExecuteDelete())
                 .Action(async e => await e.DeleteEntityAsync(e.Selected))

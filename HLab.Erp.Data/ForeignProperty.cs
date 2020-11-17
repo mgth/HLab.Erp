@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Data

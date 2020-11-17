@@ -42,6 +42,7 @@ namespace HLab.Erp.Core
         void SetSelectAction(Action<object> action);
         ObservableCollection<IFilterViewModel> Filters { get; }
         ICommand AddCommand { get; }
+        dynamic SelectedViewModel { get; set; }
     }
     public interface IEntityListViewModel<T> where T : class, IEntity
     {
