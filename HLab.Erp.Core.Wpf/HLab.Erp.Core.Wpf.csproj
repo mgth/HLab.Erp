@@ -6,6 +6,7 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<RootNamespace>HLab.Erp.Core</RootNamespace>
 		<Platforms>AnyCPU;x64;x86</Platforms>
+		<Configurations>Debug;Release;DebugRelease</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
