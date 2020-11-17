@@ -39,7 +39,8 @@
                 Grid.Row="3" 
                 Grid.Column="0" 
                 Grid.ColumnSpan="2"   
-                Foreground="DarkRed"
+
+                Foreground="RosyBrown"
                 TextWrapping="Wrap" 
                 Text="{Binding Message}"/>
             <Button 

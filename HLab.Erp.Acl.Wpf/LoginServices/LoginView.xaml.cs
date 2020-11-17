@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using HLab.Core;
@@ -51,6 +52,10 @@ namespace HLab.Erp.Acl.LoginServices
 
         private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
+            if (DataContext is LoginViewModel l)
+            {
+                l.Credential = new NetworkCredential(l.Login, PasswordBox.Password);
+            }
         }
 
     }
