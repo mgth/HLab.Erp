@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
@@ -26,13 +27,19 @@ namespace HLab.Erp.Data
 
         public void Dispose()
         {
-            throw new System.NotImplementedException();
         }
 
-        public void SetParent(INotifyPropertyChangedWithHelper parent)
+        public INotifyPropertyChangedWithHelper Parent
         {
-            Id.SetParent(parent);
-            Value.SetParent(parent);
+            get => Id.Parent;
+            set
+            {
+                Id.Parent = value;
+                Value.Parent = value;
+            }
+        }
+        public void OnDispose(Action action)
+        {
         }
     }
 }
