@@ -63,11 +63,12 @@ namespace HLab.Erp.Core.Localization
 
             var entry = await dic.GetOrAddAsync(code, async t =>
             {
-                var e = await _db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == code).ConfigureAwait(false);
+                var en = await _db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == code && e.Custom).ConfigureAwait(false) ??
+                        await _db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == code).ConfigureAwait(false);
 
-                if(e!=null && e.BadCode)
-                    throw new ArgumentException(e.Code + " is told bad code");
-                return e;
+                if(en!=null && en.BadCode)
+                    throw new ArgumentException(en.Code + " is told bad code");
+                return en;
             }).ConfigureAwait(false);
 
             return entry;

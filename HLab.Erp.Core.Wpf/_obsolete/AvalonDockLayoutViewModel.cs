@@ -216,11 +216,11 @@ namespace HLab.Erp.Core._obsolete
                     }
                     catch (OperationCanceledException exp)
                     {
-                        throw exp;
+                        throw new Exception(exp.Message,exp);
                     }
-                    catch (Exception except)
+                    catch (Exception exp)
                     {
-                        throw except;
+                        throw new Exception(exp.Message,exp);
                     }
                     finally
                     {

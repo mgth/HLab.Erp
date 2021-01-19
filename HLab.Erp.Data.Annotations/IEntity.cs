@@ -2,6 +2,8 @@
 
 namespace HLab.Erp.Data
 {
+
+
     //[Entity]
     public interface IEntity //: INotifierObject
     {

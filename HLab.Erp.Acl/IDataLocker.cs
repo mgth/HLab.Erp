@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace HLab.Erp.Acl
@@ -9,5 +10,6 @@ namespace HLab.Erp.Acl
         ICommand ActivateCommand { get; }
         ICommand SaveCommand { get; }
         ICommand CancelCommand { get; }
+        Task<bool> SaveAsync();
     }
 }

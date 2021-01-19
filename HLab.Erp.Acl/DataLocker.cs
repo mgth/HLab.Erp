@@ -191,7 +191,7 @@ namespace HLab.Erp.Acl
 
         public Action<T> BeforeSavingAction { get; set; }
 
-        public async Task SaveAsync()
+        public async Task<bool> SaveAsync()
         {
             BeforeSavingAction?.Invoke(_entity);
 
@@ -211,12 +211,13 @@ namespace HLab.Erp.Acl
                     _timer.Change(Timeout.Infinite, Timeout.Infinite);
 
                     if (_lock != null)
-                        transaction.Delete(_lock);
+                        await transaction.DeleteAsync(_lock);
 
                     IsActive = false;
                     _lock = null;
 
                     transaction.Done();
+                    return true;
                 }
             }
             catch (Exception e)
@@ -227,6 +228,8 @@ namespace HLab.Erp.Acl
             {
                 transaction?.Dispose();
             }
+
+            return false;
         }
 
         private readonly AsyncReaderWriterLock _cancelLock = new AsyncReaderWriterLock();

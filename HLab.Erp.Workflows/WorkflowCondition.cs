@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HLab.Erp.Workflows
 {
@@ -17,7 +18,17 @@ namespace HLab.Erp.Workflows
         }
 
         public void SetMessage(Func<T, IEnumerable<string>> getMessage) => _getMessage = getMessage;
-        public void SetHighlights(Func<T, IEnumerable<string>> getHighlights) => _getHighlights = getHighlights;
+        public void SetHighlights(Func<T, IEnumerable<string>> getHighlights)
+        {
+            if (_getHighlights == null)
+                _getHighlights = getHighlights;
+            else
+            {
+                var old = _getHighlights;
+                _getHighlights = h => getHighlights(h).Union(old(h));
+            }
+        }
+
         public void SetNext(WorkflowCondition<T> next) => _next = next;
 
         public bool ShowActionWhenFalse => _getMessage != null;

@@ -45,5 +45,11 @@ namespace HLab.Erp.Base.Data
             set => _badCode.Set(value);
         }
         private readonly IProperty<bool> _badCode = H.Property<bool>(c => c.Default(false));
+        public bool Custom
+        {
+            get => _custom.Get();
+            set => _custom.Set(value);
+        }
+        private readonly IProperty<bool> _custom = H.Property<bool>(c => c.Default(false));
     }
 }

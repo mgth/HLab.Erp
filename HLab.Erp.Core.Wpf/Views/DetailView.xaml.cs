@@ -30,9 +30,9 @@ namespace HLab.Erp.Core.Views
             get => (string)GetValue(IconPathProperty);
             set => SetValue(IconPathProperty, value);
         }
+
         public static readonly DependencyProperty IconPathProperty = 
             H.Property<string>()
-                //.OnChange((s, e) => s.IconView.Path = e.NewValue)
                 .Register();
 
         public string Text
@@ -40,15 +40,15 @@ namespace HLab.Erp.Core.Views
             get => (string)GetValue(TextProperty);
             set => SetValue(TextProperty, value);
         }
+
         public static readonly DependencyProperty TextProperty = 
             H.Property<string>()
-                //.OnChange((s, e) => s.Localize.Id = e.NewValue)
                 .Register();
 
         public UIElementCollection Children
         {
             get => (UIElementCollection)GetValue(ChildrenProperty.DependencyProperty);
-            private set => SetValue(ChildrenProperty, value);
+            private init => SetValue(ChildrenProperty, value);
         }
         public static readonly DependencyPropertyKey ChildrenProperty = H.Property<UIElementCollection>().RegisterReadOnly();
 

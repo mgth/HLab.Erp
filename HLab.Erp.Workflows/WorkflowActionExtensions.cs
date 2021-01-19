@@ -256,7 +256,7 @@ namespace HLab.Erp.Workflows
             where TWf : class,IWorkflow<TWf>
         {
             t.WhenStateAllowed(getState);           
-            t.Action(w => w.SetState(getState));
+            t.Action(async w => await w.SetStateAsync(getState));
             return t;
         }
 

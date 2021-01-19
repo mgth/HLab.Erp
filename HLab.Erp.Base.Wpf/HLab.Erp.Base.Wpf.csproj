@@ -60,13 +60,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Entities\Customers\CustomerView.xaml.cs">
-      <DependentUpon>CustomerView.xaml</DependentUpon>
+    <Compile Update="Entities\Customers\CorporationView.xaml.cs">
+      <DependentUpon>CorporationView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Entities\Customers\CustomerView.xaml">
+    <Page Update="Entities\Customers\CorporationView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Icons\Entities\Profile.xaml">

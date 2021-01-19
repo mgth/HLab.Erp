@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace HLab.Erp.Workflows
 {
@@ -70,7 +71,7 @@ namespace HLab.Erp.Workflows
                 {
                     var c = new Action<IFluentConfigurator<State>>(c => c
                         //.WhenStateAllowed(() => state)
-                        .Action(w => w.SetState(() => state)));
+                        .Action(async w => await w.SetStateAsync(() => state)));
                     c(new FluentConfigurator<State>(state));
                 }
 
@@ -183,7 +184,7 @@ namespace HLab.Erp.Workflows
         }
         private readonly IProperty<State> _currentState = H<Workflow<T>>.Property<State>();
 
-        public bool SetState(Func<State> setState)
+        public async Task<bool> SetStateAsync(Func<State> setState)
         {
             if (setState == null) return false;
 
@@ -191,7 +192,7 @@ namespace HLab.Erp.Workflows
 
             if (state.Check(this as T) == WorkflowConditionResult.Passed)
             {
-                if (OnSetState(state))
+                if (await OnSetStateAsync(state))
                 {
                     CurrentState = state;
                     Update();
@@ -204,19 +205,17 @@ namespace HLab.Erp.Workflows
 
         protected abstract string StateName { get; set; }
 
-        protected virtual bool OnSetState(State state)
+        protected virtual async Task<bool> OnSetStateAsync(State state)
         {
             if (StateName != state.Name)
             {
                 var old = StateName;
                 StateName = state.Name;
-                Locker.SaveCommand.Execute(null);
-                if (Locker.IsActive)
-                {
-                    StateName = old;
-                    return false;
-                }
-                return true;
+
+                if (await Locker.SaveAsync()) return true;
+
+                StateName = old;
+                return false;
             }
             return true;
         }
@@ -259,7 +258,7 @@ namespace HLab.Erp.Workflows
         where T : Workflow<T, TTarget>
         where TTarget : INotifyPropertyChanged
     {
-        public Workflow(TTarget target, IDataLocker locker):base(target,locker)
+        protected Workflow(TTarget target, IDataLocker locker):base(target,locker)
         {
         }
 
