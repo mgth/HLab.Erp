@@ -10,14 +10,22 @@
              xmlns:data="clr-namespace:HLab.Erp.Acl;assembly=HLab.Erp.Acl"
              xmlns:views="clr-namespace:HLab.Erp.Core.Views;assembly=HLab.Erp.Core.Wpf"
              xmlns:profiles="clr-namespace:HLab.Erp.Acl.Profiles"
-             xmlns:converters="clr-namespace:HLab.Base.Wpf.Converters;assembly=HLab.Base.Wpf"
+             xmlns:converters="clr-namespace:HLab.Base.Wpf.Converters;assembly=HLab.Base.Wpf" 
+             xmlns:wpf="clr-namespace:HLab.Base.Wpf;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type users:UserViewModelDesign}, IsDesignTimeCreatable=True}"             
-             d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <converters:ToVisibilityConverter x:Key="ToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed"/>
-        <converters:ToVisibilityConverter x:Key="ToCollapsedConverter" TrueValue="Collapsed" FalseValue="Visible"/>
+             d:DesignHeight="450" d:DesignWidth="800"
+             >
+        <UserControl.Resources>
+        <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary
+                Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/dark.red.xaml" />
+        </ResourceDictionary.MergedDictionaries>
+         </ResourceDictionary>
     </UserControl.Resources>
+
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -27,37 +35,37 @@
         
         <mvvm:ViewLocator Model="{Binding Locker}"/>
         
-        <ScrollViewer Grid.Row="1">
+        <wpf:ScrollViewerEx Grid.Row="1">
             <StackPanel>
                 <views:DetailView IconPath="Icons/entities/User" Text="{}{User}" EditMode="{Binding Locker.IsActive}">
 
                     <lang:LocalizedLabel Text="{}{Domain} : " />
-                    <TextBox Text="{Binding Model.Domain}"/>
+                    <TextBox Text="{Binding Model.Domain,UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="TextBox_MouseDoubleClick"/>
                     
                     <lang:LocalizedLabel Text="{}{Login} : " />
-                    <TextBox Text="{Binding Model.Login}"/>
+                    <TextBox Text="{Binding Model.Login,UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="TextBox_MouseDoubleClick"/>
 
                     <lang:LocalizedLabel Text="{}{Name} : "/>
-                    <TextBox Text="{Binding Model.Name}"/>
+                    <TextBox Text="{Binding Model.Name,UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="TextBox_MouseDoubleClick"/>
 
                     <lang:LocalizedLabel Text="{}{First Name} : "/>
                     <TextBox 
-                        Text="{Binding Model.FirstName}"
+                        Text="{Binding Model.FirstName,UpdateSourceTrigger=PropertyChanged}"
                         AcceptsReturn="True" 
                         TextWrapping="Wrap"
-                        HorizontalContentAlignment="Left"/>
+                        HorizontalContentAlignment="Left" MouseDoubleClick="TextBox_MouseDoubleClick"/>
 
                     <lang:LocalizedLabel Text="{}{Function} : "/>
-                    <TextBox Text="{Binding Model.Function}"/>
+                    <TextBox Text="{Binding Model.Function,UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="TextBox_MouseDoubleClick"/>
 
                     <lang:LocalizedLabel Text="{}{eMail} : "/>
-                    <TextBox Text="{Binding Model.Email}"/>
+                    <TextBox Text="{Binding Model.Email,UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="TextBox_MouseDoubleClick"/>
 
                     <lang:LocalizedLabel Text="{}{Phone} : "/>
-                    <TextBox Text="{Binding Model.Phone}"/>
+                    <TextBox Text="{Binding Model.Phone,UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="TextBox_MouseDoubleClick"/>
 
                     <lang:LocalizedLabel Text="{}{Initials} : "/>
-                    <TextBox Text="{Binding Model.Initials}"/>
+                    <TextBox Text="{Binding Model.Initials,UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="TextBox_MouseDoubleClick"/>
 
                     <lang:LocalizedLabel Text="{}{Password} : "/>
                     <Button Command="{Binding ChangePasswordCommand}">
@@ -93,11 +101,17 @@
 
                 </views:DetailView>
             </StackPanel>
-        </ScrollViewer>
+        </wpf:ScrollViewerEx>
 
-        <views:DetailView Text="{}{Note}" IconPath="Icons/Edit"  Grid.Row="2">
+        <views:DetailView Text="{}{Note}" IconPath="Icons/Edit"  Grid.Row="2" EditMode="{Binding Locker.IsActive}">
 
-            <TextBox Margin="50,0,15,0"  Grid.ColumnSpan="2"  Text="{Binding Model.Note}" AcceptsReturn="True" TextWrapping="Wrap"/>
+            <TextBox 
+                Margin="50,0,15,0"  Grid.ColumnSpan="2"  
+                Text="{Binding Model.Note}" 
+                AcceptsReturn="True" 
+                TextWrapping="Wrap" 
+                MouseDoubleClick="TextBox_MouseDoubleClick"/>
+            
             <Label />
 
         </views:DetailView>
