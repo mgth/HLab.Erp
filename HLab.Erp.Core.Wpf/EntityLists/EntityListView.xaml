@@ -11,9 +11,12 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=core:IEntityListViewModel, IsDesignTimeCreatable=false}"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+             >
     <Grid >
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -28,9 +31,9 @@
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
 
-            <Button Command ="{Binding AddCommand}" Foreground="Black">
+            <Button Command ="{Binding AddCommand}">
                 <Button.Style>
-                    <Style TargetType="{x:Type Button}" >
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                         <Style.Triggers>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Visibility" Value="Collapsed" />
@@ -44,9 +47,9 @@
                 <lang:Localize Id="{}{Add}"/>
             </Button>
 
-            <Button Command="{Binding DeleteCommand}" Foreground="Black">                    
+            <Button Command="{Binding DeleteCommand}">                    
                 <Button.Style>
-                        <Style TargetType="{x:Type Button}" >
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                             <Style.Triggers>
                                 <Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -60,13 +63,13 @@
                 <lang:Localize Id="{}{Delete}"/>
             </Button>
             
-            <Button Command="{Binding RefreshCommand}" Foreground="Black">                    
+            <Button Command="{Binding RefreshCommand}">                    
                 <lang:Localize Id="{}{Refresh}"/>
             </Button>
 
-            <!--<Button Command="{Binding OpenCommand}">
+            <Button Command="{Binding OpenCommand}">
                 <Button.Style>
-                    <Style TargetType="{x:Type Button}" >
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                         <Style.Triggers>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Visibility" Value="Collapsed" />
@@ -75,11 +78,12 @@
                     </Style>
                 </Button.Style>
 
-                <lang:Localize Id="{}{Open}"/></Button>-->
+                <lang:Localize Id="{}{Open}"/></Button>
         </StackPanel>
 
+        <TextBlock Grid.Row="2" Text="{Binding Message}" Foreground="Red"/>
 
-         <DataGrid Grid.Row="2"
+         <DataGrid Grid.Row="3"
             ItemsSource="{Binding ListCollectionView}" 
             SelectedItem="{Binding SelectedViewModel}"
             VirtualizingStackPanel.VirtualizationMode="Recycling"
@@ -87,7 +91,7 @@
             AutoGenerateColumns="False"
             Name="DataGrid"
             AlternationCount="2"
-            Background="Black"
+            Background="{DynamicResource MahApps.Brushes.DataGrid.Background}"
          ><!--AlternatingRowBackground="#08FFFFFF"-->
             <DataGrid.Resources>
                 <Style TargetType="DataGridColumnHeader">
@@ -102,14 +106,16 @@
                              <Setter Property="Opacity" Value="0.3" />
                          </DataTrigger>
                          <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
-                             <Setter Property="Background" Value="#08FFFFFF" />
+                             <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent4}" />
                          </Trigger>
                          <Trigger Property="IsSelected"
                                   Value="True">
+                             <Setter Property="Foreground"
+                                     Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.Text}" />
                              <Setter Property="Background"
-                                     Value="#40FFFFFF" />
+                                     Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.Background}" />
                              <Setter Property="BorderBrush"
-                                     Value="#80FFFFFF" />
+                                     Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.BorderBrush}" />
                              <Setter Property="BorderThickness"
                                      Value="2" />
                          </Trigger>

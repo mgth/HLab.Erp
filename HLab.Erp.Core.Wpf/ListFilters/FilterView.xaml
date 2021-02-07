@@ -18,7 +18,7 @@
     </UserControl.Resources>
         <Grid>
         <Border 
-            Background="#1000FFFF"
+            Background="{DynamicResource MahApps.Brushes.Accent}"
             BorderThickness="0" 
             CornerRadius="10"/>
         <Grid>
@@ -51,7 +51,7 @@
                         <CheckBox IsChecked="{Binding Enabled}" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
                         <Label 
                             Visibility="{Binding Enabled,Converter={StaticResource ToVisibilityConverter}}"
-                            Foreground="#40FFFFFF" 
+                            Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}" 
                             Grid.Row="1" 
                             HorizontalAlignment="Center" 
                             FontSize="12" 
@@ -63,7 +63,7 @@
                 </StackPanel>
             </Grid>
             <Label 
-                Foreground="#40FFFFFF" 
+                Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}" 
                 Grid.Row="1" 
                 Grid.Column="1"
                 HorizontalAlignment="Center" 

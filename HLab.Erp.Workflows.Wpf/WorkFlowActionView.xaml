@@ -14,30 +14,36 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-            <Button
-                Foreground="White"
-                Background="Transparent"
-                VerticalAlignment="Center" 
-                HorizontalAlignment="Stretch" 
-                FontWeight="Black" 
-                Command="{Binding Command}"
-                >
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="10"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <icons:IconView Foreground="White" Width="20" Height="20" Path="{Binding Model.IconPath}"/>
-                    <lang:Localize Grid.Column="2" VerticalAlignment="Center" Id="{Binding Model.Caption}"/>
-                </Grid>
-            </Button>
-        <ListView ItemsSource="{Binding Model.Messages}"  Grid.Row ="1" MaxHeight="50">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                        <lang:Localize HorizontalAlignment="Left" Foreground="Red" VerticalAlignment="Center" Id="{Binding}"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <Button
+            
+            VerticalAlignment="Center" 
+            HorizontalAlignment="Stretch" 
+            FontWeight="Black" 
+            Command="{Binding Command}"
+            >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <icons:IconView Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Width="20" Height="20" Path="{Binding Model.IconPath}"/>
+                <lang:Localize Grid.Column="2" VerticalAlignment="Center" Id="{Binding Model.Caption}"/>
+            </Grid>
+        </Button>
+        <Grid Grid.Row ="1" Background="Red">
+            <ListView ItemsSource="{Binding Model.Messages}" Grid.Row ="1" MaxHeight="50">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <lang:Localize 
+                                HorizontalAlignment="Left" 
+                                Foreground="{DynamicResource MahApps.Brushes.Control.Validation}"  
+                                VerticalAlignment="Center" Id="{Binding}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
     </Grid>
 </UserControl>

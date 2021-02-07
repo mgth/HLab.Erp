@@ -15,16 +15,15 @@
             <Grid.Effect>
                 <DropShadowEffect 
                     ShadowDepth="0"
-                    Color="#E0000000"
+                    Color="{DynamicResource MahApps.Colors.ThemeForeground}"
                     Opacity="1"
                     BlurRadius="10"
                 />
             </Grid.Effect>
 
             <Border
-                BorderBrush="#A0FFFFFF"
-                BorderThickness="2"
-                Background="#50000000" 
+                BorderThickness="0"
+                Background="{DynamicResource MahApps.Brushes.Control.Background}" 
                 CornerRadius="10">
             </Border>
 
@@ -34,9 +33,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Border
-                    BorderBrush="#A0FFFFFF"
+                    BorderBrush="{DynamicResource MahApps.Brushes.Button.Flat.Foreground}"
                     BorderThickness="0"
-                    Background="#FFFFFFFF" 
+                    Background="{DynamicResource MahApps.Brushes.Badged.Background}" 
                     CornerRadius="10,0,0,10">
                 </Border>
 
@@ -44,7 +43,7 @@
                     <Label.LayoutTransform><RotateTransform Angle="-90"></RotateTransform></Label.LayoutTransform>
                     <Grid Width="50" Height="20">
                         <StackPanel Orientation="Vertical">
-                            <lang:Localize HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" Id="{}{Workflow}"/>
+                            <lang:Localize HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}" Id="{}{Workflow}"/>
                         </StackPanel>
                     </Grid>
                 </Label>
@@ -58,13 +57,13 @@
                     <Grid Margin="5" Width="40" Height="40">
                         <icons:IconView 
                             HorizontalAlignment="Right" 
-                            Foreground="#E0FFFFFF" 
+                            Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
                             Width="40" Height="40"
                             Path="{Binding Model.IconPath}"/>
                         <icons:IconView 
                             VerticalAlignment="Bottom" 
                             HorizontalAlignment="Right" 
-                            Foreground="#FFFFFFFF" 
+                            Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
                             Width="20" Height="20"
                             Path="{Binding Model.SubIconPath}"/>
                     </Grid>
@@ -74,7 +73,7 @@
                         HorizontalAlignment="Left" 
                         FontSize="16"
                         FontWeight="Black" 
-                        Foreground="White"
+                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
                         >
                         <lang:Localize TextWrapping="Wrap" Id="{Binding Model.Caption}"/>
                     </Label>
