@@ -8,7 +8,7 @@
              xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
              xmlns:data="clr-namespace:HLab.Erp.Acl;assembly=HLab.Erp.Acl"
              xmlns:views="clr-namespace:HLab.Erp.Core.Views;assembly=HLab.Erp.Core.Wpf"
-             xmlns:profiles="clr-namespace:HLab.Erp.Acl.Profiles"
+             xmlns:profiles="clr-namespace:HLab.Erp.Acl.Profiles" xmlns:wpf="clr-namespace:HLab.Base.Wpf;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance profiles:ProfileViewModel}">
     <Grid>
@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
         <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
 
-        <ScrollViewer Grid.Row="1">
+        <wpf:ScrollViewerEx Grid.Row="1">
             <StackPanel>
                 <views:DetailView Text="{}{Profile}" IconPath="Icons/users">
 
@@ -91,7 +91,7 @@
 
                 </views:DetailView>
             </StackPanel>
-        </ScrollViewer>
+        </wpf:ScrollViewerEx>
 
         <views:DetailView Grid.Row="2" Text="{}{Note}" IconPath="Icons/Edit">
 

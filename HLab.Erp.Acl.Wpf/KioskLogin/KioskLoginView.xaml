@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:annotations="clr-namespace:HLab.Mvvm.Annotations;assembly=HLab.Mvvm.Annotations"
-             xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
+             xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf" xmlns:wpf="clr-namespace:HLab.Base.Wpf;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" 
              d:DesignWidth="800"
@@ -55,7 +55,7 @@
 
 
         <Label Grid.Row="7" FontWeight="Bold">Nom</Label>
-        <ScrollViewer Grid.Column="1" Grid.Row="7">
+        <wpf:ScrollViewerEx Grid.Column="1" Grid.Row="7">
                 <ListView   
                     HorizontalContentAlignment="Stretch" 
                     Name ="ListViewTest"
@@ -66,7 +66,7 @@
                     mvvm:ViewLocator.ViewClass ="{x:Type annotations:IViewClassListItem}"
                     >
                 </ListView>
-            </ScrollViewer>
+            </wpf:ScrollViewerEx>
 
         <Label Grid.Row="1" FontWeight="Bold" Grid.Column="0">Nom</Label>
         <TextBox FontSize="24" Grid.Row="1" Grid.Column="1" Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"/>
