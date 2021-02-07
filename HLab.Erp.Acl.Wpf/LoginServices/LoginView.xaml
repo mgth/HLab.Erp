@@ -8,33 +8,73 @@
                       xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
                       mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="500" >
-<Grid>
-    <Viewbox Opacity="0.1"><icons:IconView Path="icons/LogoBackground"/></Viewbox>    
-    <StackPanel Margin="20,20,20,0" VerticalAlignment="Center">
-            
-        <Grid
+    <Grid>
+        <Viewbox Opacity="0.1">
+            <icons:IconView Path="icons/LogoBackground"/>
+        </Viewbox>
+        <StackPanel Margin="20,20,20,0" VerticalAlignment="Center">
+
+            <Grid
             Height="175"
             Width="400">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-            <lang:LocalizedLabel Text="{}{Name} : " Grid.Row="0" HorizontalAlignment="Right"/>
-            <lang:LocalizedLabel Text="{}{Password} : " Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
-            <lang:LocalizedLabel Visibility="{Binding DebugVisibility}" Text="{}{Encrypted Password} : " Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right"/>
-            
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Login}"/>
-            <PasswordBox x:Name="PasswordBox" Grid.Column="1" Grid.Row="1" PasswordChar="*" PasswordChanged="PasswordBox_OnPasswordChanged"/>
-            <TextBox Visibility="{Binding DebugVisibility}" Text="{Binding Password}" x:Name="EncryptedPassword" Grid.Column="1" Grid.Row="2"/>
-            <TextBlock 
+                <lang:LocalizedLabel 
+                Text="{}{Database} : " 
+                HorizontalAlignment="Right"
+                />
+                <ComboBox Grid.Column="1" ItemsSource="{DatabaseList}"/>
+
+                <lang:LocalizedLabel 
+                Text="{}{Name} : " 
+                Grid.Row="1" 
+                HorizontalAlignment="Right"
+                />
+                <TextBox 
+                Text="{Binding Login}"
+                Grid.Row="0" 
+                Grid.Column="1" 
+                />
+
+
+                <lang:LocalizedLabel 
+                Text="{}{Password} : " 
+                Grid.Row="2" 
+                HorizontalAlignment="Right"
+                />
+                <PasswordBox 
+                x:Name="PasswordBox" 
+                Grid.Column="1" 
+                Grid.Row="1" 
+                PasswordChar="*" 
+                PasswordChanged="PasswordBox_OnPasswordChanged"
+                />
+
+                <lang:LocalizedLabel 
+                Visibility="{Binding DebugVisibility}" 
+                Text="{}{Encrypted Password} : " 
+                Grid.Row="2" Grid.Column="0" 
+                HorizontalAlignment="Right"
+                />
+                <TextBox 
+                Visibility="{Binding DebugVisibility}" 
+                Text="{Binding Password}" 
+                x:Name="EncryptedPassword" 
+                Grid.Column="1" 
+                Grid.Row="2"
+                />
+
+                <TextBlock 
                 HorizontalAlignment="Center"
                 Grid.Row="3" 
                 Grid.Column="0" 
@@ -43,7 +83,7 @@
                 Foreground="RosyBrown"
                 TextWrapping="Wrap" 
                 Text="{Binding Message}"/>
-            <Button 
+                <Button 
                 IsDefault="True" 
                 Width="100" 
                 Grid.ColumnSpan="2" 
@@ -51,10 +91,10 @@
                 Grid.Row="4" 
                 Margin="10" 
                 Command="{Binding LoginCommand}">
-                <lang:Localize Id="{}{Connection}"/>
-            </Button>
-        </Grid>
-    </StackPanel>
-</Grid>
+                    <lang:Localize Id="{}{Connection}"/>
+                </Button>
+            </Grid>
+        </StackPanel>
+    </Grid>
 </UserControl>
 
