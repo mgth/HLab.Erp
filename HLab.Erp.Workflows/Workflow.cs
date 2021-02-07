@@ -34,7 +34,6 @@ namespace HLab.Erp.Workflows
             Target = target;
             _locker.Set(locker);
 
-
             if(target is INotifyPropertyChanged n)
                 n.PropertyChanged += Target_PropertyChanged;
         }
@@ -105,6 +104,7 @@ namespace HLab.Erp.Workflows
             public WorkflowAction GetAction(T workflow) => new WorkflowAction(workflow,this);
         }
 
+        //Todo : user never set
         public User User { get; set; }
         public object Target { get; }
         public IDataLocker Locker => _locker.Get();
@@ -123,26 +123,23 @@ namespace HLab.Erp.Workflows
 
         public string Caption => _caption.Get();
         private readonly IProperty<string> _caption = H<Workflow<T>>.Property<string>(c => c
-            .On(e => e.CurrentState)
-            .Set(e => e.CurrentState.GetCaption(e))
-            //.NotNull(e =>e.CurrentState)
             .Set(e => e.CurrentState?.GetCaption(e))
+            .On(e => e.CurrentState)
+            .Update()
         );
 
         public string IconPath => _iconPath.Get();
         private readonly IProperty<string> _iconPath = H<Workflow<T>>.Property<string>(c => c
-            .On(e => e.CurrentState)
-            .Set(e => e.CurrentState.GetIconPath(e))
-            //.NotNull(e =>e.CurrentState)
             .Set(e => e.CurrentState?.GetIconPath(e))
+            .On(e => e.CurrentState)
+            .Update()
         );
 
         public string SubIconPath => _subIconPath.Get();
         private readonly IProperty<string> _subIconPath = H<Workflow<T>>.Property<string>(c => c
-            .On(e => e.CurrentState)
-            .Set(e => e.CurrentState.GetSubIconPath(e))
-            //.NotNull(e =>e.CurrentState)
             .Set(e => e.CurrentState?.GetSubIconPath(e))
+            .On(e => e.CurrentState)
+            .Update()
         );
 
         internal static bool AddState(State state)
