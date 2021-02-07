@@ -5,8 +5,11 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
+using HLab.Base.Wpf;
+
 namespace HLab.Erp.Core
 {
+
     public class TextBoxAdvanced : TextBox
     {
 
@@ -77,19 +80,9 @@ namespace HLab.Erp.Core
 
         protected override void OnTextChanged(TextChangedEventArgs e)
         {
-            var pos = CaretIndex;
 
-            var v = Text;
-
-            var v2 = v.Replace(">=", "≥")
-            .Replace("<=", "≤")
-            .Replace("+-", "±")
-            .Replace("!=", "≠")
-            .Replace("~=", "≈")
-            .Replace("/8", "∞");
-            Text = v2;
-
-            CaretIndex = pos - (v.Length - v2.Length);
+            this.ApplySymbols();
+ 
 
             base.OnTextChanged(e);
         }

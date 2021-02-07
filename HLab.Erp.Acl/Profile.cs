@@ -19,5 +19,12 @@ namespace HLab.Erp.Acl
         }
 
         readonly IProperty<string> _name = H.Property<string>(c => c.Default(""));
+        public string Note
+        {
+            get => _note.Get();
+            set => _note.Set(value);
+        }
+
+        readonly IProperty<string> _note = H.Property<string>(c => c.Default(""));
     }
 }

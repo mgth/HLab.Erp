@@ -41,7 +41,7 @@ namespace HLab.Erp.Acl.AuditTrails
         }
         private readonly IProperty<string> _login = H.Property<string>(c => c
 #if DEBUG
-                .Default("admin")
+                .Default("administrateur")
 #else
                     .Default("")
 #endif
@@ -90,7 +90,7 @@ namespace HLab.Erp.Acl.AuditTrails
         private readonly IProperty<NetworkCredential> _credential = H.Property<NetworkCredential>(c => c
 #if DEBUG
         
-                .Default(new NetworkCredential("admin", "blagueur"))
+                .Default(new NetworkCredential("administrateur", "blagueur"))
 #else
         .Default(new NetworkCredential("", ""))
 #endif

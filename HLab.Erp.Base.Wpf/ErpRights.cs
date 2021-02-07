@@ -10,6 +10,8 @@ namespace HLab.Erp.Base.Wpf
         /// <summary>
         /// Allow to create / Delete users
         /// </summary>        
-        public static readonly AclRight SignCustomer = AclRight.Get();
+        public static readonly AclRight ErpSignCustomer = AclRight.Get();
+        public static readonly AclRight ErpViewCustomer = AclRight.Get();
+        public static readonly AclRight ErpValidateCustomer = AclRight.Get();
     }
 }

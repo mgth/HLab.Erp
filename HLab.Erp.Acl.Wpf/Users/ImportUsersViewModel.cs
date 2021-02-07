@@ -27,7 +27,13 @@ namespace HLab.Erp.Acl.Users
 
     public class ImportUsersViewModel : ViewModel
     {
-        public ImportUsersViewModel() => H.Initialize(this);
+        public ImportUsersViewModel()
+        {
+            H.Initialize(this);
+
+            Domain = _acl.Connection.User.Domain;
+            UserName = _acl.Connection.User.Login;
+        }
 
         public string Title => "{Import Users}";
 

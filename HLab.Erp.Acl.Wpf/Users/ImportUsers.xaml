@@ -4,13 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
-             xmlns:converters="clr-namespace:HLab.Base.Wpf.Converters;assembly=HLab.Base.Wpf"
+             xmlns:converters="clr-namespace:HLab.Base.Wpf.Converters;assembly=HLab.Base.Wpf" xmlns:wpf="clr-namespace:HLab.Base.Wpf;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:ToBrushConverter x:Key="ToBrushConverter" TrueValue="DarkGreen" FalseValue="Red" NullValue="White"/>
     </UserControl.Resources>
     <Grid>
+        <wpf:ScrollViewerEx>
         <StackPanel>
             <lang:LocalizedLabel Text="{}{Domain} : "/>
             <TextBox Text="{Binding Domain}"/>
@@ -31,6 +32,6 @@
                 <lang:Localize Id="{}{Import User}"/>
             </Button>
         </StackPanel>
-        
+        </wpf:ScrollViewerEx>
     </Grid>
 </UserControl>

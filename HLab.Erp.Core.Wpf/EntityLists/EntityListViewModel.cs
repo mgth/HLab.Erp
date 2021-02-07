@@ -44,6 +44,10 @@ namespace HLab.Erp.Core.EntityLists
 
             List.UpdateAsync();
         }
+
+        public override ICommand AddCommand {get; }  = H<ListableEntityListViewModel<T>>.Command(c => c
+                .Action(async e => await e.AddEntityAsync())
+        );
     }
 
     public abstract class EntityListViewModel : ViewModel, IEntityListViewModel
@@ -54,13 +58,11 @@ namespace HLab.Erp.Core.EntityLists
         public abstract void SetOpenAction(Action<object> action);
         public abstract void SetSelectAction(Action<object> action);
         public ObservableCollection<IFilterViewModel> Filters { get; } = new ObservableCollection<IFilterViewModel>();
-        public ICommand AddCommand { get; } = H<EntityListViewModel>.Command(c => c
-                .Action(async e => await e.AddEntityAsync())
-        );
 
-        public dynamic SelectedViewModel { get; set; }
+        public abstract dynamic SelectedViewModel { get; set; }
         protected abstract Task AddEntityAsync();
 
+        public abstract ICommand AddCommand { get; }
         public abstract ICommand DeleteCommand { get; }
     }
 
@@ -125,27 +127,18 @@ namespace HLab.Erp.Core.EntityLists
             .Action(e => e.OpenAction.Invoke(e.Selected))
             .On(e => e.Selected).CheckCanExecute()
         );
+
         public ICommand RefreshCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
             .Action(async e => await e.List.UpdateAsync())
         );
 
         protected Action<T> OpenAction;
-        public override void SetOpenAction(Action<object> action)
-        {
-            OpenAction = action;
-        }
+        public override void SetOpenAction(Action<object> action) => OpenAction = action;
 
         protected Action<T> SelectAction;
-        public override void SetSelectAction(Action<object> action)
-        {
-            SelectAction = action;
-        }
-
-
-
+        public override void SetSelectAction(Action<object> action) => SelectAction = action;
 
         [Import] protected Func<T> CreateInstance;
-
         protected override Task AddEntityAsync()
         {
             var entity = CreateInstance();
@@ -156,12 +149,32 @@ namespace HLab.Erp.Core.EntityLists
         }
 
         protected virtual void ConfigureEntity(T entity) { }
+        public string Message 
+        {
+            get => _message.Get(); 
+            set => _message.Set(value);
+        }
+        private readonly IProperty<string> _message = H<EntityListViewModel<T>>.Property<string>();
 
-        public bool AddAllowed {get => _addAllowed.Get(); set => _addAllowed.Set(value);}
+        public bool AddAllowed 
+        {
+            get => _addAllowed.Get(); 
+            set => _addAllowed.Set(value);
+        }
         private readonly IProperty<bool> _addAllowed = H<EntityListViewModel<T>>.Property<bool>();
 
-        public bool DeleteAllowed {get => _deleteAllowed.Get(); set => _deleteAllowed.Set(value);}
+        public bool DeleteAllowed 
+        {
+            get => _deleteAllowed.Get(); 
+            set => _deleteAllowed.Set(value);
+        }
         private readonly IProperty<bool> _deleteAllowed = H<EntityListViewModel<T>>.Property<bool>();
+        public bool OpenAllowed 
+        {
+            get => _openAllowed.Get(); 
+            set => _openAllowed.Set(value);
+        }
+        private readonly IProperty<bool> _openAllowed = H<EntityListViewModel<T>>.Property<bool>();
 
 
         private void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -255,7 +268,7 @@ namespace HLab.Erp.Core.EntityLists
 
         private readonly IProperty<T> _selected = H<EntityListViewModel<T>>.Property<T>();
 
-        public dynamic SelectedViewModel
+        public override dynamic SelectedViewModel
         {
             get => _selectedViewModel.Get();
             set => Selected = value?.Model;
@@ -263,23 +276,46 @@ namespace HLab.Erp.Core.EntityLists
 
         private readonly IProperty<dynamic> _selectedViewModel = H<EntityListViewModel<T>>.Property<dynamic>(c => c
             .Set(e => e.Selected==null?null:e._cache.GetOrAdd(e.Selected, o => new ObjectMapper<T>(o, e.Columns)))
-            .On(e => e.Selected).Update()
+            .On(e => e.Selected)
+        .Update()
         );
 
         public override ICommand DeleteCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
                 .CanExecute(e => e.CanExecuteDelete())
                 .Action(async e => await e.DeleteEntityAsync(e.Selected))
-                .On(e => e.Selected).CheckCanExecute()
+                .On(e => e.Selected)
+                .CheckCanExecute()
         );
+        public override ICommand AddCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
+                .CanExecute(e => e.CanExecuteAdd())
+                .Action(async e => await e.AddEntityAsync())
+                .On(e => e.Selected)
+                .CheckCanExecute()
+        );
+
         protected async Task DeleteEntityAsync(T entity)
         {
             await _docs.CloseDocumentAsync(entity);
-            if (await _data.DeleteAsync(entity))
+            try
             {
-                await List.UpdateAsync();
+                if (await _data.DeleteAsync(entity))
+                {
+                    await List.UpdateAsync();
+                }
+                Message = null;
+            }
+            catch(Exception ex)
+            {
+                Message = ex.Message;
+                while(ex.InnerException != null) {
+                    ex = ex.InnerException;
+                    Message = "\n" + ex.Message;
+                }
             }
         }
 
         protected virtual bool CanExecuteDelete() => false;
+        protected virtual bool CanExecuteAdd() => true;
+        protected virtual bool CanExecuteOpen() => true;
     }
 }

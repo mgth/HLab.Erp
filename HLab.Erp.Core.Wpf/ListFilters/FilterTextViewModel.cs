@@ -30,7 +30,7 @@ namespace HLab.Erp.Core.ListFilters
                 return null; 
 
             var entity = getter.Parameters[0];
-            var value = Expression.Constant(Value,typeof(string));
+            var value = Expression.Constant(Value.ToLower(),typeof(string));
 
             var ex1 = Expression.Call(getter.Body,ToLowerMethod);
             var ex = Expression.Call(ex1,ContainsMethod,value);

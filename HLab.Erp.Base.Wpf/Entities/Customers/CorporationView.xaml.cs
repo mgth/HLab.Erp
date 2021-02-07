@@ -1,4 +1,6 @@
 ﻿using System.Windows.Controls;
+
+using HLab.Base.Wpf;
 using HLab.Erp.Core;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;

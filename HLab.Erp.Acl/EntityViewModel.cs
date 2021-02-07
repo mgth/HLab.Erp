@@ -67,8 +67,13 @@ namespace HLab.Erp.Acl
         public virtual string EntityName => "{" + typeof(T).Name + "}";
         public virtual string Title => EntityName;
 
-        public virtual string IconPath => "icons/entities/" + typeof(T).Name;
+        public virtual string IconPath => _iconPath.Get();
+        private readonly IProperty<string> _iconPath = H<EntityViewModel<T>>.Property<string>(c => c
+        .Set(e => "icons/entities/" + typeof(T).Name + (e.Locker.IsActive?"|Icons/Unlocked":""))
+            .On(e => e.Locker.IsActive).Update()
 
+        );
+            
         public ICommand CloseCommand { get; } = H<EntityViewModel<T>>.Command(c => c
             .Action(e =>
             {
