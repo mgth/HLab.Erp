@@ -18,6 +18,8 @@ namespace HLab.Erp.Workflows
     public interface IWorkflowAction : IWorkflowConditional
     {
         WorkflowDirection Direction { get; }
+        bool SigningMandatory {get;}
+        bool MotivationMandatory {get;}
     }
 
     public class WorkflowAction
@@ -37,6 +39,9 @@ namespace HLab.Erp.Workflows
         public IEnumerable<string> Messages => _action.GetMessages(_workflow);
         public IEnumerable<string> Highlights => _action.GetHighlights(_workflow);
         public WorkflowDirection Direction => _action.Direction;
+
+        public bool SigningMandatory  => _action.SigningMandatory;
+        public bool MotivationMandatory => _action.MotivationMandatory;
 
     }
 

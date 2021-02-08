@@ -10,6 +10,6 @@ namespace HLab.Erp.Acl
         ICommand ActivateCommand { get; }
         ICommand SaveCommand { get; }
         ICommand CancelCommand { get; }
-        Task<bool> SaveAsync();
+        Task<bool> SaveAsync(bool sign, bool motivate);
     }
 }

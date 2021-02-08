@@ -33,7 +33,7 @@
                 Text="{}{Database} : " 
                 HorizontalAlignment="Right"
                 />
-                <ComboBox Grid.Column="1" ItemsSource="{DatabaseList}"/>
+                <ComboBox Grid.Column="1" ItemsSource="{Binding DatabaseList}"/>
 
                 <lang:LocalizedLabel 
                 Text="{}{Name} : " 

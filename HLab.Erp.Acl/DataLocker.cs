@@ -121,7 +121,7 @@ namespace HLab.Erp.Acl
 
         public ICommand SaveCommand { get; } = H<DataLocker<T>>.Command(c => c
             .CanExecute(e => e.Persister.IsDirty)
-            .Action(async e => await e.SaveAsync().ConfigureAwait(false))
+            .Action(async e => await e.SaveAsync(false,false).ConfigureAwait(false))
             .On(e => e.Persister.IsDirty).CheckCanExecute()
         );
 
@@ -191,7 +191,7 @@ namespace HLab.Erp.Acl
 
         public Action<T> BeforeSavingAction { get; set; }
 
-        public async Task<bool> SaveAsync()
+        public async Task<bool> SaveAsync(bool sign, bool motivate)
         {
             BeforeSavingAction?.Invoke(_entity);
 
@@ -205,7 +205,7 @@ namespace HLab.Erp.Acl
                 var action = _entityId < 0 ? "Create" : "Update";
 
                 //TODO : add AclRight needed to do the action
-                if (_getAudit(transaction).Audit(action, null, log, _entity))
+                if (_getAudit(transaction).Audit(action, null, log, _entity,sign,motivate))
                 {
                     await Persister.SaveAsync(transaction);
                     _timer.Change(Timeout.Infinite, Timeout.Infinite);

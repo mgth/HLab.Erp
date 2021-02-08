@@ -18,6 +18,7 @@
                 </LinearGradientBrush>
             </TextBox.Background>
             </TextBox>
+        <lang:LocalizedLabel>{Motivation} :</lang:LocalizedLabel>
         <TextBox 
             MinWidth="400" 
             TextWrapping="Wrap" 
@@ -53,7 +54,7 @@
 <Label/>
         <TextBlock Text="{Binding User.Caption}"/>
 
-        <DockPanel Margin="0,5">
+        <DockPanel Margin="0,5" Visibility="{Binding Sign,Converter={StaticResource ToVisibilityConverter}}">
             <lang:LocalizedLabel Text="{}{Password} :"/>
             <Label/>
             <PasswordBox DockPanel.Dock="Right" Height="23" x:Name="PasswordBox" VerticalAlignment="Center" PasswordChanged="PasswordBox_OnTextChanged"/>

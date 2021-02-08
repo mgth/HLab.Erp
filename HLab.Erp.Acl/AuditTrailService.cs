@@ -10,7 +10,7 @@ namespace HLab.Erp.Acl
 
     public interface IAuditTrailProvider
     {
-        bool Audit(string action,AclRight rightNeeded, string log, object entity);
+        bool Audit(string action,AclRight rightNeeded, string log, object entity, bool sign, bool motivate);
     }
 
     

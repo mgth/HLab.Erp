@@ -254,9 +254,13 @@ namespace HLab.Erp.Workflows
         /// <returns></returns>
         public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> ToState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.State> getState)
             where TWf : class,IWorkflow<TWf>
-        {
-            t.WhenStateAllowed(getState);           
-            t.Action(async w => await w.SetStateAsync(getState));
+        {           
+            if(t.Target is Workflow<TWf>.Action action)
+            {
+                t.WhenStateAllowed(getState);           
+                t.Action(async w => await w.SetStateAsync(getState,action.SigningMandatory,action.MotivationMandatory));
+                return t;
+            }
             return t;
         }
 
@@ -272,6 +276,20 @@ namespace HLab.Erp.Workflows
         {
             if(t.Target is Workflow<TWf>.Action action)
                 action.Direction = WorkflowDirection.Backward;
+            return t;
+        }
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> Sign<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t)
+            where TWf : class, IWorkflow<TWf>
+        {
+            if(t.Target is Workflow<TWf>.Action action)
+                action.SigningMandatory = true;
+            return t;
+        }
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> Motivate<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t)
+            where TWf : class, IWorkflow<TWf>
+        {
+            if(t.Target is Workflow<TWf>.Action action)
+                action.SigningMandatory = true;
             return t;
         }
     }

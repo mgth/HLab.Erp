@@ -70,7 +70,7 @@ namespace HLab.Erp.Workflows
                 {
                     var c = new Action<IFluentConfigurator<State>>(c => c
                         //.WhenStateAllowed(() => state)
-                        .Action(async w => await w.SetStateAsync(() => state)));
+                        .Action(async w => await w.SetStateAsync(() => state, false,false)));
                     c(new FluentConfigurator<State>(state));
                 }
 
@@ -100,6 +100,10 @@ namespace HLab.Erp.Workflows
             }
 
             public WorkflowDirection Direction { get; set; }
+
+            public bool SigningMandatory { get; set; }
+
+            public bool MotivationMandatory { get; set; }
 
             public WorkflowAction GetAction(T workflow) => new WorkflowAction(workflow,this);
         }
@@ -181,7 +185,7 @@ namespace HLab.Erp.Workflows
         }
         private readonly IProperty<State> _currentState = H<Workflow<T>>.Property<State>();
 
-        public async Task<bool> SetStateAsync(Func<State> setState)
+        public async Task<bool> SetStateAsync(Func<State> setState, bool sign, bool motivate)
         {
             if (setState == null) return false;
 
@@ -189,7 +193,7 @@ namespace HLab.Erp.Workflows
 
             if (state.Check(this as T) == WorkflowConditionResult.Passed)
             {
-                if (await OnSetStateAsync(state))
+                if (await OnSetStateAsync(state, sign,motivate))
                 {
                     CurrentState = state;
                     Update();
@@ -202,14 +206,14 @@ namespace HLab.Erp.Workflows
 
         protected abstract string StateName { get; set; }
 
-        protected virtual async Task<bool> OnSetStateAsync(State state)
+        protected virtual async Task<bool> OnSetStateAsync(State state, bool sign, bool motivate)
         {
             if (StateName != state.Name)
             {
                 var old = StateName;
                 StateName = state.Name;
 
-                if (await Locker.SaveAsync()) return true;
+                if (await Locker.SaveAsync(sign,motivate)) return true;
 
                 StateName = old;
                 return false;

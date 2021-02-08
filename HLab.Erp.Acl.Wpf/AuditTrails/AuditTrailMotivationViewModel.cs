@@ -38,6 +38,12 @@ namespace HLab.Erp.Acl.AuditTrails
             set => _motivationMandatory.Set(value);
         }
         private readonly IProperty<bool> _motivationMandatory = H.Property<bool>();
+        public bool Signing
+        {
+            get => _signing.Get();
+            set => _signing.Set(value);
+        }
+        private readonly IProperty<bool> _signing = H.Property<bool>();
 
         public string Motivation
         {
@@ -73,7 +79,7 @@ namespace HLab.Erp.Acl.AuditTrails
         private readonly IProperty<bool?> _result = H.Property<bool?>();
 
         public ICommand OkCommand { get; } = H.Command( c => c
-            .CanExecute(e => !e.MotivationMandatory || (e.Motivation?.Length??0)>0)
+            .CanExecute(e => !e.MotivationMandatory || (e.Motivation?.Length??0)>=5)
             .Action(async e =>
                 {
                     var user = await e.Acl.Check(e.Credential);
@@ -97,9 +103,11 @@ namespace HLab.Erp.Acl.AuditTrails
             .On(e => e.Login).CheckCanExecute()
         );
 
-        public bool Audit(string action, AclRight rightNeeded, string log, object entity)
+        public bool Audit(string action, AclRight rightNeeded, string log, object entity, bool sign, bool motivate)
         {
             Log = log;
+            MotivationMandatory = motivate;
+            Signing = sign;
 
             if(entity is IListableModel lm)
             { 
@@ -132,5 +140,6 @@ namespace HLab.Erp.Acl.AuditTrails
             }
             return false;
         }
+
     }
 }
