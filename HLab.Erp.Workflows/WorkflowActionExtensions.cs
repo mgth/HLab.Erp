@@ -258,7 +258,7 @@ namespace HLab.Erp.Workflows
             if(t.Target is Workflow<TWf>.Action action)
             {
                 t.WhenStateAllowed(getState);           
-                t.Action(async w => await w.SetStateAsync(getState,action.SigningMandatory,action.MotivationMandatory));
+                t.Action(async w => await w.SetStateAsync(getState,action.GetCaption(w),action.GetIconPath(w), action.SigningMandatory,action.MotivationMandatory));
                 return t;
             }
             return t;
@@ -289,7 +289,7 @@ namespace HLab.Erp.Workflows
             where TWf : class, IWorkflow<TWf>
         {
             if(t.Target is Workflow<TWf>.Action action)
-                action.SigningMandatory = true;
+                action.MotivationMandatory = true;
             return t;
         }
     }

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
+using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
@@ -121,7 +122,20 @@ namespace HLab.Erp.Acl
 
         public ICommand SaveCommand { get; } = H<DataLocker<T>>.Command(c => c
             .CanExecute(e => e.Persister.IsDirty)
-            .Action(async e => await e.SaveAsync(false,false).ConfigureAwait(false))
+            .Action(async e =>
+            {
+                string caption = "";
+                string iconPath = "";
+
+                if(e._entity is IListableModel lm)
+                { 
+                    caption = lm.Caption; 
+                    iconPath = lm.IconPath;
+                }
+
+
+                await e.SaveAsync(caption, iconPath, false, false).ConfigureAwait(false);
+            })
             .On(e => e.Persister.IsDirty).CheckCanExecute()
         );
 
@@ -191,7 +205,7 @@ namespace HLab.Erp.Acl
 
         public Action<T> BeforeSavingAction { get; set; }
 
-        public async Task<bool> SaveAsync(bool sign, bool motivate)
+        public async Task<bool> SaveAsync(string caption, string iconPath, bool sign, bool motivate)
         {
             BeforeSavingAction?.Invoke(_entity);
 
@@ -205,7 +219,7 @@ namespace HLab.Erp.Acl
                 var action = _entityId < 0 ? "Create" : "Update";
 
                 //TODO : add AclRight needed to do the action
-                if (_getAudit(transaction).Audit(action, null, log, _entity,sign,motivate))
+                if (_getAudit(transaction).Audit(action, null, log, _entity, caption, iconPath, sign, motivate))
                 {
                     await Persister.SaveAsync(transaction);
                     _timer.Change(Timeout.Infinite, Timeout.Infinite);

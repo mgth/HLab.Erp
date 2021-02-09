@@ -26,8 +26,8 @@ namespace HLab.Erp.Workflows
     {
         protected Workflow(object target, IDataLocker locker)
         {
-            Actions = new ReadOnlyObservableCollection<WorkflowAction>(_actions);
-            Highlights = new ReadOnlyObservableCollection<string>(_highlights);
+            Actions = new(_actions);
+            Highlights = new(_highlights);
 
             H<Workflow<T>>.Initialize(this);
 
@@ -70,7 +70,7 @@ namespace HLab.Erp.Workflows
                 {
                     var c = new Action<IFluentConfigurator<State>>(c => c
                         //.WhenStateAllowed(() => state)
-                        .Action(async w => await w.SetStateAsync(() => state, false,false)));
+                        .Action(async w => await w.SetStateAsync(() => state,"","", false,false)));
                     c(new FluentConfigurator<State>(state));
                 }
 
@@ -185,7 +185,7 @@ namespace HLab.Erp.Workflows
         }
         private readonly IProperty<State> _currentState = H<Workflow<T>>.Property<State>();
 
-        public async Task<bool> SetStateAsync(Func<State> setState, bool sign, bool motivate)
+        public async Task<bool> SetStateAsync(Func<State> setState, string caption, string iconPath, bool sign, bool motivate)
         {
             if (setState == null) return false;
 
@@ -193,7 +193,7 @@ namespace HLab.Erp.Workflows
 
             if (state.Check(this as T) == WorkflowConditionResult.Passed)
             {
-                if (await OnSetStateAsync(state, sign,motivate))
+                if (await OnSetStateAsync(state, caption, iconPath, sign, motivate))
                 {
                     CurrentState = state;
                     Update();
@@ -206,14 +206,14 @@ namespace HLab.Erp.Workflows
 
         protected abstract string StateName { get; set; }
 
-        protected virtual async Task<bool> OnSetStateAsync(State state, bool sign, bool motivate)
+        protected virtual async Task<bool> OnSetStateAsync(State state, string caption, string iconPath, bool sign, bool motivate)
         {
             if (StateName != state.Name)
             {
                 var old = StateName;
                 StateName = state.Name;
 
-                if (await Locker.SaveAsync(sign,motivate)) return true;
+                if (await Locker.SaveAsync(caption, iconPath, sign,motivate)) return true;
 
                 StateName = old;
                 return false;
@@ -222,13 +222,13 @@ namespace HLab.Erp.Workflows
         }
 
 
-        private readonly ObservableCollection<WorkflowAction> _actions = new ObservableCollection<WorkflowAction>();
-        private readonly ObservableCollection<string> _highlights = new ObservableCollection<string>();
+        private readonly ObservableCollection<WorkflowAction> _actions = new();
+        private readonly ObservableCollection<string> _highlights = new();
         public ReadOnlyObservableCollection<WorkflowAction> Actions { get; }
         public ReadOnlyObservableCollection<string> Highlights { get; }
 
 
-        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        private readonly ReaderWriterLockSlim _lock = new();
         protected void Update()
         {
             var list = WorkflowActions

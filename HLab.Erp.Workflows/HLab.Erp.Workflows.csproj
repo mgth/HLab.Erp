@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <Configurations>Debug;Release;DebugRelease</Configurations>
   </PropertyGroup>

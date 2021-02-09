@@ -38,6 +38,14 @@ namespace HLab.Erp.Acl.AuditTrails
             set => _motivationMandatory.Set(value);
         }
         private readonly IProperty<bool> _motivationMandatory = H.Property<bool>();
+        public bool MotivationNeeded => _motivationNeeded.Get();
+
+        private readonly IProperty<bool> _motivationNeeded = H.Property<bool>(c => c
+            .Set(e => e.MotivationMandatory && string.IsNullOrWhiteSpace(e.Motivation))
+            .On(e => e.MotivationMandatory)
+            .On(e => e.Motivation)
+            .Update()
+        );
         public bool Signing
         {
             get => _signing.Get();
@@ -82,11 +90,14 @@ namespace HLab.Erp.Acl.AuditTrails
             .CanExecute(e => !e.MotivationMandatory || (e.Motivation?.Length??0)>=5)
             .Action(async e =>
                 {
-                    var user = await e.Acl.Check(e.Credential);
-                    if(user==null)
+                    if(e.Signing)
                     {
-                        e.Message = "Login ou mot de passe incorrect.";
-                        return;
+                        var user = await e.Acl.Check(e.Credential);
+                        if(user==null)
+                        {
+                            e.Message = "Login ou mot de passe incorrect.";
+                            return;
+                        }
                     }
                     e.Message = "";
                     e.Result = true;
@@ -103,17 +114,14 @@ namespace HLab.Erp.Acl.AuditTrails
             .On(e => e.Login).CheckCanExecute()
         );
 
-        public bool Audit(string action, AclRight rightNeeded, string log, object entity, bool sign, bool motivate)
+        public bool Audit(string action, AclRight rightNeeded, string log, object entity, string caption, string iconPath, bool sign, bool motivate)
         {
             Log = log;
             MotivationMandatory = motivate;
             Signing = sign;
 
-            if(entity is IListableModel lm)
-            { 
-                EntityCaption = lm.Caption; 
-                IconPath = lm.IconPath;
-            }
+            EntityCaption = caption;
+            IconPath = iconPath;
 
             var view = _mvvm.MainContext.GetView<ViewModeDefault>(this).AsDialog();
             if(view.ShowDialog()??false)

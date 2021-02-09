@@ -4,12 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
-             xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
+             xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf" xmlns:base="clr-namespace:HLab.Base;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel HorizontalAlignment="Center" Margin="20">
-        <icons:IconView Path="{Binding IconPath}" MaxHeight="30"/>
-        <TextBlock HorizontalAlignment="Center" Margin="5" Text="{Binding EntityCaption}"/>
+        <icons:IconView Path="{Binding IconPath}" MaxHeight="30" MaxWidth="30"/>
+        <lang:LocalizedLabel HorizontalAlignment="Center" Margin="5" Text="{Binding EntityCaption}" FontSize="14" FontWeight="Bold"/>
         <TextBox IsReadOnly="True" MaxHeight="250" MaxWidth="800" BorderThickness="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Padding="5" Text="{Binding Log}" FontStyle="Italic" Foreground="#80FFFFFF" BorderBrush="Transparent">
             <TextBox.Background>
                 <LinearGradientBrush>
@@ -19,6 +19,8 @@
             </TextBox.Background>
             </TextBox>
         <lang:LocalizedLabel>{Motivation} :</lang:LocalizedLabel>
+        <Grid>
+            <base:MandatoryAdorner IsHitTestVisible="False" Visibility="{Binding MotivationNeeded, Converter={StaticResource ToVisibilityConverter}}"/>
         <TextBox 
             MinWidth="400" 
             TextWrapping="Wrap" 
@@ -26,7 +28,7 @@
             SpellCheck.IsEnabled="True"  
             MinHeight="50"  
             MaxHeight="150"
-            Text="{Binding Motivation}"
+            Text="{Binding Motivation, UpdateSourceTrigger=PropertyChanged}"
             >
     <TextBox.Style>
         <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
@@ -50,11 +52,11 @@
             </Style.Triggers>
         </Style>
     </TextBox.Style>            
-        </TextBox>
+        </TextBox></Grid>
 <Label/>
         <TextBlock Text="{Binding User.Caption}"/>
 
-        <DockPanel Margin="0,5" Visibility="{Binding Sign,Converter={StaticResource ToVisibilityConverter}}">
+        <DockPanel Margin="0,5" Visibility="{Binding Signing,Converter={StaticResource ToVisibilityConverter}}">
             <lang:LocalizedLabel Text="{}{Password} :"/>
             <Label/>
             <PasswordBox DockPanel.Dock="Right" Height="23" x:Name="PasswordBox" VerticalAlignment="Center" PasswordChanged="PasswordBox_OnTextChanged"/>
