@@ -15,36 +15,24 @@
         <views:DetailView>
             <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
 
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}{Name} : "/>
-            </Label>
+            <lang:LocalizedLabel Text="{}{Name} : "/>
             <lang:LocalizeTextBox 
                 Text="{Binding Model.Name}" 
                 IsReadOnly="{Binding Locker.IsReadOnly}"/>
 
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}Iso A2 : "/>
-            </Label>
+            <lang:LocalizedLabel Text="{}ISO A2 : "/>
             <TextBox Text="{Binding Model.IsoA2}"/>
 
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}Iso A3 : "/>
-            </Label>
+            <lang:LocalizedLabel Text="{}ISO A3 : "/>
             <TextBox Text="{Binding Model.IsoA3}"/>
 
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}Iso : "/>
-            </Label>
+            <lang:LocalizedLabel Text="{}ISO : "/>
             <TextBox Text="{Binding Model.Iso}"/>
 
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}{Icon path} : "/>
-            </Label>
+            <lang:LocalizedLabel Text="{}{Icon path} : "/>
             <TextBox Text="{Binding Model.IconPath}" />
 
-            <Label HorizontalContentAlignment="Right" >
-                <lang:Localize Id="{}{Icon} : "/>
-            </Label>
+            <lang:LocalizedLabel Text="{}{Icon} : "/>
             <Button Command="{Binding PastIconCommand}">
                 <icons:IconView Path="{Binding Model.IconPath}" MaxHeight="50" HorizontalAlignment="Left"/>
             </Button>
