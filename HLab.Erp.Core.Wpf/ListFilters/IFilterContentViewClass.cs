@@ -2,7 +2,7 @@
 
 namespace HLab.Erp.Core.ListFilters
 {
-    interface IFilterContentViewClass : IViewClass
+    public interface IFilterContentViewClass : IViewClass
     {
     }
 }

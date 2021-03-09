@@ -6,20 +6,20 @@ using HLab.Erp.Data.Observables;
 
 namespace HLab.Erp.Core.ListFilters
 {
-    public static class FilterTextExtension
+    public static class TextFilterExtension
     {
         public static T Title<T>(this T c, string title)
-            where T : IFluentConfigurator<FilterTextViewModel>
-            => c.Set<T,FilterTextViewModel>(f => f.Title = title);
+            where T : IFluentConfigurator<TextFilter>
+            => c.Set<T,TextFilter>(f => f.Title = title);
 
         public static T Value<T>(this T c, string value)
-            where T : IFluentConfigurator<FilterTextViewModel>
-            => c.Set<T,FilterTextViewModel>(f => f.Value = value);
+            where T : IFluentConfigurator<TextFilter>
+            => c.Set<T,TextFilter>(f => f.Value = value);
 
         public static TConf Link<TConf,T>(this TConf c,IEntityListViewModel<T> vm, Expression<Func<T, string>> getter)
-            where TConf : IFiltersFluentConfigurator<T>, IFluentConfigurator<FilterTextViewModel>
+            where TConf : IFiltersFluentConfigurator<T>, IFluentConfigurator<TextFilter>
             where T : class, IEntity
-            => c.Set<TConf,FilterTextViewModel>(f =>
+            => c.Set<TConf,TextFilter>(f =>
             {
                 c.List.AddFilter(f.Title,()=> f.Match(getter));
                 f.Update = ()=> c.List.UpdateAsync();

@@ -9,20 +9,20 @@ namespace HLab.Erp.Core.ListFilters
     public static class FilterDateExtension
     {
         public static T Title<T>(this T c, string title)
-            where T : IFluentConfigurator<FilterDateViewModel>
-            => c.Set<T,FilterDateViewModel>(f => f.Title = title);
+            where T : IFluentConfigurator<DateFilter>
+            => c.Set<T,DateFilter>(f => f.Title = title);
 
         public static T MinDate<T>(this T c, DateTime value)
-            where T : IFluentConfigurator<FilterDateViewModel>
-            => c.Set<T,FilterDateViewModel>(f => f.MinDate = value);
+            where T : IFluentConfigurator<DateFilter>
+            => c.Set<T,DateFilter>(f => f.MinDate = value);
         public static T MaxDate<T>(this T c, DateTime value)
-            where T : IFluentConfigurator<FilterDateViewModel>
-            => c.Set<T,FilterDateViewModel>(f => f.MaxDate = value);
+            where T : IFluentConfigurator<DateFilter>
+            => c.Set<T,DateFilter>(f => f.MaxDate = value);
 
         public static TConf Link<TConf,T>(this TConf c,IEntityListViewModel<T> vm, Expression<Func<T, DateTime?>> getter)
-            where TConf : IFiltersFluentConfigurator<T>, IFluentConfigurator<FilterDateViewModel>
+            where TConf : IFiltersFluentConfigurator<T>, IFluentConfigurator<DateFilter>
             where T : class, IEntity
-            => c.Set<TConf,FilterDateViewModel>(f =>
+            => c.Set<TConf,DateFilter>(f =>
             {
                 c.List.AddFilter(f.Title,()=> f.Match(getter));
                 f.Update = ()=> c.List.UpdateAsync();

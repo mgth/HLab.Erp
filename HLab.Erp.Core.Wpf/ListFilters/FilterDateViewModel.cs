@@ -6,11 +6,26 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.ListFilters
 {
-    using H = H<FilterDateViewModel>;
-
-    public class FilterDateViewModel : FilterViewModel
+    using H = H<DateFilter>;
+    public static class DateFilterViewModelExtension
     {
-        public FilterDateViewModel() => H.Initialize(this);
+        public static T MaxDate<T>(this T filter, DateTime date)
+            where T : DateFilter
+        {
+            filter.MaxDate = date;
+            return filter;
+        }
+        public static T MinDate<T>(this T filter, DateTime date)
+            where T : DateFilter
+        {
+            filter.MinDate = date;
+            return filter;
+        }
+    }
+
+    public class DateFilter : FilterViewModel
+    {
+        public DateFilter() => H.Initialize(this);
 
         public Action Update
         {
@@ -172,7 +187,7 @@ namespace HLab.Erp.Core.ListFilters
             .Do((e,p) => e.Update.Invoke())
         );
 
-        public FilterDateViewModel Link<T>(ObservableQuery<T> q, Expression<Func<T, DateTime?>> getter)
+        public DateFilter Link<T>(ObservableQuery<T> q, Expression<Func<T, DateTime?>> getter)
             where T : class, IEntity
         {
             //var entity = getter.Parameters[0];

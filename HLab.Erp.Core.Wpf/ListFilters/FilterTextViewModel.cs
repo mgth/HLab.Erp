@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.ListFilters
 {
-    using H = H<FilterTextViewModel>;
+    using H = H<TextFilter>;
 
-    public class FilterTextViewModel : FilterViewModel
+    public class TextFilter : FilterViewModel
     {
-        public FilterTextViewModel() => H.Initialize(this);
+        public TextFilter() => H.Initialize(this);
 
         public string Value {
             get => _value.Get();
@@ -39,7 +37,7 @@ namespace HLab.Erp.Core.ListFilters
             return Expression.Lambda<Func<T, bool>>(ex,entity);
         }
 
-        public FilterTextViewModel Link<T>(ObservableQuery<T> q, Expression<Func<T, string>> getter)
+        public TextFilter Link<T>(ObservableQuery<T> q, Expression<Func<T, string>> getter)
             where T : class, IEntity
         {
             //var entity = getter.Parameters[0];
@@ -47,7 +45,7 @@ namespace HLab.Erp.Core.ListFilters
             Update = ()=> q.UpdateAsync();
             return this;
         }
-        public FilterTextViewModel PostLink<T>(ObservableQuery<T> q, Func<T, string> getter)
+        public TextFilter PostLink<T>(ObservableQuery<T> q, Func<T, string> getter)
             where T : class, IEntity
         {
             //var entity = getter.Parameters[0];

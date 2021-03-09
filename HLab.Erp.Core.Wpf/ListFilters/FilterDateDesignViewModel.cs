@@ -2,7 +2,7 @@
 
 namespace HLab.Erp.Core.ListFilters
 {
-    public class FilterDateDesignViewModel : FilterDateViewModel
+    public class FilterDateDesignViewModel : DateFilter
     {
         public FilterDateDesignViewModel()
         {

@@ -2,7 +2,7 @@
 
 namespace HLab.Erp.Core.ListFilters
 {
-    public class FilterTextDesignViewModel : FilterTextViewModel, IViewModelDesign
+    public class FilterTextDesignViewModel : TextFilter, IViewModelDesign
     {
         public FilterTextDesignViewModel()
         {

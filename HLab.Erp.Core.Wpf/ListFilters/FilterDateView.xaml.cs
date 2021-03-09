@@ -6,7 +6,7 @@ namespace HLab.Erp.Core.ListFilters
     /// <summary>
     /// Logique d'interaction pour ListFilterDateView.xaml
     /// </summary>
-    public partial class FilterDateView : UserControl, IView<ViewModeDefault, FilterDateViewModel> , IFilterContentViewClass
+    public partial class FilterDateView : UserControl, IView<ViewModeDefault, DateFilter> , IFilterContentViewClass
     {
         public FilterDateView()
         {
