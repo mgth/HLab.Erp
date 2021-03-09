@@ -14,12 +14,16 @@ using System.Threading.Tasks;
 
 namespace HLab.Erp.Workflows
 {
-    public static class NotifyHelperExtension
+    public static class WorkflowExtension
     {
-
     }
 
 
+
+    public interface IWorkflowStage : IWorkflowConditionalObject
+    {
+        string Name { get; }
+    }
 
     public abstract class Workflow<T> : NotifierBase, IWorkflow<T>
         where T : /*Workflow<T>, */class, IWorkflow<T>
@@ -44,43 +48,43 @@ namespace HLab.Erp.Workflows
         }
 
 
-        public class State : WorkflowConditionalObject<T> 
+        public class Stage : WorkflowConditionalObject<T> , IWorkflowStage
         {
-            public static State CreateDefault(
-                Action<IFluentConfigurator<State>> configure, 
+            public static Stage CreateDefault(
+                Action<IFluentConfigurator<Stage>> configure, 
                 [CallerMemberName]string name="")
             {
-                var state =  new State(name);
-                var configurator = new FluentConfigurator<State>(state);
+                var stage =  new Stage(name);
+                var configurator = new FluentConfigurator<Stage>(stage);
                 configure?.Invoke(configurator);
-                AddDefaultState(state);
-                return state;
+                AddDefaultStage(stage);
+                return stage;
             }
 
-            public static State Create(
-                Action<IFluentConfigurator<State>> configure, 
+            public static Stage Create(
+                Action<IFluentConfigurator<Stage>> configure, 
                 [CallerMemberName]string name="")
             {
-                var state =  new State(name);
-                var configurator = new FluentConfigurator<State>(state);
+                var stage =  new Stage(name);
+                var configurator = new FluentConfigurator<Stage>(stage);
 
                 configure?.Invoke(configurator);
 
-                //if(!state.HasAction)
+                //if(!stage.HasAction)
                 {
-                    var c = new Action<IFluentConfigurator<State>>(c => c
-                        //.WhenStateAllowed(() => state)
-                        .Action(async w => await w.SetStateAsync(() => state,"","", false,false)));
-                    c(new FluentConfigurator<State>(state));
+                    var c = new Action<IFluentConfigurator<Stage>>(c => c
+                        //.WhenStageAllowed(() => stage)
+                        .Action(async w => await w.SetStageAsync(() => stage,"","", false,false)));
+                    c(new FluentConfigurator<Stage>(stage));
                 }
 
-                AddState(state);
-                return state;
+                AddStage(stage);
+                return stage;
             }
 
             public string Name { get; }
 
-            protected State(string name)
+            protected Stage(string name)
             {
                 Name = name;
             }
@@ -116,51 +120,51 @@ namespace HLab.Erp.Workflows
 
         //private readonly IProperty<object> _locker = H.Property<object>();
 
-        private static List<State> _workflowState;
+        private static List<Stage> _workflowStage;
         private static List<Action> _workflowAction;
-        private static List<State> WorkflowStates => _workflowState ??= new List<State>();
+        private static List<Stage> WorkflowStages => _workflowStage ??= new List<Stage>();
         private static List<Action> WorkflowActions => _workflowAction ??= new List<Action>();
         
-        public static State StateFromName(string name) => WorkflowStates.Find(e => e.Name == name)??DefaultState;
-        protected void SetState(string state) => CurrentState = StateFromName(state);
+        public static Stage StageFromName(string name) => WorkflowStages.Find(e => e.Name == name)??DefaultStage;
+        protected void SetStage(string stage) => CurrentStage = StageFromName(stage);
 
 
         public string Caption => _caption.Get();
         private readonly IProperty<string> _caption = H<Workflow<T>>.Property<string>(c => c
-            .Set(e => e.CurrentState?.GetCaption(e))
-            .On(e => e.CurrentState)
+            .Set(e => e.CurrentStage?.GetCaption(e))
+            .On(e => e.CurrentStage)
             .Update()
         );
 
         public string IconPath => _iconPath.Get();
         private readonly IProperty<string> _iconPath = H<Workflow<T>>.Property<string>(c => c
-            .Set(e => e.CurrentState?.GetIconPath(e))
-            .On(e => e.CurrentState)
+            .Set(e => e.CurrentStage?.GetIconPath(e))
+            .On(e => e.CurrentStage)
             .Update()
         );
 
         public string SubIconPath => _subIconPath.Get();
         private readonly IProperty<string> _subIconPath = H<Workflow<T>>.Property<string>(c => c
-            .Set(e => e.CurrentState?.GetSubIconPath(e))
-            .On(e => e.CurrentState)
+            .Set(e => e.CurrentStage?.GetSubIconPath(e))
+            .On(e => e.CurrentStage)
             .Update()
         );
 
-        internal static bool AddState(State state)
+        internal static bool AddStage(Stage stage)
         {
-            if (!WorkflowStates.Contains(state))
+            if (!WorkflowStages.Contains(stage))
             {
-                WorkflowStates.Add(state);
+                WorkflowStages.Add(stage);
                 return true;
             }
             return false;
         }
-        internal static bool AddDefaultState(State state)
+        internal static bool AddDefaultStage(Stage stage)
         {
-            if (DefaultState != null) throw new Exception("Default state declared twice");
-            if (AddState(state))
+            if (DefaultStage != null) throw new Exception("Default stage declared twice");
+            if (AddStage(stage))
             {
-                DefaultState = state;
+                DefaultStage = stage;
                 return true;
             }
             return false;
@@ -172,30 +176,30 @@ namespace HLab.Erp.Workflows
                 WorkflowActions.Add(action);
         }
 
-        public static State DefaultState { get; private set; }
+        public static Stage DefaultStage { get; private set; }
 
-        public State CurrentState
+        public Stage CurrentStage
         {
-            get => _currentState.Get();
+            get => _currentStage.Get();
             set
             {
-                if (_currentState.Set(value))
+                if (_currentStage.Set(value))
                     value?.Action(this as T);
             }
         }
-        private readonly IProperty<State> _currentState = H<Workflow<T>>.Property<State>();
+        private readonly IProperty<Stage> _currentStage = H<Workflow<T>>.Property<Stage>();
 
-        public async Task<bool> SetStateAsync(Func<State> setState, string caption, string iconPath, bool sign, bool motivate)
+        public async Task<bool> SetStageAsync(Func<Stage> setStage, string caption, string iconPath, bool sign, bool motivate)
         {
-            if (setState == null) return false;
+            if (setStage == null) return false;
 
-            var state = setState();
+            var stage = setStage();
 
-            if (state.Check(this as T) == WorkflowConditionResult.Passed)
+            if (stage.Check(this as T) == WorkflowConditionResult.Passed)
             {
-                if (await OnSetStateAsync(state, caption, iconPath, sign, motivate))
+                if (await OnSetStageAsync(stage, caption, iconPath, sign, motivate))
                 {
-                    CurrentState = state;
+                    CurrentStage = stage;
                     Update();
                     return true;
                 }
@@ -204,18 +208,18 @@ namespace HLab.Erp.Workflows
             return false;
         }
 
-        protected abstract string StateName { get; set; }
+        protected abstract string StageName { get; set; }
 
-        protected virtual async Task<bool> OnSetStateAsync(State state, string caption, string iconPath, bool sign, bool motivate)
+        protected virtual async Task<bool> OnSetStageAsync(Stage stage, string caption, string iconPath, bool sign, bool motivate)
         {
-            if (StateName != state.Name)
+            if (StageName != stage.Name)
             {
-                var old = StateName;
-                StateName = state.Name;
+                var old = StageName;
+                StageName = stage.Name;
 
                 if (await Locker.SaveAsync(caption, iconPath, sign,motivate)) return true;
 
-                StateName = old;
+                StageName = old;
                 return false;
             }
             return true;

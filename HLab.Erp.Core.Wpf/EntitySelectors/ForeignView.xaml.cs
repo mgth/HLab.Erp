@@ -1,21 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using HLab.Base;
 using HLab.Base.Wpf;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.EntityLists;
-using HLab.Erp.Core.ViewModels;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 

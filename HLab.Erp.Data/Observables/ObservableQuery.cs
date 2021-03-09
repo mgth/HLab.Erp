@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 using HLab.Base;
@@ -36,12 +37,20 @@ namespace HLab.Erp.Data.Observables
     public class ObservableQuery<T> : ObservableCollectionNotifier<T>, ITriggerable//, IObservableQuery<T>
         where T : class, IEntity
     {
+
+        private IGuiTimer _timer;
+
         [Import]
         public ObservableQuery(IDataService db)
         {
             _db = db;
             H<ObservableQuery<T>>.Initialize(this);
-            Suspender = new Suspender(()=>UpdateAsync());
+            _timer = NotifyHelper.EventHandlerService.GetTimer();
+            _timer.Tick += async (a,b) => await _timer_TickAsync(a,b);
+            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Start();
+            _updateNeeded = true;
+            Suspender = new Suspender(()=>_timer.Stop(),()=>_timer.Start());
         }
 
         private readonly IDataService _db;
@@ -66,27 +75,30 @@ namespace HLab.Erp.Data.Observables
         private class Filter
         {
             public string Name { get; set; }
-            public Func<Expression<Func<T, bool>>> GetExpression { get; set; } = null;
-            public Func<IQueryable<T>, IQueryable<T>> Func { get; set; } = null;
-            public int Order { get; set; }
+            public Func<Expression<Func<T, bool>>> GetExpression { get; init; } = null;
+            public Func<IQueryable<T>, IQueryable<T>> Func { get; init; } = null;
+            public int Order { get; init; }
         }
         private class PostFilter
         {
-            public string Name { get; set; }
-            public Func<T, bool> Expression { get; set; } = null;
-            public Func<IAsyncEnumerable<T>, IAsyncEnumerable<T>> Func { get; set; }
-            public int Order { get; set; }
+            public string Name { get; init; }
+            public Func<T, bool> Expression { get; init; } = null;
+            public Func<IAsyncEnumerable<T>, IAsyncEnumerable<T>> Func { get; init; }
+            public int Order { get; init; }
+        }
+
+        private class OrderByEntry
+        {
+            public string Name { get; init; }
+            public Func<T, object> Expression { get; set; }
+            public bool Descending { get; set; }
+            public int Order { get; init; }
         }
 
         private readonly object _lockFilters = new object();
-        private List<Filter> _filters = new List<Filter>();
-        private List<PostFilter> _postFilters = new List<PostFilter>();
-
-        public Func<T, object> OrderBy
-        {
-            get => _orderBy;
-            set => _orderBy = value;
-        }
+        private List<Filter> _filters = new();
+        private List<PostFilter> _postFilters = new();
+        private List<OrderByEntry> _orderBy = new();
 
         public ObservableQuery<T> SetSource(Func<IAsyncEnumerable<T>> src)
         {
@@ -233,6 +245,38 @@ namespace HLab.Erp.Data.Observables
                     Order = order,
                 });
                 Interlocked.Exchange(ref _postFilters, filters);
+                return this;
+            }
+        }
+
+        public ObservableQuery<T> ResetOrderBy()
+        {
+            lock (_lockFilters)
+            {
+                Interlocked.Exchange(ref _orderBy, new List<OrderByEntry>());
+                return this;
+            }
+        }
+
+        public ObservableQuery<T> AddOrderBy(Func<T, object> expression, bool descending = false, int order = 0, string name = null)
+        {
+            lock(_lockFilters)
+            {
+                var orderByList = _orderBy.ToList();
+
+                if (name != null)
+                {
+                    var filter = orderByList.FirstOrDefault(f => f.Name==name);
+                    if (filter != null) orderByList.Remove(filter);
+                }
+                orderByList.Add(new OrderByEntry
+                {
+                    Name = name,
+                    Expression = expression,
+                    Descending = descending,
+                    Order = order,
+                });
+                Interlocked.Exchange(ref _orderBy, orderByList);
                 return this;
             }
         }
@@ -425,14 +469,13 @@ namespace HLab.Erp.Data.Observables
             return this;
         }
 
-        private readonly object _lockUpdateNeeded = new object();
-        private volatile bool _updateNeeded = false;
+        private readonly object _lockUpdateNeeded = new();
+        private volatile bool _updateNeeded;
 
 
         private volatile bool _updating = false;
 
         private bool _initialized = false;
-        private Func<T, object> _orderBy;
 
         public ObservableQuery<T> Init()
         {
@@ -443,16 +486,44 @@ namespace HLab.Erp.Data.Observables
             return this;
         }
 
-        public Task  UpdateAsync() => UpdateAsync(null,true,false);
+        public async Task UpdateAsync() //=> UpdateAsync(null,true,false);
+        { 
+            lock(_lockUpdate)
+                _updateNeeded = true;
+
+            if (!_timer.IsEnabled)
+            {
+                _timer.DoTick();
+            }
+        }
+
         public Task  UpdateAsync(Action postUpdate) => UpdateAsync(postUpdate,true,false);
         public Task  UpdateAsync(bool force) => UpdateAsync(null,force,false);
         public Task  RefreshAsync() => UpdateAsync(null,true,true);
 
-        public async Task UpdateAsync(Action postUpdate, bool force,bool refresh)
-        {
-            if (Suspender.Suspended) return;
 
+        private async Task _timer_TickAsync(object sender, EventArgs e)
+        {
+            bool doUpdate = false;
+            lock (_lockUpdate)
+            {
+                if (_updateNeeded)
+                {
+                    doUpdate = true;
+                    _timer.Start();
+                }
+            }
+
+            if(doUpdate)
+                await UpdateAsync(null, true, false);
+        }
+
+
+         public async Task UpdateAsync(Action postUpdate, bool force,bool refresh)
+        {
+            #if DEBUG
             var stopwatch = Stopwatch.StartNew();
+            #endif
             lock (_lockUpdate)
             {
                 _updateNeeded = false;
@@ -467,9 +538,17 @@ namespace HLab.Erp.Data.Observables
                 {
                     var list = PostQueryAsync(force);
 
-                    if (OrderBy != null) list = list.OrderBy(OrderBy);
+                    foreach (var orderBy in _orderBy.OrderBy(o => o.Order))
+                    {
+                            if(list is IOrderedAsyncEnumerable<T> ordered)
+                                list = orderBy.Descending ? ordered.ThenByDescending(orderBy.Expression) : ordered.ThenBy(orderBy.Expression);
+                            else
+                                list = orderBy.Descending ? list.OrderByDescending(orderBy.Expression) : list.OrderBy(orderBy.Expression);
+                    }
 
+                    #if DEBUG
                     Debug.WriteLine("Query : " + stopwatch.ElapsedMilliseconds);
+                    #endif
 
                     if (list == null) return;
 
@@ -524,7 +603,9 @@ namespace HLab.Erp.Data.Observables
                         n++;
                     }
 
+                    #if(DEBUG)
                     Debug.WriteLine("Update : " + stopwatch.ElapsedMilliseconds);
+                    #endif
 
                     //remove remaining items
                     while (n < Count)
@@ -532,9 +613,10 @@ namespace HLab.Erp.Data.Observables
                         RemoveAtNoLock(n);
                     }
 
+                    #if DEBUG
                     Debug.WriteLine("Cleanup : " + stopwatch.ElapsedMilliseconds);
                     Debug.Assert(Count == n);
-
+                    #endif
                 }
                 
                 _initialized = true;

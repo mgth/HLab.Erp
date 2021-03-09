@@ -9,13 +9,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Page Remove="Icons\Workflow.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\HLab\HLab.Base.Wpf\HLab.Base.Wpf.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Mvvm.Annotations\HLab.Mvvm.Annotations.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Core.Wpf\HLab.Erp.Core.Wpf.csproj" />
     <ProjectReference Include="..\HLab.Erp.Workflows\HLab.Erp.Workflows.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Icons\Workflow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="WorkflowFilterView.xaml.cs">
+      <DependentUpon>WorkflowFilterView.xaml</DependentUpon>
+    </Compile>
     <Compile Update="WorkFlowActionView.xaml.cs">
       <DependentUpon>WorkFlowActionView.xaml</DependentUpon>
     </Compile>
@@ -25,6 +39,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="WorkflowFilterView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="WorkFlowActionView.xaml">
       <SubType>Designer</SubType>
     </Page>

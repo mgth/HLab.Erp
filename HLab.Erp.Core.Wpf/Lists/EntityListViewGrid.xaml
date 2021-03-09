@@ -12,8 +12,7 @@
                       SizeChanged="OnSizeChanged"
                       >
             <ListView.View>
-                <GridView x:Name="GridView">
-                </GridView>
+                <GridView x:Name="GridView" />
             </ListView.View>
         </ListView>            
     

@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using HLab.Base.Fluent;
 
 namespace HLab.Erp.Core.EntityLists
 {
@@ -28,9 +27,13 @@ namespace HLab.Erp.Core.EntityLists
     {
         public ListableEntityListViewModel()
         {
-            Columns
-                .Icon("",e => e.IconPath)
-                .Column("{Name}", e => e.Caption);
+            Columns.Configure(c => c
+
+                .Column.Header("{Name}")
+                    .Content(e => e.Caption).Icon(e => e.IconPath)
+            );
+
+            Filter<TextFilter>().Title("{Name}").Link(List, e => e.Caption);
 
             List.UpdateAsync();
         }
@@ -38,9 +41,12 @@ namespace HLab.Erp.Core.EntityLists
         {
             List.AddFilter(()=>filter);
 
-            Columns
-                .Icon("",e => e.IconPath)
-                .Column("{Name}", e => e.Caption);
+            Columns.Configure(c => c
+
+                .Column.Header("{Name}")
+                .Content(e => e.Caption)
+                .Icon(e => e.IconPath)
+            );
 
             List.UpdateAsync();
         }
@@ -52,12 +58,28 @@ namespace HLab.Erp.Core.EntityLists
 
     public abstract class EntityListViewModel : ViewModel, IEntityListViewModel
     {
-        public EntityListViewModel() => H<EntityListViewModel>.Initialize(this);
+        public EntityListViewModel()
+        {
+            Filters = new(_filters);
+            H<EntityListViewModel>.Initialize(this);
+        }
+
         public abstract void Populate(object grid);
 
         public abstract void SetOpenAction(Action<object> action);
         public abstract void SetSelectAction(Action<object> action);
-        public ObservableCollection<IFilterViewModel> Filters { get; } = new ObservableCollection<IFilterViewModel>();
+        protected readonly ObservableCollection<IFilterViewModel> _filters = new ();
+        public ReadOnlyObservableCollection<IFilterViewModel> Filters { get; }
+
+        [Import] private Func<Type, object> _get;
+
+        public T Filter<T>(Action<T> configure = null) where T : IFilterViewModel
+        {
+            var filter = (T)_get(typeof(T));
+            configure?.Invoke(filter);
+            _filters.Add(filter);
+            return filter;
+        }
 
         public abstract dynamic SelectedViewModel { get; set; }
         protected abstract Task AddEntityAsync();
@@ -95,18 +117,19 @@ namespace HLab.Erp.Core.EntityLists
         [Import] public ObservableQuery<T> List { get; }
         public IColumnsProvider<T> Columns { get; }
 
+        //public IColumn<T> SetColumns(FluentConfiguratorDelegate<IColumn<T>> c) => ((ColumnsProvider<T>)Columns).SetColumns(c);
 
         public IEntityListViewModel<T> AddFilter<TFilter>(Action<FiltersFluentConfigurator<T,TFilter>> configure)
             where TFilter : IFilterViewModel, new()
         {
             var c = new FiltersFluentConfigurator<T,TFilter>(List,new TFilter());
             configure(c);
-            Filters.Add(c.Target);
+            _filters.Add(c.Target);
             return this;
         }
 
-        public ObservableCollection<dynamic> ListViewModel { get; } = new ObservableCollection<dynamic>();
-        private readonly ConcurrentDictionary<T,dynamic> _cache = new ConcurrentDictionary<T, dynamic>();
+        public ObservableCollection<dynamic> ListViewModel { get; } = new ();
+        private readonly ConcurrentDictionary<T,dynamic> _cache = new ();
 
         [Import] private Func<ObservableQuery<T>,ColumnsProvider<T>> _getColumnsProvider;
 
@@ -183,7 +206,7 @@ namespace HLab.Erp.Core.EntityLists
             {
                 case NotifyCollectionChangedAction.Add:
                     var newIndex = e.NewStartingIndex;
-                    foreach (var n in e.NewItems.OfType<T>())
+                    foreach (var n in e.NewItems!.OfType<T>())
                     {
                         ObjectMapper<T> om = _cache.GetOrAdd(n,o => new ObjectMapper<T>(o, Columns));
                         ListViewModel.Insert(newIndex++,om);
@@ -191,10 +214,8 @@ namespace HLab.Erp.Core.EntityLists
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems.OfType<T>())
+                    foreach (var item in e.OldItems!.OfType<T>())
                     {
-
-
                         //TODO should keep deleted elements in cache for some times
                         if (_cache.TryRemove(item, out var m))
                         {
@@ -221,9 +242,9 @@ namespace HLab.Erp.Core.EntityLists
             }
         }
 
-        public GridView View => _view.Get();
-        private readonly IProperty<GridView> _view = H<EntityListViewModel<T>>.Property<GridView>(c => c
-            .Set(e => e.Columns.GetView() as GridView));
+        //public GridView View => _view.Get();
+        //private readonly IProperty<GridView> _view = H<EntityListViewModel<T>>.Property<GridView>(c => c
+        //    .Set(e => e.Columns.GetView() as GridView));
 
         public ListCollectionView ListCollectionView => _listCollectionView.Get();
         private readonly IProperty<ListCollectionView> _listCollectionView = H<EntityListViewModel<T>>.Property<ListCollectionView>(c => c
@@ -236,7 +257,7 @@ namespace HLab.Erp.Core.EntityLists
 
         public override void Populate(object grid)
         {
-            if (grid is DataGrid dataGrid)
+            if (grid is ItemsControl dataGrid)
             {
                 dataGrid.SourceUpdated += delegate(object sender, DataTransferEventArgs args)
                 {

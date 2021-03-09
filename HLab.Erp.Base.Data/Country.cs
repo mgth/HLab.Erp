@@ -19,7 +19,6 @@ namespace HLab.Erp.Base.Data
             set => _name.Set(value);
         }
         private readonly IProperty<string> _name = H.Property<string>(c => c.Default(""));
-        [Ignore] 
         public string IsoA2
         {
             get => _isoA2.Get();

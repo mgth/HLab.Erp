@@ -52,7 +52,7 @@ namespace HLab.Erp.Acl
 
         [Ignore]
         public string Caption => _caption.Get();
-        private readonly IProperty<string> _caption = HD<AclRight>.Property<string>(c => c.OneWayBind(e => e.Name));
+        private readonly IProperty<string> _caption = HD<AclRight>.Property<string>(c => c.Bind(e => e.Name));
 
         [Ignore]
         public string IconPath => "";

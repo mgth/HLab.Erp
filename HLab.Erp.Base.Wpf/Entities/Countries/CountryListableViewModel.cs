@@ -12,10 +12,10 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
 
         public string Caption => _caption.Get();
         private readonly IProperty<string> _caption = H.Property<string>(c => c
-            .OneWayBind(e => e.Model.Name));
+            .Bind(e => e.Model.Name));
 
         public string IconPath => _iconPath.Get();
         private readonly IProperty<string> _iconPath = H.Property<string>(c => c
-            .OneWayBind(e => e.Model.IconPath));
+            .Bind(e => e.Model.IconPath));
     }
 }

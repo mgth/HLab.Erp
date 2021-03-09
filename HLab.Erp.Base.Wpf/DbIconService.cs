@@ -3,17 +3,22 @@ using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
-using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Icons;
+using HLab.Icons.Annotations.Icons;
+using HLab.Icons.Wpf;
+using HLab.Icons.Wpf.Providers;
 
 namespace HLab.Erp.Base.Wpf
 {
     public class DbIconModule : IBootloader
     {
-        [Import]
-        private IIconService _icons;
-        [Import]
-        private IDataService _data;
+        private readonly IIconService _icons;
+        private readonly IDataService _data;
+
+        [Import] public DbIconModule(IIconService icons, IDataService data)
+        {
+            _icons = icons;
+            _data = data;
+        }
 
         public void Load(IBootContext b)
         {
@@ -33,13 +38,15 @@ namespace HLab.Erp.Base.Wpf
             {
                 await foreach (var icon in icons)
                 {
+                    var path = icon.Path.ToLower();
+
                     if (!string.IsNullOrWhiteSpace(icon.SourceXaml))
                     {
-                        _icons.AddIconProvider(icon.Path, new IconProviderSvgFromSource(icon.SourceSvg, icon.Path));
+                        _icons.AddIconProvider(path, new IconProviderXamlFromSource(icon.SourceXaml, path));
                     }
                     else if (!string.IsNullOrWhiteSpace(icon.SourceSvg))
                     {
-                        _icons.AddIconProvider(icon.Path, new IconProviderXamlFromSource(icon.SourceSvg, icon.Path));
+                        _icons.AddIconProvider(path, new IconProviderSvgFromSource(icon.SourceSvg, path));
                     }
                 }
             }

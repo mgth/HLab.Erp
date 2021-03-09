@@ -3,11 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-                      xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
-                      xmlns:icons="clr-namespace:HLab.Mvvm.Icons;assembly=HLab.Mvvm.Wpf"
+             xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
+                      xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
+                      xmlns:loginServices="clr-namespace:HLab.Erp.Acl.LoginServices"
                       mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500" >
+             d:DesignHeight="300" d:DesignWidth="500" 
+             d:DataContext="{d:DesignInstance Type=loginServices:LoginViewModel}"
+             >
     <Grid>
         <Viewbox Opacity="0.1">
             <icons:IconView Path="icons/LogoBackground"/>
@@ -23,29 +25,36 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
+<!--Database-->
+               
                 <lang:LocalizedLabel 
                 Text="{}{Database} : " 
                 HorizontalAlignment="Right"
                 />
-                <ComboBox Grid.Column="1" ItemsSource="{Binding DatabaseList}"/>
+                <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding DatabaseList}"/>
+
+<!-- Name -->
 
                 <lang:LocalizedLabel 
                 Text="{}{Name} : " 
                 Grid.Row="1" 
                 HorizontalAlignment="Right"
                 />
+
                 <TextBox 
                 Text="{Binding Login}"
-                Grid.Row="0" 
+                Grid.Row="1" 
                 Grid.Column="1" 
                 />
 
+<!-- Password -->
 
                 <lang:LocalizedLabel 
                 Text="{}{Password} : " 
@@ -55,15 +64,16 @@
                 <PasswordBox 
                 x:Name="PasswordBox" 
                 Grid.Column="1" 
-                Grid.Row="1" 
+                Grid.Row="2" 
                 PasswordChar="*" 
                 PasswordChanged="PasswordBox_OnPasswordChanged"
                 />
 
+<!-- Password -->
                 <lang:LocalizedLabel 
                 Visibility="{Binding DebugVisibility}" 
                 Text="{}{Encrypted Password} : " 
-                Grid.Row="2" Grid.Column="0" 
+                Grid.Row="3" Grid.Column="0" 
                 HorizontalAlignment="Right"
                 />
                 <TextBox 
@@ -71,24 +81,27 @@
                 Text="{Binding Password}" 
                 x:Name="EncryptedPassword" 
                 Grid.Column="1" 
-                Grid.Row="2"
+                Grid.Row="3"
                 />
 
+<!-- Message -->
                 <TextBlock 
+                    Margin="10"
                 HorizontalAlignment="Center"
-                Grid.Row="3" 
+                Grid.Row="4" 
                 Grid.Column="0" 
                 Grid.ColumnSpan="2"   
-
-                Foreground="RosyBrown"
+                Background="{DynamicResource MahApps.Brushes.Accent}"
                 TextWrapping="Wrap" 
                 Text="{Binding Message}"/>
+
+<!-- Connection -->
                 <Button 
                 IsDefault="True" 
                 Width="100" 
                 Grid.ColumnSpan="2" 
                 Grid.Column="0" 
-                Grid.Row="4" 
+                Grid.Row="5" 
                 Margin="10" 
                 Command="{Binding LoginCommand}">
                     <lang:Localize Id="{}{Connection}"/>

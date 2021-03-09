@@ -5,8 +5,14 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Workflows
 {
+    public interface IWorkflowConditionalObject
+    {
+        string GetIconPath(IWorkflow workflow);
+        string GetSubIconPath(IWorkflow workflow);
+        string GetCaption(IWorkflow workflow);
+    }
 
-    public interface IWorkflowConditionalObject<T>
+    public interface IWorkflowConditionalObject<T> : IWorkflowConditionalObject
         where T : class,IWorkflow<T>
     {
         void AddCondition(WorkflowCondition<T> condition);

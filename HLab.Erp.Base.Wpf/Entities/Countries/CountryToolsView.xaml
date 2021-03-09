@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="HLab.Erp.Base.Wpf.Entities.Countries.CountryToolsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HLab.Erp.Base.Wpf.Entities.Countries"
+             xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance local:CountryToolsViewModel}"
+             >
+    <Grid>
+        <Button Command="{Binding ImportCommand}">
+            <lang:LocalizedLabel>{Import}</lang:LocalizedLabel>
+        </Button>
+    </Grid>
+</UserControl>

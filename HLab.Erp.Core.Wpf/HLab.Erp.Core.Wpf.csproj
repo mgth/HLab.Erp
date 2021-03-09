@@ -12,6 +12,7 @@
 	<ItemGroup>
 		<None Remove="colors.xml" />
 		<None Remove="Icons\Entities\Localize.svg" />
+		<None Remove="Icons\Filters\filter.svg" />
 		<None Remove="Icons\Flags\abkhazia.svg" />
 		<None Remove="Icons\Flags\afghanistan.svg" />
 		<None Remove="Icons\Flags\aland-islands.svg" />
@@ -273,7 +274,16 @@
 		<None Remove="Icons\Flags\zambia.svg" />
 		<None Remove="Icons\Flags\zimbabwe.svg" />
 		<None Remove="Icons\SelectForeign.svg" />
+		<None Remove="Icons\sort\ascending.svg" />
+		<None Remove="Icons\sort\descending.svg" />
+		<None Remove="Icons\sort\none-old.svg" />
 		<None Remove="TODO.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Remove="Icons\Add.xaml" />
+	  <Page Remove="Icons\Delete.xaml" />
+	  <Page Remove="Icons\Refresh.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -284,8 +294,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dirkster.AvalonDock" Version="4.50.1" />
-		<PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.50.1" />
+	  <Resource Include="Icons\Add.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Resource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Dirkster.AvalonDock" Version="4.50.2" />
+		<PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.50.2" />
 		<PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
 	</ItemGroup>
 
@@ -293,6 +309,7 @@
 		<ProjectReference Include="..\..\HLab\HLab.Base.Wpf\HLab.Base.Wpf.csproj">
 			<CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
 		</ProjectReference>
+		<ProjectReference Include="..\..\HLab\HLab.Icons.Wpf\HLab.Icons.Wpf.csproj" />
 		<ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
 		<ProjectReference Include="..\HLab.Erp.Acl.Annotations\HLab.Erp.Acl.Annotations.csproj" />
 		<ProjectReference Include="..\HLab.Erp.Core.Annotations\HLab.Erp.Core.Annotations.csproj" />
@@ -300,7 +317,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Resource Include="Icons\Delete.xaml" />
 		<Resource Include="Icons\Entities\Localize.svg" />
+		<Resource Include="Icons\Filters\filter.svg" />
 		<Resource Include="Icons\Flags\abkhazia.svg" />
 		<Resource Include="Icons\Flags\afghanistan.svg" />
 		<Resource Include="Icons\Flags\aland-islands.svg" />
@@ -561,7 +580,11 @@
 		<Resource Include="Icons\Flags\yemen.svg" />
 		<Resource Include="Icons\Flags\zambia.svg" />
 		<Resource Include="Icons\Flags\zimbabwe.svg" />
+		<Resource Include="Icons\Refresh.xaml" />
 		<Resource Include="Icons\SelectForeign.svg" />
+		<Resource Include="Icons\sort\descending.svg" />
+		<Resource Include="Icons\sort\ascending.svg" />
+		<Resource Include="Icons\sort\none-old.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -631,6 +654,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Page Update="EntityLists\EntityListView2.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		  <SubType>Designer</SubType>
+		</Page>
 		<Page Update="EntitySelectors\EntitySelector.xaml">
 			<SubType>Designer</SubType>
 		</Page>

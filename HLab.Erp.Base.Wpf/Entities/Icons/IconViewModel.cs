@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Printing;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +8,9 @@ using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
 using HLab.Erp.Base.Data;
-using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Icons;
+using HLab.Icons.Annotations.Icons;
+using HLab.Icons.Wpf;
+using HLab.Icons.Wpf.Icons;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf.Entities.Icons

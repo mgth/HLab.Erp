@@ -1,9 +1,6 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
-using HLab.Mvvm;
-using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
 namespace HLab.Erp.Core.WebService
 {

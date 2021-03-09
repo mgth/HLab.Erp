@@ -4,11 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
-             xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
+             xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
              xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
              xmlns:data="clr-namespace:HLab.Erp.Acl;assembly=HLab.Erp.Acl"
              xmlns:views="clr-namespace:HLab.Erp.Core.Views;assembly=HLab.Erp.Core.Wpf"
-             xmlns:profiles="clr-namespace:HLab.Erp.Acl.Profiles" xmlns:wpf="clr-namespace:HLab.Base.Wpf;assembly=HLab.Base.Wpf"
+             xmlns:profiles="clr-namespace:HLab.Erp.Acl.Profiles"
+             xmlns:controlsEx="clr-namespace:HLab.Base.Wpf.ControlsEx;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance profiles:ProfileViewModel}">
     <Grid>
@@ -19,7 +20,7 @@
         </Grid.RowDefinitions>
         <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
 
-        <wpf:ScrollViewerEx Grid.Row="1">
+        <controlsEx:ScrollViewerEx Grid.Row="1">
             <StackPanel>
                 <views:DetailView Text="{}{Profile}" IconPath="Icons/users">
 
@@ -91,7 +92,7 @@
 
                 </views:DetailView>
             </StackPanel>
-        </wpf:ScrollViewerEx>
+        </controlsEx:ScrollViewerEx>
 
         <views:DetailView Grid.Row="2" Text="{}{Note}" IconPath="Icons/Edit">
 

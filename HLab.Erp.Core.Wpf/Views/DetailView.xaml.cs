@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
-using HLab.Base;
+using HLab.Base.Wpf;
 
 namespace HLab.Erp.Core.Views
 {

@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using HLab.Core;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;

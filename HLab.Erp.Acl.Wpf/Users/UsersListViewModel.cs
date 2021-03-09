@@ -14,13 +14,14 @@ namespace HLab.Erp.Acl.Users
             DeleteAllowed = true;
             AddAllowed = true;
 
-            Columns
-                .Column("{First Name}", u => u.FirstName)
-                .Column("{Name}", u=>u.Name)
-                .Column("{Login}", u=>u.Login)
-                .Column("{Function}", u=>u.Function)
-                .Column("{Initials}", u=>u.Initials)
-                ;
+            Columns.Configure(c => c
+                    .Column.Header("{First Name}").Content(u => u.FirstName)
+                    .Column.Header("{Name}").Content(u=>u.Name)
+                    .Column.Header("{Login}").Content(u=>u.Login)
+                    .Column.Header("{Function}").Content(u=>u.Function)
+                    .Column.Header("{Initials}").Content(u=>u.Initials)
+                
+                );
 
             List.UpdateAsync();
         }

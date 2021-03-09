@@ -20,7 +20,7 @@ namespace HLab.Erp.Workflows
     public interface IWorkflow<T> : IWorkflow
     where T:class,IWorkflow<T>
     {
-        Task<bool> SetStateAsync(Func<Workflow<T>.State> setState, string caption, string iconPath, bool sign, bool motivate);
-        Workflow<T>.State CurrentState { get; set; }
+        Task<bool> SetStageAsync(Func<Workflow<T>.Stage> setState, string caption, string iconPath, bool sign, bool motivate);
+        Workflow<T>.Stage CurrentStage { get; set; }
     }
 }

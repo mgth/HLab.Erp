@@ -31,35 +31,36 @@ namespace HLab.Erp.Acl.AuditTrails
             DeleteAllowed = false;
             AddAllowed = false;
 
-            Columns
-                .Column("{Date}", at => at.TimeStamp)
-                .Column("{Action}", at => at.Action)
-                .Column("{Caption}", at=>at.EntityCaption)
-                .Column("{Class}", at=>at.EntityClass)
-                .Icon("{Icon}", at=>at.IconPath)
-                .Column("{Log}", at=>LogAbstract(at.Log,50))
-                .Column("{Motivation}", at=>at.Motivation)
-                .Column("{User}", at=>at.UserCaption)
+            Columns.Configure(c => c
+                .Column.Header("{Date}").Content(at => at.TimeStamp)
+                .Column.Header("{Action}").Content(at => at.Action)
+                .Column.Header("{Caption}").Content(at=>at.EntityCaption)
+                .Column.Header("{Class}").Content(at=>at.EntityClass)
+                .Column.Header("{Icon}").Icon( at=>at.IconPath)
+                .Column.Header("{Log}").Content(at=>LogAbstract(at.Log,50))
+                .Column.Header("{Motivation}").Content(at=>at.Motivation)
+                .Column.Header("{User}").Content(at=>at.UserCaption)
+            );
                 ;
 
-            AddFilter<FilterDateViewModel>(f =>  f
+            AddFilter<DateFilter>(f =>  f
                 .Title("{Date}")
                 .MaxDate(DateTime.Now)
                 .MinDate(DateTime.Now - TimeSpan.FromDays(30))
                 .Link(this,a => a.TimeStamp)
             );
 
-            AddFilter<FilterTextViewModel>(f =>  f
+            AddFilter<TextFilter>(f =>  f
                 .Title("{Action}")
                 .Link(this,a => a.Action)
             );
 
-            AddFilter<FilterTextViewModel>(f => f
+            AddFilter<TextFilter>(f => f
                 .Title("{Caption}")
                 .Link(this,at=>at.EntityCaption)
             );
 
-            AddFilter<FilterTextViewModel>(f => f
+            AddFilter<TextFilter>(f => f
                 .Title("{Class}")
                 .Link(this,at=>at.EntityClass)
             );

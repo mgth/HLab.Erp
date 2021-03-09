@@ -1,7 +1,6 @@
 ﻿using System.Windows.Input;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
-using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
 namespace HLab.Erp.Core.Localization
 {

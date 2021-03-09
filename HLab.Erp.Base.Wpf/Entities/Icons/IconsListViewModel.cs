@@ -3,8 +3,9 @@ using System.Windows;
 using System.Windows.Controls;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core.EntityLists;
+using HLab.Icons.Wpf;
+using HLab.Icons.Wpf.Icons;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Icons;
 
 namespace HLab.Erp.Base.Wpf.Entities.Icons
 {
@@ -16,6 +17,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
 
         private static async Task<object> GetSvgIconAsync(string source)
         {
+            if (string.IsNullOrWhiteSpace(source)) return null;
             var icon = (UIElement)await XamlTools.FromSvgStringAsync(source).ConfigureAwait(true);
             return new Viewbox
             {
@@ -35,11 +37,13 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
 
         public IconsListViewModel()
         {
-            Columns
-                .Column("{Path}", s => s.Path)
-                .ColumnAsync("{Xaml}", s => GetXamlIconAsync(s.SourceXaml),null)
-                .ColumnAsync("{Svg}", s => GetSvgIconAsync(s.SourceSvg),null)
-                ;
+            AddAllowed = true;
+
+            Columns.Configure(c => c
+                .Column.Header("{Path}").Content(s => s.Path)
+                .Column.Header("{Xaml}").Content(async s => await GetXamlIconAsync(s.SourceXaml))
+                .Column.Header("{Svg}").Content(async s => await GetSvgIconAsync(s.SourceSvg))
+            );
 
             List.UpdateAsync();
         }

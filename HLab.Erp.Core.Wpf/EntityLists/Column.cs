@@ -1,29 +1,51 @@
 ﻿using System;
-using System.Linq.Expressions;
 
 namespace HLab.Erp.Core.EntityLists
 {
-    public class Column<T>
+
+
+
+
+    public class Column<T> : IColumn<T>
     {
+        internal Column()
+        {
+            Id = "C" + Guid.NewGuid().ToString().Replace('-', '_');
+        }
+
         public Column(object caption, Func<T, object> getter,Func<T, object> orderBy, string id, bool hidden)
         {
             Id = id ?? ("C" + Guid.NewGuid().ToString().Replace('-', '_'));
             Caption = caption;
             OrderBy = orderBy;
-            _getter = getter;
+            Getter = getter;
             Hidden = hidden;
         }
 
-        public bool Hidden { get; }
-        public object Caption { get; }
-        public Func<T, object> OrderBy { get; }
-        private readonly Func<T, object> _getter;
+        public bool Hidden { get; set; } = false;
+
+        public object Caption { get; set; } = "";
+
+        public double Width { get; set; } = double.NaN;
+
+        public Func<T, object> OrderBy { get;  set; }
+
+        public int OrderByOrder { get;  set; }
+
+        public bool OrderDescending { get;  set; }
+
+        public Func<T, object> Getter { get; set; }
+
+        void IColumn<T>.AddGetter(Func<T,object, object> getter)
+        {
+            Getter = (a) => getter(a, Getter(a));
+        }
 
         public object Get(T value)
         {
             try
             {
-                return _getter(value);
+                return Getter(value);
             }
             catch(NullReferenceException)
             {
@@ -31,6 +53,11 @@ namespace HLab.Erp.Core.EntityLists
             }
         }
 
-        public string Id { get; }
+        public string Id { get; set; }
+
+        public override string ToString()
+        {
+            return Caption.ToString() + OrderByOrder.ToString();
+        }
     }
 }

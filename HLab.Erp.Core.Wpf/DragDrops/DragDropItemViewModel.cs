@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.ViewModelStates;
 using HLab.Erp.Data;
+using HLab.Icons.Annotations.Icons;
 using HLab.Mvvm;
 using HLab.Mvvm._Colors;
-using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.DragDrops

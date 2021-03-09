@@ -8,8 +8,9 @@ namespace HLab.Erp.Acl.Users
         {
             OpenAction = target => _docs.OpenDocumentAsync(target.Profile);
 
-            Columns
-                .Column("{Name}", s => s.Profile.Name);
+            Columns.Configure(c => c
+                .Column.Header("{Name}").Content(s => s.Profile.Name)
+            );
 
             List.AddFilter(() => e => e.UserId == user.Id);
 
@@ -19,8 +20,9 @@ namespace HLab.Erp.Acl.Users
         {
             OpenAction = target => _docs.OpenDocumentAsync(target.User);
 
-            Columns
-                .Column("{Name}", s => s.User.Caption);
+            Columns.Configure(c => c
+                        .Column.Header("{Name}").Content(s => s.User.Caption)
+            );
 
             List.AddFilter(() => e => e.ProfileId == profile.Id);
 

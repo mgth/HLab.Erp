@@ -14,7 +14,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
     {
         public CountryViewModel() => H.Initialize(this);
 
-        public string Title => _title.Get();
+        public override string Title => _title.Get();
 
         private readonly IProperty<string> _title = H.Property<string>(c => c
             .On(e => e.Model.Name)
@@ -33,5 +33,6 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
                     }
                 })
         );
+
     }
 }

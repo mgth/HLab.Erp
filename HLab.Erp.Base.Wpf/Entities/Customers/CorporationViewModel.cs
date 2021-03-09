@@ -18,7 +18,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
 
         public override string Title => _title.Get();
         private readonly IProperty<string> _title = H<CorporationViewModel<T>>.Property<string>(c => c
-            .OneWayBind(e => e.Model.Caption)
+            .Bind(e => e.Model.Caption)
         );
 
         ICorporation ICorporationViewModel.Model => Model;

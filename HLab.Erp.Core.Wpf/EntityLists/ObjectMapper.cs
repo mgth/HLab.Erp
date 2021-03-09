@@ -1,5 +1,4 @@
 ﻿using System.Dynamic;
-using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.ViewModels.EntityLists
@@ -11,6 +10,8 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
         private readonly IColumnsProvider<T> _columns;
 
         public T Model => _model;
+
+        public bool IsSelected { get; set; }
 
         public ObjectMapper(T model, IColumnsProvider<T> columns)
         {

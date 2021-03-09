@@ -19,28 +19,13 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
 
         public ListCountryPopupViewModel()
         {
-            Columns
-                //.Column("^Name", s => new Localize{Id=s.Name})
-                .ColumnAsync("{Name}", async s => await _localization.LocalizeAsync(s.Name).ConfigureAwait(false), s=> s.Name)
-                //.Column("^A2 Code", s => s.IsoA2)
-                //.Column("^A3 Code ", s => s.IsoA3)
-                //.Column("^Code", s => s.Iso)
-                //.Column("^Continent", s => new Localize{Id = s.Continent.Name})
-                .Icon("{Flag}",s => s.IconPath)
-                //.Column("^Flag", s => new IconView
-                //{
-                //    MaxWidth = 30,
-                //    MinHeight = 30,
-                //    Id = s.IconPath
-                //})
-                ;
+            Columns.Configure(c => c
+                .Column.Header("{Name}").Content(s => s.Name).Localize().OrderByOrder(0)
+                .Column.Header("{Flag}").Icon(s => s.IconPath)
+            );
 
-            List.OrderBy = e => e.Name;
-
-            Filters.Add(new FilterTextViewModel()
-            {
-                Title = "{Name}",
-            }.Link(List, s => s.Name));
+            Filter<TextFilter>(f => f.Title = "{Name}")
+            .Link(List, s => s.Name);
 
             //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(
             //    "Country",

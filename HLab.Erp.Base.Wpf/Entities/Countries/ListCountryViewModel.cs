@@ -3,15 +3,11 @@ using HLab.Erp.Base.Data;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilters;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Icons;
-using HLab.Mvvm.Lang;
 
 namespace HLab.Erp.Base.Wpf.Entities.Countries
 {
     class ListCountryViewModel : EntityListViewModel<Country>, IMvvmContextProvider
     {
-        [Import]
-        private IIconService _icons;
         [Import]
         private ILocalizationService _localize;
 
@@ -23,24 +19,17 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
 
         public ListCountryViewModel()
         {
-            Columns
-                .Column("{Name}", s => new Localize{Id=s.Name})
-                .Column("{A2 Code}", s => s.IsoA2)
-                .Column("{A3 Code}", s => s.IsoA3)
-                .Column("{Code}", s => s.Iso)
-                .Column("{Continent}", s => new Localize{Id = s.Continent.Name})
-                .Column("{Flag}", s => new IconView{
-                    MaxWidth = 50,
-                    MinHeight = 50,
-                    Path = s.IconPath
-                });
+            Columns.Configure(c => c
+                .Column.Header("{Name}").Content(s => s.Name).Localize().OrderByOrder(0)
+                .Column.Header("{A2 Code}").Content(s => s.IsoA2)
+                .Column.Header("{A3 Code}").Content(s => s.IsoA3)
+                .Column.Header("{Code}").Content(s => s.Iso)
+                .Column.Header("{Continent}").Content(s => s.Continent.Name).Localize()
+                .Column.Header("{Flag}").Icon( s =>  s.IconPath, 50).OrderBy(s => s.Name)
+            );
 
-            List.OrderBy = e => e.Name;
-
-            Filters.Add(new FilterTextViewModel()
-            {
-                Title = "{Name}",
-            }.PostLink(List, s =>  _localize.LocalizeAsync(s.Name).Result));
+            Filter<TextFilter>(f => f.Title("{Name}"))
+                .PostLink(List, s =>  _localize.LocalizeAsync(s.Name).Result);
 
             //Filters.Add(new EntityFilterViewModel<Continent>()
             //{

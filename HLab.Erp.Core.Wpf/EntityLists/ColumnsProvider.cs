@@ -1,23 +1,175 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq.Expressions;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Markup;
-using System.Windows.Media;
 using System.Xml;
 using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Core.ViewModels;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
+using HLab.Icons.Annotations.Icons;
+using HLab.Icons.Wpf.Icons;
+using HLab.Localization.Wpf.Lang;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Lang;
 
 namespace HLab.Erp.Core.EntityLists
 {
+    public static class ColumnConfiguratorExtension
+    {
+        public static IColumnConfigurator<T> Icon<T>(this IColumnConfigurator<T> c, Func<T, string> getPath, double maxHeight = 30.0)
+        {
+            var getContent = c.Current.Getter;
+            if(getContent==null)
+                return c.Content(t => new IconView {Path = getPath(t), IconMaxHeight = maxHeight});
+            
+            return c.Content(t => new IconView {Path = getPath(t), IconMaxHeight = maxHeight, Caption = getContent(t)});
+        }
+
+        public static IColumnConfigurator<T> Localize<T>(this IColumnConfigurator<T> c)
+        {
+            var getContent = c.Current.Getter;
+            return c.Content( e=> new Localize {Id=(string)getContent(e)});
+        }
+
+        public static IColumnConfigurator<T> Center<T>(this IColumnConfigurator<T> c)
+        {
+            var getContent = c.Current.Getter;
+            
+            return c.Content(t => new ContentControl {VerticalAlignment = VerticalAlignment.Stretch, Content = getContent?.Invoke(t)});
+        }
+
+
+    }
+
+    public class ColumnConfigurator<T> : IColumnConfigurator<T>, IDisposable where T : class, IEntity
+    {
+        public IColumn<T> Current { get; private set; }
+
+        //private Expression<Func<T, object>> _getter;
+
+        private readonly Dictionary<string, Column<T>> _dict;
+//        private readonly IEntityListViewModel<T> _list;
+
+        public ColumnConfigurator(Dictionary<string, Column<T>> dict/*, IEntityListViewModel<T> list*/)
+        {
+            _dict = dict;
+//            _list = list;
+        }
+
+        public IColumnConfigurator<T> Header(object caption)
+        {
+            Current.Caption = caption;
+            return this;
+        }
+
+        public IColumnConfigurator<T> Width(double width)
+        {
+            Current.Width = width;
+            return this;
+        }
+
+        public IColumnConfigurator<T> Id(string id)
+        {
+            Current.Id = id;
+            return this;
+        }
+
+        public IColumnConfigurator<T> Content(Func<T, Task<object>> getContent)
+        {
+            Current.Getter = t => new AsyncView{Getter = async () => await getContent(t)};
+            return this;
+        }
+
+        public IColumnConfigurator<T> OrderBy(Func<T,object> orderBy)
+        {
+            Current.OrderBy = orderBy;
+            return this;
+        }
+        public IColumnConfigurator<T> OrderByOrder(int order)
+        {
+            foreach (var column in _dict.Values.Where(c => c.OrderByOrder>=order).ToArray())
+            {
+                column.OrderByOrder++;
+            }
+            Current.OrderByOrder = order;
+            return this;
+        }
+
+        public IColumnConfigurator<T> Hidden
+        {
+            get
+            {
+                Current.Hidden = true;
+                return this;
+            }
+        }
+
+        public IColumnConfigurator<T> Content(Func<T,object> getter)
+        {
+                Current.Getter = getter;
+                if (Current.OrderBy == null)
+                {
+                    Current.OrderBy = getter;
+                }
+                return this;
+        }
+
+        public IColumnConfigurator<T> Mvvm<TViewClass>() where TViewClass : IViewClass
+        {
+            Current.Getter = o => new ViewLocator{ViewClass = typeof(TViewClass), DataContext = o};
+            return this;
+        }
+
+        public IColumnConfigurator<T> Column
+        {
+            get
+            {
+                var order = 0;
+                if (Current != null)
+                {
+                    Add();
+                    order = _dict.Values.Max(c => c.OrderByOrder)+1;
+                }
+                Current = new Column<T> {OrderByOrder = order};
+                return this;
+            }
+        }
+
+        public IColumnConfigurator<T> Filter<TF>() where TF : IFilterViewModel, new()
+        {
+//            _filter = new TF();
+             return this;
+        }
+
+        private void Add()
+        {
+            Debug.Assert(Current.Getter!=null);
+            _dict.Add(Current.Id, (Column<T>) Current);
+        }
+
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Add();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+    }
+
+
     public class ColumnsProvider<T> : IColumnsProvider<T> where T:class, IEntity
     {
         [Import]
@@ -25,8 +177,8 @@ namespace HLab.Erp.Core.EntityLists
         [Import]
         private ILocalizationService _lang;
 
-        private readonly Dictionary<string,Column<T>> _dict = new Dictionary<string, Column<T>>();
-        private ObservableQuery<T> _list;
+        private readonly Dictionary<string,Column<T>> _dict = new ();
+        private readonly ObservableQuery<T> _list;
 
         public ColumnsProvider(ObservableQuery<T> list)
         {
@@ -85,6 +237,14 @@ namespace HLab.Erp.Core.EntityLists
             return this;
         }
 
+        public void Configure(Func<IColumnConfigurator<T>,IColumnConfigurator<T>> f)
+        {
+            using (var configurator = new ColumnConfigurator<T>(_dict))
+            {
+                f(configurator);
+            }
+        }
+
         public object GetValue(T obj, string name)
         {
             if (_dict.ContainsKey(name))
@@ -96,42 +256,74 @@ namespace HLab.Erp.Core.EntityLists
 
         public void Populate(object grid)
         {
+            if (grid is ListView lv && lv.View == null) lv.View = new GridView();
+
+
             foreach (var column in _dict.Values)
             {
                 if (column.Hidden) continue;
 
-                object content;
-                if (column.Caption is string s)
-                    content = new Localize { Id = s };
-                else
-                {
-                    content = column.Caption;
-                }
 
-                var header = new Button {
-                    Content = content,
+                var header = new ColumnHeaderView {
+                    Caption = column.Caption,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
-                    HorizontalContentAlignment = HorizontalAlignment.Stretch
+                    HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                    MinWidth = 30
                 };
-                header.Click += (a, b) =>
+
+                header.SortDirectionChanged += (a, b) =>
                 {
-                    //TODO : click is never called and so sorting does not work 
-                    _list.OrderBy = column.OrderBy;
+                    foreach (var c in _dict.Values.Where(c => c.OrderByOrder<column.OrderByOrder).ToArray())
+                    {
+                        c.OrderByOrder++;
+                    }
+                    column.OrderByOrder = 0;
+                    _list.ResetOrderBy();
+                    foreach (var c in _dict.Values.OrderBy(e => e.OrderByOrder))
+                    {
+                        _list.AddOrderBy(c.OrderBy,c.OrderDescending,c.OrderByOrder);
+                    }
+
                     _list.UpdateAsync();
                 };
 
-                var c = new DataGridTemplateColumn
-                {
-                    Header = header,
-                    //DisplayMemberBinding = new Binding(column.Id),
-                    CellTemplate = CreateColumnTemplate(column.Id),
-                };
 
-                if(grid is DataGrid dataGrid)
+                if (grid is DataGrid dataGrid)
+                {
+                    var c = new DataGridTemplateColumn
+                    {
+                        Header = header,
+                        //DisplayMemberBinding = new Binding(column.Id),
+                        CellTemplate = CreateColumnTemplate(column.Id),
+                        Width = column.Width,
+                    };
+                    
                     dataGrid.Columns.Add(c);
+                }
+
+                else if (grid is ListView listView)
+                {
+
+                    if (listView.View is GridView gridView)
+                    {
+                        
+
+                        var c = new GridViewColumn
+                        {
+                            Header = header,
+                            Width = column.Width,
+                            
+                            //DisplayMemberBinding = new Binding(column.Id),
+                            CellTemplate = CreateColumnTemplate(column.Id),
+                        };
+                        gridView.Columns.Add(c);
+                        c.Width = column.Width;
+                    }
+                }
             }
 
         }
+
 
         public object GetView()
         {
@@ -149,11 +341,24 @@ namespace HLab.Erp.Core.EntityLists
                     content = column.Caption;
                 }
 
-                var header = new GridViewColumnHeader {Content = content};
+                var header = new GridViewColumnHeader 
+                {
+                    Width = column.Width,
+                    Content = content
+                };
+
                 header.Click += (a, b) =>
                 {
-                    //TODO : click is never called and so sorting does not work 
-                    _list.OrderBy = column.OrderBy;
+                    foreach (var col in _dict.Values)
+                    {
+                        if (col.OrderByOrder < column.OrderByOrder) col.OrderByOrder++;
+                    }
+                    column.OrderByOrder = 0;
+                    foreach (var col in _dict.Values.OrderByDescending(e => e.OrderByOrder))
+                    {
+                        _list.AddOrderBy(col.OrderBy,col.OrderDescending);
+                    }
+
                     _list.UpdateAsync();
                 };
  
@@ -171,6 +376,17 @@ namespace HLab.Erp.Core.EntityLists
         }
         public DataTemplate CreateColumnTemplate(string property)
         {
+
+            var t = new DataTemplate();
+
+            FrameworkElementFactory cc = new FrameworkElementFactory(typeof(ContentControl));
+            cc.SetBinding(ContentControl.ContentProperty,new Binding(property));
+            cc.SetValue(ContentControl.VerticalAlignmentProperty,VerticalAlignment.Top);
+            cc.SetValue(ContentControl.VerticalContentAlignmentProperty,VerticalAlignment.Top);
+            t.VisualTree = cc;
+
+            return t;
+
             //    StringReader stringReader = new StringReader(
             //        @"<DataTemplate 
             //xmlns:mvvm=""clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm""
@@ -180,10 +396,10 @@ namespace HLab.Erp.Core.EntityLists
 
 
             StringReader stringReader = new StringReader(
-                @"<DataTemplate 
+                @$"<DataTemplate 
         xmlns:mvvm=""clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm""
         xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> 
-            <ContentControl Content=""{Binding " + property + @"}""/> 
+            <ContentControl Content=""{{Binding {property}}}""/> 
         </DataTemplate>");
 
 

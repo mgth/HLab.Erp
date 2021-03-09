@@ -18,7 +18,6 @@ namespace HLab.Erp.Core
         IAclService Acl { get; }
         IMessageBus Message { get;  }
         IMenuService Menu { get; }
-        IIconService Icon { get; }
         INotifyCollectionChanged Countries{ get; }
         ILocalizationService Localization {get;}
     }
@@ -26,7 +25,7 @@ namespace HLab.Erp.Core
     [Export(typeof(IErpServices))]
     public class ErpServices : IErpServices
     {
-        [Import] public ErpServices(ILocalizationService localization, IDataService data, IMvvmService mvvm, IDocumentService docs, IAclService acl, IMessageBus message, IMenuService menu, IIconService icon, IApplicationInfoService info, ObservableQuery<Country> countries)
+        [Import] public ErpServices(ILocalizationService localization, IDataService data, IMvvmService mvvm, IDocumentService docs, IAclService acl, IMessageBus message, IMenuService menu, IApplicationInfoService info, ObservableQuery<Country> countries)
         {
             Localization = localization;
             Data = data;
@@ -35,7 +34,6 @@ namespace HLab.Erp.Core
             Acl = acl;
             Message = message;
             Menu = menu;
-            Icon = icon;
             Info = info;
             Countries = countries;
         }
@@ -47,7 +45,6 @@ namespace HLab.Erp.Core
         public IAclService Acl { get; }
         public IMessageBus Message { get; }
         public IMenuService Menu { get; }
-        public IIconService Icon { get; }
 
         public INotifyCollectionChanged Countries{ get; }
 

@@ -190,7 +190,7 @@ namespace HLab.Erp.Workflows
         /// <param name="getState"></param>
         /// <returns></returns>
         public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
-            WhenStateAllowed<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.State> getState)
+            WhenStateAllowed<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.Stage> getState)
             where TWf : class,IWorkflow<TWf>
         {
                 var cond = new WorkflowCondition<TWf>(w =>
@@ -219,12 +219,12 @@ namespace HLab.Erp.Workflows
         //        (w.CurrentState == getState()) ? WorkflowConditionResult.Passed : WorkflowConditionResult.Hidden));
         //    return t;
         //}
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> FromState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, params Func<Workflow<TWf>.State>[] getters)
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> FromState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, params Func<Workflow<TWf>.Stage>[] getters)
             where TWf : class,IWorkflow<TWf>
         {
                 t?.Target.AddCondition(new WorkflowCondition<TWf>(w => {
                     foreach (var getState in getters)
-                        if (w.CurrentState == getState()) return WorkflowConditionResult.Passed;
+                        if (w.CurrentStage == getState()) return WorkflowConditionResult.Passed;
                     
                     return WorkflowConditionResult.Hidden;
                 }));
@@ -252,13 +252,13 @@ namespace HLab.Erp.Workflows
         /// <param name="t"></param>
         /// <param name="getState"></param>
         /// <returns></returns>
-        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> ToState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.State> getState)
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> ToState<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<Workflow<TWf>.Stage> getState)
             where TWf : class,IWorkflow<TWf>
         {           
             if(t.Target is Workflow<TWf>.Action action)
             {
                 t.WhenStateAllowed(getState);           
-                t.Action(async w => await w.SetStateAsync(getState,action.GetCaption(w),action.GetIconPath(w), action.SigningMandatory,action.MotivationMandatory));
+                t.Action(async w => await w.SetStageAsync(getState,action.GetCaption(w),action.GetIconPath(w), action.SigningMandatory,action.MotivationMandatory));
                 return t;
             }
             return t;

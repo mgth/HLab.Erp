@@ -18,17 +18,16 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
             AddAllowed = true;
             DeleteAllowed = true;
 
-            Columns
-                .Column("{Name}", s => s.Name)
-                .Column("{Country}", s => new ViewLocator{Model = s.Country})
-                .Column("{eMail}", s => s.Email)
-                .Column("{Address}", s => s.Address);
-
-            List.OrderBy = e => e.Name;
+            Columns.Configure(c => c
+                .Column.Header("{Name}").Content(s => s.Name).OrderByOrder(0)
+                .Column.Header("{Country}").Content(s => new ViewLocator{Model = s.Country})
+                .Column.Header("{eMail}").Content(s => s.Email)
+                .Column.Header("{Address}").Content(s => s.Address)
+            );
 
             using (List.Suspender.Get())
             {
-                Filters.Add(new FilterTextViewModel {Title = "{Name}"}.Link(List, e => e.Name));
+                Filter<TextFilter>( f => f.Title("{Name}").Link(List, e => e.Name));
             }
 
             //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(

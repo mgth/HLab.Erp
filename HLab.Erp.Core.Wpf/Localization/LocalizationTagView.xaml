@@ -7,8 +7,8 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <StackPanel Orientation="Horizontal">
-            <Label Content ="{Binding Tag}"></Label>
-            <TextBox Text="{Binding Value}"></TextBox>
+            <Label Content ="{Binding Tag}" />
+            <TextBox Text="{Binding Value}" />
         </StackPanel>
     </Grid>
 </UserControl>

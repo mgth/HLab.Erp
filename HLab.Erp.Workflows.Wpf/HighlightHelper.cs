@@ -17,11 +17,11 @@ namespace HLab.Erp.Workflows
 {
     public static class HighlightHelper
     {
-        public static void SetHighlights<T>(this IView<T> view,Func<T,IWorkflow> w)
+        public static void SetHighlights<T>(this IView<T> view, Func<T, IWorkflow> w)
         {
             if (view is FrameworkElement fe)
             {
-                fe.DataContextChanged += (o,e) => 
+                fe.DataContextChanged += (o, e) =>
                 {
                     if (!view.TryGetViewModel(out var vm)) return;
 
@@ -32,19 +32,29 @@ namespace HLab.Erp.Workflows
                             switch (arg.Action)
                             {
                                 case NotifyCollectionChangedAction.Add:
-                                    foreach (var item in arg.NewItems)
-                                    {
-                                        if(item is string s)
-                                            Highlight(view,s);
-                                    }
+                                    if (arg.NewItems != null)
+                                        foreach (var item in arg.NewItems)
+                                        {
+                                            if (item is string s)
+                                                Highlight(view, s);
+                                        }
+
                                     break;
                                 case NotifyCollectionChangedAction.Reset:
-                                    Highlight(view,null);
+                                    Highlight(view, null);
                                     break;
+                                case NotifyCollectionChangedAction.Remove:
+                                    break;
+                                case NotifyCollectionChangedAction.Replace:
+                                    break;
+                                case NotifyCollectionChangedAction.Move:
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
                             }
                         };
-            }
-                    
+                    }
+
                 };
             }
         }
@@ -61,21 +71,21 @@ namespace HLab.Erp.Workflows
                     break;
 
                 case TextBox tb:
-                    HighlightUI(tb,name);
+                    HighlightUI(tb, name);
                     break;
 
                 case Panel p:
                     foreach (var c in p.Children)
                     {
-                        Highlight(c,name);
+                        Highlight(c, name);
                     }
                     break;
 
                 case ContentControl contentControl:
-                    Highlight(contentControl.Content,name);
+                    Highlight(contentControl.Content, name);
                     break;
                 case Popup popup:
-                    HighlightUI(popup.Child,name);
+                    HighlightUI(popup.Child, name);
                     break;
                 case ComboBox:
                 case ListView:
@@ -92,9 +102,9 @@ namespace HLab.Erp.Workflows
 
         private static void HighlightUI(UIElement ui, string name)
         {
-            if(string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
-                RemoveHighlightUI(ui);
+                RemoveHighlightUi(ui);
                 return;
             }
 
@@ -113,7 +123,7 @@ namespace HLab.Erp.Workflows
             al?.Add(c);
         }
 
-        private static void RemoveHighlightUI(UIElement ct)
+        private static void RemoveHighlightUi(UIElement ct)
         {
             var al = AdornerLayer.GetAdornerLayer(ct);
             var ads = al?.GetAdorners(ct);

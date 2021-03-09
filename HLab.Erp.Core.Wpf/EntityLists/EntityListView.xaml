@@ -3,12 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm"
-             xmlns:annotations="clr-namespace:HLab.Mvvm.Annotations;assembly=HLab.Mvvm.Annotations"
-             xmlns:lang="clr-namespace:HLab.Mvvm.Lang;assembly=HLab.Mvvm.Wpf"
-             xmlns:entityLists="clr-namespace:HLab.Erp.Core.EntityLists"
              xmlns:core="clr-namespace:HLab.Erp.Core;assembly=HLab.Erp.Core"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:wpf="clr-namespace:HLab.Icons.Wpf;assembly=HLab.Icons.Wpf" 
+             xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
+             xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=core:IEntityListViewModel, IsDesignTimeCreatable=false}"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -21,7 +20,13 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-            <ItemsControl ItemsSource="{Binding Filters}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+
+            <ItemsControl Grid.Column="1" Grid.Row="0" ItemsSource="{Binding Filters}">
                 <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>
@@ -29,9 +34,17 @@
             </ItemsControl.ItemsPanel>
             </ItemsControl>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
+        <Grid Grid.Column="0" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-            <Button Command ="{Binding AddCommand}">
+            <Button Grid.Row="0" Grid.Column="0" Command ="{Binding AddCommand}">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                         <Style.Triggers>
@@ -44,10 +57,11 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-                <lang:Localize Id="{}{Add}"/>
+                <Button.ToolTip><lang:Localize Id="{}{Add}"/></Button.ToolTip>
+                <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
             </Button>
 
-            <Button Command="{Binding DeleteCommand}">                    
+            <Button Grid.Row="0" Grid.Column="1" Command="{Binding DeleteCommand}">                    
                 <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                             <Style.Triggers>
@@ -60,14 +74,17 @@
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
-                <lang:Localize Id="{}{Delete}"/>
+                
+                <Button.ToolTip><lang:Localize Id="{}{Delete}"/></Button.ToolTip>
+                <icons:IconView Path="Icons/Delete" MaxHeight="15"/>
             </Button>
             
-            <Button Command="{Binding RefreshCommand}">                    
-                <lang:Localize Id="{}{Refresh}"/>
+            <Button Grid.Row="1" Grid.Column="0" Command="{Binding RefreshCommand}">                    
+                <Button.ToolTip><lang:Localize Id="{}{Refresh}"/></Button.ToolTip>
+                <icons:IconView Path="Icons/Refresh" MaxHeight="15"/>
             </Button>
 
-            <Button Command="{Binding OpenCommand}">
+            <Button Grid.Row="1" Grid.Column="1" Command="{Binding OpenCommand}">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                         <Style.Triggers>
@@ -78,20 +95,25 @@
                     </Style>
                 </Button.Style>
 
-                <lang:Localize Id="{}{Open}"/></Button>
-        </StackPanel>
+                <Button.ToolTip><lang:Localize Id="{}{Open}"/></Button.ToolTip>
+                <icons:IconView Path="Icons/OpenForeign" MaxHeight="15"/>
+            </Button>
+        </Grid>
 
-        <TextBlock Grid.Row="2" Text="{Binding Message}" Foreground="Red"/>
+        <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Message}" Foreground="Red"/>
 
-         <DataGrid Grid.Row="3"
-            ItemsSource="{Binding ListCollectionView}" 
-            SelectedItem="{Binding SelectedViewModel}"
-            VirtualizingStackPanel.VirtualizationMode="Recycling"
-            ScrollViewer.CanContentScroll ="True"
-            AutoGenerateColumns="False"
-            Name="DataGrid"
-            AlternationCount="2"
-            Background="{DynamicResource MahApps.Brushes.DataGrid.Background}"
+         <DataGrid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3"
+                   MaxHeight="5000"
+                   ItemsSource="{Binding ListCollectionView}" 
+                   SelectedItem="{Binding SelectedViewModel}"
+                   VirtualizingStackPanel.VirtualizationMode="Recycling"
+                   VirtualizingPanel.IsContainerVirtualizable="True"
+                   VirtualizingPanel.IsVirtualizing="True"
+                   ScrollViewer.CanContentScroll ="True"
+                   AutoGenerateColumns="False"
+                   Name="DataGrid"
+                   AlternationCount="2"
+                   Background="{DynamicResource MahApps.Brushes.DataGrid.Background}"
          ><!--AlternatingRowBackground="#08FFFFFF"-->
             <DataGrid.Resources>
                 <Style TargetType="DataGridColumnHeader">

@@ -35,6 +35,9 @@ namespace HLab.Erp.Base.Wpf
         public ICommand IconCommand { get; } = H.Command(c => c.Action(
                 e => e._erp.Docs.OpenDocumentAsync(typeof(IconsListViewModel))
             ));
+        public ICommand CountryToolsCommand { get; } = H.Command(c => c.Action(
+                e => e._erp.Docs.OpenDocumentAsync(typeof(CountryToolsViewModel))
+            ));
         public void Load(IBootContext b)
         {
                 _erp.Menu.RegisterMenu("param/country", "{Country}",
@@ -45,6 +48,9 @@ namespace HLab.Erp.Base.Wpf
                     IconCommand,
                     "Icons/Entities/Icon");
 
+                _erp.Menu.RegisterMenu("tools/countrytools", "{Country tools}",
+                    CountryToolsCommand,
+                    "Icons/Entities/Country");
         }
     }
 }

@@ -6,9 +6,9 @@ namespace HLab.Erp.Workflows
     /// <summary>
     /// Logique d'interaction pour WorkFlowState.xaml
     /// </summary>
-    public partial class WorkFlowStateView : UserControl, IView<WorkflowViewModel>
+    public partial class WorkFlowStageView : UserControl, IView<WorkflowViewModel>
     {
-        public WorkFlowStateView()
+        public WorkFlowStageView()
         {
             InitializeComponent();
         }

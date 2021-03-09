@@ -16,7 +16,7 @@ namespace HLab.Erp.Acl.Users
 
         public override string Title => _title.Get();
         public IProperty<string> _title = H.Property<string>( c=> c
-            .OneWayBind(e => e.Model.Name)
+            .Bind(e => e.Model.Name)
         );
 
         [Import]
