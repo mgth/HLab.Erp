@@ -328,10 +328,23 @@ namespace HLab.Erp.Data
             return DbGet<bool>(db => db.Query<T>().Any(expression));
         }
 
-        private readonly ConcurrentDictionary<Type, DataCache> _caches = new ConcurrentDictionary<Type, DataCache>();
+        private readonly ConcurrentDictionary<Type, DataCache> _caches = new();
 
         internal DataCache<T> GetCache<T>() where T : class, IEntity
             => (DataCache<T>)_caches.GetOrAdd(typeof(T), t => new DataCache<T>() { DataService = this });
+
+        private IEnumerable<string> _connectionStrings;
+        public IEnumerable<string> Connections
+        {
+            get
+            {
+                if (_connectionStrings is null)
+                {
+                    _connectionStrings = _options.GetSubList("", "Connections", null, "registry");
+                }
+                return _connectionStrings;
+            }
+        }
 
         private string _connectionString;
         public string ConnectionString
@@ -340,14 +353,29 @@ namespace HLab.Erp.Data
             {
                 if (string.IsNullOrWhiteSpace(_connectionString))
                 {
-                    _connectionString = _options.GetValue<string>("Connection", null, null, "registry");
+                    var path = (string.IsNullOrWhiteSpace(Source)) ? "" : @$"Connections\{Source}";
+                    _connectionString = _options.GetValue<string>(path, "Connection", null, null, "registry");
                     if (string.IsNullOrWhiteSpace(_connectionString))
                     {
                         _connectionString = _getConnectionString();
-                        _options.SetValue("connection", _connectionString);
+                        _options.SetValue(path, "connection", _connectionString);
                     }
                 }
                 return _connectionString;
+            }
+        }
+
+        private string _source;
+
+        public string Source
+        {
+            get => _source ??= _options.GetValue<string>("", "Source", null, ()=>"", "registry");
+            set
+            {
+                _source = value;
+                _options.SetValue<string>("", "Source", value, "registry");
+                _connectionString = null;
+                _caches.Clear();
             }
         }
 
@@ -391,7 +419,7 @@ namespace HLab.Erp.Data
                 DatabaseType.PostgreSQL,
                 //DatabaseType.MySQL,
                 //MySql.Data.MySqlClient.MySqlClientFactory.Instance,
-                Npgsql.NpgsqlFactory.Instance
+                NpgsqlFactory.Instance
             );
 
             return db;
@@ -478,7 +506,6 @@ namespace HLab.Erp.Data
                     throw new DataException("Data connection failed", exception);
                 }
             }
-
         }
 
         private Func<string> _getConnectionString = null;

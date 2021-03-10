@@ -20,8 +20,14 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
         public ListCountryPopupViewModel()
         {
             Columns.Configure(c => c
-                .Column.Header("{Name}").Content(s => s.Name).Localize().OrderByOrder(0)
-                .Column.Header("{Flag}").Icon(s => s.IconPath)
+                .Column
+                    .Header("{Name}").Width(150)
+                    .Content(s => s.Name)
+                    .Localize()
+                    .OrderByOrder(0)
+                .Column
+                    .Header("{Flag}").Width(60)
+                    .Icon(s => s.IconPath)
             );
 
             Filter<TextFilter>(f => f.Title = "{Name}")

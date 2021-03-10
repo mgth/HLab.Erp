@@ -32,14 +32,30 @@ namespace HLab.Erp.Acl.AuditTrails
             AddAllowed = false;
 
             Columns.Configure(c => c
-                .Column.Header("{Date}").Content(at => at.TimeStamp)
-                .Column.Header("{Action}").Content(at => at.Action)
-                .Column.Header("{Caption}").Content(at=>at.EntityCaption)
-                .Column.Header("{Class}").Content(at=>at.EntityClass)
-                .Column.Header("{Icon}").Icon( at=>at.IconPath)
-                .Column.Header("{Log}").Content(at=>LogAbstract(at.Log,50))
-                .Column.Header("{Motivation}").Content(at=>at.Motivation)
-                .Column.Header("{User}").Content(at=>at.UserCaption)
+                .Column
+                    .Header("{Date}").Width(110)
+                    .Content(at => at.TimeStamp)
+                .Column
+                    .Header("{Action}").Width(80)
+                    .Content(at => at.Action)
+                .Column
+                    .Header("{Caption}").Width(200)
+                    .Content(at=>at.EntityCaption)
+                .Column
+                    .Header("{Class}").Width(80)
+                    .Content(at=>at.EntityClass)
+                .Column
+                    .Header("{Icon}").Width(60)
+                    .Icon( at=>at.IconPath)
+                .Column
+                    .Header("{Log}").Width(350)
+                    .Content(at=>LogAbstract(at.Log,50))
+                .Column
+                    .Header("{Motivation}").Width(250)
+                    .Content(at=>at.Motivation)
+                .Column
+                    .Header("{User}").Width(150)
+                    .Content(at=>at.UserCaption)
             );
                 ;
 

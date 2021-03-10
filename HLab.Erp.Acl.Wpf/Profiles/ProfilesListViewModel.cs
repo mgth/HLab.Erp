@@ -7,7 +7,9 @@ namespace HLab.Erp.Acl.Profiles
         public ProfilesListViewModel(User user)
         {
             Columns.Configure(c => c
-                .Column.Header("{Name}").Content(s => s.Name)
+                .Column
+                    .Header("{Name}").Width(100)
+                    .Content(s => s.Name)
             );
 
             //List.AddFilter(e => e. == user.Id);
@@ -20,7 +22,10 @@ namespace HLab.Erp.Acl.Profiles
             DeleteAllowed = true;
 
             Columns.Configure(c => c
-                .Column.Header("{Name}").Content(s => s.Name)
+                .Column
+                    .Header("{Name}")
+                    .Width(100)
+                    .Content(s => s.Name)
             );
 
 //            List.AddFilter(() => e => e.UserId == user.Id);

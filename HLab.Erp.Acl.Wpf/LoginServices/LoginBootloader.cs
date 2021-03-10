@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 using HLab.Mvvm;
@@ -13,29 +14,28 @@ namespace HLab.Erp.Acl.LoginServices
 {
     public class LoginBootloader : IBootloader
     {
-        public ILoginViewModel _viewModel;
-        public IMvvmService _mvvm;
-        public IAclService _acl;
+        private readonly Func<ILoginViewModel> _getViewModel;
+        private readonly IMvvmService _mvvm;
+        private readonly IAclService _acl;
 
-        [Import]public LoginBootloader(IMvvmService mvvm, ILoginViewModel viewModel, IAclService acl)
+        [Import]public LoginBootloader(IMvvmService mvvm, Func<ILoginViewModel> getViewModel, IAclService acl)
         {
             _mvvm = mvvm;
-            _viewModel = viewModel;
             _acl = acl;
+
+            _getViewModel = getViewModel;
         }
 
         public void Load(IBootContext bootstrapper)
         {
-            var loginWindow = _mvvm.MainContext.GetView(_viewModel,typeof(ViewModeDefault)).AsWindow();
-            ////loginWindow.WindowState = WindowState.Maximized;
-
+            var loginWindow = _mvvm.MainContext.GetView(_getViewModel(),typeof(ViewModeDefault)).AsWindow();
+            loginWindow.SizeToContent = SizeToContent.WidthAndHeight;
+            loginWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             loginWindow.ShowDialog();
 
-            if (_acl.Connection == null)
-            {
-                System.Windows.Application.Current.Shutdown();
-                return;
-            }
+            if (_acl.Connection is not null) return;
+
+            Application.Current.Shutdown();
         }
     }
 }

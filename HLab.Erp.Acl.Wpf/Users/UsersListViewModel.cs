@@ -15,11 +15,21 @@ namespace HLab.Erp.Acl.Users
             AddAllowed = true;
 
             Columns.Configure(c => c
-                    .Column.Header("{First Name}").Content(u => u.FirstName)
-                    .Column.Header("{Name}").Content(u=>u.Name)
-                    .Column.Header("{Login}").Content(u=>u.Login)
-                    .Column.Header("{Function}").Content(u=>u.Function)
-                    .Column.Header("{Initials}").Content(u=>u.Initials)
+                    .Column
+                    .Header("{First Name}").Width(150)
+                    .Content(u => u.FirstName)
+                    .Column
+                    .Header("{Name}").Width(100)
+                    .Content(u=>u.Name)
+                    .Column
+                    .Header("{Login}").Width(100)
+                    .Content(u=>u.Login)
+                    .Column
+                    .Header("{Function}").Width(250)
+                    .Content(u=>u.Function)
+                    .Column
+                    .Header("{Initials}").Width(70)
+                    .Content(u=>u.Initials)
                 
                 );
 

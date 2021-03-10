@@ -10,15 +10,20 @@
              d:DesignHeight="300" d:DesignWidth="500" 
              d:DataContext="{d:DesignInstance Type=loginServices:LoginViewModel}"
              >
-    <Grid>
-        <Viewbox Opacity="0.1">
-            <icons:IconView Path="icons/LogoBackground"/>
-        </Viewbox>
-        <StackPanel Margin="20,20,20,0" VerticalAlignment="Center">
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+        <!--<Viewbox Opacity="0.1">
+            <icons:IconView Path="icons/Logo"/>
+        </Viewbox>-->
 
-            <Grid
-            Height="175"
-            Width="400">
+        <StackPanel Margin="30,20,20,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <icons:IconView Path="Icons/Logo"/>
+                <icons:IconView Margin="20" Path="Icons/AppName"/>
+            </StackPanel>
+            
+
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -29,7 +34,7 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
 <!--Database-->
@@ -37,8 +42,15 @@
                 <lang:LocalizedLabel 
                 Text="{}{Database} : " 
                 HorizontalAlignment="Right"
+                Visibility="{Binding AllowDatabaseSelection,Converter={StaticResource ToVisibilityConverter},FallbackValue=Collapsed}"
                 />
-                <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding DatabaseList}"/>
+                <ComboBox 
+                    SelectedItem="{Binding Database}" 
+                    Visibility="{Binding AllowDatabaseSelection,Converter={StaticResource ToVisibilityConverter},FallbackValue=Collapsed}"      
+                    Grid.Row="0" 
+                    Grid.Column="1" 
+                    ItemsSource="{Binding Databases}"
+                    />
 
 <!-- Name -->
 
@@ -52,6 +64,7 @@
                 Text="{Binding Login}"
                 Grid.Row="1" 
                 Grid.Column="1" 
+                MinWidth="200"
                 />
 
 <!-- Password -->

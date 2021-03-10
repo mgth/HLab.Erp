@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl.AuditTrails;
+using HLab.Erp.Data;
+using HLab.Icons.Annotations.Icons;
 using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
 
@@ -12,25 +15,60 @@ namespace HLab.Erp.Acl.LoginServices
     using H = H<LoginViewModel>;
 
     [Export(typeof(ILoginViewModel))]
-    public class LoginViewModel : AuthenticationViewModel, ILoginViewModel
+    public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainViewModel
     {
-        [Import] public LoginViewModel(ILocalizationService localizationService)
+        [Import]
+        public LoginViewModel(ILocalizationService localizationService, IIconService iconService, IDataService dataService)
         {
             LocalizationService = localizationService;
+            IconService = iconService;
+            DataService = dataService;
             H.Initialize(this);
+
+            foreach (var connection in dataService.Connections)
+            {
+                Databases.Add(connection);
+                AllowDatabaseSelection = true;
+            }
+
+            Database = DataService.Source;
         }
 
         public string Title => "{Connection}";
 
+        public ObservableCollection<string> Databases { get; } = new();
         
         public ILocalizationService LocalizationService { get; }
+        public IIconService IconService {get; }
+        public IDataService DataService {get; }
+
+        public string Database
+        {
+            get => _database.Get();
+            set
+            {
+                if (_database.Set(value))
+                {
+                    DataService.Source = value;
+                }
+            }
+        }
+
+        private readonly IProperty<string> _database = H.Property<string>();
+
+        public bool AllowDatabaseSelection
+        {
+            get => _allowDatabaseSelection.Get();
+            set => _allowDatabaseSelection.Set(value);
+        }
+        private readonly IProperty<bool> _allowDatabaseSelection = H.Property<bool>();
 
         public string PinView
         {
             get => _pinView.Get();
             set => _pinView.Set(value);
         }
-        private IProperty<string> _pinView = H.Property<string>();
+        private readonly IProperty<string> _pinView = H.Property<string>();
 
         private string _pin = "";
         public ICommand NumPadCommand { get; } = H.Command(c => c
@@ -67,11 +105,12 @@ namespace HLab.Erp.Acl.LoginServices
         );
         public ICommand CancelCommand { get; } = H.Command( c => c
             .CanExecute(e => true)
-            .Action(async e =>
+            .Action( e =>
             {
                 e.Acl.CancelLogin();
             })                      
 //            .On(e => e.Login).CheckCanExecute()
         );
+
     }
 }

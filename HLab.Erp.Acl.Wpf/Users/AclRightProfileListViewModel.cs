@@ -24,7 +24,8 @@ namespace HLab.Erp.Acl.Users
         {
             OpenAction = target => { };
             Columns.Configure( c=> c
-                .Column.Header("{Name}").Content(s => s.AclRight.Caption)
+                .Column.Header("{Name}")
+                .Content(s => s.AclRight.Caption)
             );
 
             List.AddFilter(() => e => e.ProfileId == profile.Id);

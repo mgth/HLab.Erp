@@ -55,6 +55,8 @@ namespace HLab.Erp.Data
         List<Type> Entities { get; }
 
         string ConnectionString { get; }
+        string Source { get; set; }
+        IEnumerable<string> Connections { get; }
 
         DbTransaction BeginTransaction();
         void SetConfigureAction(Func<string> action);
