@@ -13,5 +13,9 @@ namespace HLab.Erp.Workflows
         {
             InitializeComponent();
         }
+
+        public void SetFocus()
+        {
+        }
     }
 }

@@ -6,6 +6,7 @@ using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm.Annotations;
+using HLab.Mvvm.Application;
 
 namespace HLab.Erp.Core
 {

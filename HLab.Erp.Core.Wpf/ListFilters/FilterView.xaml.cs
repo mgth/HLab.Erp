@@ -1,8 +1,12 @@
-﻿using System.Windows.Controls;
+﻿using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using HLab.Base.Wpf;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.ListFilters
 {
+
     /// <summary>
     /// Logique d'interaction pour FilterView.xaml
     /// </summary>
@@ -11,6 +15,18 @@ namespace HLab.Erp.Core.ListFilters
         public FilterView()
         {
             InitializeComponent();
+
+            ToggleButton.Checked += ToggleButton_Checked;
+        }
+
+        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            var content = ContentControl.FindVisualChildren<IFilterContentViewClass>().First();
+
+            content.SetFocus();
+
+            //if(content is UIElement element)
+            //    element?.Focus();
         }
     }
 }

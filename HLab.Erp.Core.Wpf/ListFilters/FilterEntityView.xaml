@@ -6,6 +6,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            <ContentControl Content="{Binding List}" />
+            <ContentControl x:Name="ContentControl" Content="{Binding List}" />
     </Grid>
 </UserControl>

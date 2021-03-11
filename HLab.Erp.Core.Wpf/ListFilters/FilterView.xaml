@@ -39,7 +39,7 @@
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Vertical" Grid.Row="0">
                     <!--<StackPanel Orientation="Horizontal">-->
-                        <ToggleButton HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" IsChecked="{Binding Enabled}">
+                        <ToggleButton x:Name="ToggleButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" IsChecked="{Binding Enabled}">
                             <icons:IconView 
                                 Path="{Binding IconPath,FallbackValue=icons/default}" 
                                 IconMaxHeight="15"
@@ -75,7 +75,7 @@
                     </StackPanel>-->
                 </StackPanel>
             </Grid>
-            <ContentControl 
+            <ContentControl x:Name="ContentControl"
                 Visibility="{Binding Enabled,Converter={StaticResource ToVisibilityConverter}}"
                 Margin="5"
                 Grid.Row="1" 

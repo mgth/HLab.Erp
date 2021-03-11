@@ -12,5 +12,10 @@ namespace HLab.Erp.Core.ListFilters
         {
             InitializeComponent();
         }
+
+        public void SetFocus()
+        {
+            TextBox.Focus();
+        }
     }
 }

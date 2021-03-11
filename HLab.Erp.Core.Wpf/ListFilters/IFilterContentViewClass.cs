@@ -4,5 +4,6 @@ namespace HLab.Erp.Core.ListFilters
 {
     public interface IFilterContentViewClass : IViewClass
     {
+        void SetFocus();
     }
 }

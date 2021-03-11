@@ -5,6 +5,7 @@ using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm;
+using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl

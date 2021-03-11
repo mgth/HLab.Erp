@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Linq;
+using System.Windows.Controls;
+using HLab.Base.Wpf;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.ListFilters
@@ -11,6 +13,15 @@ namespace HLab.Erp.Core.ListFilters
         public FilterEntityView()
         {
             InitializeComponent();
+        }
+
+        public void SetFocus()
+        {
+            var content = ContentControl.FindVisualChildren<FilterView>().First();
+
+            content.ToggleButton.IsChecked = false;
+            content.ToggleButton.IsChecked = true;
+
         }
     }
 }

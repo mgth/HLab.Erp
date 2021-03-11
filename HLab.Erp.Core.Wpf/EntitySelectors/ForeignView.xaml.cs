@@ -8,6 +8,7 @@ using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.EntityLists;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
+using HLab.Mvvm.Application;
 
 namespace HLab.Erp.Core.EntitySelectors
 {

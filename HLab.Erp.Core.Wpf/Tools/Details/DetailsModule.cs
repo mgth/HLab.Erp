@@ -1,6 +1,7 @@
 ﻿using System;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
+using HLab.Mvvm.Application;
 
 namespace HLab.Erp.Core.Tools.Details
 {

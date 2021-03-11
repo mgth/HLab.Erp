@@ -381,8 +381,8 @@ namespace HLab.Erp.Core.EntityLists
 
             FrameworkElementFactory cc = new FrameworkElementFactory(typeof(ContentControl));
             cc.SetBinding(ContentControl.ContentProperty,new Binding(property));
-            cc.SetValue(ContentControl.VerticalAlignmentProperty,VerticalAlignment.Top);
-            cc.SetValue(ContentControl.VerticalContentAlignmentProperty,VerticalAlignment.Top);
+            //cc.SetValue(ContentControl.VerticalAlignmentProperty,VerticalAlignment.Top);
+            //cc.SetValue(ContentControl.VerticalContentAlignmentProperty,VerticalAlignment.Top);
             t.VisualTree = cc;
 
             return t;
