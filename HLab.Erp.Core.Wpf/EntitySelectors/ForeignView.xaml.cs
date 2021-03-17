@@ -56,7 +56,7 @@ namespace HLab.Erp.Core.EntitySelectors
             .Register();
 
         public static readonly DependencyProperty CommandProperty = H.Property<ICommand>()
-            .OnChange( (s,a) => s.SetCommand(a.NewValue) )
+            .OnChange( (s,a) => s.SetCommand(a.OldValue,a.NewValue) )
             .Register();
 
         public static readonly DependencyProperty ButtonContentProperty = H.Property<object>()
@@ -67,10 +67,28 @@ namespace HLab.Erp.Core.EntitySelectors
             .OnChange( (s,a) => s.SetMandatoryNotFilled(a.NewValue) )
             .Register();
 
-        private void SetCommand(ICommand command)
+        private void SetCommand(ICommand oldCommand,ICommand command)
         {
-            Locator.Visibility = command == null ? Visibility.Visible : Visibility.Collapsed;
-            OpenButton.Visibility = command == null ? Visibility.Visible : Visibility.Collapsed;
+            if(oldCommand!=null) oldCommand.CanExecuteChanged -= Command_CanExecuteChanged;
+
+            if (command == null)
+            {
+                Locator.Visibility = Visibility.Visible;
+                OpenButton.Visibility = Visibility.Visible;
+
+            }
+            else
+            {
+                Locator.Visibility = Visibility.Collapsed;
+                OpenButton.Visibility = Visibility.Collapsed;
+                command.CanExecuteChanged += Command_CanExecuteChanged;
+                Button.IsEnabled = command?.CanExecute(null)??true;
+            }
+        }
+
+        private void Command_CanExecuteChanged(object sender, EventArgs e)
+        {
+            Button.IsEnabled = Command?.CanExecute(null)??true;
         }
 
         public object Model
