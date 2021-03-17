@@ -442,12 +442,12 @@ namespace HLab.Erp.Data
             await DbAsync(async d => await Task.Run(() => d.Save(value)));
         }
 
-        public bool Update<T>(T value, IEnumerable<string> columns) where T : class, IEntity
+        public bool Update<T>(T value, params string[] columns) where T : class, IEntity
         {
             var n = DbGet(d => d.Update(value, columns));
             return (n > 0);
         }
-        public async Task<bool> UpdateAsync<T>(T value, IEnumerable<string> columns) where T : class, IEntity
+        public async Task<bool> UpdateAsync<T>(T value, params string[] columns) where T : class, IEntity
         {
             var n = await DbGetAsync(d => d.UpdateAsync(value, columns));
             return (n > 0);

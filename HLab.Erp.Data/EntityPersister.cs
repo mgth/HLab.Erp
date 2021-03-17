@@ -46,7 +46,7 @@ namespace HLab.Erp.Data
                     ei.Id = (int)t.Id;
                     return true;
                 }
-                if(_db.Update(Target, columns.Select(e => e.Name)))
+                if(_db.Update(Target, columns.Select(e => e.Name).ToArray()))
                 {
                     IsDirty = false;
                     return true;

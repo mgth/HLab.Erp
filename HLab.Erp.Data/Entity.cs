@@ -36,7 +36,6 @@ namespace HLab.Erp.Data
                 var v = Property<TF>(c => c.Foreign(e),name);
                 return new ForeignProperty<TF>(id,v);
             }
-
     }
 
 
