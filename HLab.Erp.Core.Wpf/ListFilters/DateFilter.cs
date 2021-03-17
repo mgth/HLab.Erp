@@ -216,10 +216,10 @@ namespace HLab.Erp.Core.ListFilters
 
         private static (int, DateShiftUnit) CalculateShift(DateTime referenceDate, DateTime date)
         {
-            DateShiftUnit unit = DateShiftUnit.Day;
+            var unit = DateShiftUnit.Day;
 
             Func<DateTime, DateTime> f = d => d.AddDays(1);
-            int direction = (referenceDate <= date) ? 1 : -1;
+            var direction = (referenceDate <= date) ? 1 : -1;
 
             if (referenceDate.DayOfWeek == date.DayOfWeek)
             {

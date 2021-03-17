@@ -2,9 +2,9 @@
 
 namespace HLab.Erp.Core.ListFilters
 {
-    public class FilterDateDesignViewModel : DateFilter
+    public class DateFilterDesignViewModel : DateFilter
     {
-        public FilterDateDesignViewModel()
+        public DateFilterDesignViewModel()
         {
             MinDate = DateTime.Now.AddDays(-10);
             MaxDate = DateTime.Now;

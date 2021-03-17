@@ -600,11 +600,11 @@
 		<Compile Update="EntityViews\EntityViewDefault.xaml.cs">
 			<DependentUpon>EntityViewDefault.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="ListFilters\FilterDateView.xaml.cs">
-			<DependentUpon>FilterDateView.xaml</DependentUpon>
+		<Compile Update="ListFilters\DateFilterView.xaml.cs">
+			<DependentUpon>DateFilterView.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="ListFilters\FilterEntityView.xaml.cs">
-			<DependentUpon>FilterEntityView.xaml</DependentUpon>
+		<Compile Update="ListFilters\EntityFilterView.xaml.cs">
+			<DependentUpon>EntityFilterView.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="ListFilters\FilterView.xaml.cs">
 			<DependentUpon>FilterView.xaml</DependentUpon>
@@ -670,10 +670,10 @@
 		<Page Update="EntityViews\EntityViewDefault.xaml">
 			<SubType>Designer</SubType>
 		</Page>
-		<Page Update="ListFilters\FilterDateView.xaml">
+		<Page Update="ListFilters\DateFilterView.xaml">
 			<SubType>Designer</SubType>
 		</Page>
-		<Page Update="ListFilters\FilterEntityView.xaml">
+		<Page Update="ListFilters\EntityFilterView.xaml">
 			<SubType>Designer</SubType>
 		</Page>
 		<Page Update="ListFilters\FilterView.xaml">

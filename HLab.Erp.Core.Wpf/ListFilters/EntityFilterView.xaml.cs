@@ -8,9 +8,9 @@ namespace HLab.Erp.Core.ListFilters
     /// <summary>
     /// Logique d'interaction pour FilterEntityView.xaml
     /// </summary>
-    public partial class FilterEntityView : UserControl , IView<ViewModeDefault, IEntityFilterViewModel>, IFilterContentViewClass
+    public partial class EntityFilterView : UserControl , IView<ViewModeDefault, IEntityFilterViewModel>, IFilterContentViewClass
     {
-        public FilterEntityView()
+        public EntityFilterView()
         {
             InitializeComponent();
         }

@@ -2,9 +2,9 @@
 
 namespace HLab.Erp.Core.ListFilters
 {
-    public class FilterTextDesignViewModel : TextFilter, IViewModelDesign
+    public class TextFilterDesignViewModel : TextFilter, IViewModelDesign
     {
-        public FilterTextDesignViewModel()
+        public TextFilterDesignViewModel()
         {
             Value = "DummySearch";
         }

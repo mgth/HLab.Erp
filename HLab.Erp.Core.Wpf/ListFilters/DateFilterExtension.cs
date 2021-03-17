@@ -6,7 +6,7 @@ using HLab.Erp.Data.Observables;
 
 namespace HLab.Erp.Core.ListFilters
 {
-    public static class FilterDateExtension
+    public static class DateFilterExtension
     {
         public static T Title<T>(this T c, string title)
             where T : IFluentConfigurator<DateFilter>

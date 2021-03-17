@@ -4,9 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using HLab.Erp.Core;
 using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
@@ -14,10 +11,8 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Workflows
 {
-    public interface IWorkflowFilterViewModel { }
-
-        public class WorkflowFilterViewModel<TClass>: FilterViewModel, IWorkflowFilterViewModel
-    where TClass : class, IWorkflow<TClass>
+    public class WorkflowFilter<TClass>: FilterViewModel, IWorkflowFilter
+        where TClass : class, IWorkflow<TClass>
     {
 
         private static readonly MethodInfo ContainsMethod = typeof(List<string>).GetMethod("Contains", new[] {typeof(string)});
@@ -31,7 +26,7 @@ namespace HLab.Erp.Workflows
                 get => _selected.Get(); 
                 set => _selected.Set(value);
             }
-            private IProperty<bool> _selected = H<StageEntry>.Property<bool>();
+            private readonly IProperty<bool> _selected = H<StageEntry>.Property<bool>();
 
             public IWorkflowStage Stage { get; set; }
 
@@ -42,10 +37,10 @@ namespace HLab.Erp.Workflows
         public ReadOnlyObservableCollection<StageEntry> List { get; }
         public ObservableCollection<StageEntry> _list = new();
 
-        public WorkflowFilterViewModel()
+        public WorkflowFilter()
         {
             List = new (_list);
-            H<WorkflowFilterViewModel<TClass>>.Initialize(this);
+            H<WorkflowFilter<TClass>>.Initialize(this);
 
 
             var properties = typeof(TClass).GetFields(BindingFlags.Static | BindingFlags.Public)
@@ -60,8 +55,9 @@ namespace HLab.Erp.Workflows
             //IconPath = $"Icons/Workflows/{typeof(TClass).Name}";
         }
 
-        private ITrigger _ = H<WorkflowFilterViewModel<TClass>>.Trigger(c => c
+        private ITrigger _ = H<WorkflowFilter<TClass>>.Trigger(c => c
             .On(e => e.List.Item().Selected)
+            .On(e => e.Enabled)
             .Do(e => e.Update?.Invoke())
         );
 
@@ -71,8 +67,8 @@ namespace HLab.Erp.Workflows
 
         public Expression<Func<T,bool>> Match<T>(Expression<Func<T, string>> getter)
         {
-            if (!Enabled/* || string.IsNullOrWhiteSpace(Value)*/) 
-                return null; 
+            if (!Enabled) return null; 
+
             var entity = getter.Parameters[0];
             var value = Expression.Constant(List.Where(e => e.Selected).Select(e => e.Stage.Name).ToList(),typeof(List<string>));
 
@@ -86,10 +82,10 @@ namespace HLab.Erp.Workflows
             get => _update.Get();
             set => _update.Set(value);
         }
-        private readonly IProperty<Action> _update = H<WorkflowFilterViewModel<TClass>>.Property<Action>();
+        private readonly IProperty<Action> _update = H<WorkflowFilter<TClass>>.Property<Action>();
 
 
-        public WorkflowFilterViewModel<TClass> Link<T>(ObservableQuery<T> q, Expression<Func<T, string>> getter)
+        public WorkflowFilter<TClass> Link<T>(ObservableQuery<T> q, Expression<Func<T, string>> getter)
             where T : class, IEntity
         {
             //var entity = getter.Parameters[0];
@@ -99,5 +95,4 @@ namespace HLab.Erp.Workflows
         }
 
     }
-
 }

@@ -7,7 +7,7 @@ namespace HLab.Erp.Workflows
     /// <summary>
     /// Logique d'interaction pour FilterEntityView.xaml
     /// </summary>
-    public partial class WorkflowFilterView : UserControl , IView<ViewModeDefault, IWorkflowFilterViewModel>, IFilterContentViewClass
+    public partial class WorkflowFilterView : UserControl , IView<ViewModeDefault, IWorkflowFilter>, IFilterContentViewClass
     {
         public WorkflowFilterView()
         {
