@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using HLab.Base.Fluent;
@@ -43,8 +45,10 @@ namespace HLab.Erp.Core
         ReadOnlyObservableCollection<IFilterViewModel> Filters { get; }
         ICommand AddCommand { get; }
         dynamic SelectedViewModel { get; set; }
+        IEnumerable<int> SelectedIds { get; set; }
     }
-    public interface IEntityListViewModel<T> where T : class, IEntity
+    public interface IEntityListViewModel<T> : IEntityListViewModel
+        where T : class, IEntity
     {
         T Model { get; set; }
 

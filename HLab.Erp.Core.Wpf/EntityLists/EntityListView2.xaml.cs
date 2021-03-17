@@ -1,7 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using AvalonDock.Controls;
 using HLab.Erp.Core.ListFilters;
+using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
 
@@ -19,6 +21,13 @@ namespace HLab.Erp.Core.EntityLists
             InitializeComponent();
             DataContextChanged += EntityListView_DataContextChanged;
             Loaded += EntityListView2_Loaded;
+            ListView.SelectionChanged += ListView_SelectionChanged;
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DataContext is IEntityListViewModel vm)
+                vm.SelectedIds = ListView.SelectedItems.OfType<IObjectMapper>().Select(o => o.Id).ToList();
         }
 
         private void EntityListView2_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -26,7 +35,7 @@ namespace HLab.Erp.Core.EntityLists
             var filter = this.FindVisualAncestor<FilterView>();
             if (filter != null)
             {
-                DataGrid.MaxHeight = 200;
+                ListView.MaxHeight = 200;
             }
         }
 
@@ -34,7 +43,7 @@ namespace HLab.Erp.Core.EntityLists
         {
             if (e.NewValue is IEntityListViewModel vm)
             {
-                vm.Populate(DataGrid);
+                vm.Populate(ListView);
             }
         }
 

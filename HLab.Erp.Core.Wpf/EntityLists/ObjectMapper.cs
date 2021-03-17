@@ -3,19 +3,36 @@ using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.ViewModels.EntityLists
 {
-    public sealed class ObjectMapper<T> : DynamicObject
+    public interface IObjectMapper
+    {
+        int Id { get; }
+        object Model { get; }
+        public bool IsSelected { get; set; }
+    }
+
+    public sealed class ObjectMapper<T> : DynamicObject, IObjectMapper
         where T : class, IEntity
     {
-        private readonly T _model;
         private readonly IColumnsProvider<T> _columns;
 
-        public T Model => _model;
+        public int Id
+        {
+            get
+            {
+                if (Model is IEntity<int> e) return e.Id; 
+                return -1;
+            }
+        }
+
+        object IObjectMapper.Model => Model;
+        public T Model { get; }
 
         public bool IsSelected { get; set; }
 
+
         public ObjectMapper(T model, IColumnsProvider<T> columns)
         {
-            _model = model;
+            Model = model;
             _columns = columns;
         }
 
@@ -28,11 +45,8 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
         {
             switch (binder.Name)
             {
-                //case "Model":
-                //    result = _model;
-                //    return true;
                 default:
-                    result = _columns.GetValue(_model, binder.Name);
+                    result = _columns.GetValue(Model, binder.Name);
                     return true;
             }
         }

@@ -1,7 +1,6 @@
 ﻿using HLab.Base.Extensions;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Core.Tools.Details;
 using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Erp.Data;
@@ -10,11 +9,11 @@ using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,43 +22,9 @@ using HLab.Mvvm.Application;
 
 namespace HLab.Erp.Core.EntityLists
 {
-    public class ListableEntityListViewModel<T> : EntityListViewModel<T>
-        where T : class, IEntity, IListableModel, new()
-    {
-        public ListableEntityListViewModel()
-        {
-            Columns.Configure(c => c
-
-                .Column.Header("{Name}")
-                    .Content(e => e.Caption).Icon(e => e.IconPath)
-            );
-
-            Filter<TextFilter>().Title("{Name}").Link(List, e => e.Caption);
-
-            List.UpdateAsync();
-        }
-        public ListableEntityListViewModel(Expression<Func<T,bool>> filter)
-        {
-            List.AddFilter(()=>filter);
-
-            Columns.Configure(c => c
-
-                .Column.Header("{Name}")
-                .Content(e => e.Caption)
-                .Icon(e => e.IconPath)
-            );
-
-            List.UpdateAsync();
-        }
-
-        public override ICommand AddCommand {get; }  = H<ListableEntityListViewModel<T>>.Command(c => c
-                .Action(async e => await e.AddEntityAsync())
-        );
-    }
-
     public abstract class EntityListViewModel : ViewModel, IEntityListViewModel
     {
-        public EntityListViewModel()
+        protected EntityListViewModel()
         {
             Filters = new(_filters);
             H<EntityListViewModel>.Initialize(this);
@@ -83,6 +48,7 @@ namespace HLab.Erp.Core.EntityLists
         }
 
         public abstract dynamic SelectedViewModel { get; set; }
+        public abstract IEnumerable<int> SelectedIds { get; set; }
         protected abstract Task AddEntityAsync();
 
         public abstract ICommand AddCommand { get; }
@@ -302,12 +268,20 @@ namespace HLab.Erp.Core.EntityLists
         .Update()
         );
 
+        public override IEnumerable<int> SelectedIds
+        {
+            get => _selectedIds.Get();
+            set => _selectedIds.Set(value);
+        }
+        private readonly IProperty<IEnumerable<int>> _selectedIds = H<EntityListViewModel<T>>.Property<IEnumerable<int>>();
+
         public override ICommand DeleteCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
                 .CanExecute(e => e.CanExecuteDelete())
                 .Action(async e => await e.DeleteEntityAsync(e.Selected))
                 .On(e => e.Selected)
                 .CheckCanExecute()
         );
+
         public override ICommand AddCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
                 .CanExecute(e => e.CanExecuteAdd())
                 .Action(async e => await e.AddEntityAsync())

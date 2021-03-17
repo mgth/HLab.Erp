@@ -105,7 +105,7 @@
                    VirtualizingPanel.IsContainerVirtualizable="True"
                    VirtualizingPanel.IsVirtualizing="True"
                    ScrollViewer.CanContentScroll ="True"
-                   Name="DataGrid"
+                   x:Name="ListView"
                    AlternationCount="2"
                    Background="{DynamicResource MahApps.Brushes.DataGrid.Background}"
          ><!--AlternatingRowBackground="#08FFFFFF"-->
