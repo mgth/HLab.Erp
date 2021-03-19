@@ -365,7 +365,7 @@ namespace HLab.Erp.Data.Observables
             }))
             {
                 _db.Delete(Selected);
-                UpdateAsync();
+                Update();
 
                 Exec(OnDeleted, new CreateHelper
                 {
@@ -470,6 +470,8 @@ namespace HLab.Erp.Data.Observables
         }
 
         private readonly object _lockUpdateNeeded = new();
+
+        
         private volatile bool _updateNeeded;
 
 
@@ -481,19 +483,21 @@ namespace HLab.Erp.Data.Observables
         {
             if (!_initialized)
             {
-                UpdateAsync();
+                Update();
             }
             return this;
         }
 
-        public async Task UpdateAsync() //=> UpdateAsync(null,true,false);
-        { 
-            lock(_lockUpdate)
+        public void Update()
+        {
+            lock (_lockUpdateNeeded)
+            {
                 _updateNeeded = true;
 
-            if (!_timer.IsEnabled)
-            {
-                _timer.DoTick();
+                if (!_timer.IsEnabled)
+                {
+                    _timer.DoTick();
+                }
             }
         }
 
@@ -504,11 +508,12 @@ namespace HLab.Erp.Data.Observables
 
         private async Task _timer_TickAsync(object sender, EventArgs e)
         {
-            bool doUpdate = false;
-            lock (_lockUpdate)
+            var doUpdate = false;
+            lock (_lockUpdateNeeded)
             {
                 if (_updateNeeded)
                 {
+                    _updateNeeded = false;
                     doUpdate = true;
                     _timer.Start();
                 }
@@ -519,18 +524,11 @@ namespace HLab.Erp.Data.Observables
         }
 
 
-         public async Task UpdateAsync(Action postUpdate, bool force,bool refresh)
+        public async Task UpdateAsync(Action postUpdate, bool force,bool refresh)
         {
             #if DEBUG
             var stopwatch = Stopwatch.StartNew();
             #endif
-            lock (_lockUpdate)
-            {
-                _updateNeeded = false;
-            }
-
-
-
             var lck = await Lock.WriterLockAsync();
             try
             {
@@ -649,7 +647,7 @@ namespace HLab.Erp.Data.Observables
 
         public void OnTriggered()
         {
-            UpdateAsync();
+            Update();
         }
 
         public override void Add(T item)

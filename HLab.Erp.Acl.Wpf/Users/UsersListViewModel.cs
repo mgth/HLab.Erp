@@ -33,7 +33,7 @@ namespace HLab.Erp.Acl.Users
                 
                 );
 
-            List.UpdateAsync();
+            List.Update();
         }
     }
 }

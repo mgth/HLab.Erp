@@ -16,7 +16,7 @@ namespace HLab.Erp.Acl.Users
 
             List.AddFilter(() => e => e.AclRightId == right.Id);
 
-            List.UpdateAsync();
+            List.Update();
 
 
         }
@@ -30,7 +30,7 @@ namespace HLab.Erp.Acl.Users
 
             List.AddFilter(() => e => e.ProfileId == profile.Id);
 
-            List.UpdateAsync();
+            List.Update();
         }        
     }
 }

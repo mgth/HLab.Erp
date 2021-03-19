@@ -284,7 +284,7 @@ namespace HLab.Erp.Core.EntityLists
                         _list.AddOrderBy(c.OrderBy,c.OrderDescending,c.OrderByOrder);
                     }
 
-                    _list.UpdateAsync();
+                    _list.Update();
                 };
 
 
@@ -359,7 +359,7 @@ namespace HLab.Erp.Core.EntityLists
                         _list.AddOrderBy(col.OrderBy,col.OrderDescending);
                     }
 
-                    _list.UpdateAsync();
+                    _list.Update();
                 };
  
                 var c = new GridViewColumn

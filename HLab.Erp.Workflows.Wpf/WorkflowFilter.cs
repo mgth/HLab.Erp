@@ -90,7 +90,7 @@ namespace HLab.Erp.Workflows
         {
             //var entity = getter.Parameters[0];
             q.AddFilter(Title,()=> Match(getter));
-            Update = ()=> q.UpdateAsync();
+            Update = q.Update;
             return this;
         }
 

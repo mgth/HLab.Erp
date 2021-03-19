@@ -14,7 +14,7 @@ namespace HLab.Erp.Acl.Users
 
             List.AddFilter(() => e => e.UserId == user.Id);
 
-            List.UpdateAsync();
+            List.Update();
         }        
         public ListUserProfileViewModel(Profile profile)
         {
@@ -26,7 +26,7 @@ namespace HLab.Erp.Acl.Users
 
             List.AddFilter(() => e => e.ProfileId == profile.Id);
 
-            List.UpdateAsync();
+            List.Update();
         }        
     }
 }

@@ -81,7 +81,7 @@ namespace HLab.Erp.Acl.AuditTrails
                 .Link(this,at=>at.EntityClass)
             );
 
-            List.UpdateAsync();
+            List.Update();
         }
     }
     public class AuditTrailViewModel : EntityViewModel<AuditTrail>

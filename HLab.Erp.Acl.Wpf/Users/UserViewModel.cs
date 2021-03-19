@@ -56,7 +56,7 @@ namespace HLab.Erp.Acl.Users
         {
             if (_data.Delete<UserProfile>(userProfile))
             {
-                UserProfiles.List.UpdateAsync();
+                UserProfiles.List.Update();
             }
         }
 
@@ -72,7 +72,7 @@ namespace HLab.Erp.Acl.Users
             });
             if(userProfile!=null)
             {
-                UserProfiles.List.UpdateAsync();
+                UserProfiles.List.Update();
             }
         }
 

@@ -73,7 +73,7 @@ namespace HLab.Erp.Acl.Profiles
                 u.User = user;
             });
             if (up != null)
-                UserProfiles.List.UpdateAsync();
+                UserProfiles.List.Update();
         }
         private void AddRight(AclRight right)
         {
@@ -86,7 +86,7 @@ namespace HLab.Erp.Acl.Profiles
                 u.AclRight = right;
             });
             if (up != null)
-                ProfileRights.List.UpdateAsync();
+                ProfileRights.List.Update();
         }
 
         private void RemoveUser(UserProfile userProfile)
@@ -94,9 +94,9 @@ namespace HLab.Erp.Acl.Profiles
             if(userProfile==null) return;
             if(!UserProfiles.List.Contains(userProfile)) return;
 
-            if(_data.Delete<UserProfile>(userProfile))
+            if(_data.Delete(userProfile))
             {
-                UserProfiles.List.UpdateAsync();
+                UserProfiles.List.Update();
             }
         }
         private void RemoveRight(AclRightProfile right)
@@ -104,9 +104,9 @@ namespace HLab.Erp.Acl.Profiles
             if(right==null) return;
             if(!ProfileRights.List.Contains(right)) return;
 
-            if(_data.Delete<AclRightProfile>(right))
+            if(_data.Delete(right))
             {
-                ProfileRights.List.UpdateAsync();
+                ProfileRights.List.Update();
             }
         }
     }

@@ -119,7 +119,7 @@ namespace HLab.Erp.Core.EntityLists
         );
 
         public ICommand RefreshCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-            .Action(async e => await e.List.UpdateAsync())
+            .Action( e => e.List.Update())
         );
 
         protected Action<T> OpenAction;
@@ -296,7 +296,7 @@ namespace HLab.Erp.Core.EntityLists
             {
                 if (await _data.DeleteAsync(entity))
                 {
-                    await List.UpdateAsync();
+                    List.Update();
                 }
                 Message = null;
             }

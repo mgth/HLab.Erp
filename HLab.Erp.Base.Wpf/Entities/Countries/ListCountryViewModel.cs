@@ -36,7 +36,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
             //    Title = "{Continent}",
             //}.Link(List, s => s.Continent));
 
-            List.UpdateAsync();
+            List.Update();
         }
     }
 }

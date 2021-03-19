@@ -45,7 +45,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
                 .Column.Header("{Svg}").Content(async s => await GetSvgIconAsync(s.SourceSvg))
             );
 
-            List.UpdateAsync();
+            List.Update();
         }
     }
 }

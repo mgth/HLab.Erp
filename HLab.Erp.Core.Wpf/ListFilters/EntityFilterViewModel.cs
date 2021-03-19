@@ -77,7 +77,7 @@ namespace HLab.Erp.Core.ListFilters
         {
             //var entity = getter.Parameters[0];
             q.AddFilter(Title, () => Match(getter));
-            Update = async () => await q.UpdateAsync();
+            Update = q.Update;
             return this;
         }
         //public EntityFilterViewModel<TClass> Link<T>(ObservableQuery<T> q, Func<T, int?> getter)

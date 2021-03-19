@@ -25,7 +25,7 @@ namespace HLab.Erp.Core.ListFilters
             => c.Set<TConf,DateFilter>(f =>
             {
                 c.List.AddFilter(f.Title,()=> f.Match(getter));
-                f.Update = ()=> c.List.UpdateAsync();
+                f.Update = c.List.Update;
             });
     }
 }

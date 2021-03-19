@@ -42,7 +42,7 @@ namespace HLab.Erp.Core.ListFilters
         {
             //var entity = getter.Parameters[0];
             q.AddFilter(Title,()=> Match(getter));
-            Update = ()=> q.UpdateAsync();
+            Update = q.Update;
             return this;
         }
         public TextFilter PostLink<T>(ObservableQuery<T> q, Func<T, string> getter)
@@ -50,7 +50,7 @@ namespace HLab.Erp.Core.ListFilters
         {
             //var entity = getter.Parameters[0];
             q.AddPostFilter(Title,s => Value==null || getter(s).Contains(Value));
-            Update = ()=> q.UpdateAsync();
+            Update = q.Update;
             return this;
         }
 
