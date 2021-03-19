@@ -19,7 +19,6 @@ namespace HLab.Erp.Acl
 
         private readonly IProperty<bool> _aclGranted = H.Property<bool>();
 
-        [Column]
         public int? RightId
         {
             get => _right.Id.Get();
@@ -35,7 +34,6 @@ namespace HLab.Erp.Acl
         private readonly IForeign<AclRight> _right = H.Foreign<AclRight>();
 
 
-        [Column]
         public int? ToNodeId
         {
             get => _toNode.Id.Get();
@@ -50,7 +48,6 @@ namespace HLab.Erp.Acl
          }
          private readonly IForeign<AclNode> _toNode = H.Foreign<AclNode>();
 
-        [Column]
         public int? OnNodeId
         {
             get => _onNode.Id.Get();

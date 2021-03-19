@@ -12,6 +12,7 @@
     <PackageReference Include="MySql.Data" Version="8.0.23" />
     <PackageReference Include="Nito.AsyncEx" Version="5.1.0" />
     <PackageReference Include="Npgsql" Version="5.0.3" />
+    <PackageReference Include="NPoco" Version="5.1.2" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
@@ -20,7 +21,6 @@
     <ProjectReference Include="..\..\HLab\HLab.Core\HLab.Core.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Mvvm\HLab.Mvvm.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Options\HLab.Options.csproj" />
-    <ProjectReference Include="..\..\Lib\NPoco\src\NPoco\NPoco.csproj" />
     <ProjectReference Include="..\HLab.Erp.Data.Annotations\HLab.Erp.Data.Annotations.csproj" />
   </ItemGroup>
 

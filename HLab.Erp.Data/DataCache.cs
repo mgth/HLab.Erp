@@ -33,7 +33,7 @@ namespace HLab.Erp.Data
             if (!_fullCache)
             {
                 using var db = DataService.Get();
-                var dbList = db.FetchAsync<T>().ConfigureAwait(false);
+                var dbList = db.QueryAsync<T>().ToEnumerable().ConfigureAwait(false);
 
                 // TODO : bof
                 await foreach (var obj in dbList)

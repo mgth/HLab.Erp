@@ -39,7 +39,7 @@ namespace HLab.Erp.Data
             ) where T : class, IEntity;
 
         IAsyncEnumerable<TSelect> SelectDistinctAsync<T,TSelect>(
-            Func<T, bool> expression,
+            Expression<Func<T, bool>> expression,
             Func<T,TSelect> select
         );
 

@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
@@ -35,26 +36,65 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
             httpClient.DefaultRequestHeaders.UserAgent.Add(
                 new ProductInfoHeaderValue("MyApplication", "1"));
             var contentsUrl = $"https://restcountries.eu/rest/v2/all";
-            var contentsJson = await httpClient.GetStringAsync(contentsUrl);
 
-            var contents = (JArray)JsonConvert.DeserializeObject(contentsJson);
-            foreach(var country in contents)
+            try
             {
-                var name = (string)country["name"];
-                var namefr = (string) country["translations"]["fr"];
-                var c = await Data.FetchOneAsync<Country>(cty => cty.Name == name || cty.Name == $"{{{name}}}" || cty.Name == namefr);
-                if (c != null)
+                var contentsJson = await httpClient.GetStringAsync(contentsUrl);
+
+                var contents = (JArray) JsonConvert.DeserializeObject(contentsJson);
+                foreach (var country in contents)
                 {
-                    c.Name = $"{{{name}}}";
-                    c.Iso = int.Parse((string)country["numericCode"]);
-                    c.IsoA2 = (string)country["alpha2Code"];
-                    c.IsoA3 = (string)country["alpha3Code"];
-                    await Data.SaveAsync(c);
+                    var name = (string) country["name"];
+                    var namefr = (string) country["translations"]["fr"];
+                    var c = await Data.FetchOneAsync<Country>(cty =>
+                        cty.Name == name || cty.Name == $"{{{name}}}" || cty.Name == namefr);
+                    if (c != null)
+                    {
+                        c.Name = $"{{{name}}}";
+                        c.Iso = int.Parse((string) country["numericCode"]);
+                        c.IsoA2 = (string) country["alpha2Code"];
+                        c.IsoA3 = (string) country["alpha3Code"];
+                        c.IconPath = $"Icon/Country/Flag/{c.IsoA3}";
+                        await Data.SaveAsync(c);
+
+                        var flagUrl = (string)country["flag"];
+
+                        await LoadIconAsync(flagUrl, c.IconPath);
+                    }
+                    else
+                    {
+
+                    }
                 }
-                else
+            }
+            catch(HttpRequestException ex)
+            {
+
+            }
+        }
+
+        private async Task LoadIconAsync(string url, string iconPath)
+        {
+           var icon = await Data.FetchOneAsync<Icon>(i =>
+                    i.Path==iconPath);
+           if (icon != null) return;
+
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.UserAgent.Add(
+                new ProductInfoHeaderValue("HLab", "1"));
+            try
+            {
+
+                var svg = await httpClient.GetStringAsync(url);
+                await Data.AddAsync<Icon>(i =>
                 {
-                    
-                }
+                    i.Path = iconPath;
+                    i.SourceSvg = svg;
+                });
+            }
+            catch(HttpRequestException ex)
+            {
+
             }
         }
 

@@ -186,32 +186,30 @@ namespace HLab.Erp.Data
             while (retry)
             {
                 retry = false;
-                using (var db = Get())
+                using var db = Get();
+                await using var enumerator = db.QueryAsync<T>().ToEnumerable().GetAsyncEnumerator();
                 {
-                    await using var enumerator = db.FetchAsync<T>().GetAsyncEnumerator();
+                    var more = true;
+
+                    while (more)
                     {
-                        var more = true;
-
-                        while (more)
+                        try
                         {
-                            try
-                            {
-                                more = await enumerator.MoveNextAsync();
-                            }
-                            catch (ArgumentException e)
-                            {
-                                more = false;
-                                retry = Configure(e);
-                            }
-                            catch (NpgsqlException e)
-                            {
-                                throw new DataException(e.Message, e);
-                            }
-
-                            if (more) yield return await cache.GetOrAddAsync(enumerator.Current).ConfigureAwait(false);
+                            more = await enumerator.MoveNextAsync();
+                        }
+                        catch (ArgumentException e)
+                        {
+                            more = false;
+                            retry = Configure(e);
+                        }
+                        catch (NpgsqlException e)
+                        {
+                            throw new DataException(e.Message, e);
                         }
 
+                        if (more) yield return await cache.GetOrAddAsync(enumerator.Current).ConfigureAwait(false);
                     }
+
                 }
             }
         }
@@ -453,10 +451,10 @@ namespace HLab.Erp.Data
             return (n > 0);
         }
 
-        public IAsyncEnumerable<TSelect> SelectDistinctAsync<T, TSelect>(Func<T, bool> expression, Func<T, TSelect> select)
+        public IAsyncEnumerable<TSelect> SelectDistinctAsync<T, TSelect>(Expression<Func<T, bool>> expression, Func<T, TSelect> select)
         {
             using var d = Get();
-            return d.FetchAsync<T>().Where(expression).Select(select).Distinct();
+            return d.QueryAsync<T>().Where(expression).ToEnumerable().Select(select).Distinct();
         }
 
         private bool Retry()
