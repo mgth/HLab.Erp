@@ -1,10 +1,10 @@
 ﻿using System.Windows.Media;
+using HLab.ColorTools.Wpf;
 using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.ViewModelStates;
 using HLab.Erp.Data;
 using HLab.Icons.Annotations.Icons;
 using HLab.Mvvm;
-using HLab.Mvvm._Colors;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.DragDrops

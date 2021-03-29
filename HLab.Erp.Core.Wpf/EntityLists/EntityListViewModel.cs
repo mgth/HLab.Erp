@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -49,6 +50,8 @@ namespace HLab.Erp.Core.EntityLists
 
         public abstract dynamic SelectedViewModel { get; set; }
         public abstract IEnumerable<int> SelectedIds { get; set; }
+        public abstract void RefreshColumn(string column);
+        public abstract void RefreshColumn(string column, int id);
         protected abstract Task AddEntityAsync();
 
         public abstract ICommand AddCommand { get; }
@@ -67,14 +70,6 @@ namespace HLab.Erp.Core.EntityLists
 
         private string GetTitle() => GetType().Name.BeforeSuffix("ListViewModel").FromCamelCase();
 
-        public new T Model
-        {
-            get => (T)base.Model;
-            set => base.Model = value;
-        }
-
-        public override Type ModelType => typeof(T);
-
         
         [Import] protected IDocumentService _docs;
         [Import] protected IMessageBus _msg;
@@ -84,7 +79,6 @@ namespace HLab.Erp.Core.EntityLists
         [Import] public ObservableQuery<T> List { get; }
         public IColumnsProvider<T> Columns { get; }
 
-        //public IColumn<T> SetColumns(FluentConfiguratorDelegate<IColumn<T>> c) => ((ColumnsProvider<T>)Columns).SetColumns(c);
 
         public IEntityListViewModel<T> AddFilter<TFilter>(Action<FiltersFluentConfigurator<T,TFilter>> configure)
             where TFilter : IFilterViewModel, new()
@@ -95,7 +89,22 @@ namespace HLab.Erp.Core.EntityLists
             return this;
         }
 
-        public ObservableCollection<dynamic> ListViewModel { get; } = new ();
+        public override void RefreshColumn(string column)
+        {
+            foreach (var vm in ListViewModel)
+            {
+                vm.Refresh(column);
+            }
+        }
+        public override void RefreshColumn(string column, int id)
+        {
+            foreach (var vm in ListViewModel.Where(e => e.Id == id))
+            {
+                vm.Refresh(column);
+            }
+        }
+
+        public ObservableCollection<IObjectMapper> ListViewModel { get; } = new ();
         private readonly ConcurrentDictionary<T,dynamic> _cache = new ();
 
         [Import] private Func<ObservableQuery<T>,ColumnsProvider<T>> _getColumnsProvider;
@@ -124,9 +133,11 @@ namespace HLab.Erp.Core.EntityLists
 
         protected Action<T> OpenAction;
         public override void SetOpenAction(Action<object> action) => OpenAction = action;
+        public void SetOpenAction(Action<T> action) => OpenAction = action;
 
         protected Action<T> SelectAction;
         public override void SetSelectAction(Action<object> action) => SelectAction = action;
+        public void SetSelectAction(Action<T> action) => SelectAction = action;
 
         [Import] protected Func<T> CreateInstance;
         protected override Task AddEntityAsync()

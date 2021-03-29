@@ -8,6 +8,7 @@ using HLab.Erp.Acl.AuditTrails;
 using HLab.Erp.Data;
 using HLab.Icons.Annotations.Icons;
 using HLab.Mvvm.Annotations;
+using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl.LoginServices
@@ -18,11 +19,12 @@ namespace HLab.Erp.Acl.LoginServices
     public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainViewModel
     {
         [Import]
-        public LoginViewModel(ILocalizationService localizationService, IIconService iconService, IDataService dataService)
+        public LoginViewModel(ILocalizationService localizationService, IIconService iconService, IDataService dataService, IApplicationInfoService infoService)
         {
             LocalizationService = localizationService;
             IconService = iconService;
             DataService = dataService;
+            InfoService = infoService;
             H.Initialize(this);
 
             foreach (var connection in dataService.Connections)
@@ -41,6 +43,7 @@ namespace HLab.Erp.Acl.LoginServices
         public ILocalizationService LocalizationService { get; }
         public IIconService IconService {get; }
         public IDataService DataService {get; }
+        public IApplicationInfoService InfoService {get; }
 
         public string Database
         {
@@ -50,6 +53,7 @@ namespace HLab.Erp.Acl.LoginServices
                 if (_database.Set(value))
                 {
                     DataService.Source = value;
+                    InfoService.DataSource = value;
                 }
             }
         }

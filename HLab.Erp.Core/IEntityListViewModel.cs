@@ -46,16 +46,15 @@ namespace HLab.Erp.Core
         ICommand AddCommand { get; }
         dynamic SelectedViewModel { get; set; }
         IEnumerable<int> SelectedIds { get; set; }
+        void RefreshColumn(string column);
+        void RefreshColumn(string column, int id);
     }
+
     public interface IEntityListViewModel<T> : IEntityListViewModel
         where T : class, IEntity
     {
-        T Model { get; set; }
-
         ObservableQuery<T> List { get; }
         IColumnsProvider<T> Columns { get; }
-
-        ReadOnlyObservableCollection<IFilterViewModel> Filters { get; }
 
         IEntityListViewModel<T> AddFilter<TFilter>(Action<FiltersFluentConfigurator<T,TFilter>> configure)
             where TFilter : IFilterViewModel, new();

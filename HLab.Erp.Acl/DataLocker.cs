@@ -96,19 +96,29 @@ namespace HLab.Erp.Acl
                 IsActive = true;
         }
 
-
+        /// <summary>
+        /// True when locker is on
+        /// </summary>
         public bool IsActive
         {
             get => _isActive.Get();
             private set => _isActive.Set(value);
         }
         private readonly IProperty<bool> _isActive = H<DataLocker<T>>.Property<bool>(c => c.Default(false));
+
+        /// <summary>
+        /// True when locking allowed
+        /// </summary>
         public bool IsEnabled
         {
             get => _isEnabled.Get();
             set => _isEnabled.Set(value);
         }
         private readonly IProperty<bool> _isEnabled = H<DataLocker<T>>.Property<bool>(c => c.Default(false));
+
+        /// <summary>
+        /// True when database is responding
+        /// </summary>
         public bool IsConnected
         {
             get => _isConnected.Get();
@@ -116,10 +126,16 @@ namespace HLab.Erp.Acl
         }
         private readonly IProperty<bool> _isConnected = H<DataLocker<T>>.Property<bool>(c => c.Default(false));
 
+        /// <summary>
+        /// Command to activate locker
+        /// </summary>
         public ICommand ActivateCommand { get; } = H<DataLocker<T>>.Command(c => c
             .Action(async e => await e.ActivateAsync().ConfigureAwait(false))
         );
 
+        /// <summary>
+        /// Command to save data to database
+        /// </summary>
         public ICommand SaveCommand { get; } = H<DataLocker<T>>.Command(c => c
             .CanExecute(e => e.Persister.IsDirty)
             .Action(async e =>
@@ -139,10 +155,17 @@ namespace HLab.Erp.Acl
             .On(e => e.Persister.IsDirty).CheckCanExecute()
         );
 
+        /// <summary>
+        /// Cancel changes and reload data from database 
+        /// </summary>
         public ICommand CancelCommand { get; } = H<DataLocker<T>>.Command(c => c
             .Action(async e => await e.CancelAsync().ConfigureAwait(false))
         );
 
+        /// <summary>
+        /// Try to activate locker
+        /// </summary>
+        /// <returns></returns>
         public async Task ActivateAsync()
         {
             if (IsActive)
@@ -205,6 +228,14 @@ namespace HLab.Erp.Acl
 
         public Action<T> BeforeSavingAction { get; set; }
 
+        /// <summary>
+        /// Save with Audit Trail motivation
+        /// </summary>
+        /// <param name="caption">Caption of Audit Trail window</param>
+        /// <param name="iconPath">Path to icon image</param>
+        /// <param name="sign">True to enforce signing</param>
+        /// <param name="motivate">True to enforce motivation</param>
+        /// <returns>True if saved</returns>
         public async Task<bool> SaveAsync(string caption, string iconPath, bool sign, bool motivate)
         {
             BeforeSavingAction?.Invoke(_entity);
@@ -247,6 +278,7 @@ namespace HLab.Erp.Acl
         }
 
         private readonly AsyncReaderWriterLock _cancelLock = new AsyncReaderWriterLock();
+
 
         private void DirtyCancel()
         {

@@ -18,8 +18,8 @@
         <StackPanel Margin="30,20,20,0" VerticalAlignment="Center" HorizontalAlignment="Center">
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <icons:IconView Path="Icons/Logo"/>
-                <icons:IconView Margin="20" Path="Icons/AppName"/>
+                <icons:IconView Path="Icons/Logo" IconMaxWidth="NaN"/>
+                <icons:IconView Margin="20" Path="Icons/AppName" IconMaxWidth="NaN"/>
             </StackPanel>
             
 

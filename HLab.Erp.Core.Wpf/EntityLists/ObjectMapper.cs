@@ -1,13 +1,17 @@
-﻿using System.Dynamic;
+﻿using System.ComponentModel;
+using System.Dynamic;
+using System.Runtime.CompilerServices;
+using HLab.Erp.Core.Annotations;
 using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.ViewModels.EntityLists
 {
-    public interface IObjectMapper
+    public interface IObjectMapper : INotifyPropertyChanged
     {
         int Id { get; }
         object Model { get; }
         public bool IsSelected { get; set; }
+        void Refresh(string column);
     }
 
     public sealed class ObjectMapper<T> : DynamicObject, IObjectMapper
@@ -49,6 +53,16 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
                     result = _columns.GetValue(Model, binder.Name);
                     return true;
             }
+        }
+
+        public void Refresh(string column) => OnPropertyChanged(column);
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

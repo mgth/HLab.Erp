@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
-using HLab.Mvvm._Colors;
+using HLab.ColorTools.Wpf;
 
 namespace HLab.Erp.Core.ViewModelStates
 {

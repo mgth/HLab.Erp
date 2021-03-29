@@ -34,17 +34,17 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         public object Icon => _icon.Get();
         private readonly IProperty<object> _icon = H.Property<object>(c => c
             .On(e => e.Model.SourceXaml)
-            .Set(e => XamlTools.FromXamlStringAsync(e.Model.SourceXaml))
+            .Set(e => XamlTools.FromXamlStringAsync(e.Model.SourceXaml, e.Model.Foreground))
         );
 
         public ICommand ToXamlCommand { get; } = H.Command(c => c
-            .Action(e => e.ToXaml())
+            .Action(e => e.ToXamlAsync())
         );
         public ICommand EditSvgCommand { get; } = H.Command(c => c
             .Action(async e => await e.EditSvgAsync().ConfigureAwait(true))
         );
 
-        private async void ToXaml()
+        private async Task ToXamlAsync()
         {
             Model.SourceXaml = await XamlTools.SvgToXamlAsync(Model.SourceSvg).ConfigureAwait(false);
         }
@@ -59,15 +59,20 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
 
             var p = Process.Start(app,fileName);
 
+            if (p != null)
+            {
+                await p?.WaitForExitAsync();       
+                
+                await LoadSvgAsync(fileName).ConfigureAwait(false);
+
+            }
             //pEditor.StartInfo.Arguments = ""; 
-            p?.WaitForExit();       
-            
-            await LoadSvgAsync(fileName).ConfigureAwait(false);
         }
 
         private async Task LoadSvgAsync(string path)
         {
             Model.SourceSvg = await File.ReadAllTextAsync(path).ConfigureAwait(true);
+            await ToXamlAsync();
         }
         static string AssocQueryString(AssocStr association, string extension)
         {

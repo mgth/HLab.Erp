@@ -108,29 +108,21 @@ namespace HLab.Erp.Core.Lists.QueryLists
 
         public T SelectedEntity
         {
-            get
-            {
-                using(Lock.ReaderLock())
-                {
-                    return Selected.Model;
-                }
-            }
-            set { 
-                using(Lock.WriterLock())
-                {
-                    _selected.Set(this.FirstOrDefault(e => e.Model.Equals(value)));
-                }
-            }
+            get => _selectedEntity.Get();
+            set => Selected = this.FirstOrDefault(e => e.Model.Id == value.Id);
         }
 
-
+        private readonly IProperty<T> _selectedEntity = H<QueryListBase<T, TVm, TThis>>.Property<T>(c => c
+            .Set(e => e.Selected.Model)
+            .On(e => e.Selected.Model).Update()
+        );
 
         public Func<IQueryable<T>> SourceFunc
         {
             get => _sourceFunc.Get();
             set => _sourceFunc.Set(value);
         }
-        private IProperty<Func<IQueryable<T>>> _sourceFunc = H<QueryListBase<T, TVm, TThis>>.Property<Func<IQueryable<T>>>();
+        private readonly IProperty<Func<IQueryable<T>>> _sourceFunc = H<QueryListBase<T, TVm, TThis>>.Property<Func<IQueryable<T>>>();
 
         //public IQueryProvider<T> Source => N.Get(() =>
         //{

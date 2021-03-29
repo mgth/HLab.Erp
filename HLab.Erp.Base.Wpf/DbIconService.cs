@@ -5,6 +5,7 @@ using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
 using HLab.Icons.Annotations.Icons;
 using HLab.Icons.Wpf;
+using HLab.Icons.Wpf.Icons.Providers;
 using HLab.Icons.Wpf.Providers;
 
 namespace HLab.Erp.Base.Wpf
@@ -42,11 +43,11 @@ namespace HLab.Erp.Base.Wpf
 
                     if (!string.IsNullOrWhiteSpace(icon.SourceXaml))
                     {
-                        _icons.AddIconProvider(path, new IconProviderXamlFromSource(icon.SourceXaml, path));
+                        _icons.AddIconProvider(path, new IconProviderXamlFromSource(icon.SourceXaml, path, icon.Foreground));
                     }
                     else if (!string.IsNullOrWhiteSpace(icon.SourceSvg))
                     {
-                        _icons.AddIconProvider(path, new IconProviderSvgFromSource(icon.SourceSvg, path));
+                        _icons.AddIconProvider(path, new IconProviderSvgFromSource(icon.SourceSvg, path, icon.Foreground));
                     }
                 }
             }

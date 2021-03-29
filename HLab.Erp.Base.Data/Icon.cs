@@ -38,6 +38,14 @@ namespace HLab.Erp.Base.Data
         }
         private readonly IProperty<string> _sourceXaml = H.Property<string>(c => c.Default(""));
 
+        [Column]
+        public int? Foreground
+        {
+            get => _foreground.Get();
+            set => _foreground.Set(value);
+        }
+        private readonly IProperty<int?> _foreground = H.Property<int?>(c => c.Default((int?)null));
+
         [Ignore]
         public string Caption => Path;
         [Ignore]

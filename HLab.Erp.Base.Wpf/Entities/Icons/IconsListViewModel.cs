@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.ListFilters;
 using HLab.Icons.Wpf;
 using HLab.Icons.Wpf.Icons;
 using HLab.Mvvm.Annotations;
@@ -15,19 +17,19 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         {
         }
 
-        private static async Task<object> GetSvgIconAsync(string source)
+        private static async Task<object> GetSvgIconAsync(string source, int? foreColor)
         {
             if (string.IsNullOrWhiteSpace(source)) return null;
-            var icon = (UIElement)await XamlTools.FromSvgStringAsync(source).ConfigureAwait(true);
+            var icon = (UIElement)await XamlTools.FromSvgStringAsync(source,foreColor).ConfigureAwait(true);
             return new Viewbox
             {
                 Child = icon,
                 MaxHeight = 30
             };
         }
-        private static async Task<object> GetXamlIconAsync(string source)
+        private static async Task<object> GetXamlIconAsync(string source, int? foreColor)
         {
-            var icon = (UIElement)await XamlTools.FromXamlStringAsync(source).ConfigureAwait(true);
+            var icon = (UIElement)await XamlTools.FromXamlStringAsync(source, foreColor).ConfigureAwait(true);
             return new Viewbox
             {
                 Child = icon,
@@ -41,11 +43,15 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
 
             Columns.Configure(c => c
                 .Column.Header("{Path}").Content(s => s.Path)
-                .Column.Header("{Xaml}").Content(async s => await GetXamlIconAsync(s.SourceXaml))
-                .Column.Header("{Svg}").Content(async s => await GetSvgIconAsync(s.SourceSvg))
+                .Column.Header("{Xaml}").Content(async s => await GetXamlIconAsync(s.SourceXaml,s.Foreground))
+                .Column.Header("{Svg}").Content(async s => await GetSvgIconAsync(s.SourceSvg,s.Foreground))
             );
 
-            List.Update();
+            using (List.Suspender.Get())
+            {
+                Filter<TextFilter>(). Title("{Path}")
+                    .Link(List,e => e.Path);
+            }
         }
     }
 }

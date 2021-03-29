@@ -22,13 +22,13 @@ namespace HLab.Erp.Core.EntityLists
 {
     public static class ColumnConfiguratorExtension
     {
-        public static IColumnConfigurator<T> Icon<T>(this IColumnConfigurator<T> c, Func<T, string> getPath, double maxHeight = 30.0)
+        public static IColumnConfigurator<T> Icon<T>(this IColumnConfigurator<T> c, Func<T, string> getPath, double size = 30.0)
         {
             var getContent = c.Current.Getter;
             if(getContent==null)
-                return c.Content(t => new IconView {Path = getPath(t), IconMaxHeight = maxHeight});
+                return c.Content(t => new IconView {Path = getPath(t), IconMaxHeight = size, IconMaxWidth = size});
             
-            return c.Content(t => new IconView {Path = getPath(t), IconMaxHeight = maxHeight, Caption = getContent(t)});
+            return c.Content(t => new IconView {Path = getPath(t), IconMaxHeight = size, IconMaxWidth = size, Caption = getContent(t)});
         }
 
         public static IColumnConfigurator<T> Localize<T>(this IColumnConfigurator<T> c)
@@ -381,8 +381,6 @@ namespace HLab.Erp.Core.EntityLists
 
             FrameworkElementFactory cc = new FrameworkElementFactory(typeof(ContentControl));
             cc.SetBinding(ContentControl.ContentProperty,new Binding(property));
-            //cc.SetValue(ContentControl.VerticalAlignmentProperty,VerticalAlignment.Top);
-            //cc.SetValue(ContentControl.VerticalContentAlignmentProperty,VerticalAlignment.Top);
             t.VisualTree = cc;
 
             return t;

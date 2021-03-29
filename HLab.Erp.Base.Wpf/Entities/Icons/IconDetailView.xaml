@@ -17,8 +17,10 @@
             <Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="{}{Path} : "/>
             </Label>
-            <TextBox Text="{Binding Model.Path}" IsReadOnly="{Binding Locker.IsReadOnly}"/>
+            <TextBox Text="{Binding Model.Path,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Locker.IsReadOnly}"/>
 
+            <lang:LocalizedLabel Text="{}{Foreground Color} : "/>
+            <TextBox Text="{Binding Model.Foreground,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Locker.IsReadOnly}"/>
             <!--<Label HorizontalContentAlignment="Right" >
                 <lang:Localize Id="{}{Name} : "/>
             </Label>
