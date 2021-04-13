@@ -8,6 +8,13 @@ using HLab.DependencyInjection.Annotations;
 
 namespace HLab.Erp.Data
 {
+    public interface IFluentTransaction
+    {
+        IFluentTransaction Add<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity;
+
+    }
+
+
     public interface IDataService : IService
     {
         IDataTransaction GetTransaction();
@@ -22,6 +29,9 @@ namespace HLab.Erp.Data
 
         bool Update<T>(T value, params string[] columns) where T : class, IEntity;
         Task<bool> UpdateAsync<T>(T value, params string[] columns) where T : class, IEntity;
+
+        bool Update<T>(T value, Action<T> setter) where T : class, IEntity;
+        Task<bool> UpdateAsync<T>(T value, Action<T> setter) where T : class, IEntity;
 
         T FetchOne<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
         Task<T> FetchOneAsync<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
@@ -58,7 +68,7 @@ namespace HLab.Erp.Data
         string Source { get; set; }
         IEnumerable<string> Connections { get; }
 
-        DbTransaction BeginTransaction();
+        //DbTransaction BeginTransaction();
         void SetConfigureAction(Func<string> action);
 
         IAsyncEnumerable<string> GetDatabasesAsync(string host, string login, string password);

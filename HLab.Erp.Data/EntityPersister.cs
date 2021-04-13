@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,11 +13,15 @@ namespace HLab.Erp.Data
     public class EntityPersister<T> : Persister
     where T : class, IEntity
     {
-        [Import]
-        private IDataService _db;
+        [Import] private readonly IDataService _data;
 
         public EntityPersister(object target) : base(target,false)
         {
+        }
+
+        public EntityPersister(IDataService data, object target) : base(target,false)
+        {
+            _data = data;
         }
 
         protected new T Target => (T)base.Target;
@@ -42,11 +44,11 @@ namespace HLab.Erp.Data
             {
                 if(Target is IEntity<int> ei && ei.Id<0)
                 {
-                    var t = _db.Add<T>(e => Target.CopyPrimitivesTo(e));
+                    var t = _data.Add<T>(e => Target.CopyPrimitivesTo(e));
                     ei.Id = (int)t.Id;
                     return true;
                 }
-                if(_db.Update(Target, columns.Select(e => e.Name).ToArray()))
+                if(_data.Update(Target, columns.Select(e => e.Name).ToArray()))
                 {
                     IsDirty = false;
                     return true;
@@ -64,7 +66,7 @@ namespace HLab.Erp.Data
         public override Task<bool> SaveAsync() => SaveAsync(null);
         public async Task<bool> SaveAsync(IDataTransaction transaction)
         {
-            var tr =  transaction??_db.GetTransaction();
+            var tr =  transaction??_data.GetTransaction();
 
             var columns = new List<PropertyInfo>();
             while (Dirty.TryTake(out var e))

@@ -4,7 +4,20 @@
     <TargetFramework>net5.0</TargetFramework>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <Configurations>Debug;Release;DebugRelease</Configurations>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
+    <Version>2.1.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="SQL\Update-From-0.0.0.0.sql" />
+    <None Remove="SQL\Update-From-2.0.0.0.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SQL\Update-From-0.0.0.0.sql" />
+    <EmbeddedResource Include="SQL\Update-From-2.0.0.0.sql" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -15,6 +28,11 @@
     <ProjectReference Include="..\..\HLab\HLab.Application\HLab.Mvvm.Application.csproj" />
     <ProjectReference Include="..\HLab.Erp.Core.Annotations\HLab.Erp.Core.Annotations.csproj" />
     <ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="SQL\Update-From-0.0.0.0.sql" />
+    <Resource Include="SQL\Update-From-2.0.0.0.sql" />
   </ItemGroup>
 
 </Project>

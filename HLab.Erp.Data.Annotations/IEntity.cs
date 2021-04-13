@@ -5,13 +5,11 @@ namespace HLab.Erp.Data
 
 
     //[Entity]
-    public interface IEntity //: INotifierObject
+    public interface IEntity 
     {
         object Id{ get; }
         bool IsLoaded { get; set; }
         void OnLoaded();
-
-        //IErpContext Context { get; }
     }
     public interface IEntity<T> : IEntity
     {

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using HLab.DependencyInjection.Annotations;
 using HLab.Base;
 using HLab.Core.Annotations;
+using HLab.Notify.PropertyChanged;
 using Npgsql;
 using NPoco;
 using HLab.Options;
@@ -219,6 +220,17 @@ namespace HLab.Erp.Data
             Db(action);
         }
 
+        public async Task ExecuteSqlAsync(string sql)
+        {
+            using var db = Get();
+            await db.ExecuteAsync(sql);
+        }
+        public int ExecuteSql(string sql)
+        {
+            using var db = Get();
+            return db.Execute(sql);
+        }
+
         public IAsyncEnumerable<T> FetchWhereAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy = null)
             where T : class, IEntity
         {
@@ -272,6 +284,7 @@ namespace HLab.Erp.Data
 
             return result == null ? null : await GetCache<T>().GetOrAddAsync(result).ConfigureAwait(false);
         }
+
 
 
         public T FetchOne<T>(Expression<Func<T, bool>> expression)
@@ -409,14 +422,11 @@ namespace HLab.Erp.Data
 
         public List<Type> Entities { get; } = new List<Type>();
 
-        //[Import] private Func<IDataService, IDatabase> _getDbContext;
         internal IDatabase Get()
         {
             var db = new Database(
                 ConnectionString,
                 DatabaseType.PostgreSQL,
-                //DatabaseType.MySQL,
-                //MySql.Data.MySqlClient.MySqlClientFactory.Instance,
                 NpgsqlFactory.Instance
             );
 
@@ -429,7 +439,7 @@ namespace HLab.Erp.Data
         }
 
 
-        public DbTransaction BeginTransaction() => Get().Transaction;
+//        public DbTransaction BeginTransaction() => Get().Transaction;
 
         public void Save<T>(T value) where T : class, IEntity
         {
@@ -449,6 +459,19 @@ namespace HLab.Erp.Data
         {
             var n = await DbGetAsync(d => d.UpdateAsync(value, columns));
             return (n > 0);
+        }
+
+        public bool Update<T>(T value, Action<T> setter) where T : class, IEntity
+        {
+            var persister = new EntityPersister<T>(this, value);
+            setter(value);
+            return persister.Save();
+        }
+        public Task<bool> UpdateAsync<T>(T value, Action<T> setter) where T : class, IEntity
+        {
+            var persister = new EntityPersister<T>(this, value);
+            setter(value);
+            return persister.SaveAsync();
         }
 
         public IAsyncEnumerable<TSelect> SelectDistinctAsync<T, TSelect>(Expression<Func<T, bool>> expression, Func<T, TSelect> select)
@@ -574,6 +597,88 @@ namespace HLab.Erp.Data
             Debug.WriteLine(database);
 
             return false;
+        }
+
+        private static FieldInfo GetBackingField<T>(string name)
+        {
+            var backingFieldName = "_";
+            if (name.Length > 0) backingFieldName += name.Substring(0, 1).ToLower();
+            if (name.Length > 1) backingFieldName += name.Substring(1);
+
+            return typeof(T).GetField(backingFieldName);
+        }
+
+        public void CreateTable<T>() where T : IEntity
+        {
+            var columns = "";
+            var foreign = "";
+            foreach (var property in typeof(T).GetProperties())
+            {
+                if (property.GetCustomAttributes().OfType<IgnoreAttribute>().Any()) continue;
+                if (!property.CanWrite) continue;
+
+                columns += $"\"{property.Name}\" ";
+
+                if(property.Name=="Id") columns += @" serial NOT NULL,";
+                else
+                {
+                    var type = property.PropertyType;
+
+                    if(type.IsClass && type != typeof(string)) continue;
+
+                    if (type == typeof(int)) columns += @" integer NOT NULL,";
+                    else if(type == typeof(int?)) columns += @" integer,";
+                    else if(type == typeof(string)) columns += @" text,";
+                    else if(type == typeof(double)) columns += @" double precision,";
+                    if (type == typeof(int) && type == typeof(int?))
+                    {
+                        var backingField = typeof(T).GetField(property.Name);
+                        if (backingField != null && backingField.FieldType.IsAssignableTo(typeof(IForeign<>)))
+                        {
+                            if (backingField.FieldType.IsConstructedGenericType &&
+                                backingField.FieldType.GetGenericType() == typeof(IForeign<>))
+                            {
+                                var t = backingField.FieldType.GetGenericArguments()[0];
+
+                                foreign += $@"
+                                    ALTER TABLE public.""{property.Name}""
+                                    ADD CONSTRAINT ""{t.Name}_{property.Name}_fkey"" FOREIGN KEY (""{property.Name}"")
+                                    REFERENCES public.""{t.Name}"" (""Id"")
+                                        ON UPDATE NO ACTION
+                                        ON DELETE NO ACTION
+                                        NOT VALID;
+                                ";
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            var result = ExecuteSql(@$"
+                    BEGIN;
+                    CREATE TABLE public.""{typeof(T).Name}""
+                    (
+                        {columns}
+                        PRIMARY KEY (""Id"")
+                    )
+                        WITH (
+                            OIDS = FALSE
+                        )
+                    TABLESPACE pg_default;
+
+                    {foreign}
+
+                    ALTER TABLE public.""{typeof(T).Name}""
+                    OWNER to postgres;
+
+                    GRANT DELETE, INSERT, SELECT, UPDATE ON TABLE public.""{typeof(T).Name}"" TO lims;
+
+                    GRANT ALL ON TABLE public.""{typeof(T).Name}"" TO postgres;
+                    COMMIT;"
+            );
+
+
         }
 
         public ServiceState ServiceState { get; private set; }

@@ -13,14 +13,14 @@ namespace HLab.Erp.Base.Data
             var e = viewModel.Model;
             try
             {
-                    using (var transaction = dbService.BeginTransaction())
+                    using (var transaction = dbService.GetTransaction())
                     {
                         dbService.Delete(e);
                         //db.SaveChanges();
                         if (string.IsNullOrEmpty(deleteMessage) ||
                             navigationService.ShowMessageYesNo(caption, deleteMessage, "Question"))
 
-                            transaction.Commit();
+                            transaction.Done();
                         else
                         {
                             return false;

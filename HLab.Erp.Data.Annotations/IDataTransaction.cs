@@ -21,5 +21,6 @@ namespace HLab.Erp.Data
             where T : class, IEntity;
 
         void Done();
+        void ExecuteSql(string sql);
     }
 }

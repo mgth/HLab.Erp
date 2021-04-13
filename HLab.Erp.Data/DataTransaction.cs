@@ -23,13 +23,13 @@ namespace HLab.Erp.Data
 
         public T Add<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity
         {
-            var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
-            //if(t is IEntity<int> tt) tt.Id=-1;
+            var t = (T)Activator.CreateInstance(typeof(T));
+            if (t == null) throw new NullReferenceException();
 
             setter?.Invoke(t);
 
             object e = null;
-            if (typeof(T).GetCustomAttributes<SoftIncrementAttribut>().FirstOrDefault() is SoftIncrementAttribut a)
+            if (typeof(T).GetCustomAttributes<SoftIncrementAttribut>().Any())
             {
                 if (t is IEntity<int> ti)
                 {
@@ -43,13 +43,10 @@ namespace HLab.Erp.Data
                 }
             }
 
-            e = Database.Insert(t);
+            Database.Insert(t);
 
-            if (e != null)
-            {
-                t.IsLoaded = true;
-                added?.Invoke(t);
-            }
+            t.IsLoaded = true;
+            added?.Invoke(t);
 
             return _service.GetCache<T>().GetOrAddAsync(t).Result;
         }
@@ -57,6 +54,8 @@ namespace HLab.Erp.Data
         public async Task<T> AddAsync<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity
         {
             var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
+            if (t == null) throw new NullReferenceException();
+            
             if(t is IEntity<int> tt) tt.Id=-1;
 
             setter?.Invoke(t);
@@ -125,7 +124,7 @@ namespace HLab.Erp.Data
             where T : class, IEntity
         {
             var result = await Database.DeleteAsync(entity);
-
+            
             if (result > 0) 
                 await _service.GetCache<T>().ForgetAsync(entity);
 
@@ -138,6 +137,11 @@ namespace HLab.Erp.Data
         public void Done()
         {
             _transaction.Complete();
+        }
+
+        public void ExecuteSql(string sql)
+        {
+            Database.Execute(sql);
         }
 
         public void Dispose()
