@@ -1,19 +1,17 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using HLab.Notify;
 
 namespace HLab.Erp.Data
 {
     public static class EntityExt
     {
-        public static void Onloaded(this IEnumerable<IEntity> list)
-        {
-            foreach (var e in list)
-            {
-                e?.OnLoaded();
-            }
-        }
+        //public static void Onloaded(this IEnumerable<IEntity> list)
+        //{
+        //    foreach (var e in list)
+        //    {
+        //        e?.OnLoaded();
+        //    }
+        //}
 
 
         //public static int DbGetId(this IEntity entity)

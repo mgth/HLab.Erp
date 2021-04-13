@@ -1,6 +1,5 @@
 ﻿#define NPOCO
 using System.Data.Common;
-using HLab.DependencyInjection.Annotations;
 #if NPOCO
 using NPoco;
 #endif

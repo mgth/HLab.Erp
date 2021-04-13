@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using HLab.Base;
-using HLab.DependencyInjection.Annotations;
 
 ////using System.Data.Entity;
 

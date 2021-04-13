@@ -12,6 +12,9 @@ namespace HLab.Erp.Forms.Wpf
     [Export(typeof(IFormsService))]
     public class FormsService
     {
-        //public void Register(string source)
+        private static Dictionary<string, Func<object>> _dict = new();
+
+        public void Register(string source)
+        { }
     }
 }

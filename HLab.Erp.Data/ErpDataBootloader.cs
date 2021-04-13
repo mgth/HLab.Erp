@@ -1,7 +1,4 @@
-﻿using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
-
-namespace HLab.Erp.Data
+﻿namespace HLab.Erp.Data
 {
     //public  class ErpDataBootloader : IBootloader
     //{

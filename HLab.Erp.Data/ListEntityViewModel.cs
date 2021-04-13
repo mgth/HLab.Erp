@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows.Input;
 using HLab.Base;
-using HLab.DependencyInjection.Annotations;
-using HLab.Mvvm;
-using HLab.Mvvm.Annotations;
-using HLab.Notify;
 using HLab.Notify.Annotations;
-using HLab.Notify.PropertyChanged;
 using NPoco;
 
 ////using System.Data.Model;
