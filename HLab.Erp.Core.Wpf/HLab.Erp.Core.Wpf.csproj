@@ -12,6 +12,7 @@
 	<ItemGroup>
 		<None Remove="colors.xml" />
 		<None Remove="Icons\Entities\Localize.svg" />
+		<None Remove="Icons\export.svg" />
 		<None Remove="Icons\Filters\filter.svg" />
 		<None Remove="Icons\Flags\abkhazia.svg" />
 		<None Remove="Icons\Flags\afghanistan.svg" />
@@ -273,6 +274,7 @@
 		<None Remove="Icons\Flags\yemen.svg" />
 		<None Remove="Icons\Flags\zambia.svg" />
 		<None Remove="Icons\Flags\zimbabwe.svg" />
+		<None Remove="Icons\import.svg" />
 		<None Remove="Icons\SelectForeign.svg" />
 		<None Remove="Icons\sort\ascending.svg" />
 		<None Remove="Icons\sort\descending.svg" />
@@ -300,8 +302,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dirkster.AvalonDock" Version="4.50.2" />
-		<PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.50.2" />
+		<PackageReference Include="Dirkster.AvalonDock" Version="4.50.3" />
+		<PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.50.3" />
 		<PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
 	</ItemGroup>
 
@@ -319,6 +321,8 @@
 	<ItemGroup>
 		<Resource Include="Icons\Delete.xaml" />
 		<Resource Include="Icons\Entities\Localize.svg" />
+		<Resource Include="Icons\Export.svg" />
+		<Resource Include="Icons\Import.svg" />
 		<Resource Include="Icons\Filters\filter.svg" />
 		<Resource Include="Icons\Flags\abkhazia.svg" />
 		<Resource Include="Icons\Flags\afghanistan.svg" />

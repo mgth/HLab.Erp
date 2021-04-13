@@ -14,12 +14,21 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using HLab.Erp.Core.Annotations;
 using HLab.Mvvm.Application;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using NPoco;
 
 namespace HLab.Erp.Core.EntityLists
 {
@@ -299,6 +308,135 @@ namespace HLab.Erp.Core.EntityLists
                 .On(e => e.Selected)
                 .CheckCanExecute()
         );
+        public ICommand ExportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
+                .CanExecute(e => e.CanExecuteAdd())
+                .Action(async e => await e.ExportAsync())
+                .On(e => e.Selected)
+                .CheckCanExecute()
+        );
+
+        private class ExportIdValueProvider : IValueProvider
+        {
+            private IValueProvider _foreignProvider;
+
+            public ExportIdValueProvider(IValueProvider foreignProvider)
+            {
+                _foreignProvider = foreignProvider;
+            }
+
+            public void SetValue(object target, object? value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object? GetValue(object target)
+            {
+                var value = _foreignProvider.GetValue(target);
+                if (value is IEntityWithExportId v) return v.ExportId;
+                return null;
+            }
+        }
+        private class ContractResolver : DefaultContractResolver
+        {
+            protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+            {
+                var properties = base.CreateProperties(type, memberSerialization);
+
+                List<JsonProperty> outputList = new();
+
+                foreach (var p in properties)
+                {
+                    if (!p.Writable) continue;
+                    if(p.PropertyType==null) continue;
+                    if(p.PropertyType == typeof(string))
+                    {
+                        if (p.AttributeProvider.GetAttributes(true).OfType<IgnoreAttribute>().Any()) continue;
+                        outputList.Add(p);
+                        continue;
+                    }
+                    if (p.PropertyType.IsClass)
+                    {
+                        if (typeof(IEntityWithExportId).IsAssignableFrom(p.PropertyType))
+                        {
+                            p.ValueProvider = new ExportIdValueProvider(p.ValueProvider);
+                            outputList.Add(p);
+                            continue;
+                        }
+                    }
+                    if (p.AttributeProvider.GetAttributes(true).OfType<IgnoreAttribute>().Any()) continue;
+
+                    if (p.PropertyType.IsInterface) continue;
+
+                    outputList.Add(p);
+                }
+
+
+                return outputList;
+            }
+        }
+
+
+        private async Task ExportAsync()
+        {
+            var filename = typeof(T).Name + "-export.gz";
+            SaveFileDialog saveFileDialog = new() { FileName = filename, DefaultExt = "gz" };
+            if (saveFileDialog.ShowDialog() == false) return;
+
+            var text = JsonConvert.SerializeObject(
+                List.ToList(),
+                Formatting.Indented,
+                new JsonSerializerSettings { ContractResolver = new ContractResolver() } );
+
+            await using var sourceStream =  new MemoryStream(Encoding.UTF8.GetBytes(text));
+            await using var fileStream = File.Create(saveFileDialog.FileName);
+            await using var gzipStream = new GZipStream(fileStream, CompressionMode.Compress);
+            try
+            {
+                await sourceStream.CopyToAsync(gzipStream);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public ICommand ImportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
+                .CanExecute(e => e.CanExecuteAdd())
+                .Action(async e => await e.ImportAsync())
+                .On(e => e.Selected)
+                .CheckCanExecute()
+        );
+
+        private async Task ImportAsync()
+        {
+            var filename = typeof(T).Name + "-export.gz";
+            OpenFileDialog openFileDialog = new(){FileName = filename,Filter = $"{typeof(T).Name}|*.{typeof(T).Name}.gz"};
+            if (openFileDialog.ShowDialog() == false) return;
+            
+            await using var fileStream = File.OpenRead(openFileDialog.FileName);
+            await using var resultStream =  new MemoryStream();
+            await using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            try
+            {
+                await gzipStream.CopyToAsync(resultStream);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+
+
+            var text = Encoding.UTF8.GetString(resultStream.ToArray());;
+            List<T> list = JsonConvert.DeserializeObject<List<T>>(text);
+            foreach (var entity in list)
+            {
+                await ImportAsync(_data, entity);
+            }
+        }
+
+        protected virtual async Task ImportAsync(IDataService data, T newValue)
+        { }
 
         protected async Task DeleteEntityAsync(T entity)
         {

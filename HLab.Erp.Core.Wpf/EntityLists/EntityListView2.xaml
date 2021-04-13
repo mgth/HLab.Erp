@@ -93,6 +93,16 @@
                 <Button.ToolTip><lang:Localize Id="{}{Open}"/></Button.ToolTip>
                 <icons:IconView Path="Icons/OpenForeign" MaxHeight="15"/>
             </Button>
+            <Button Command="{Binding ExportCommand}">                    
+                <Button.ToolTip><lang:Localize Id="{}{Refresh}"/></Button.ToolTip>
+                <icons:IconView Path="Icons/Export" MaxHeight="15"/>
+            </Button>
+
+            <Button Command="{Binding ImportCommand}">                    
+                <Button.ToolTip><lang:Localize Id="{}{Refresh}"/></Button.ToolTip>
+                <icons:IconView Path="Icons/Import" MaxHeight="15"/>
+            </Button>
+
         </StackPanel>
 
         <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Message}" Foreground="Red"/>

@@ -1,9 +1,8 @@
 
 using System;
-using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using HLab.Base;
+using System.Text.Json.Serialization;
 using HLab.DependencyInjection.Annotations;
 using HLab.Notify.PropertyChanged;
 using NPoco;
@@ -58,7 +57,7 @@ namespace HLab.Erp.Data
             IsLoaded = true;
         }
 
-        [Ignore]
+        [Ignore][JsonIgnore]
         public virtual bool IsLoaded { get; set; }
         protected Entity()
         {
@@ -66,7 +65,7 @@ namespace HLab.Erp.Data
         }
 
 
-        [Ignore][Import(InjectLocation.AfterConstructor)]
+        [Ignore][JsonIgnore][Import(InjectLocation.AfterConstructor)]
         public IDataService DataService
         {
             get => _dataService.Get(); 
