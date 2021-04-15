@@ -7,7 +7,7 @@ using HLab.DependencyInjection;
 
 namespace HLab.Erp.Data
 {
-    public interface IDataProvider
+    public interface IDataServiceProvider
     {
         IDataService DataService { get; set; }
     }
@@ -20,7 +20,7 @@ namespace HLab.Erp.Data
 
     internal class DataCache<T> : DataCache where T : class, IEntity
     {
-        private readonly AsyncDictionary<object,T> _cache = new AsyncDictionary<object,T>();
+        private readonly AsyncDictionary<object,T> _cache = new();
         private bool _fullCache = false;
 
 
@@ -71,7 +71,7 @@ namespace HLab.Erp.Data
 
             obj.CopyPrimitivesTo(result);
 
-            if (result is IDataProvider dbf && dbf.DataService==null) 
+            if (result is IDataServiceProvider dbf && dbf.DataService==null) 
                 dbf.DataService = DataService;
 
             return result;
@@ -82,7 +82,7 @@ namespace HLab.Erp.Data
 
             obj.CopyPrimitivesTo(result);
 
-            if (result is IDataProvider dbf && dbf.DataService==null) 
+            if (result is IDataServiceProvider dbf && dbf.DataService==null) 
                 dbf.DataService = DataService;
 
             return result;

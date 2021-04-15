@@ -13,7 +13,7 @@ namespace HLab.Erp.Data
             Foreign<TClass, T>(this NotifyConfigurator<TClass, PropertyHolder<T>> c,
             Expression<Func<TClass, int?>> idGetter
             )
-            where TClass : NotifierBase,IEntity,IDataProvider
+            where TClass : NotifierBase,IEntity,IDataServiceProvider
             where T : Entity
         {
             var getter = idGetter.Compile();
@@ -42,7 +42,7 @@ namespace HLab.Erp.Data
         public static NotifyConfigurator<TClass, PropertyHolder<ObservableQuery<T>>> Foreign<TClass, T>(this NotifyConfigurator<TClass, PropertyHolder<ObservableQuery<T>>> c,
             Expression<Func<T, int?>> idGetter
             )
-            where TClass : Entity,IDataProvider //NotifierBase,IEntity
+            where TClass : Entity,IDataServiceProvider //NotifierBase,IEntity
             where T : Entity
         {
             var getter = idGetter.Compile();

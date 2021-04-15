@@ -108,6 +108,37 @@ namespace HLab.Erp.Data
         {
             return Task.Run(() => Database.Save(value));
         }
+
+        public bool Update<T>(T value, params string[] columns) where T : class, IEntity
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateAsync<T>(T value, params string[] columns) where T : class, IEntity
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Update<T>(T value, Action<T> setter) where T : class, IEntity
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateAsync<T>(T value, Action<T> setter) where T : class, IEntity
+        {
+            throw new NotImplementedException();
+        }
+
+        bool IDataProvider.Delete<T>(T entity, Action<T> deleted)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<bool> IDataProvider.DeleteAsync<T>(T entity, Action<T> deleted)
+        {
+            throw new NotImplementedException();
+        }
+
         public int Delete<T>(T entity, Action<T> deleted = null)
             where T : class, IEntity
         {

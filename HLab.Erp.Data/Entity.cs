@@ -14,7 +14,7 @@ namespace HLab.Erp.Data
     {
     }
 
-    public class HD<TClass> : H<TClass> where TClass : NotifierBase, IEntity, IDataProvider
+    public class HD<TClass> : H<TClass> where TClass : NotifierBase, IEntity, IDataServiceProvider
     {
             public static IForeign<TF> Foreign<TF>([CallerMemberName] string name = null) where TF : Entity, IEntity<int>
             {
@@ -39,7 +39,7 @@ namespace HLab.Erp.Data
 
 
     [PrimaryKey("Id")]
-    public abstract class Entity<T> : NotifierBase, IEntity<T>, IDataProvider//, IOnLoaded
+    public abstract class Entity<T> : NotifierBase, IEntity<T>, IDataServiceProvider//, IOnLoaded
     where T : struct 
     {
 

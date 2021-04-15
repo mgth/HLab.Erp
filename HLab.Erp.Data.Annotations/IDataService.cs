@@ -1,26 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using HLab.Base.Fluent;
 using HLab.Core.Annotations;
 using HLab.DependencyInjection.Annotations;
 
 namespace HLab.Erp.Data
 {
-    public interface IFluentTransaction
+    class Test : IEntity<int>
     {
-        IFluentTransaction Add<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity;
+        object IEntity.Id { get; }
+        public int Id { get; set; }
+        public bool IsLoaded { get; set; }
+        public void OnLoaded()
+        {
+            throw new NotImplementedException();
+        }
+    }
 
+    public class AddFluentHelper<TProvider> where TProvider : IDataProvider
+    {
+        private TProvider _provider;
+
+        public AddFluentHelper(TProvider provider)
+        {
+            _provider = provider;
+        }
+
+        public TProvider Entity<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity
+            => _provider.Add<TProvider,T>(setter, added);
+    }
+
+    public static class DataProviderExtension
+    {
+        public static TProvider Add<TProvider,T>(this TProvider data, Action<T> setter, Action<T> added = null)
+            where T : class, IEntity
+            where TProvider : IDataProvider
+            => data.Fluently(d => d.Add(setter, added));
+
+
+
+        public static AddFluentHelper<TProvider> Add<TProvider>(this TProvider data) where TProvider : IDataProvider
+            => new(data);
     }
 
 
-    public interface IDataService : IService
+    public interface IDataProvider
     {
-        IDataTransaction GetTransaction();
-        //T Get<T>();
-        bool Any<T>(Expression<Func<T, bool>> expression)
-            where T : class, IEntity;
         T Add<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity;
         Task<T> AddAsync<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity;
 
@@ -32,6 +61,22 @@ namespace HLab.Erp.Data
 
         bool Update<T>(T value, Action<T> setter) where T : class, IEntity;
         Task<bool> UpdateAsync<T>(T value, Action<T> setter) where T : class, IEntity;
+
+        bool Delete<T>(T entity, Action<T> deleted = null)
+            where T : class, IEntity;
+        Task<bool> DeleteAsync<T>(T entity, Action<T> deleted = null)
+            where T : class, IEntity;
+    }
+
+
+    public interface IDataService : IService, IDataProvider
+    {
+        IDataTransaction GetTransaction();
+        //T Get<T>();
+        bool Any<T>(Expression<Func<T, bool>> expression)
+            where T : class, IEntity;
+
+
 
         T FetchOne<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
         Task<T> FetchOneAsync<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
@@ -53,10 +98,6 @@ namespace HLab.Erp.Data
             Func<T,TSelect> select
         );
 
-        bool Delete<T>(T entity, Action<T> deleted = null)
-            where T : class, IEntity;
-        Task<bool> DeleteAsync<T>(T entity, Action<T> deleted = null)
-            where T : class, IEntity;
 
         //void Execute(Action<IDatabase> action);
         IAsyncEnumerable<T> FetchAsync<T>() where T : class, IEntity;
