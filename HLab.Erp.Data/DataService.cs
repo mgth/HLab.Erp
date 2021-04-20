@@ -8,7 +8,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using HLab.DependencyInjection.Annotations;
+using Grace.DependencyInjection;
+using Grace.DependencyInjection.Attributes;
 using HLab.Base;
 using HLab.Core.Annotations;
 using HLab.Notify.PropertyChanged;
@@ -21,8 +22,10 @@ namespace HLab.Erp.Data
     [Export(typeof(IDataService)), Singleton]
     public class DataService : IDataService, IService
     {
-        public DataService()
+        public DataService(Func<Type, object> locate, IOptionsService options)
         {
+            Locate = locate;
+            _options = options;
             ServiceState = ServiceState.Available;
         }
 
@@ -390,15 +393,14 @@ namespace HLab.Erp.Data
             }
         }
 
-        [Import]
-        public Func<Type, object> _Locate { get; }
-        public object Locate<T>(DbDataReader d) => _Locate(typeof(T));
+        public Func<Type, object> Locate { get; }
+        //public object Locate<T>(DbDataReader d) => _Locate(typeof(T));
 
         private IExportLocatorScope _container;
 
-        [Import] private IOptionsService _options;
+        private readonly IOptionsService _options;
 
-        [Import(InjectLocation.AfterConstructor)]
+        [Import]
         public void Inject(IExportLocatorScope container)
         {
             //TODO : _options.SetDataService(this);

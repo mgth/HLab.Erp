@@ -3,7 +3,7 @@ using System;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-using HLab.DependencyInjection.Annotations;
+using Grace.DependencyInjection.Attributes;
 using HLab.Notify.PropertyChanged;
 using NPoco;
 
@@ -65,7 +65,7 @@ namespace HLab.Erp.Data
         }
 
 
-        [Ignore][JsonIgnore][Import(InjectLocation.AfterConstructor)]
+        [Ignore][JsonIgnore][Import]
         public IDataService DataService
         {
             get => _dataService.Get(); 

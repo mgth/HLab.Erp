@@ -1,16 +1,19 @@
 ﻿using System;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.Localization
 {
     public class LocalizeBootloader : IBootloader
     {
-        [Import]
-        private Func<LocalizeFromDb> _get;
-        [Import]
-        private ILocalizationService _service;
+        private readonly Func<LocalizeFromDb> _get;
+       private readonly ILocalizationService _service;
+
+        public LocalizeBootloader(Func<LocalizeFromDb> get, ILocalizationService service)
+        {
+            _get = get;
+            _service = service;
+        }
 
         public void Load(IBootContext b)
         {

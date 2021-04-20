@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using HLab.DependencyInjection.Annotations;
+using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Acl.AuditTrails;
 using HLab.Erp.Data;
 using HLab.Icons.Annotations.Icons;
@@ -18,8 +18,12 @@ namespace HLab.Erp.Acl.LoginServices
     [Export(typeof(ILoginViewModel))]
     public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainViewModel
     {
-        [Import]
-        public LoginViewModel(ILocalizationService localizationService, IIconService iconService, IDataService dataService, IApplicationInfoService infoService)
+        public LoginViewModel(
+            IAclService acl,
+            ILocalizationService localizationService, 
+            IIconService iconService, 
+            IDataService dataService, 
+            IApplicationInfoService infoService) : base(acl)
         {
             LocalizationService = localizationService;
             IconService = iconService;

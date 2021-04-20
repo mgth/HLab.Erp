@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Windows.Input;
+using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
+using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.EntityLists
@@ -10,7 +12,7 @@ namespace HLab.Erp.Core.EntityLists
     public class ListableEntityListViewModel<T> : EntityListViewModel<T>
         where T : class, IEntity, IListableModel, new()
     {
-        public ListableEntityListViewModel()
+        protected override void Configure()
         {
             Columns.Configure(c => c
 
@@ -21,7 +23,8 @@ namespace HLab.Erp.Core.EntityLists
             using(List.Suspender.Get())
                 Filter<TextFilter>().Title("{Name}").Link(List, e => e.Caption);
         }
-        public ListableEntityListViewModel(Expression<Func<T,bool>> filter)
+
+        public void Configure(Expression<Func<T,bool>> filter)
         {
             List.AddFilter(()=>filter);
 

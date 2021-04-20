@@ -3,11 +3,9 @@ using System.Net;
 using System.Security;
 using System.Windows;
 using System.Windows.Input;
-using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Data;
+using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
-using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl.KioskLogin
@@ -19,7 +17,7 @@ namespace HLab.Erp.Acl.KioskLogin
     {
        
         private readonly IAclService _logon;
-        [Import] public KioskLoginViewModel(IAclService logon)
+        public KioskLoginViewModel(IAclService logon)
         {
             _logon = logon;
             H.Initialize(this);

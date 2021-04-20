@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using HLab.DependencyInjection.Annotations;
+using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Notify.PropertyChanged;

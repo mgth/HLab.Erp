@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using HLab.DependencyInjection.Annotations;
+using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Notify.PropertyChanged;

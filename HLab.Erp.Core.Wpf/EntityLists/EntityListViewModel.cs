@@ -1,6 +1,5 @@
 ﻿using HLab.Base.Extensions;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.Tools.Details;
 using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Erp.Data;
@@ -29,14 +28,20 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NPoco;
+using Grace.DependencyInjection.Attributes;
 
 namespace HLab.Erp.Core.EntityLists
 {
     public abstract class EntityListViewModel : ViewModel, IEntityListViewModel
     {
-        protected EntityListViewModel()
+        private Func<Type, object> _get;
+        protected IErpServices Erp { get; private set; }
+
+        [Import] public void Inject(IErpServices erp, Func<Type, object> get)
         {
-            Filters = new(_filters);
+            _get = get;
+            Erp = erp;
+            Filters = new(filters);
             H<EntityListViewModel>.Initialize(this);
         }
 
@@ -44,16 +49,15 @@ namespace HLab.Erp.Core.EntityLists
 
         public abstract void SetOpenAction(Action<object> action);
         public abstract void SetSelectAction(Action<object> action);
-        protected readonly ObservableCollection<IFilterViewModel> _filters = new ();
-        public ReadOnlyObservableCollection<IFilterViewModel> Filters { get; }
+        protected readonly ObservableCollection<IFilterViewModel> filters = new ();
+        public ReadOnlyObservableCollection<IFilterViewModel> Filters { get; private set; }
 
-        [Import] private Func<Type, object> _get;
 
         public T Filter<T>(Action<T> configure = null) where T : IFilterViewModel
         {
             var filter = (T)_get(typeof(T));
             configure?.Invoke(filter);
-            _filters.Add(filter);
+            filters.Add(filter);
             return filter;
         }
 
@@ -80,13 +84,12 @@ namespace HLab.Erp.Core.EntityLists
         private string GetTitle() => GetType().Name.BeforeSuffix("ListViewModel").FromCamelCase();
 
         
-        [Import] protected IDocumentService _docs;
-        [Import] protected IMessageBus _msg;
-        [Import] protected IDataService _data;
+        protected Func<T> CreateInstance { get; private set; }
 
         
-        [Import] public ObservableQuery<T> List { get; }
-        public IColumnsProvider<T> Columns { get; }
+        public ObservableQuery<T> List { get; private set; }
+
+        public IColumnsProvider<T> Columns { get; set; }
 
 
         public IEntityListViewModel<T> AddFilter<TFilter>(Action<FiltersFluentConfigurator<T,TFilter>> configure)
@@ -94,7 +97,7 @@ namespace HLab.Erp.Core.EntityLists
         {
             var c = new FiltersFluentConfigurator<T,TFilter>(List,new TFilter());
             configure(c);
-            _filters.Add(c.Target);
+            filters.Add(c.Target);
             return this;
         }
 
@@ -116,19 +119,31 @@ namespace HLab.Erp.Core.EntityLists
         public ObservableCollection<IObjectMapper> ListViewModel { get; } = new ();
         private readonly ConcurrentDictionary<T,dynamic> _cache = new ();
 
-        [Import] private Func<ObservableQuery<T>,ColumnsProvider<T>> _getColumnsProvider;
+        private Func<ObservableQuery<T>,ColumnsProvider<T>> _getColumnsProvider;
 
-        protected EntityListViewModel()
+        [Import] public void Inject(
+            Func<T> createInstance,
+            ObservableQuery<T> list,
+            Func<ObservableQuery<T>, ColumnsProvider<T>> getColumnsProvider
+            )
         {
+            CreateInstance = createInstance;
+            List = list;
+
+            _getColumnsProvider = getColumnsProvider;
             Columns = _getColumnsProvider(List);
+
             List_CollectionChanged(null,new NotifyCollectionChangedEventArgs (NotifyCollectionChangedAction.Add,List,0));
             List.CollectionChanged += List_CollectionChanged;
 
-            OpenAction = target => _docs.OpenDocumentAsync(target);
+            OpenAction = target => Erp.Docs.OpenDocumentAsync(target);
             
             H<EntityListViewModel<T>>.Initialize(this);
 
+            Configure();
         }
+
+        protected abstract void Configure();
 
         public ICommand OpenCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
             .CanExecute(e=>e.Selected!=null)
@@ -148,14 +163,13 @@ namespace HLab.Erp.Core.EntityLists
         public override void SetSelectAction(Action<object> action) => SelectAction = action;
         public void SetSelectAction(Action<T> action) => SelectAction = action;
 
-        [Import] protected Func<T> CreateInstance;
         protected override Task AddEntityAsync()
         {
             var entity = CreateInstance();
 
             ConfigureEntity(entity);
 
-            return _docs.OpenDocumentAsync(entity);
+            return Erp.Docs.OpenDocumentAsync(entity);
         }
 
         protected virtual void ConfigureEntity(T entity) { }
@@ -269,7 +283,7 @@ namespace HLab.Erp.Core.EntityLists
                     if (SelectAction != null)
                         SelectAction(value);
                     else
-                        _msg.Publish(new DetailMessage(value));
+                        Erp.Message.Publish(new DetailMessage(value));
                 }
             }
         }
@@ -431,7 +445,7 @@ namespace HLab.Erp.Core.EntityLists
             List<T> list = JsonConvert.DeserializeObject<List<T>>(text);
             foreach (var entity in list)
             {
-                await ImportAsync(_data, entity);
+                await ImportAsync(Erp.Data, entity);
             }
         }
 
@@ -440,10 +454,10 @@ namespace HLab.Erp.Core.EntityLists
 
         protected async Task DeleteEntityAsync(T entity)
         {
-            await _docs.CloseDocumentAsync(entity);
+            await Erp.Docs.CloseDocumentAsync(entity);
             try
             {
-                if (await _data.DeleteAsync(entity))
+                if (await Erp.Data.DeleteAsync(entity))
                 {
                     List.Update();
                 }

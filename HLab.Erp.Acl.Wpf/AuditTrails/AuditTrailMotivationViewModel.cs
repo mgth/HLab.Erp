@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
-using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Core;
+using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data;
 using HLab.Icons.Annotations.Icons;
-using HLab.Icons.Wpf;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Views;
@@ -18,17 +16,25 @@ namespace HLab.Erp.Acl.AuditTrails
     public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrailProvider, IMainViewModel
     {
 
-        [Import] private IMvvmService _mvvm;
-        [Import] public IIconService IconService { get; set; }
-        [Import] public ILocalizationService LocalizationService { get; set; }
+        private readonly IMvvmService _mvvm;
+        public IIconService IconService { get; }
+        public ILocalizationService LocalizationService { get; }
 
         public string Title => EntityCaption;
 
         private readonly IDataTransaction _transaction;
 
-        public AuditTrailMotivationViewModel(IDataTransaction transaction)
+        public AuditTrailMotivationViewModel(
+            IAclService acl,
+            IDataTransaction transaction, 
+            IMvvmService mvvm, 
+            IIconService icon, 
+            ILocalizationService localization):base(acl)
         {
+            IconService = icon;
+            LocalizationService = localization;
             _transaction = transaction;
+            _mvvm = mvvm;
             H.Initialize(this);
             User = Acl.Connection.User;
         }

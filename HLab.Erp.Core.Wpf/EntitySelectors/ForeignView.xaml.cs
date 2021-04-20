@@ -3,8 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
+using Grace.DependencyInjection;
 using HLab.Base.Wpf;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.EntityLists;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
@@ -20,12 +20,6 @@ namespace HLab.Erp.Core.EntitySelectors
     [ContentProperty(nameof(ButtonContent))]
     public partial class ForeignView : UserControl, IView<IForeignViewModel>, IViewClassForeign, IMandatoryNotFilled
     {
-        [Import]
-        private IMvvmService Mvvm;
-        
-        [Import]
-        private IExportLocatorScope Scope;
-
         public ForeignView()
         {
             InitializeComponent();

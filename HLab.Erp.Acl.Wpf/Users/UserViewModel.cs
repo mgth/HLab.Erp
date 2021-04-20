@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Input;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl.Profiles;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
@@ -12,15 +11,23 @@ namespace HLab.Erp.Acl.Users
 
     public class UserViewModel: EntityViewModel<User>
     {
-        public UserViewModel() => H.Initialize(this);
+        private readonly IDataService _data; 
+        private readonly Func<User, ListUserProfileViewModel> _getUserProfiles;
+        private readonly Func<User, ProfilesListViewModel> _getProfiles;
+
+        public UserViewModel(Func<User, ListUserProfileViewModel> getUserProfiles, Func<User, ProfilesListViewModel> getProfiles, IDataService data)
+        {
+            _getUserProfiles = getUserProfiles;
+            _getProfiles = getProfiles;
+            _data = data;
+            H.Initialize(this);
+        }
 
         public override string Title => _title.Get();
-        public IProperty<string> _title = H.Property<string>( c=> c
+        private readonly IProperty<string> _title = H.Property<string>( c=> c
             .Bind(e => e.Model.Name)
         );
 
-        [Import]
-        private readonly Func<User, ListUserProfileViewModel> _getUserProfiles;
 
         public ListUserProfileViewModel UserProfiles => _userProfiles.Get();
         private readonly IProperty<ListUserProfileViewModel> _userProfiles = H.Property<ListUserProfileViewModel>(c => c
@@ -29,8 +36,6 @@ namespace HLab.Erp.Acl.Users
             .Set(e => e._getUserProfiles(e.Model))
         );
 
-        [Import]
-        private readonly Func<User, ProfilesListViewModel> _getProfiles;
 
         public ProfilesListViewModel Profiles => _profiles.Get();
         private readonly IProperty<ProfilesListViewModel> _profiles = H.Property<ProfilesListViewModel>(c => c
@@ -78,15 +83,12 @@ namespace HLab.Erp.Acl.Users
 
         public override AclRight EditRight => AclRights.ManageUser;
 
-
         public bool EditMode => _editMode.Get();
-        private IProperty<bool> _editMode = H.Property<bool>(c => c
+        private readonly IProperty<bool> _editMode = H.Property<bool>(c => c
             .On(e => e.Locker.IsActive)
             .Set(e => e.Locker.IsActive)
         );
 
-        [Import]
-        private IDataService _data; 
 
     }
 }

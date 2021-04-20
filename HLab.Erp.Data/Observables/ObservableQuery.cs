@@ -9,8 +9,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Grace.DependencyInjection.Attributes;
 using HLab.Base;
-using HLab.DependencyInjection.Annotations;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 
@@ -37,7 +37,7 @@ namespace HLab.Erp.Data.Observables
         where T : class, IEntity
     {
 
-        private IGuiTimer _timer;
+        private readonly IGuiTimer _timer;
 
         [Import]
         public ObservableQuery(IDataService db)

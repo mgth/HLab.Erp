@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using HLab.Core;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl.Annotations;
 using HLab.Erp.Acl.LoginServices;
 using HLab.Mvvm.Annotations;
@@ -16,10 +15,10 @@ namespace HLab.Erp.Acl.KioskLogin
     /// </summary>
     public partial class KioskLoginView : UserControl, IView<ViewModeKiosk, LoginViewModel>
     {
-        [Import]
         private readonly IMessageBus _messageBus;
-        public KioskLoginView()
+        public KioskLoginView(IMessageBus messageBus)
         {
+            _messageBus = messageBus;
             InitializeComponent();
             Loaded += LoginView_Loaded;
 

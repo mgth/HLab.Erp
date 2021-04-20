@@ -9,7 +9,7 @@ namespace HLab.Erp.Acl.Users
         {
         }
 
-        public UsersListViewModel()
+        protected override void Configure()
         {
             DeleteAllowed = true;
             AddAllowed = true;
@@ -35,5 +35,6 @@ namespace HLab.Erp.Acl.Users
 
             List.Update();
         }
+
     }
 }

@@ -6,8 +6,8 @@ using System.Net;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using Grace.DependencyInjection.Attributes;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Data;
 
 

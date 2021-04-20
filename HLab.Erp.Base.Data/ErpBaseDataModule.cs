@@ -1,13 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Data.Common;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
-using Npgsql.Replication.PgOutput.Messages;
-using Org.BouncyCastle.Crypto.Parameters;
+﻿using HLab.Erp.Data;
 
 namespace HLab.Erp.Base.Data
-{
+{    
     public class ErpBaseDataModule : DataUpdaterModule
     {
         protected override ISqlBuilder GetSqlUpdater(string version, ISqlBuilder builder)
@@ -30,6 +24,10 @@ namespace HLab.Erp.Base.Data
             }
 
             return builder.Include(base.GetSqlUpdater);
+        }
+
+        public ErpBaseDataModule(IDataService data) : base(data)
+        {
         }
     }
 }

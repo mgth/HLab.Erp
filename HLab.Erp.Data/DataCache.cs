@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using HLab.Base;
-using HLab.DependencyInjection;
 
 namespace HLab.Erp.Data
 {
@@ -15,7 +14,6 @@ namespace HLab.Erp.Data
     internal class DataCache
     {
         public DataService DataService { get; set; }
-        public DependencyInjectionContainer Container { get; set; }
     }
 
     internal class DataCache<T> : DataCache where T : class, IEntity

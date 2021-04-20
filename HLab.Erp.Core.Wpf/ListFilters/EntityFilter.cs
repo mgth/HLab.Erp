@@ -1,6 +1,6 @@
-﻿using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Core.EntityLists;
+﻿using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
+using HLab.Mvvm.Application;
 
 namespace HLab.Erp.Core.ListFilters
 {
@@ -8,7 +8,7 @@ namespace HLab.Erp.Core.ListFilters
         where TClass : class, IEntity, IListableModel, new()
         where TList : class, IEntityListViewModel<TClass>
     {
-        [Import] public EntityFilter(TList list) : base(list)
+        public EntityFilter(TList list) : base(list)
         {
             Title = $"{{{typeof(TClass).Name}}}";
             IconPath = $"Icons/Entities/{typeof(TClass).Name}";
@@ -18,7 +18,6 @@ namespace HLab.Erp.Core.ListFilters
     public class EntityFilter<TClass> : EntityFilterViewModel<TClass>, IEntityFilterViewModel
         where TClass : class, IEntity, IListableModel, new()
     {
-        [Import]
         public EntityFilter(ListableEntityListViewModel<TClass> list) : base(list)
         {
             Title = $"{{{typeof(TClass).Name}}}";

@@ -129,40 +129,28 @@ namespace HLab.Erp.Data
             throw new NotImplementedException();
         }
 
-        bool IDataProvider.Delete<T>(T entity, Action<T> deleted)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<bool> IDataProvider.DeleteAsync<T>(T entity, Action<T> deleted)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Delete<T>(T entity, Action<T> deleted = null)
+        public bool Delete<T>(T entity, Action<T> deleted = null)
             where T : class, IEntity
         {
             var result = Database.Delete<T>(entity);
-
-            if(result>0)
-                _service.GetCache<T>().ForgetAsync(entity);
-
-            if (result > 0) deleted?.Invoke((T)entity);
-
-            return result;
+            if (result <= 0) return false;
+            
+            _ = _service.GetCache<T>().ForgetAsync(entity);
+            deleted?.Invoke((T)entity);
+            
+            return true;
         }
-        public async Task<int> DeleteAsync<T>(T entity, Action<T> deleted = null)
+
+        public async Task<bool> DeleteAsync<T>(T entity, Action<T> deleted = null)
             where T : class, IEntity
         {
             var result = await Database.DeleteAsync(entity);
+            if (result <= 0) return false;
             
-            if (result > 0) 
-                await _service.GetCache<T>().ForgetAsync(entity);
-
-            if (result > 0) 
-                deleted?.Invoke((T)entity);
+            await _service.GetCache<T>().ForgetAsync(entity);
+            deleted?.Invoke((T)entity);
             
-            return result;
+            return true;
         }
 
         public void Done()

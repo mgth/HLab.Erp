@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
-using HLab.DependencyInjection.Annotations;
+using Grace.DependencyInjection.Attributes;
 using HLab.Mvvm;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;

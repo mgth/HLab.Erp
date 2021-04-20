@@ -4,7 +4,6 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
 using HLab.Mvvm;
@@ -17,9 +16,13 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
 
     public class CountryToolsViewModel : ViewModel
     {
-        public CountryToolsViewModel() => H.Initialize(this);
+        public CountryToolsViewModel(DataService data)
+        {
+            Data = data;
+            H.Initialize(this);
+        }
 
-        [Import] public DataService Data { get; set; } 
+        public DataService Data { get; } 
 
         public ICommand ImportCommand { get; } = H.Command(c => c
         

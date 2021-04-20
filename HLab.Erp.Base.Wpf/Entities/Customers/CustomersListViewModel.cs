@@ -12,8 +12,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
         {
         }
 
-
-        public CustomersListViewModel()
+        protected override void Configure()
         {
             AddAllowed = true;
             DeleteAllowed = true;
@@ -37,7 +36,5 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
             //    ));
             List.Update();
         }
-
-
     }
 }

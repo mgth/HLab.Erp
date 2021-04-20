@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HLab.Base;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
@@ -14,7 +13,7 @@ namespace HLab.Erp.Core.Localization
     {
         
         private readonly IDataService _db;
-        [Import] public LocalizeFromDb(IDataService db)
+        public LocalizeFromDb(IDataService db)
         {
             _db = db;
         }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
@@ -9,10 +8,14 @@ using HLab.Notify.PropertyChanged;
 namespace HLab.Erp.Core.Localization
 {
     using H = H<LocalizationViewModel>;
-    class LocalizationViewModel : ViewModel
+
+    internal class LocalizationViewModel : ViewModel
     {
-        [Import]
-        public ObservableQuery<LocalizeEntry> Entries { get; }
+       public ObservableQuery<LocalizeEntry> Entries { get; }
+        public LocalizationViewModel(ObservableQuery<LocalizeEntry> entries)
+        {
+            Entries = entries;
+        }
 
         public IObservableFilter<LocalizeEntry> Base { get; } = H.Filter<LocalizeEntry>(c => c
             .AddFilter(p => p.Tag == "en-US")
@@ -39,5 +42,6 @@ namespace HLab.Erp.Core.Localization
             set => _tag.Set(value);
         }
         private readonly IProperty<string> _tag = H.Property<string>();
+
     }
 }

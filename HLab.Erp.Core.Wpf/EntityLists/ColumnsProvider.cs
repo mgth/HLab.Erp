@@ -9,7 +9,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Markup;
 using System.Xml;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Icons.Annotations.Icons;
@@ -172,17 +171,17 @@ namespace HLab.Erp.Core.EntityLists
 
     public class ColumnsProvider<T> : IColumnsProvider<T> where T:class, IEntity
     {
-        [Import]
-        private IIconService _icons;
-        [Import]
-        private ILocalizationService _lang;
+        private readonly IIconService _icons;
+         private readonly ILocalizationService _lang;
 
         private readonly Dictionary<string,Column<T>> _dict = new ();
         private readonly ObservableQuery<T> _list;
 
-        public ColumnsProvider(ObservableQuery<T> list)
+        public ColumnsProvider(ObservableQuery<T> list, IIconService icons, ILocalizationService lang)
         {
             _list = list;
+            _icons = icons;
+            _lang = lang;
         }
 
         public IColumnsProvider<T> Icon(string caption, Func<T,string> iconPath,Func<T,object> orderBy=null,double height=25.0, string id=null)

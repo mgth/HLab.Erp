@@ -1,6 +1,5 @@
 ﻿using System.Windows.Input;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core;
 using HLab.Notify.PropertyChanged;
 
@@ -13,7 +12,7 @@ namespace HLab.Erp.Acl.Users
         
         private readonly IErpServices _erp;
 
-        [Import] public ImportUsersModule(IErpServices erp)
+        public ImportUsersModule(IErpServices erp)
         {
             _erp = erp; 
             H.Initialize(this);

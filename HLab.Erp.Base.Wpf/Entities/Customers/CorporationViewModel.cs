@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
+using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf.Entities.Customers
@@ -11,8 +11,11 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
     public abstract class CorporationViewModel<T> : EntityViewModel<T>, ICorporationViewModel
     where T : class, IEntity<int>, INotifyPropertyChanged, ICorporation, IListableModel
     {
-        [Import]
-        public IErpServices Erp { get; }
+        public IErpServices Erp { get; private set; }
+        public void Inject(IErpServices erp)
+        {
+            Erp = erp;
+        }
 
         protected CorporationViewModel() => H<CorporationViewModel<T>>.Initialize(this);
 

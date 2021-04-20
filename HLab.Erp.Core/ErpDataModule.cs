@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
+using Grace.DependencyInjection.Attributes;
 using HLab.Base.Extensions;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core
@@ -12,13 +12,13 @@ namespace HLab.Erp.Core
     }
     public abstract class ErpDataModule<TList> : NotifierBase, IBootloader 
     {
-        [Import]
-        private readonly IErpServices _erp;
+        protected IErpServices Erp;
+        [Import] public void Inject(IErpServices erp) => Erp = erp;
 
         protected ErpDataModule() => H<ErpDataModule<TList>>.Initialize(this);
 
         public ICommand OpenCommand { get; } = H<ErpDataModule<TList>>.Command(c => c
-            .Action(e => e._erp.Docs.OpenDocumentAsync(typeof(TList)))
+            .Action(e => e.Erp.Docs.OpenDocumentAsync(typeof(TList)))
             .CanExecute(e => true)
         );
 
@@ -47,7 +47,7 @@ namespace HLab.Erp.Core
         protected virtual string IconPath => "Icons/Entities/" + EntityName();
 
         protected virtual string MenuPath => "data";
-        public virtual void Load(IBootContext b) => _erp.Menu.RegisterMenu(MenuPath + "/" + Name, Header,
+        public virtual void Load(IBootContext b) => Erp.Menu.RegisterMenu(MenuPath + "/" + Name, Header,
                 OpenCommand,
                 IconPath);
         

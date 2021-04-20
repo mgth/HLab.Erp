@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Input;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl.Users;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
@@ -12,7 +11,16 @@ namespace HLab.Erp.Acl.Profiles
 
     public class ProfileViewModel : EntityViewModel<Profile>
     {
-        public ProfileViewModel() => H.Initialize(this);
+        public ProfileViewModel(
+            IDataService data,
+            Func<Profile, ListUserProfileViewModel> getUserProfiles, 
+            Func<Profile, AclRightProfileListViewModel> getRightProfiles)
+        {
+            _getUserProfiles = getUserProfiles;
+            _getRightProfiles = getRightProfiles;
+            _data = data;
+            H.Initialize(this);
+        }
 
         public string Title => _title.Get();
         private IProperty<string> _title = H.Property<string>(c => c
@@ -20,11 +28,6 @@ namespace HLab.Erp.Acl.Profiles
         );
         public string IconPath => "Icons/Entities/Profile";
 
-        [Import]
-        public IAclService Acl {get;}
-
-
-        [Import]
         private readonly Func<Profile, ListUserProfileViewModel> _getUserProfiles;
 
         public ListUserProfileViewModel UserProfiles => _userProfiles.Get();
@@ -34,7 +37,6 @@ namespace HLab.Erp.Acl.Profiles
             .Set(e => e._getUserProfiles(e.Model))
         );
 
-        [Import]
         private readonly Func<Profile, AclRightProfileListViewModel> _getRightProfiles;
         public AclRightProfileListViewModel ProfileRights => _profileRights.Get();
         private readonly IProperty<AclRightProfileListViewModel> _profileRights = H.Property<AclRightProfileListViewModel>(c => c
@@ -61,7 +63,7 @@ namespace HLab.Erp.Acl.Profiles
             .On(p => p.ProfileRights.Selected).CheckCanExecute()
         );
 
-        [Import] private IDataService _data;
+        private readonly IDataService _data;
         private void AddUser(User user)
         {
             if (user == null) return;

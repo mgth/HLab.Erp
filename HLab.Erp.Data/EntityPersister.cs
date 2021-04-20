@@ -3,8 +3,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Grace.DependencyInjection.Attributes;
 using HLab.Base;
-using HLab.DependencyInjection.Annotations;
 using HLab.Notify.PropertyChanged;
 using NPoco;
 
@@ -13,11 +13,7 @@ namespace HLab.Erp.Data
     public class EntityPersister<T> : Persister
     where T : class, IEntity
     {
-        [Import] private readonly IDataService _data;
-
-        public EntityPersister(object target) : base(target,false)
-        {
-        }
+        private readonly IDataService _data;
 
         public EntityPersister(IDataService data, object target) : base(target,false)
         {

@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using HLab.Core;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Extensions;
 
@@ -18,7 +17,7 @@ namespace HLab.Erp.Acl.LoginServices
     {
         
         private readonly IMessageBus _messageBus;
-        [Import] public LoginView(IMessageBus messageBus)
+        public LoginView(IMessageBus messageBus)
         {
             _messageBus = messageBus;
             InitializeComponent();

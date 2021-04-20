@@ -3,12 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:wpf="clr-namespace:HLab.Icons.Wpf;assembly=HLab.Icons.Wpf"
-             xmlns:core="clr-namespace:HLab.Erp.Core;assembly=HLab.Mvvm.Application"
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
              xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
+             xmlns:application="clr-namespace:HLab.Mvvm.Application;assembly=HLab.Mvvm.Application"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance {x:Type core:IListableModel}, IsDesignTimeCreatable=false}"             
+             d:DataContext="{d:DesignInstance {x:Type application:IListableModel}, IsDesignTimeCreatable=false}"             
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>

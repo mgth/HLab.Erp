@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
+using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 using NPoco;
 

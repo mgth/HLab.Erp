@@ -1,5 +1,4 @@
 ﻿using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
 
@@ -8,7 +7,6 @@ namespace HLab.Erp.Core.Tools.Details
     public class DetailsViewModel : ViewModel
     {
 
-        [Import]
         public DetailsViewModel(IMessageBus messageBus)
         {
             messageBus.Subscribe<DetailMessage>(a=> Item = a.Item);

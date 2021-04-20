@@ -5,7 +5,6 @@ using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Data;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
@@ -27,8 +26,12 @@ namespace HLab.Erp.Acl.Users
 
     public class ImportUsersViewModel : ViewModel
     {
-        public ImportUsersViewModel()
+        private readonly IAclService _acl;
+        private readonly IDataService _data;
+        public ImportUsersViewModel(IAclService acl, IDataService data)
         {
+            _acl = acl;
+            _data = data;
             H.Initialize(this);
 
             Domain = _acl.Connection.User.Domain;
@@ -37,8 +40,6 @@ namespace HLab.Erp.Acl.Users
 
         public string Title => "{Import Users}";
 
-        [Import] private IAclService _acl;
-        [Import] private IDataService _data;
 
         public ObservableCollection<AdUser> Users { get; } = new ObservableCollection<AdUser>();
 

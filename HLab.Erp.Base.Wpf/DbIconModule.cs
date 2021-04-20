@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
+using Grace.DependencyInjection.Attributes;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
 using HLab.Icons.Annotations.Icons;
-using HLab.Icons.Wpf;
 using HLab.Icons.Wpf.Icons.Providers;
 using HLab.Icons.Wpf.Providers;
 

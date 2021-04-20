@@ -11,7 +11,6 @@
     <ProjectReference Include="..\..\HLab\HLab.Application\HLab.Mvvm.Application.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Base\HLab.Base.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Core.Annotations\HLab.Core.Annotations.csproj" />
-    <ProjectReference Include="..\..\HLab\HLab.DependencyInjection\HLab.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Mvvm\HLab.Mvvm.csproj" />
     <ProjectReference Include="..\HLab.Erp.Acl\HLab.Erp.Acl.csproj" />
     <ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj" />

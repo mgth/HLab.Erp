@@ -1,6 +1,6 @@
 ﻿using System.Collections.Specialized;
+using Grace.DependencyInjection.Attributes;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
@@ -10,23 +10,17 @@ using HLab.Mvvm.Application;
 
 namespace HLab.Erp.Core
 {
-    public interface IErpServices
-    {
-        IApplicationInfoService Info { get; }
-        IDataService Data { get; }
-        IMvvmService Mvvm { get; }
-        IDocumentService Docs { get; }
-        IAclService Acl { get; }
-        IMessageBus Message { get;  }
-        IMenuService Menu { get; }
-//        INotifyCollectionChanged Countries{ get; }
-        ILocalizationService Localization {get;}
-    }
-
-    [Export(typeof(IErpServices))]
+    [Export(typeof(IErpServices), typeof(IApplicationService)),Singleton]
     public class ErpServices : IErpServices
     {
-        [Import] public ErpServices(ILocalizationService localization, IDataService data, IMvvmService mvvm, IDocumentService docs, IAclService acl, IMessageBus message, IMenuService menu, IApplicationInfoService info/*, ObservableQuery<Country> countries*/)
+        public ErpServices(
+            ILocalizationService localization, 
+            IDataService data, IMvvmService mvvm, 
+            IDocumentService docs, 
+            IAclService acl, 
+            IMessageBus message, 
+            IMenuService menu, 
+            IApplicationInfoService info)
         {
             Localization = localization;
             Data = data;
@@ -36,7 +30,6 @@ namespace HLab.Erp.Core
             Message = message;
             Menu = menu;
             Info = info;
-//            Countries = countries;
         }
 
         public IApplicationInfoService Info { get; }
@@ -46,9 +39,6 @@ namespace HLab.Erp.Core
         public IAclService Acl { get; }
         public IMessageBus Message { get; }
         public IMenuService Menu { get; }
-
-//        public INotifyCollectionChanged Countries{ get; }
-
         public ILocalizationService Localization {get; }
     }
 }

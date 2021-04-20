@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
-using HLab.DependencyInjection.Annotations;
+using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Acl;
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
@@ -11,11 +11,14 @@ namespace HLab.Erp.Core.EntitySelectors
     public class ForeignViewModel<T> : EntityViewModel<T>, IForeignViewModel
         where T : class, IEntity<int>, INotifyPropertyChanged
     {
-        public ForeignViewModel() => H<ForeignViewModel<T>>.Initialize(this);
+        private IDocumentService _doc;
 
-        [Import] private IDocumentService _doc;
-        public ICommand OpenCommand { get; } = H<ForeignViewModel<T>>.Command(c => c.Action(
-            e => e._doc.OpenDocumentAsync(e.Model) )
+        [Import] public void Inject(IDocumentService doc) => _doc = doc;
+
+         public ForeignViewModel() => H<ForeignViewModel<T>>.Initialize(this);
+
+         public ICommand OpenCommand { get; } = H<ForeignViewModel<T>>.Command(c => c.Action(
+            e => e._doc?.OpenDocumentAsync(e.Model))
         );
         public ICommand SelectCommand { get; } = H<ForeignViewModel<T>>.Command(c => c);
     }

@@ -1,15 +1,21 @@
 ﻿using System.Windows.Input;
+using Grace.DependencyInjection.Attributes;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Notify.PropertyChanged;
 namespace HLab.Erp.Core.Localization
 {
     using H = H<LocalizeWpfBootloader>;
+
+    [Export(typeof(IBootloader))]
     public class LocalizeWpfBootloader : NotifierBase, IBootloader //postboot
     {
-        public LocalizeWpfBootloader() => H.Initialize(this);
+        public LocalizeWpfBootloader(IErpServices erp)
+        {
+            _erp = erp;
+            H.Initialize(this);
+        }
 
-        [Import] private readonly IErpServices _erp;
+        private readonly IErpServices _erp;
 
 
         public ICommand LocalizationOpenDocumentCommand { get; } = H.Command(c => c

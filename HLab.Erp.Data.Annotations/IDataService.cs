@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Grace.DependencyInjection;
 using HLab.Base.Fluent;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 
 namespace HLab.Erp.Data
 {

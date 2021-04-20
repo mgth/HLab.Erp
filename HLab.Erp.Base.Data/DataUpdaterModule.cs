@@ -1,5 +1,4 @@
 ﻿using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Data;
 using Npgsql;
 
@@ -7,7 +6,12 @@ namespace HLab.Erp.Base.Data
 {
     public abstract class DataUpdaterModule : IBootloader
     {
-        [Import] public  IDataService Data { get; set; }
+        public  IDataService Data { get; }
+        protected DataUpdaterModule(IDataService data)
+        {
+            Data = data;
+        }
+
 
         protected virtual string CurrentVersion => this.GetType().Assembly.GetName().Version.ToString();
         protected virtual string CurrentModule => this.GetType().Assembly.GetName().Name;

@@ -17,11 +17,12 @@ namespace HLab.Erp.Core.ListFilters
 
         public void SetFocus()
         {
-            var content = ContentControl.FindVisualChildren<FilterView>().First();
-
-            content.ToggleButton.IsChecked = false;
-            content.ToggleButton.IsChecked = true;
-
+            var content = ContentControl.FindVisualChildren<FilterView>().FirstOrDefault();
+            if (content != null)
+            {
+                content.ToggleButton.IsChecked = false;
+                content.ToggleButton.IsChecked = true;
+            }
         }
     }
 }

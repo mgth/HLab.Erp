@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using HLab.DependencyInjection.Annotations;
+using Grace.DependencyInjection.Attributes;
 
 namespace HLab.Erp.Forms.Wpf
 {

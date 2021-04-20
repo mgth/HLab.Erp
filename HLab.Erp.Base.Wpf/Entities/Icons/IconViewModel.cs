@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
 using HLab.Erp.Base.Data;
 using HLab.Icons.Annotations.Icons;
@@ -19,7 +18,12 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
 
     public class IconViewModel : EntityViewModel<Icon>
     {
-        public IconViewModel() => H.Initialize(this);
+        private IIconService _icons;
+        public IconViewModel(IIconService icons)
+        {
+            _icons = icons;
+            H.Initialize(this);
+        }
 
         public override string Title => _title.Get();
 
@@ -28,8 +32,6 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             .Set(e => e.Model.Caption)
         );
 
-        [Import]
-        private IIconService _icons;
 
         public object Icon => _icon.Get();
         private readonly IProperty<object> _icon = H.Property<object>(c => c

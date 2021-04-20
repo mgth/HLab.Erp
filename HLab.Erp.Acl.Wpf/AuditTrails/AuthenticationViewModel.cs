@@ -1,8 +1,6 @@
 ﻿using System.Net;
 using System.Security;
 using System.Windows;
-using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
 
@@ -12,8 +10,12 @@ namespace HLab.Erp.Acl.AuditTrails
 
     public class AuthenticationViewModel : ViewModel
     {
-        [Import] protected readonly IAclService Acl;
-        public AuthenticationViewModel() =>H.Initialize(this);
+        protected readonly IAclService Acl;
+        public AuthenticationViewModel(IAclService acl)
+        {
+            Acl = acl;
+            H.Initialize(this);
+        }
 
         public string Message
         {

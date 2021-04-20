@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using HLab.DependencyInjection.Annotations;
+using Grace.DependencyInjection.Attributes;
 
 namespace HLab.Erp.Core.DragDrops
 {
     [Export(typeof(IDragDropService)), Singleton]
     public class DragDropService : IDragDropService
     {
-        [Import] private readonly Func<Panel, FrameworkElement, bool, ErpDragDrop> _dragDropGetter;
+        private readonly Func<Panel, FrameworkElement, bool, ErpDragDrop> _dragDropGetter;
         private readonly Dictionary<string, Panel> _canvas = new Dictionary<string, Panel>();
+
+        public DragDropService(Func<Panel, FrameworkElement, bool, ErpDragDrop> dragDropGetter)
+        {
+            _dragDropGetter = dragDropGetter;
+        }
 
         public Panel GetDragCanvas(string name="") => _canvas[name];
 

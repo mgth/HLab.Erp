@@ -37,7 +37,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             };
         }
 
-        public IconsListViewModel()
+        protected override void Configure()
         {
             AddAllowed = true;
 

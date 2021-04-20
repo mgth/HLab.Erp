@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.DragDrops;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
@@ -13,8 +12,8 @@ namespace HLab.Erp.Core.ToolBoxes
     public partial class ToolBoxView : UserControl, IViewClassAnchorable
         , IView<ViewModeDefault, IToolListViewModel>
     {
-        [Import] private readonly IMvvmService _mvvm;
-        [Import] private readonly IDragDropService _dragDrop;
+        private readonly IMvvmService _mvvm;
+        private readonly IDragDropService _dragDrop;
 
 
         private void SetDragDrop()
@@ -25,8 +24,10 @@ namespace HLab.Erp.Core.ToolBoxes
             drag.Drop += drag_Drop;
         }
         
-        public ToolBoxView()
+        public ToolBoxView(IMvvmService mvvm, IDragDropService dragDrop)
         {
+            _mvvm = mvvm;
+            _dragDrop = dragDrop;
             InitializeComponent();
             SetDragDrop();
         }

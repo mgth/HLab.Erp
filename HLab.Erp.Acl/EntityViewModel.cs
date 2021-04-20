@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Input;
-using HLab.DependencyInjection.Annotations;
+using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm;
@@ -13,12 +13,22 @@ namespace HLab.Erp.Acl
     public class EntityViewModel<T> : ViewModel<T>
         where T : class, IEntity<int>, INotifyPropertyChanged
     {
-        [Import] private readonly IDocumentService _docs;
+        private IDocumentService _docs;
         
-        [Import] private readonly Func<T, DataLocker<T>> _getLocker;
-        [Import] protected IAclService Acl;
+        private Func<T, DataLocker<T>> _getLocker;
+        protected IAclService Acl;
 
-        public EntityViewModel() => H<EntityViewModel<T>>.Initialize(this);
+        [Import] public void Inject(IDocumentService docs, Func<T, DataLocker<T>> getLocker, IAclService acl)
+        {
+            _docs = docs;
+            _getLocker = getLocker;
+            Acl = acl;
+        }
+
+        public EntityViewModel()
+        {
+            H<EntityViewModel<T>>.Initialize(this);
+        }
 
         public DataLocker<T> Locker => _locker.Get();
 

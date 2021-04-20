@@ -1,6 +1,7 @@
 ﻿using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
 using HLab.Mvvm;
+using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf.Entities.Countries

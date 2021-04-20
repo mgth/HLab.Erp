@@ -1,23 +1,18 @@
-﻿using HLab.DependencyInjection.Annotations;
-using HLab.Erp.Base.Data;
+﻿using HLab.Erp.Base.Data;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilters;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf.Entities.Countries
 {
-    class ListCountryPopupViewModel : EntityListViewModel<Country>, IMvvmContextProvider
+    internal class ListCountryPopupViewModel : EntityListViewModel<Country>, IMvvmContextProvider
     {
-        [Import]
-        private ILocalizationService _localization;
-
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
 
-        public string Title => "{Country}";
-
-        public ListCountryPopupViewModel()
+        public override string Title => "{Country}";
+        protected override void Configure()
         {
             Columns.Configure(c => c
                 .Column

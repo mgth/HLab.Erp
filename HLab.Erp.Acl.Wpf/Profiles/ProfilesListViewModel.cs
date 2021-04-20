@@ -4,7 +4,7 @@ namespace HLab.Erp.Acl.Profiles
 {
     public class ProfilesListViewModel : EntityListViewModel<Profile>
     {
-        public ProfilesListViewModel(User user)
+        public ProfilesListViewModel Configure(User user)
         {
             Columns.Configure(c => c
                 .Column
@@ -15,8 +15,11 @@ namespace HLab.Erp.Acl.Profiles
             //List.AddFilter(e => e. == user.Id);
 
             List.Update();
+
+            return this;
         }        
-        public ProfilesListViewModel()
+
+        protected override void Configure()
         {
             AddAllowed = true;
             DeleteAllowed = true;
@@ -31,6 +34,7 @@ namespace HLab.Erp.Acl.Profiles
 //            List.AddFilter(() => e => e.UserId == user.Id);
 
             List.Update();
-        }        
+        }
+
     }
 }

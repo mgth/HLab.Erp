@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\HLab\HLab.Application\HLab.Mvvm.Application.csproj" />
-    <ProjectReference Include="..\..\HLab\HLab.DependencyInjection.Annotations\HLab.DependencyInjection.Annotations.csproj" />
     <ProjectReference Include="..\HLab.Erp.Core.Annotations\HLab.Erp.Core.Annotations.csproj" />
     <ProjectReference Include="..\HLab.Erp.Data.Annotations\HLab.Erp.Data.Annotations.csproj" />
     <ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj" />

@@ -4,9 +4,9 @@ namespace HLab.Erp.Acl.Users
 {
     public class AclRightProfileListViewModel : EntityListViewModel<AclRightProfile>
     {
-        public AclRightProfileListViewModel(AclRight right)
+        public AclRightProfileListViewModel Configure(AclRight right)
         {
-            OpenAction = target => _docs.OpenDocumentAsync(target.Profile);
+            OpenAction = target => Erp.Docs.OpenDocumentAsync(target.Profile);
 
             Columns.Configure( c => c.
                 Column
@@ -18,9 +18,10 @@ namespace HLab.Erp.Acl.Users
 
             List.Update();
 
-
+            return this;
         }
-        public AclRightProfileListViewModel(Profile profile)
+
+        public AclRightProfileListViewModel Configure(Profile profile)
         {
             OpenAction = target => { };
             Columns.Configure( c=> c
@@ -31,6 +32,12 @@ namespace HLab.Erp.Acl.Users
             List.AddFilter(() => e => e.ProfileId == profile.Id);
 
             List.Update();
-        }        
+
+            return this;
+        }
+
+        protected override void Configure()
+        {
+        }
     }
 }

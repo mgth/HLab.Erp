@@ -1,5 +1,4 @@
 ﻿using System.Windows.Input;
-using HLab.DependencyInjection.Annotations;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;

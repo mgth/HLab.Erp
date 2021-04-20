@@ -7,8 +7,7 @@ using HLab.Mvvm.Annotations;
 namespace HLab.Erp.Acl.AuditTrails
 {
     public class AuditTrailsDataModule : ErpParamModule<AuditTrailsListViewModel>
-    {
-    }
+    { }
 
     public class AuditTrailsListViewModel : EntityListViewModel<AuditTrail>, IMvvmContextProvider
     {
@@ -26,7 +25,7 @@ namespace HLab.Erp.Acl.AuditTrails
             return result;
         }
 
-        public AuditTrailsListViewModel()
+        protected override void Configure()
         {
             DeleteAllowed = false;
             AddAllowed = false;
@@ -83,6 +82,7 @@ namespace HLab.Erp.Acl.AuditTrails
 
             List.Update();
         }
+
     }
     public class AuditTrailViewModel : EntityViewModel<AuditTrail>
     {

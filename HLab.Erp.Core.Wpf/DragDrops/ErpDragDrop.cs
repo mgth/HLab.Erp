@@ -5,7 +5,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using Panel = System.Windows.Controls.Panel;
@@ -40,8 +39,7 @@ namespace HLab.Erp.Core.DragDrops
 
     public class ErpDragDrop
     {
-        [Import]
-        public IMessageBus MessageBus { get; set; }
+        public IMessageBus MessageBus { get; }
 
         public delegate void DragDropEventHandler(ErpDragDrop data);
 
@@ -78,10 +76,11 @@ namespace HLab.Erp.Core.DragDrops
         public bool Positioned { get; set; } = false;
 
 
-        public ErpDragDrop(Panel p, FrameworkElement source, bool sendMessages=false)
+        public ErpDragDrop(Panel p, FrameworkElement source, IMessageBus messageBus, bool sendMessages=false)
         {
             Panel = p;
             Source = source;
+            MessageBus = messageBus;
             _sendMessages = sendMessages;
             Source.PreviewMouseLeftButtonDown += OnMouseDown;
         }

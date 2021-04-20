@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
+using Grace.DependencyInjection.Attributes;
 using HLab.ColorTools.Wpf;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Core.ViewModelStates;
 using HLab.Erp.Data;
 using HLab.Icons.Annotations.Icons;
@@ -11,10 +11,13 @@ namespace HLab.Erp.Core.DragDrops
 {
     public class DragDropItemViewModel<T> :  ViewModel<T> where T : IEntity, IEntityWithColor, IEntityWithIcon
     {
-        [Import]
-        private IIconService _icons;
+        private readonly IIconService _icons;
 
-        public DragDropItemViewModel() => H<DragDropItemViewModel<T>>.Initialize(this);
+        public DragDropItemViewModel(IIconService icons)
+        {
+            _icons = icons;
+            H<DragDropItemViewModel<T>>.Initialize(this);
+        }
 
         [Import]
         public State State

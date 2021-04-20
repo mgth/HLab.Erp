@@ -1,6 +1,5 @@
 ﻿
 using HLab.Base.Fluent;
-using HLab.DependencyInjection.Annotations;
 using HLab.Erp.Acl;
 using HLab.Notify.PropertyChanged;
 using System;

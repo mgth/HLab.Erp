@@ -1,16 +1,15 @@
 ﻿using System.Windows.Input;
 using HLab.Core.Annotations;
-using HLab.DependencyInjection.Annotations;
 using HLab.Notify.PropertyChanged;
 namespace HLab.Erp.Core.WebService
 {
     using H = H<BrowserServiceModule>;
 
-    public class BrowserServiceModule : NotifierBase, IBootloader //postboot
+    public class BrowserServiceModule : NotifierBase, IBootloader
     {
         private readonly IErpServices _erp;
 
-        [Import]public BrowserServiceModule(IErpServices erp)
+        public BrowserServiceModule(IErpServices erp)
         {
             _erp = erp;
             H.Initialize(this);
