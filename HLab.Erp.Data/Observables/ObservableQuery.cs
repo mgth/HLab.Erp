@@ -39,24 +39,35 @@ namespace HLab.Erp.Data.Observables
 
         private readonly IGuiTimer _timer;
 
-        [Import]
         public ObservableQuery(IDataService db)
         {
             _db = db;
             H<ObservableQuery<T>>.Initialize(this);
+
             _timer = NotifyHelper.EventHandlerService.GetTimer();
-            _timer.Tick += async (a,b) => await _timer_TickAsync(a,b);
-            _timer.Interval = TimeSpan.FromSeconds(1);
-            _timer.Start();
-            _updateNeeded = true;
-            Suspender = new Suspender(()=>_timer.Stop(),()=>_timer.Start());
+            _timer.Tick += async (a, b) => await _timer_TickAsync(a, b);
+            _timer.Interval = TimeSpan.FromMilliseconds(300);
+
+            Suspender = new Suspender(() => _timer.Stop(), () => _timer.Start());
+
+            _token = Suspender.Get();
         }
 
         private readonly IDataService _db;
+
+        private SuspenderToken _token;
         public Suspender Suspender { get; }
 
-        //public ModelCommand CreateCommand => this.GetCommand(Create, ()=>true);
-        //public ModelCommand DeleteCommand => this.GetCommand(Delete, ()=>false);
+        public void Start()
+        {
+            if (_token != null)
+            {
+                var token = _token;
+                _token = null;
+                token.Dispose();
+            }
+        }
+
 
         private IAsyncEnumerable<T> _source = null;
 
@@ -68,19 +79,19 @@ namespace HLab.Erp.Data.Observables
 
             public void Dispose()
             {
-//                Context?.Dispose();
+                //                Context?.Dispose();
             }
         }
         private class Filter
         {
-            public string Name { get; set; }
+            public object Name { get; set; }
             public Func<Expression<Func<T, bool>>> GetExpression { get; init; } = null;
             public Func<IQueryable<T>, IQueryable<T>> Func { get; init; } = null;
             public int Order { get; init; }
         }
         private class PostFilter
         {
-            public string Name { get; init; }
+            public object Name { get; init; }
             public Func<T, bool> Expression { get; init; } = null;
             public Func<IAsyncEnumerable<T>, IAsyncEnumerable<T>> Func { get; init; }
             public int Order { get; init; }
@@ -88,7 +99,7 @@ namespace HLab.Erp.Data.Observables
 
         private class OrderByEntry
         {
-            public string Name { get; init; }
+            public object Name { get; init; }
             public Func<T, object> Expression { get; set; }
             public bool Descending { get; set; }
             public int Order { get; init; }
@@ -117,7 +128,7 @@ namespace HLab.Erp.Data.Observables
             set => _sourceQuery.Set(value);
         }
         private readonly IProperty<Func<IQueryable<T>, IQueryable<T>>> _sourceQuery = H<ObservableQuery<T>>.Property<Func<IQueryable<T>, IQueryable<T>>>(c => c
-           .Set(e =>(Func<IQueryable<T>, IQueryable<T>>)(q => q))
+           .Set(e => (Func<IQueryable<T>, IQueryable<T>>)(q => q))
         );
 
         public Func<IAsyncEnumerable<T>> SourceEnumerable
@@ -127,23 +138,31 @@ namespace HLab.Erp.Data.Observables
         }
         private readonly IProperty<Func<IAsyncEnumerable<T>>> _sourceEnumerable = H<ObservableQuery<T>>.Property<Func<IAsyncEnumerable<T>>>();
 
-        private Expression<Func<T,bool>> Where()
+        private Expression<Func<T, bool>> Where()
         {
 
             var filters = _filters;
+#if !DEBUG
             try
             {
-                Expression<Func<T,bool>> result = null;
-                foreach (var filter in filters.OrderBy(f => f.Order))
-                {
-                    result = result.AndAlso(filter.GetExpression());
-                }
-                return result ??(t => true);
+#endif
+            Expression<Func<T, bool>> result = null;
+            foreach (var filter in filters.OrderBy(f => f.Order))
+            {
+                result = result.AndAlso(filter.GetExpression());
+            }
+#if DEBUG
+            var literal = result?.ToString() ?? "NULL";
+#endif
+            return result ?? (t => true);
+
+#if !DEBUG
             }
             catch
             {
                 return t => true;
             }
+#endif
         }
 
         //TODO : use where function to compile expression and cache it
@@ -169,22 +188,22 @@ namespace HLab.Erp.Data.Observables
                 else
                 {
                     _source = _db.FetchWhereAsync(Where());
-                }                
+                }
             }
             return PostQuery(_source);
         }
 
-        public ObservableQuery<T> AddFilter(Expression<Func<T, bool>> expression, int order = 0, string name = null)
+        public ObservableQuery<T> AddFilter(Expression<Func<T, bool>> expression, int order = 0, object name = null)
             => AddFilter(() => expression, order, name);
-        public ObservableQuery<T> AddFilter(Func<Expression<Func<T, bool>>> expression, int order = 0, string name = null)
+        public ObservableQuery<T> AddFilter(Func<Expression<Func<T, bool>>> expression, int order = 0, object name = null)
         {
-            lock(_lockFilters)
+            lock (_lockFilters)
             {
                 var filters = _filters.ToList();
 
                 if (name != null)
                 {
-                    var filter = filters.FirstOrDefault(f => f.Name==name);
+                    var filter = filters.FirstOrDefault(f => Equals(f.Name, name));
                     if (filter != null) filters.Remove(filter);
                 }
                 filters.Add(new Filter
@@ -200,15 +219,15 @@ namespace HLab.Erp.Data.Observables
             }
         }
 
-        public ObservableQuery<T> AddFilterFunc(Func<IQueryable<T>, IQueryable<T>> func, int order = 1, string name = null)
-        { 
-            lock(_lockFilters)
+        public ObservableQuery<T> AddFilterFunc(Func<IQueryable<T>, IQueryable<T>> func, int order = 1, object name = null)
+        {
+            lock (_lockFilters)
             {
                 var filters = _filters.ToList();
 
                 if (name != null)
                 {
-                    var filter = filters.FirstOrDefault(f => f.Name==name);
+                    var filter = filters.FirstOrDefault(f => Equals(f.Name, name));
                     if (filter != null) filters.Remove(filter);
                 }
                 filters.Add(new Filter
@@ -221,20 +240,20 @@ namespace HLab.Erp.Data.Observables
                 return this;
             }
         }
-        public ObservableQuery<T> AddPostFilter(string name, Func<T, bool> expression, int order = 0)
+        public ObservableQuery<T> AddPostFilter(object name, Func<T, bool> expression, int order = 0)
         {
             return AddPostFilter(expression, order, name);
         }
 
-        public ObservableQuery<T> AddPostFilter(Func<T, bool> expression, int order = 0, string name = null)
+        public ObservableQuery<T> AddPostFilter(Func<T, bool> expression, int order = 0, object name = null)
         {
-            lock(_lockFilters)
+            lock (_lockFilters)
             {
                 var filters = _postFilters.ToList();
 
                 if (name != null)
                 {
-                    var filter = filters.FirstOrDefault(f => f.Name==name);
+                    var filter = filters.FirstOrDefault(f => Equals(f.Name, name));
                     if (filter != null) filters.Remove(filter);
                 }
                 filters.Add(new PostFilter
@@ -259,13 +278,13 @@ namespace HLab.Erp.Data.Observables
 
         public ObservableQuery<T> AddOrderBy(Func<T, object> expression, bool descending = false, int order = 0, string name = null)
         {
-            lock(_lockFilters)
+            lock (_lockFilters)
             {
                 var orderByList = _orderBy.ToList();
 
                 if (name != null)
                 {
-                    var filter = orderByList.FirstOrDefault(f => f.Name==name);
+                    var filter = orderByList.FirstOrDefault(f => Equals(f.Name, name));
                     if (filter != null) orderByList.Remove(filter);
                 }
                 orderByList.Add(new OrderByEntry
@@ -282,13 +301,13 @@ namespace HLab.Erp.Data.Observables
 
         public ObservableQuery<T> AddPostFilter(Func<IAsyncEnumerable<T>, IAsyncEnumerable<T>> func, int order = 0, string name = null)
         {
-            lock(_lockFilters)
+            lock (_lockFilters)
             {
                 var filters = _postFilters.ToList();
 
                 if (name != null)
                 {
-                    var filter = filters.FirstOrDefault(f => f.Name==name);
+                    var filter = filters.FirstOrDefault(f => Equals(f.Name, name));
                     if (filter != null) filters.Remove(filter);
                 }
                 filters.Add(new PostFilter
@@ -301,13 +320,13 @@ namespace HLab.Erp.Data.Observables
                 return this;
             }
         }
-        public ObservableQuery<T> RemoveFilter(string name)
+        public ObservableQuery<T> RemoveFilter(object name)
         {
-            lock(_lockFilters)
+            lock (_lockFilters)
             {
                 var filters = _filters.ToList();
 
-                foreach (var f in filters.Where(f => f.Name == name).ToList())
+                foreach (var f in filters.Where(f => Equals(f.Name, name)).ToList())
                 {
                     filters.Remove(f);
                 }
@@ -318,10 +337,10 @@ namespace HLab.Erp.Data.Observables
 
         public ObservableQuery<T> RemovePostFilter(string name)
         {
-            lock(_lockFilters)
+            lock (_lockFilters)
             {
                 var filters = _postFilters.ToList();
-                foreach (var f in filters.Where(f => f.Name == name).ToList())
+                foreach (var f in filters.Where(f => Equals(f.Name, name)).ToList())
                 {
                     filters.Remove(f);
                 }
@@ -371,13 +390,13 @@ namespace HLab.Erp.Data.Observables
                     List = this,
                     Entity = entity,
                 });
-            }           
+            }
         }
 
         private ObservableQuery<T> AddCreator(IDictionary<string, Action<CreateHelper>> dict, Action<CreateHelper> func,
             string name = "")
         {
-            lock(_lockFilters) // Todo : insufisent 
+            lock (_lockFilters) // Todo : insuffisent 
             {
                 if (name != null && dict.ContainsKey(name)) dict.Remove(name);
                 dict.Add(name ?? "", func);
@@ -413,7 +432,7 @@ namespace HLab.Erp.Data.Observables
             return AddCreator(OnDeleted, func, name);
         }
 
-//        public ModelCommand GetEntityInteractifCommand => this.GetCommand(GetEntityInteractif,()=>true);
+        //        public ModelCommand GetEntityInteractifCommand => this.GetCommand(GetEntityInteractif,()=>true);
 
         public void GetEntityInteractif()
         {
@@ -453,11 +472,11 @@ namespace HLab.Erp.Data.Observables
         {
             var oldThread = _updateThread;
 
-            _updateThread = new Thread(()=>
+            _updateThread = new Thread(() =>
             {
                 lock (_lockUpdate)
                 {
-                    if(oldThread?.IsAlive??false)  _updateNeeded = true;
+                    if (oldThread?.IsAlive ?? false) _updateNeeded = true;
                 }
 
                 oldThread?.Join();
@@ -470,39 +489,24 @@ namespace HLab.Erp.Data.Observables
 
         private readonly object _lockUpdateNeeded = new();
 
-        
+
         private volatile bool _updateNeeded;
 
 
         private volatile bool _updating = false;
 
-        private bool _initialized = false;
-
-        public ObservableQuery<T> Init()
-        {
-            if (!_initialized)
-            {
-                Update();
-            }
-            return this;
-        }
 
         public void Update()
         {
             lock (_lockUpdateNeeded)
             {
                 _updateNeeded = true;
-
-                if (!_timer.IsEnabled)
-                {
-                    _timer.DoTick();
-                }
             }
         }
 
-        public Task  UpdateAsync(Action postUpdate) => UpdateAsync(postUpdate,true,false);
-        public Task  UpdateAsync(bool force) => UpdateAsync(null,force,false);
-        public Task  RefreshAsync() => UpdateAsync(null,true,true);
+        public Task UpdateAsync(Action postUpdate) => UpdateAsync(postUpdate, true, false);
+        public Task UpdateAsync(bool force) => UpdateAsync(null, force, false);
+        public Task RefreshAsync() => UpdateAsync(null, true, true);
 
 
         private async Task _timer_TickAsync(object sender, EventArgs e)
@@ -518,45 +522,50 @@ namespace HLab.Erp.Data.Observables
                 }
             }
 
-            if(doUpdate)
+            if (doUpdate)
+            {
                 await UpdateAsync(null, true, false);
+            }
         }
 
 
-        public async Task UpdateAsync(Action postUpdate, bool force,bool refresh)
+        public async Task UpdateAsync(Action postUpdate, bool force, bool refresh)
         {
-            #if DEBUG
+#if DEBUG
             var stopwatch = Stopwatch.StartNew();
-            #endif
+#endif
             var lck = await Lock.WriterLockAsync();
             try
             {
                 using (lck)
                 {
+#if ASYNCQUERY
                     var list = PostQueryAsync(force);
-
+#else
+                    var list = PostQueryAsync(force);
+#endif
                     foreach (var orderBy in _orderBy.OrderBy(o => o.Order))
                     {
-                            if(list is IOrderedAsyncEnumerable<T> ordered)
-                                list = orderBy.Descending ? ordered.ThenByDescending(orderBy.Expression) : ordered.ThenBy(orderBy.Expression);
-                            else
-                                list = orderBy.Descending ? list.OrderByDescending(orderBy.Expression) : list.OrderBy(orderBy.Expression);
+                        if (list is IOrderedAsyncEnumerable<T> ordered)
+                            list = orderBy.Descending ? ordered.ThenByDescending(orderBy.Expression) : ordered.ThenBy(orderBy.Expression);
+                        else
+                            list = orderBy.Descending ? list.OrderByDescending(orderBy.Expression) : list.OrderBy(orderBy.Expression);
                     }
 
-                    #if DEBUG
-                    Debug.WriteLine("Query : " + stopwatch.ElapsedMilliseconds);
-                    #endif
+#if DEBUG
+                    var queryWatch = stopwatch.ElapsedMilliseconds;
+#endif
 
                     if (list == null) return;
 
-                    if(refresh)
+                    if (refresh)
                     {
-                        while(Count>0)
+                        while (Count > 0)
                             RemoveAtNoLock(0);
                     }
 
                     var n = 0;
-                    await 
+                    await
                         foreach (var item in list.ConfigureAwait(true))
                     {
                         var id = item.Id;
@@ -585,7 +594,7 @@ namespace HLab.Erp.Data.Observables
 
                             if (this.Any(e => Equals(e.Id, item.Id)))
                             {
-                                while (!Equals(old.Id,item.Id))
+                                while (!Equals(old.Id, item.Id))
                                 {
                                     RemoveAtNoLock(n);
                                     old = GetNoLock(n);
@@ -594,15 +603,15 @@ namespace HLab.Erp.Data.Observables
                                 n++;
                                 continue;
                             }
-                        } 
-                        
+                        }
+
                         InsertNoLock(n, item);
                         n++;
                     }
 
-                    #if(DEBUG)
-                    Debug.WriteLine("Update : " + stopwatch.ElapsedMilliseconds);
-                    #endif
+#if (DEBUG)
+                    var updateWatch = stopwatch.ElapsedMilliseconds;
+#endif
 
                     //remove remaining items
                     while (n < Count)
@@ -610,13 +619,16 @@ namespace HLab.Erp.Data.Observables
                         RemoveAtNoLock(n);
                     }
 
-                    #if DEBUG
-                    Debug.WriteLine("Cleanup : " + stopwatch.ElapsedMilliseconds);
+#if DEBUG
+                    var cleanupWatch = stopwatch.ElapsedMilliseconds;
+
+                    Debug.WriteLine($"Query {typeof(T).Name} : {queryWatch}");
+                    Debug.WriteLine($"Update {typeof(T).Name} : {updateWatch - queryWatch}");
+                    Debug.WriteLine($"Cleanup {typeof(T).Name} : {cleanupWatch - updateWatch}");
                     Debug.Assert(Count == n);
-                    #endif
+#endif
                 }
-                
-                _initialized = true;
+
                 _updating = false;
 
                 postUpdate?.Invoke();
@@ -638,7 +650,7 @@ namespace HLab.Erp.Data.Observables
         {
             if (vm != null)
             {
-                return _filters.Where(filter => filter.GetExpression != null).All(filter => filter.GetExpression().Compile()(vm)) 
+                return _filters.Where(filter => filter.GetExpression != null).All(filter => filter.GetExpression().Compile()(vm))
                     && _postFilters.Where(filter => filter.Expression != null).All(filter => filter.Expression(vm));
             }
             return false;

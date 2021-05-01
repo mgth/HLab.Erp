@@ -8,7 +8,7 @@ using HLab.Notify.PropertyChanged;
 namespace HLab.Erp.Core.ViewModelStates
 {
     using H = H<State>;
- 
+
     public enum ViewModelState
     {
         Default,
@@ -28,6 +28,8 @@ namespace HLab.Erp.Core.ViewModelStates
         Text,
         TextBackground
     }
+
+    [Export(typeof(State))]
     public class State : ViewModel, ITriggerable
     {
         public State() => H.Initialize(this);
@@ -45,20 +47,20 @@ namespace HLab.Erp.Core.ViewModelStates
             get => _theme.Get();
             set => _theme.Set(value);
         }
-        private IProperty<BrushTheme> _theme = H.Property<BrushTheme>(c => c
-            //TODO : .On(e => BrushTheme.Current)
+        private readonly IProperty<BrushTheme> _theme = H.Property<BrushTheme>(c => c
             .Set(e => BrushTheme.Current)
         );
 
-        [TriggerOn(nameof(Selected))]
-        [TriggerOn(nameof(Highlighted))]
-        [TriggerOn(nameof(RightHighlighted))]
-        [TriggerOn(nameof(LeftHighlighted))]
-        [TriggerOn(nameof(Disabled))]
-        [TriggerOn(nameof(Moving))]
-        [TriggerOn(nameof(Darken))]
-        public ViewModelState CurrentState => _curentState.Get();
-        private IProperty<ViewModelState> _curentState = H.Property<ViewModelState>(c => c
+        public ViewModelState CurrentState => _currentState.Get();
+        private readonly IProperty<ViewModelState> _currentState = H.Property<ViewModelState>(c => c
+            .Set(e =>
+                e.Disabled ? ViewModelState.Disabled :
+                e.Moving ? ViewModelState.Moving :
+                e.Selected ? ViewModelState.Selected :
+                e.RightHighlighted ? ViewModelState.RightHighlighted :
+                e.LeftHighlighted ? ViewModelState.RightHighlighted :
+                e.Darken ? ViewModelState.Darken :
+                    ViewModelState.Default)
             .On(e => e.Selected)
             .On(e => e.Highlighted)
             .On(e => e.RightHighlighted)
@@ -66,149 +68,107 @@ namespace HLab.Erp.Core.ViewModelStates
             .On(e => e.Disabled)
             .On(e => e.Moving)
             .On(e => e.Darken)
-            .Set(e => 
-                e.Disabled?ViewModelState.Disabled : 
-                e.Moving ? ViewModelState.Moving : 
-                e.Selected ? ViewModelState.Selected : 
-                e.RightHighlighted ? ViewModelState.RightHighlighted : 
-                e.LeftHighlighted ? ViewModelState.RightHighlighted : 
-                e.Darken ? ViewModelState.Darken : 
-                    ViewModelState.Default)
+            .Update()
         );
 
 
-        [Import]
-        public BrushSet DefaultBrushSet
-        {
-            get => _defaultBrushSet.Get();
-            set => _defaultBrushSet.Set(value.Configure(this, ViewModelState.Default));
-        }
-        private IProperty<BrushSet> _defaultBrushSet = H.Property<BrushSet>();
+        public BrushSet DefaultBrushSet { get; } = new BrushSet(ViewModelState.Default);
 
-        [Import]
-        public BrushSet SelectedBrushSet
-        {
-            get => _selectedBrushSet.Get();
-            set => _selectedBrushSet.Set(value.Configure(this, ViewModelState.Selected));
-        }
-        private IProperty<BrushSet> _selectedBrushSet = H.Property<BrushSet>();
+        public BrushSet SelectedBrushSet { get; } = new BrushSet(ViewModelState.Selected);
 
-        [Import]
-       public BrushSet LeftHighlightedBrushSet 
-        {
-            get => _leftHighlightedBrushSet.Get();
-            set => _leftHighlightedBrushSet.Set(value.Configure(this, ViewModelState.LeftHighlighted));
-        }
-        private IProperty<BrushSet> _leftHighlightedBrushSet = H.Property<BrushSet>();
+        public BrushSet LeftHighlightedBrushSet { get; } = new BrushSet(ViewModelState.LeftHighlighted);
 
-        [Import]
-        public BrushSet RightHighlightedBrushSet 
-        {
-            get => _rightHighlightedBrushSet.Get();
-            set => _rightHighlightedBrushSet.Set(value.Configure(this, ViewModelState.RightHighlighted));
-        }
-        private IProperty<BrushSet> _rightHighlightedBrushSet = H.Property<BrushSet>();
+        public BrushSet RightHighlightedBrushSet { get; } = new BrushSet(ViewModelState.RightHighlighted);
 
-        [Import]
-        public BrushSet DarkenBrushSet 
-        {
-            get => _darkenBrushSet.Get();
-            set => _darkenBrushSet.Set(value.Configure(this, ViewModelState.Darken));
-        }
-        private IProperty<BrushSet> _darkenBrushSet = H.Property<BrushSet>();
+        public BrushSet DarkenBrushSet { get; } = new BrushSet(ViewModelState.Darken);
 
-        [Import]
-        public BrushSet DisabledBrushSet 
-        {
-            get => _disabledBrushSet.Get();
-            set => _disabledBrushSet.Set(value.Configure(this, ViewModelState.Disabled));
-        }
-        private IProperty<BrushSet> _disabledBrushSet = H.Property<BrushSet>();
+        public BrushSet DisabledBrushSet { get; } = new BrushSet(ViewModelState.Disabled);
 
-        [Import]
-        public BrushSet MovingBrushSet 
-        {
-            get => _movingBrushSet.Get();
-            set => _movingBrushSet.Set(value.Configure(this, ViewModelState.Moving));
-        }
-        private IProperty<BrushSet> _movingBrushSet = H.Property<BrushSet>();
+        public BrushSet MovingBrushSet { get; } = new BrushSet(ViewModelState.Moving);
 
         public BrushSet Current => _current.Get();
-        private IProperty<BrushSet> _current = H.Property<BrushSet>( c => c
-            .On(e => e.CurrentState)
-            .Set(e =>
-            {
-                switch (e.CurrentState)
-                {
-                    case ViewModelState.Default: return e.DefaultBrushSet;
-                    case ViewModelState.LeftHighlighted: return e.LeftHighlightedBrushSet;
-                    case ViewModelState.RightHighlighted: return e.RightHighlightedBrushSet;
-                    case ViewModelState.Selected: return e.SelectedBrushSet;
-                    case ViewModelState.Moving: return e.MovingBrushSet;
-                    case ViewModelState.Darken: return e.DarkenBrushSet;
-                    case ViewModelState.Disabled: return e.DisabledBrushSet;
-                    default: return e.DefaultBrushSet;
-                }
-            }
-        ));
+        private readonly IProperty<BrushSet> _current = H.Property<BrushSet>(c => c
+           .Set(e =>
+           {
+               switch (e.CurrentState)
+               {
+                   case ViewModelState.Default: return e.DefaultBrushSet;
+                   case ViewModelState.LeftHighlighted: return e.LeftHighlightedBrushSet;
+                   case ViewModelState.RightHighlighted: return e.RightHighlightedBrushSet;
+                   case ViewModelState.Selected: return e.SelectedBrushSet;
+                   case ViewModelState.Moving: return e.MovingBrushSet;
+                   case ViewModelState.Darken: return e.DarkenBrushSet;
+                   case ViewModelState.Disabled: return e.DisabledBrushSet;
+                   default: return e.DefaultBrushSet;
+               }
+           })
+           .On(e => e.CurrentState).Update()
+     );
 
         public Brush Background => _background.Get();
-        private IProperty<Brush> _background = H.Property<Brush>(c=>c
+        private readonly IProperty<Brush> _background = H.Property<Brush>(c => c
             .On(e => e.Current.Background)
             .Set(e => e.Current.Background)
+            .Update()
         );
 
         public Brush Front => _front.Get();
-        private IProperty<Brush> _front = H.Property<Brush>(c => c
-            .On(e => e.Current.Front)
+        private readonly IProperty<Brush> _front = H.Property<Brush>(c => c
             .Set(e => e.Current.Front)
+            .On(e => e.Current.Front)
+            .Update()
         );
 
         public Brush Border => _border.Get();
-        private IProperty<Brush> _border = H.Property<Brush>(c => c
-            .On(e => e.Current.Border)
+        private readonly IProperty<Brush> _border = H.Property<Brush>(c => c
             .Set(e => e.Current.Border)
+            .On(e => e.Current.Border)
+            .Update()
         );
 
         public Brush Text => _text.Get();
-        private IProperty<Brush> _text = H.Property<Brush>(c => c
-            .On(e => e.Current.Text)
+        private readonly IProperty<Brush> _text = H.Property<Brush>(c => c
             .Set(e => e.Current.Text)
+            .On(e => e.Current.Text)
+            .Update()
         );
 
         public Brush TextBackground => _textBackground.Get();
-        private IProperty<Brush> _textBackground = H.Property<Brush>(c => c
-            .On(e => e.Current.TextBackGround)
-            .Set(e => e.Current.TextBackGround)
+        private readonly IProperty<Brush> _textBackground = H.Property<Brush>(c => c
+            .Set(e => e.Current.TextBackground)
+            .On(e => e.Current.TextBackground)
+            .Update()
         );
 
 
-        public Color Color {
+        public Color Color
+        {
             get => _color.Get();
             set => _color.Set(value);
         }
-        private IProperty<Color> _color = H.Property<Color>();
+        private readonly IProperty<Color> _color = H.Property<Color>();
         public bool Selected { get => _selected.Get(); set => _selected.Set(value); }
-        private IProperty<bool> _selected = H.Property<bool>();
+        private readonly IProperty<bool> _selected = H.Property<bool>();
         public bool LeftHighlighted { get => _leftHighlighted.Get(); set => _leftHighlighted.Set(value); }
-        private IProperty<bool> _leftHighlighted = H.Property<bool>();
+        private readonly IProperty<bool> _leftHighlighted = H.Property<bool>();
         public bool RightHighlighted { get => _rightHighlighted.Get(); set => _rightHighlighted.Set(value); }
-        private IProperty<bool> _rightHighlighted = H.Property<bool>();
+        private readonly IProperty<bool> _rightHighlighted = H.Property<bool>();
 
         public bool Highlighted => _highlighted.Get();
-        private IProperty<bool> _highlighted = H.Property<bool>(c => c
+        private readonly IProperty<bool> _highlighted = H.Property<bool>(c => c
+            .Set(e => e.LeftHighlighted || e.RightHighlighted)
             .On(e => e.LeftHighlighted)
             .On(e => e.RightHighlighted)
-            .Set(e => e.LeftHighlighted || e.RightHighlighted)
+            .Update()
         );
         public bool Darken { get => _darken.Get(); set => _darken.Set(value); }
-        private IProperty<bool> _darken = H.Property<bool>();
+        private readonly IProperty<bool> _darken = H.Property<bool>();
 
         public bool Disabled { get => _disabled.Get(); set => _disabled.Set(value); }
-        private IProperty<bool> _disabled = H.Property<bool>();
+        private readonly IProperty<bool> _disabled = H.Property<bool>();
 
         public bool Moving { get => _moving.Get(); set => _moving.Set(value); }
-        private IProperty<bool> _moving = H.Property<bool>();
+        private readonly IProperty<bool> _moving = H.Property<bool>();
 
 
         public void OnTriggered()

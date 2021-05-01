@@ -24,6 +24,10 @@ namespace HLab.Erp.Data
 
         public async IAsyncEnumerable<T> FetchAsync(Expression<Func<T, bool>> expression)
         {
+            #if DEBUG
+            var literal = expression.ToString();
+            #endif
+
             var e = expression.Compile();
 
             if (!_fullCache)

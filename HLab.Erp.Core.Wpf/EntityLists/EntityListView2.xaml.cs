@@ -37,6 +37,10 @@ namespace HLab.Erp.Core.EntityLists
             {
                 ListView.MaxHeight = 200;
             }
+            if (DataContext is IEntityListViewModel vm)
+            {
+                vm.Start();
+            }
         }
 
         private void EntityListView_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)

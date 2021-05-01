@@ -20,7 +20,7 @@ namespace HLab.Erp.Base.Wpf
         }
 
         public ICommand CountryCommand { get; } = H.Command(c => c.Action(
-                e => e._erp.Docs.OpenDocumentAsync(typeof(ListCountryViewModel))
+                e => e._erp.Docs.OpenDocumentAsync(typeof(CountriesListViewModel))
             ));
         public ICommand IconCommand { get; } = H.Command(c => c.Action(
                 e => e._erp.Docs.OpenDocumentAsync(typeof(IconsListViewModel))

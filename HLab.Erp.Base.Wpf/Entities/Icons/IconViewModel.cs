@@ -4,7 +4,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using HLab.ColorTools.Wpf;
 using HLab.Erp.Acl;
 using HLab.Erp.Base.Data;
 using HLab.Icons.Annotations.Icons;
@@ -28,15 +30,20 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         public override string Title => _title.Get();
 
         private readonly IProperty<string> _title = H.Property<string>(c => c
-            .On(e => e.Model.Caption)
             .Set(e => e.Model.Caption)
+            .On(e => e.Model.Caption)
+            .Update()
         );
 
 
         public object Icon => _icon.Get();
         private readonly IProperty<object> _icon = H.Property<object>(c => c
+            .Set(async e => (object)XamlTools.SetBinding(
+                (UIElement)await XamlTools.FromXamlStringAsync(e.Model.SourceXaml),
+                e.Model.Foreground.ToColor())
+            )
             .On(e => e.Model.SourceXaml)
-            .Set(e => XamlTools.FromXamlStringAsync(e.Model.SourceXaml, e.Model.Foreground))
+            .Update()
         );
 
         public ICommand ToXamlCommand { get; } = H.Command(c => c

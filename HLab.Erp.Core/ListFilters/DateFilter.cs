@@ -9,17 +9,27 @@ namespace HLab.Erp.Core.ListFilters
     using H = H<DateFilter>;
     public static class DateFilterViewModelExtension
     {
-        public static T MaxDate<T>(this T filter, DateTime date)
-            where T : DateFilter
+        public static IFilterConfigurator<T, DateFilter> MaxDate<T>(this IFilterConfigurator<T, DateFilter> tc, DateTime date) where T : class, IEntity, new()
         {
-            filter.MaxDate = date;
-            return filter;
+            tc.CurrentFilter.MaxDate = date;
+            return tc;
         }
-        public static T MinDate<T>(this T filter, DateTime date)
-            where T : DateFilter
+
+        public static IFilterConfigurator<T, DateFilter> MinDate<T>(this IFilterConfigurator<T, DateFilter> tc, DateTime date) where T : class, IEntity, new()
         {
-            filter.MinDate = date;
-            return filter;
+            tc.CurrentFilter.MinDate = date;
+            return tc;
+        }
+        public static IFilterConfigurator<T, DateFilter> PostLink<T>(this IFilterConfigurator<T, DateFilter> tf, Func<T, DateTime?> getter) where T : class, IEntity, new()
+        {
+            throw new NotImplementedException();
+            //TODO : tf.CurrentFilter.PostLink<T>(tf.Target().List, getter);
+            return tf;
+        }
+        public static IFilterConfigurator<T, DateFilter> Link<T>(this IFilterConfigurator<T, DateFilter> tf, Expression<Func<T, DateTime?>> getter) where T : class, IEntity, new()
+        {
+            tf.CurrentFilter.Link<T>(tf.Target().List, getter);
+            return tf;
         }
     }
 
@@ -191,7 +201,7 @@ namespace HLab.Erp.Core.ListFilters
             where T : class, IEntity
         {
             //var entity = getter.Parameters[0];
-            q.AddFilter(Title,()=> Match(getter));
+            q.AddFilter(Header,()=> Match(getter));
             Update = q.Update;
             return this;
         }
@@ -250,5 +260,6 @@ namespace HLab.Erp.Core.ListFilters
 
             return (value, unit);
         }
+
     }
 }

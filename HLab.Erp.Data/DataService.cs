@@ -254,6 +254,9 @@ namespace HLab.Erp.Data
 
             using var db = Get();
             {
+                #if DEBUG
+                var literal = expression.ToString();
+                #endif
                 var list =
                     db.QueryAsync<T>().Where(expression);
 

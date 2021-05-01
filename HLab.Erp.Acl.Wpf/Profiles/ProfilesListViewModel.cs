@@ -1,39 +1,35 @@
-﻿using HLab.Erp.Core.EntityLists;
+﻿using Grace.DependencyInjection.Attributes;
+using HLab.Erp.Core;
+using HLab.Erp.Core.EntityLists;
 
 namespace HLab.Erp.Acl.Profiles
 {
     public class ProfilesListViewModel : EntityListViewModel<Profile>
     {
-        public ProfilesListViewModel Configure(User user)
+        public class Bootloader : NestedBootloader
         {
-            Columns.Configure(c => c
-                .Column
+            public override string MenuPath => "param";
+        }
+
+        public ProfilesListViewModel(User user) : base(c => c
+                .Column()
                     .Header("{Name}").Width(100)
                     .Content(s => s.Name)
-            );
-
-            //List.AddFilter(e => e. == user.Id);
-
-            List.Update();
-
-            return this;
+        
+        )
+        {
+            // TODO : List.AddFilter(e => e.User == user.Id);
         }        
 
-        protected override void Configure()
-        {
-            AddAllowed = true;
-            DeleteAllowed = true;
-
-            Columns.Configure(c => c
-                .Column
+        public ProfilesListViewModel() : base(c => c
+            .AddAllowed()
+            .DeleteAllowed()
+            .Column()
                     .Header("{Name}")
                     .Width(100)
                     .Content(s => s.Name)
-            );
-
-//            List.AddFilter(() => e => e.UserId == user.Id);
-
-            List.Update();
+        )
+        {
         }
 
     }

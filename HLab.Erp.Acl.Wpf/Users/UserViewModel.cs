@@ -12,10 +12,10 @@ namespace HLab.Erp.Acl.Users
     public class UserViewModel: EntityViewModel<User>
     {
         private readonly IDataService _data; 
-        private readonly Func<User, ListUserProfileViewModel> _getUserProfiles;
+        private readonly Func<User, UserProfileListViewModel> _getUserProfiles;
         private readonly Func<User, ProfilesListViewModel> _getProfiles;
 
-        public UserViewModel(Func<User, ListUserProfileViewModel> getUserProfiles, Func<User, ProfilesListViewModel> getProfiles, IDataService data)
+        public UserViewModel(Func<User, UserProfileListViewModel> getUserProfiles, Func<User, ProfilesListViewModel> getProfiles, IDataService data)
         {
             _getUserProfiles = getUserProfiles;
             _getProfiles = getProfiles;
@@ -29,8 +29,8 @@ namespace HLab.Erp.Acl.Users
         );
 
 
-        public ListUserProfileViewModel UserProfiles => _userProfiles.Get();
-        private readonly IProperty<ListUserProfileViewModel> _userProfiles = H.Property<ListUserProfileViewModel>(c => c
+        public UserProfileListViewModel UserProfiles => _userProfiles.Get();
+        private readonly IProperty<UserProfileListViewModel> _userProfiles = H.Property<UserProfileListViewModel>(c => c
             .On(e => e.Model)
             .NotNull(e => e.Model)
             .Set(e => e._getUserProfiles(e.Model))

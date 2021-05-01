@@ -1,4 +1,6 @@
-﻿using HLab.Erp.Base.Data;
+﻿using Grace.DependencyInjection.Attributes;
+using HLab.Erp.Base.Data;
+using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilters;
 using HLab.Mvvm;
@@ -8,33 +10,36 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
 {
     public class CustomersListViewModel : EntityListViewModel<Customer>, IMvvmContextProvider
     {
+        public class Bootloader : NestedBootloader
+        { }
+
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
 
-        protected override void Configure()
+        public CustomersListViewModel() : base(c => c
+            .AddAllowed()
+            .DeleteAllowed()
+            .Column()
+                .Header("{Name}")
+                .OrderByOrder(0)
+                .Link(s => s.Name)
+                .Filter()
+            .Column()
+                .Header("{Country}")
+                .Content(s => s.Country)
+                //.Icon(s => s.IconPath)
+                .Mvvm()
+            .Column()
+                .Header("{eMail}")
+                .Link(s => s.Email)
+                .Filter()
+            .Column()
+                .Header("{Address}")
+                .Link(s => s.Address)
+                .Filter()
+        )
         {
-            AddAllowed = true;
-            DeleteAllowed = true;
-
-            Columns.Configure(c => c
-                .Column.Header("{Name}").Content(s => s.Name).OrderByOrder(0)
-                .Column.Header("{Country}").Content(s => new ViewLocator{Model = s.Country})
-                .Column.Header("{eMail}").Content(s => s.Email)
-                .Column.Header("{Address}").Content(s => s.Address)
-            );
-
-            using (List.Suspender.Get())
-            {
-                Filter<TextFilter>( f => f.Title("{Name}").Link(List, e => e.Name));
-            }
-
-            //Filters.Add(new EntityFilterViewModel<Customer,Country>().Configure(
-            //    "Country",
-            //    "Pays",
-            //    c => c.Country,List
-            //    ));
-            List.Update();
         }
     }
 }

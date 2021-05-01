@@ -2,7 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Base.Data;
+using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilters;
 using HLab.Icons.Wpf;
@@ -20,7 +22,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         private static async Task<object> GetSvgIconAsync(string source, int? foreColor)
         {
             if (string.IsNullOrWhiteSpace(source)) return null;
-            var icon = (UIElement)await XamlTools.FromSvgStringAsync(source,foreColor).ConfigureAwait(true);
+            var icon = (UIElement)await XamlTools.FromSvgStringAsync(source).ConfigureAwait(true);
             return new Viewbox
             {
                 Child = icon,
@@ -29,7 +31,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         }
         private static async Task<object> GetXamlIconAsync(string source, int? foreColor)
         {
-            var icon = (UIElement)await XamlTools.FromXamlStringAsync(source, foreColor).ConfigureAwait(true);
+            var icon = (UIElement)await XamlTools.FromXamlStringAsync(source).ConfigureAwait(true);
             return new Viewbox
             {
                 Child = icon,
@@ -37,21 +39,22 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             };
         }
 
-        protected override void Configure()
+        public IconsListViewModel() : base(c => c
+           .AddAllowed()
+               .Column()
+                   .Header("{Path}")
+                   .Link(s => s.Path)
+                       .Filter()
+
+               .Column()
+                    .Header("{Xaml}")
+                    .Content(async s => await GetXamlIconAsync(s.SourceXaml, s.Foreground))
+
+               .Column()
+                    .Header("{Svg}")
+                    .Content(async s => await GetSvgIconAsync(s.SourceSvg, s.Foreground))
+        )
         {
-            AddAllowed = true;
-
-            Columns.Configure(c => c
-                .Column.Header("{Path}").Content(s => s.Path)
-                .Column.Header("{Xaml}").Content(async s => await GetXamlIconAsync(s.SourceXaml,s.Foreground))
-                .Column.Header("{Svg}").Content(async s => await GetSvgIconAsync(s.SourceSvg,s.Foreground))
-            );
-
-            using (List.Suspender.Get())
-            {
-                Filter<TextFilter>(). Title("{Path}")
-                    .Link(List,e => e.Path);
-            }
         }
     }
 }

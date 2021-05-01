@@ -7,7 +7,7 @@ namespace HLab.Erp.Acl.Users
 {
     using H = H<ImportUsersModule>;
 
-    public class ImportUsersModule : NotifierBase, IBootloaderDependent
+    public class ImportUsersModule : NotifierBase, IBootloader
     {
         
         private readonly IErpServices _erp;
@@ -18,8 +18,6 @@ namespace HLab.Erp.Acl.Users
             H.Initialize(this);
         }
 
-        public string[] DependsOn => new []{"BootLoaderErpWpf"};
-
         public ICommand OpenCommand { get; } = H.Command(c => c.Action(
             e => e._erp.Docs.OpenDocumentAsync(typeof(ImportUsersViewModel))
         ).CanExecute(e => true));
@@ -28,11 +26,14 @@ namespace HLab.Erp.Acl.Users
 
         public virtual void Load(IBootContext b)
         {
+            if (b.StillContainsAndRequeue("BootLoaderErpWpf")) return;
+
             if (_erp.Acl.Connection == null)
             {
                 if(!_erp.Acl.Cancelled) b.Requeue();
                 return;
             }
+
             if(!_erp.Acl.IsGranted(AclRights.ManageUser)) return;
 
             _erp.Menu.RegisterMenu("tools/ImportUsers", "{Import Users}",

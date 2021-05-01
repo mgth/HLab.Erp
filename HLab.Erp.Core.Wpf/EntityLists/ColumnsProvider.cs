@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,161 +11,12 @@ using System.Xml;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Icons.Annotations.Icons;
-using HLab.Icons.Wpf.Icons;
 using HLab.Localization.Wpf.Lang;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.EntityLists
 {
-    public static class ColumnConfiguratorExtension
-    {
-        public static IColumnConfigurator<T> Icon<T>(this IColumnConfigurator<T> c, Func<T, string> getPath, double size = 30.0)
-        {
-            var getContent = c.Current.Getter;
-            if(getContent==null)
-                return c.Content(t => new IconView {Path = getPath(t), IconMaxHeight = size, IconMaxWidth = size});
-            
-            return c.Content(t => new IconView {Path = getPath(t), IconMaxHeight = size, IconMaxWidth = size, Caption = getContent(t)});
-        }
-
-        public static IColumnConfigurator<T> Localize<T>(this IColumnConfigurator<T> c)
-        {
-            var getContent = c.Current.Getter;
-            return c.Content( e=> new Localize {Id=(string)getContent(e)});
-        }
-
-        public static IColumnConfigurator<T> Center<T>(this IColumnConfigurator<T> c)
-        {
-            var getContent = c.Current.Getter;
-            
-            return c.Content(t => new ContentControl {VerticalAlignment = VerticalAlignment.Stretch, Content = getContent?.Invoke(t)});
-        }
-
-
-    }
-
-    public class ColumnConfigurator<T> : IColumnConfigurator<T>, IDisposable where T : class, IEntity
-    {
-        public IColumn<T> Current { get; private set; }
-
-        //private Expression<Func<T, object>> _getter;
-
-        private readonly Dictionary<string, Column<T>> _dict;
-//        private readonly IEntityListViewModel<T> _list;
-
-        public ColumnConfigurator(Dictionary<string, Column<T>> dict/*, IEntityListViewModel<T> list*/)
-        {
-            _dict = dict;
-//            _list = list;
-        }
-
-        public IColumnConfigurator<T> Header(object caption)
-        {
-            Current.Caption = caption;
-            return this;
-        }
-
-        public IColumnConfigurator<T> Width(double width)
-        {
-            Current.Width = width;
-            return this;
-        }
-
-        public IColumnConfigurator<T> Id(string id)
-        {
-            Current.Id = id;
-            return this;
-        }
-
-        public IColumnConfigurator<T> Content(Func<T, Task<object>> getContent)
-        {
-            Current.Getter = t => new AsyncView{Getter = async () => await getContent(t)};
-            return this;
-        }
-
-        public IColumnConfigurator<T> OrderBy(Func<T,object> orderBy)
-        {
-            Current.OrderBy = orderBy;
-            return this;
-        }
-        public IColumnConfigurator<T> OrderByOrder(int order)
-        {
-            foreach (var column in _dict.Values.Where(c => c.OrderByOrder>=order).ToArray())
-            {
-                column.OrderByOrder++;
-            }
-            Current.OrderByOrder = order;
-            return this;
-        }
-
-        public IColumnConfigurator<T> Hidden
-        {
-            get
-            {
-                Current.Hidden = true;
-                return this;
-            }
-        }
-
-        public IColumnConfigurator<T> Content(Func<T,object> getter)
-        {
-                Current.Getter = getter;
-                if (Current.OrderBy == null)
-                {
-                    Current.OrderBy = getter;
-                }
-                return this;
-        }
-
-        public IColumnConfigurator<T> Mvvm<TViewClass>() where TViewClass : IViewClass
-        {
-            Current.Getter = o => new ViewLocator{ViewClass = typeof(TViewClass), DataContext = o};
-            return this;
-        }
-
-        public IColumnConfigurator<T> Column
-        {
-            get
-            {
-                var order = 0;
-                if (Current != null)
-                {
-                    Add();
-                    order = _dict.Values.Max(c => c.OrderByOrder)+1;
-                }
-                Current = new Column<T> {OrderByOrder = order};
-                return this;
-            }
-        }
-
-        public IColumnConfigurator<T> Filter<TF>() where TF : IFilterViewModel, new()
-        {
-//            _filter = new TF();
-             return this;
-        }
-
-        private void Add()
-        {
-            Debug.Assert(Current.Getter!=null);
-            _dict.Add(Current.Id, (Column<T>) Current);
-        }
-
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Add();
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-    }
 
 
     public class ColumnsProvider<T> : IColumnsProvider<T> where T:class, IEntity
@@ -174,7 +24,7 @@ namespace HLab.Erp.Core.EntityLists
         private readonly IIconService _icons;
          private readonly ILocalizationService _lang;
 
-        private readonly Dictionary<string,Column<T>> _dict = new ();
+        private readonly Dictionary<string,IColumn<T>> _dict = new ();
         private readonly ObservableQuery<T> _list;
 
         public ColumnsProvider(ObservableQuery<T> list, IIconService icons, ILocalizationService lang)
@@ -236,19 +86,11 @@ namespace HLab.Erp.Core.EntityLists
             return this;
         }
 
-        public void Configure(Func<IColumnConfigurator<T>,IColumnConfigurator<T>> f)
-        {
-            using (var configurator = new ColumnConfigurator<T>(_dict))
-            {
-                f(configurator);
-            }
-        }
-
         public object GetValue(T obj, string name)
         {
             if (_dict.ContainsKey(name))
             {
-                return _dict[name].Get(obj);
+                return _dict[name].GetValue(obj);
             }
             else return null;
         }
@@ -264,7 +106,7 @@ namespace HLab.Erp.Core.EntityLists
 
 
                 var header = new ColumnHeaderView {
-                    Caption = column.Caption,
+                    Caption = column.Header,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     HorizontalContentAlignment = HorizontalAlignment.Stretch,
                     MinWidth = 30
@@ -333,11 +175,11 @@ namespace HLab.Erp.Core.EntityLists
                 if (column.Hidden) continue;
 
                 object content;
-                if (column.Caption is string s)
+                if (column.Header is string s)
                     content = new Localize {Id = s};
                 else
                 {
-                    content = column.Caption;
+                    content = column.Header;
                 }
 
                 var header = new GridViewColumnHeader 
@@ -402,6 +244,11 @@ namespace HLab.Erp.Core.EntityLists
 
             XmlReader xmlReader = XmlReader.Create(stringReader);
             return XamlReader.Load(xmlReader) as DataTemplate;
+        }
+
+        public void AddColumn(IColumn<T> column)
+        {
+            _dict.Add(column.Id,column);
         }
     }
 }

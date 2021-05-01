@@ -45,7 +45,7 @@
                 IsReadOnly="{Binding Locker.IsReadOnly}"
                 Model="{Binding Model.Country}" 
                 ModelClass="{x:Type data:Country}" 
-                ListClass="{x:Type countries:ListCountryPopupViewModel}"
+                ListClass="{x:Type countries:CountriesPopupListViewModel}"
                 />
             
             <lang:LocalizedLabel Text="{}{eMail} : "/>

@@ -16,7 +16,7 @@ namespace HLab.Erp.Core.EntityLists
         public Column(object caption, Func<T, object> getter,Func<T, object> orderBy, string id, bool hidden)
         {
             Id = id ?? ("C" + Guid.NewGuid().ToString().Replace('-', '_'));
-            Caption = caption;
+            Header = caption;
             OrderBy = orderBy;
             Getter = getter;
             Hidden = hidden;
@@ -24,7 +24,7 @@ namespace HLab.Erp.Core.EntityLists
 
         public bool Hidden { get; set; } = false;
 
-        public object Caption { get; set; } = "";
+        public object Header { get; set; } = "";
 
         public double Width { get; set; } = double.NaN;
 
@@ -41,7 +41,7 @@ namespace HLab.Erp.Core.EntityLists
             Getter = (a) => getter(a, Getter(a));
         }
 
-        public object Get(T value)
+        public object GetValue(T value)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace HLab.Erp.Core.EntityLists
 
         public override string ToString()
         {
-            return Caption.ToString() + OrderByOrder.ToString();
+            return Header.ToString() + OrderByOrder.ToString();
         }
     }
 }

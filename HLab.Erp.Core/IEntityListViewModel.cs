@@ -48,6 +48,9 @@ namespace HLab.Erp.Core
         IEnumerable<int> SelectedIds { get; set; }
         void RefreshColumn(string column);
         void RefreshColumn(string column, int id);
+
+        T GetFilter<T>() where T : IFilterViewModel;
+        void Start();
     }
 
     public interface IEntityListViewModel<T> : IEntityListViewModel
@@ -58,6 +61,8 @@ namespace HLab.Erp.Core
 
         IEntityListViewModel<T> AddFilter<TFilter>(Action<FiltersFluentConfigurator<T,TFilter>> configure)
             where TFilter : IFilterViewModel, new();
+
+        void AddFilter(IFilterViewModel filter);
     }
 
 }

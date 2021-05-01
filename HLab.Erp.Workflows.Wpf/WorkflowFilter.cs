@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using HLab.Erp.Core;
 using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
@@ -11,6 +12,17 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Workflows
 {
+    public static class WorkflowFilterExtensions
+    {
+        public static IFilterConfigurator<T, WorkflowFilter<TC>> Link<T, TC>(this IFilterConfigurator<T, WorkflowFilter<TC>> fc, Expression<Func<T, string>> getter) 
+            where T : class, IEntity, new()
+            where TC : class, IWorkflow<TC>
+        {
+            fc.CurrentFilter.Link<T>(fc.Target().List, getter);
+            return fc;
+        }
+    }
+
     public class WorkflowFilter<TClass>: FilterViewModel, IWorkflowFilter
         where TClass : class, IWorkflow<TClass>
     {
@@ -89,7 +101,7 @@ namespace HLab.Erp.Workflows
             where T : class, IEntity
         {
             //var entity = getter.Parameters[0];
-            q.AddFilter(Title,()=> Match(getter));
+            q.AddFilter(Header,()=> Match(getter));
             Update = q.Update;
             return this;
         }

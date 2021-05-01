@@ -5,7 +5,6 @@ using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
 using HLab.Icons.Annotations.Icons;
 using HLab.Icons.Wpf.Icons.Providers;
-using HLab.Icons.Wpf.Providers;
 
 namespace HLab.Erp.Base.Wpf
 {

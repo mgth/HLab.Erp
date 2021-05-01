@@ -78,14 +78,14 @@ namespace HLab.Erp.Core.Lists.QueryLists
 
         private class Filter
         {
-            public string Name { get; set; }
+            public object Name { get; set; }
             public Func<IQueryable<T>, IQueryable<T>> Func { get; set; }
             public int Order { get; set; }
         }
 
         private class PostFilter
         {
-            public string Name { get; set; }
+            public object Name { get; set; }
             public Func<IEnumerable<T>, IEnumerable<T>> Func { get; set; }
             public int Order { get; set; }
         }
@@ -167,17 +167,17 @@ namespace HLab.Erp.Core.Lists.QueryLists
             }
         }
 
-        public TThis AddFilter(string name, Expression<Func<T, bool>> expression, int order = 0)
+        public TThis AddFilter(object name, Expression<Func<T, bool>> expression, int order = 0)
         {
             return AddFilter(expression, order, name);
         }
 
-        public TThis AddFilter(Expression<Func<T, bool>> expression, int order = 0, string name = null)
+        public TThis AddFilter(Expression<Func<T, bool>> expression, int order = 0, object name = null)
         {
             return AddFilter(s => s.Where(expression), order, name);
         }
 
-        public TThis AddFilter(Func<IQueryable<T>, IQueryable<T>> func, int order = 0, string name = null)
+        public TThis AddFilter(Func<IQueryable<T>, IQueryable<T>> func, int order = 0, object name = null)
         {
             lock (_lockFilters)
             {
@@ -216,22 +216,22 @@ namespace HLab.Erp.Core.Lists.QueryLists
             }
         }
 
-        public TThis RemoveFilter(string name)
+        public TThis RemoveFilter(object name)
         {
             lock (_lockFilters)
             {
-                foreach (var f in _filters.Where(f => f.Name == name).ToList())
+                foreach (var f in _filters.Where(f => Equals(f.Name,name)).ToList())
                 {
                     _filters.Remove(f);
                 }
                 return (TThis)this;
             }
         }
-        public TThis RemovePostFilter(string name)
+        public TThis RemovePostFilter(object name)
         {
             lock (_lockFilters)
             {
-                foreach (var f in _postFilters.Where(f => f.Name == name).ToList())
+                foreach (var f in _postFilters.Where(f => Equals(f.Name,name)).ToList())
                 {
                     _postFilters.Remove(f);
                 }

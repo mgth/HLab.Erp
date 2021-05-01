@@ -1,40 +1,31 @@
-﻿using HLab.Erp.Core.EntityLists;
+﻿using Grace.DependencyInjection.Attributes;
+using HLab.Erp.Core;
+using HLab.Erp.Core.EntityLists;
 
 namespace HLab.Erp.Acl.Users
 {
-    public class ListUserProfileViewModel : EntityListViewModel<UserProfile>
+    public class UserProfileListViewModel : EntityListViewModel<UserProfile>
     {
-        public ListUserProfileViewModel Configure(User user)
+        public UserProfileListViewModel(User user) : base(c => c
+            .Column()
+                .Header("{Name}")
+                .Content(s => s.Profile.Name)
+        )
         {
             OpenAction = target => Erp.Docs.OpenDocumentAsync(target.Profile);
 
-            Columns.Configure(c => c
-                .Column.Header("{Name}").Content(s => s.Profile.Name)
-            );
-
             List.AddFilter(() => e => e.UserId == user.Id);
-
-            List.Update();
-
-            return this;
-        }        
-        public ListUserProfileViewModel Configure(Profile profile)
+        }
+        public UserProfileListViewModel(Profile profile) : base(c => c
+            .Column()
+                .Header("{Name}")
+                .Content(s => s.User.Caption)
+        )
         {
             OpenAction = target => Erp.Docs.OpenDocumentAsync(target.User);
 
-            Columns.Configure(c => c
-                        .Column.Header("{Name}").Content(s => s.User.Caption)
-            );
-
             List.AddFilter(() => e => e.ProfileId == profile.Id);
-
-            List.Update();
-
-            return this;
         }
 
-        protected override void Configure()
-        {
-        }
     }
 }

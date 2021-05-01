@@ -1,4 +1,6 @@
-﻿using HLab.Erp.Core.EntityLists;
+﻿using Grace.DependencyInjection.Attributes;
+using HLab.Erp.Core;
+using HLab.Erp.Core.EntityLists;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Acl.Users
@@ -9,31 +11,26 @@ namespace HLab.Erp.Acl.Users
         {
         }
 
-        protected override void Configure()
-        {
-            DeleteAllowed = true;
-            AddAllowed = true;
-
-            Columns.Configure(c => c
-                    .Column
+        public UsersListViewModel() : base(c => c
+            .DeleteAllowed()
+            .AddAllowed()
+                .Column()
                     .Header("{First Name}").Width(150)
                     .Content(u => u.FirstName)
-                    .Column
+                .Column()
                     .Header("{Name}").Width(100)
-                    .Content(u=>u.Name)
-                    .Column
+                    .Content(u => u.Name)
+                .Column()
                     .Header("{Login}").Width(100)
-                    .Content(u=>u.Login)
-                    .Column
+                    .Content(u => u.Login)
+                .Column()
                     .Header("{Function}").Width(250)
-                    .Content(u=>u.Function)
-                    .Column
+                    .Content(u => u.Function)
+                .Column()
                     .Header("{Initials}").Width(70)
-                    .Content(u=>u.Initials)
-                
-                );
-
-            List.Update();
+                    .Content(u => u.Initials)
+        )
+        {
         }
 
     }

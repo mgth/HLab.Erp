@@ -7,8 +7,6 @@
              xmlns:listFilters="clr-namespace:HLab.Erp.Core.ListFilters"
              xmlns:core="clr-namespace:HLab.Erp.Core;assembly=HLab.Erp.Core"
              xmlns:converters="clr-namespace:HLab.Base.Wpf.Converters;assembly=HLab.Base.Wpf"
-             xmlns:wpf="clr-namespace:HLab.Icons.Wpf;assembly=HLab.Icons.Wpf" 
-             xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
              xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
@@ -44,13 +42,14 @@
                                 Path="{Binding IconPath,FallbackValue=icons/default}" 
                                 IconMaxHeight="15"
                                 >
-                                <icons:IconView.Caption>
-                                    <lang:Localize Margin="2,0,0,0"  
+                                <!--<icons:IconView.Caption>-->
+                                <ContentControl Content="{Binding Header}"/>
+                                    <!--<lang:Localize Margin="2,0,0,0"  
                                                          Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}"
                                                          Id="{Binding Title}" 
-                                                         VerticalAlignment="Center"/>
+                                                         VerticalAlignment="Center"/>-->
 
-                                </icons:IconView.Caption>
+                                <!--</icons:IconView.Caption>-->
 
                             </icons:IconView>
                         </ToggleButton>

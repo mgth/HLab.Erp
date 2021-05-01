@@ -13,7 +13,7 @@ namespace HLab.Erp.Acl.Profiles
     {
         public ProfileViewModel(
             IDataService data,
-            Func<Profile, ListUserProfileViewModel> getUserProfiles, 
+            Func<Profile, UserProfileListViewModel> getUserProfiles, 
             Func<Profile, AclRightProfileListViewModel> getRightProfiles)
         {
             _getUserProfiles = getUserProfiles;
@@ -22,16 +22,16 @@ namespace HLab.Erp.Acl.Profiles
             H.Initialize(this);
         }
 
-        public string Title => _title.Get();
-        private IProperty<string> _title = H.Property<string>(c => c
+        public override string Title => _title.Get();
+        private readonly IProperty<string> _title = H.Property<string>(c => c
             .On(e => e.Model.Name).Set(e => "{Profile}\n"+e.Model.Name)
         );
-        public string IconPath => "Icons/Entities/Profile";
+        public override string IconPath => "Icons/Entities/Profile";
 
-        private readonly Func<Profile, ListUserProfileViewModel> _getUserProfiles;
+        private readonly Func<Profile, UserProfileListViewModel> _getUserProfiles;
 
-        public ListUserProfileViewModel UserProfiles => _userProfiles.Get();
-        private readonly IProperty<ListUserProfileViewModel> _userProfiles = H.Property<ListUserProfileViewModel>(c => c
+        public UserProfileListViewModel UserProfiles => _userProfiles.Get();
+        private readonly IProperty<UserProfileListViewModel> _userProfiles = H.Property<UserProfileListViewModel>(c => c
             .On(e => e.Model)
             .NotNull(e => e.Model)
             .Set(e => e._getUserProfiles(e.Model))

@@ -18,7 +18,7 @@ namespace HLab.Erp.Workflows
     }
 
     public interface IWorkflow<T> : IWorkflow
-    where T:class,IWorkflow<T>
+    where T : class, IWorkflow<T>
     {
         Task<bool> SetStageAsync(Func<Workflow<T>.Stage> setState, string caption, string iconPath, bool sign, bool motivate);
         Workflow<T>.Stage CurrentStage { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -16,6 +17,8 @@ namespace HLab.Erp.Base.Data
         ISqlTableBuilder<T> AddColumn(Expression<Func<T, object>> property);
         ISqlTableBuilder<T> AlterColumn(Expression<Func<T, object>> property);
         ISqlTableBuilder<T> RenameColumn(string oldName, Expression<Func<T, object>> property);
+
+        ISqlTableBuilder<T> Insert(Action<T> factory);
 
     }
 
@@ -111,7 +114,7 @@ namespace HLab.Erp.Base.Data
 
                 result = @$"
                 ALTER TABLE public.""{typeof(T).Name}""
-                ADD COLUMN IF NOT EXISTS ""{name}"" {GetSqlType(type)};
+                ADD COLUMN IF NOT EXISTS ""{name}"" {GetSqlType(type,p)};
             " + result;
 
                 _builder._builder.Append(result);
@@ -128,7 +131,7 @@ namespace HLab.Erp.Base.Data
 
                 var result = @$"
                 ALTER TABLE public.""{typeof(T).Name}""
-                ALTER COLUMN ""{name}"" TYPE {GetSqlType(type)};";
+                ALTER COLUMN ""{name}"" TYPE {GetSqlType(type,p)};";
 
                 _builder._builder.Append(result);
                 return this;
@@ -142,16 +145,15 @@ namespace HLab.Erp.Base.Data
             {
                 if (property.GetCustomAttributes().OfType<IgnoreAttribute>().Any()) continue;
                 if (!property.CanWrite) continue;
+                var type = property.PropertyType;
+                if(type != typeof(string) && type.IsClass && !type.IsArray) continue;
 
                 columns += $"\"{property.Name}\" ";
                 if(property.Name=="Id") columns += @" serial NOT NULL,";
                 else
                 {
-                    var type = property.PropertyType;
 
-                    if(type != typeof(string) && type.IsClass && !type.IsArray) continue;
-
-                    columns += $" {GetSqlType(type)},\n";
+                    columns += $" {GetSqlType(type,property)},\n";
 
 
 
@@ -230,6 +232,11 @@ namespace HLab.Erp.Base.Data
                 return this;
         }
 
+        public ISqlTableBuilder<T> Insert(Action<T> factory)
+        {
+            throw new NotImplementedException();
+        }
+
         public ISqlBuilder SqlResource(string filePath) => _builder.SqlResource(filePath);
 
         public ISqlTableBuilder<T1> Table<T1>() where T1 : class, IEntity => _builder.Table<T1>();
@@ -270,7 +277,7 @@ namespace HLab.Erp.Base.Data
             return typeof(T).GetField(backingFieldName,BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
-        private static string GetSqlType(Type type)
+        private static string GetSqlType(Type type, PropertyInfo p)
         {
             if (type == typeof(int)) return "integer NOT NULL";
             if(type == typeof(int?)) return "integer";
@@ -280,11 +287,31 @@ namespace HLab.Erp.Base.Data
             if(type == typeof(double)) return "double precision NOT NULL";
             if(type == typeof(double?)) return "double precision";
 
+            if(type == typeof(float)) return "real NOT NULL";
+            if(type == typeof(float?)) return "real";
+
+            if(type == typeof(decimal)) return "numeric NOT NULL";
+            if(type == typeof(decimal?)) return "numeric";
+
+
             if(type == typeof(bool)) return "boolean NOT NULL";
             if(type == typeof(bool?)) return "boolean";
 
             if(type == typeof(byte[])) return "bytea";
             if (type.IsEnum) return "integer";
+
+            if (type == typeof(DateTime?))
+            {
+                if (p.GetCustomAttributes<TimestampAttribute>().Any())
+                    return "timestamp";
+                return "date";
+            }
+            if (type == typeof(DateTime))
+            {
+                if (p.GetCustomAttributes<TimestampAttribute>().Any())
+                    return "timestamp NOT NULL";
+                return "date NOT NULL";
+            }
 
             throw new ArgumentException($"Type : {type} not supported");
         }
