@@ -5,105 +5,42 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
+using System.Windows.Forms;
 using System.Windows.Markup;
 using System.Xml;
+using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Icons.Annotations.Icons;
 using HLab.Localization.Wpf.Lang;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
+using Binding = System.Windows.Data.Binding;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using ListView = System.Windows.Controls.ListView;
 
 namespace HLab.Erp.Core.EntityLists
 {
-
-
+    [Export(typeof(IColumnsProvider<>))]
     public class ColumnsProvider<T> : IColumnsProvider<T> where T:class, IEntity
     {
-        private readonly IIconService _icons;
-         private readonly ILocalizationService _lang;
-
         private readonly Dictionary<string,IColumn<T>> _dict = new ();
         private readonly ObservableQuery<T> _list;
 
-        public ColumnsProvider(ObservableQuery<T> list, IIconService icons, ILocalizationService lang)
+        public ColumnsProvider(ObservableQuery<T> list)
         {
             _list = list;
-            _icons = icons;
-            _lang = lang;
         }
 
-        public IColumnsProvider<T> Icon(string caption, Func<T,string> iconPath,Func<T,object> orderBy=null,double height=25.0, string id=null)
-        {
-            return ColumnAsync(caption, async (s) =>
-            {
-                var icon = await _icons.GetIconAsync(iconPath(s));
-                if (icon is FrameworkElement fe) fe.MaxHeight = height;
-                return icon;
-
-            }, orderBy);
-        }
-        public IColumnsProvider<T> Localize(string caption, Func<T,string> text,Func<T,object> orderBy=null,double height=25.0, string id=null)
-        {
-            return ColumnAsync(caption, async (s) =>
-            {
-
-                var localized = await _lang.LocalizeAsync(text(s));
-                return new Label { Content = localized };
-
-            }, orderBy);
-        }
-
-        public IColumnsProvider<T> ColumnAsync(string caption, Func<T,Task<object>> f,Func<T,object> orderBy,string id=null)
-        {
-            var c = new Column<T>(caption,t => new AsyncView{Getter = async () => await f(t)} ,orderBy, id, false);
-            _dict.Add(c.Id,c);
-            return this;
-        }
-        public IColumnsProvider<T> Column(string caption, Func<T,object> f,string id=null)
-        {
-            var c = new Column<T>(caption,f,f, id, false);
-            _dict.Add(c.Id,c);
-            return this;
-        }
-        public IColumnsProvider<T> Column(string caption,Func<T,object> getter, Func<T,object> orderBy,string id=null)
-        {
-            var c = new Column<T>(caption,getter,orderBy, id, false);
-            _dict.Add(c.Id,c);
-            return this;
-        }
-        //public ColumnsProvider<T> Hidden(string id, Func<T,Task<object>> f)
-        //{
-        //    var c = new Column<T>("", f, id, true);
-        //    _dict.Add(c.Id,c);
-        //    return this;
-        //}
-        public IColumnsProvider<T> Hidden(string id, Func<T,object> f)
-        {
-            var c = new Column<T>("", f,null, id, true);
-            _dict.Add(c.Id,c);
-            return this;
-        }
-
-        public object GetValue(T obj, string name)
-        {
-            if (_dict.ContainsKey(name))
-            {
-                return _dict[name].GetValue(obj);
-            }
-            else return null;
-        }
+        public object GetValue(T obj, string name) => _dict.ContainsKey(name) ? _dict[name].GetValue(obj) : null;
 
         public void Populate(object grid)
         {
-            if (grid is ListView lv && lv.View == null) lv.View = new GridView();
-
+            if (grid is ListView {View: null} lv) lv.View = new GridView();
 
             foreach (var column in _dict.Values)
             {
                 if (column.Hidden) continue;
-
 
                 var header = new ColumnHeaderView {
                     Caption = column.Header,
@@ -129,36 +66,34 @@ namespace HLab.Erp.Core.EntityLists
                 };
 
 
-                if (grid is DataGrid dataGrid)
+                switch (grid)
                 {
-                    var c = new DataGridTemplateColumn
+                    case DataGrid dataGrid:
                     {
-                        Header = header,
-                        //DisplayMemberBinding = new Binding(column.Id),
-                        CellTemplate = CreateColumnTemplate(column.Id),
-                        Width = column.Width,
-                    };
+                        var c = new DataGridTemplateColumn
+                        {
+                            Header = header,
+                            //DisplayMemberBinding = new Binding(column.Id),
+                            CellTemplate = CreateColumnTemplate(column.Id),
+                            Width = column.Width,
+                        };
                     
-                    dataGrid.Columns.Add(c);
-                }
-
-                else if (grid is ListView listView)
-                {
-
-                    if (listView.View is GridView gridView)
+                        dataGrid.Columns.Add(c);
+                        break;
+                    }
+                    case ListView {View : GridView gridView} :
                     {
-                        
-
                         var c = new GridViewColumn
                         {
                             Header = header,
                             Width = column.Width,
-                            
-                            //DisplayMemberBinding = new Binding(column.Id),
+                        
                             CellTemplate = CreateColumnTemplate(column.Id),
                         };
                         gridView.Columns.Add(c);
                         c.Width = column.Width;
+
+                        break;
                     }
                 }
             }

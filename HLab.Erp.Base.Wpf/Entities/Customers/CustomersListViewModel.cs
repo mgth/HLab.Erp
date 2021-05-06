@@ -2,6 +2,7 @@
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Erp.Core.ListFilters;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
@@ -18,18 +19,19 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
         }
 
         public CustomersListViewModel() : base(c => c
-            .AddAllowed()
-            .DeleteAllowed()
+// TODO             .AddAllowed()
+//TODO             .DeleteAllowed()
             .Column()
                 .Header("{Name}")
-                .OrderByOrder(0)
+//                .OrderByOrder(0)
                 .Link(s => s.Name)
                 .Filter()
+
             .Column()
                 .Header("{Country}")
-                .Content(s => s.Country)
+                .Link(s => s.Country)
                 //.Icon(s => s.IconPath)
-                .Mvvm()
+// TODO                .Mvvm()
             .Column()
                 .Header("{eMail}")
                 .Link(s => s.Email)

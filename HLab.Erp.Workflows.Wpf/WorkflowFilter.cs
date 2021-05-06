@@ -4,26 +4,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using HLab.Erp.Core;
 using HLab.Erp.Core.ListFilters;
-using HLab.Erp.Data;
-using HLab.Erp.Data.Observables;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Workflows
 {
-    public static class WorkflowFilterExtensions
-    {
-        public static IFilterConfigurator<T, WorkflowFilter<TC>> Link<T, TC>(this IFilterConfigurator<T, WorkflowFilter<TC>> fc, Expression<Func<T, string>> getter) 
-            where T : class, IEntity, new()
-            where TC : class, IWorkflow<TC>
-        {
-            fc.CurrentFilter.Link<T>(fc.Target().List, getter);
-            return fc;
-        }
-    }
-
-    public class WorkflowFilter<TClass>: FilterViewModel, IWorkflowFilter
+    public class WorkflowFilter<TClass>: Filter<string>, IWorkflowFilter
         where TClass : class, IWorkflow<TClass>
     {
 
@@ -47,7 +33,7 @@ namespace HLab.Erp.Workflows
         }
 
         public ReadOnlyObservableCollection<StageEntry> List { get; }
-        public ObservableCollection<StageEntry> _list = new();
+        private readonly ObservableCollection<StageEntry> _list = new();
 
         public WorkflowFilter()
         {
@@ -63,8 +49,6 @@ namespace HLab.Erp.Workflows
                 var stage = (IWorkflowStage)p.GetValue(null);
                 _list.Add(new StageEntry{Stage = stage});
             }
-
-            //IconPath = $"Icons/Workflows/{typeof(TClass).Name}";
         }
 
         private ITrigger _ = H<WorkflowFilter<TClass>>.Trigger(c => c
@@ -77,7 +61,7 @@ namespace HLab.Erp.Workflows
         public TClass Selected { get; set; }
 
 
-        public Expression<Func<T,bool>> Match<T>(Expression<Func<T, string>> getter)
+        public override Expression<Func<T,bool>> Match<T>(Expression<Func<T, string>> getter)
         {
             if (!Enabled) return null; 
 
@@ -86,24 +70,12 @@ namespace HLab.Erp.Workflows
 
             var ex = Expression.Call(value,ContainsMethod,getter.Body);
 
-            return Expression.Lambda<Func<T, bool>>(ex,entity);
+            return Expression.Lambda<Func<T, bool>>(ex, entity);
         }
 
-        public Action Update
+        public override Func<TSource, bool> PostMatch<TSource>(Func<TSource, string> getter)
         {
-            get => _update.Get();
-            set => _update.Set(value);
-        }
-        private readonly IProperty<Action> _update = H<WorkflowFilter<TClass>>.Property<Action>();
-
-
-        public WorkflowFilter<TClass> Link<T>(ObservableQuery<T> q, Expression<Func<T, string>> getter)
-            where T : class, IEntity
-        {
-            //var entity = getter.Parameters[0];
-            q.AddFilter(Header,()=> Match(getter));
-            Update = q.Update;
-            return this;
+            throw new NotImplementedException();
         }
 
     }

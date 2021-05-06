@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Dynamic;
 using System.Runtime.CompilerServices;
-using HLab.Erp.Core.Annotations;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.ViewModels.EntityLists
@@ -59,7 +59,6 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

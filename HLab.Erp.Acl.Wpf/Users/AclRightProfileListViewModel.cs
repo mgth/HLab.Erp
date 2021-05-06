@@ -1,6 +1,7 @@
 ﻿using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.ListFilterConfigurators;
 
 namespace HLab.Erp.Acl.Users
 {
@@ -8,8 +9,7 @@ namespace HLab.Erp.Acl.Users
     {
         public AclRightProfileListViewModel(AclRight right) : base(c => c
             .Column()
-                .Header("{Name}")
-                .Content(s => s.Profile.Name)
+            .Header("{Name}").Content(s => s.Profile.Name)
         )
         {
             OpenAction = target => Erp.Docs.OpenDocumentAsync(target.Profile);
@@ -17,8 +17,7 @@ namespace HLab.Erp.Acl.Users
         }
 
         public AclRightProfileListViewModel(Profile profile) : base (c => c
-            .Column().Header("{Name}")
-            .Content(s => s.AclRight.Caption)
+            .Column().Header("{Name}").Content(s => s.AclRight.Caption)
         )
         {
             OpenAction = target => { };

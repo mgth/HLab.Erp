@@ -47,6 +47,7 @@ namespace HLab.Erp.Core.ListFilters
         }
         protected override void Disable()
         {
+            _token?.Dispose();
             _token = Target.List.Suspender.Get();
         }
 

@@ -6,6 +6,7 @@ using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Erp.Core.ListFilters;
 using HLab.Icons.Wpf;
 using HLab.Icons.Wpf.Icons;
@@ -40,7 +41,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         }
 
         public IconsListViewModel() : base(c => c
-           .AddAllowed()
+// TODO            .AddAllowed()
                .Column()
                    .Header("{Path}")
                    .Link(s => s.Path)

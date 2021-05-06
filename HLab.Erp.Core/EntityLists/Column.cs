@@ -13,18 +13,10 @@ namespace HLab.Erp.Core.EntityLists
             Id = "C" + Guid.NewGuid().ToString().Replace('-', '_');
         }
 
-        public Column(object caption, Func<T, object> getter,Func<T, object> orderBy, string id, bool hidden)
-        {
-            Id = id ?? ("C" + Guid.NewGuid().ToString().Replace('-', '_'));
-            Header = caption;
-            OrderBy = orderBy;
-            Getter = getter;
-            Hidden = hidden;
-        }
-
         public bool Hidden { get; set; } = false;
 
         public object Header { get; set; } = "";
+        public string IconPath { get; set; } = "";
 
         public double Width { get; set; } = double.NaN;
 
@@ -36,13 +28,12 @@ namespace HLab.Erp.Core.EntityLists
 
         public Func<T, object> Getter { get; set; }
 
-        void IColumn<T>.AddGetter(Func<T,object, object> getter)
-        {
-            Getter = (a) => getter(a, Getter(a));
-        }
-
         public object GetValue(T value)
         {
+            #if DEBUG
+            if (Getter is null) return "<Null>";
+            #endif
+
             try
             {
                 return Getter(value);

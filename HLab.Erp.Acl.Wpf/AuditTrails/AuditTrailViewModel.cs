@@ -2,6 +2,7 @@
 using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Erp.Core.ListFilters;
 using HLab.Mvvm.Annotations;
 
@@ -29,35 +30,34 @@ namespace HLab.Erp.Acl.AuditTrails
         }
 
         protected AuditTrailsListViewModel() : base(c => c
-                .Column()
+                    .Column()
                     .Header("{Date}").Width(110)
                     .Link(at => at.TimeStamp)
-                        .Filter()
-                            .MaxDate(DateTime.Now)
-                            .MinDate(DateTime.Now - TimeSpan.FromDays(30))
+                    .Filter()
+                    .MaxDate(DateTime.Now)
+                    .MinDate(DateTime.Now - TimeSpan.FromDays(30))
 
-                .Column()
+                    .Column()
                     .Header("{Action}").Width(80)
                     .Link(at => at.Action)
-                        .Filter()
+                    .Filter()
 
-                .Column()
+                    .Column()
                     .Header("{Caption}").Width(200)
                     .Link(at => at.EntityCaption)
-                        .Filter()
+                    .Filter()
 
-                .Column()
+                    .Column()
                     .Header("{Class}").Width(80)
                     .Link(at => at.EntityClass)
-                        .Filter()
+                    .Filter()
 
-                .Column()
+                    .Column()
                     .Header("{Icon}").Width(60)
                     .Icon(at => at.IconPath)
 
-                .Column()
-                    .Header("{Log}").Width(350)
-                    .Content(at => LogAbstract(at.Log, 50))
+                    .Column()
+                    .Header("{Log}").Width(350).Content(at => LogAbstract(at.Log, 50))
 
                 .Column()
                     .Header("{Motivation}").Width(250)

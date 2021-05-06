@@ -1,6 +1,7 @@
 ﻿using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.ListFilterConfigurators;
 
 namespace HLab.Erp.Acl.Profiles
 {
@@ -12,22 +13,21 @@ namespace HLab.Erp.Acl.Profiles
         }
 
         public ProfilesListViewModel(User user) : base(c => c
-                .Column()
-                    .Header("{Name}").Width(100)
-                    .Content(s => s.Name)
-        
+            // TODO .StaticFilter(e => e.Id == user.Id)
+            .Column()
+            .Header("{Name}")
+            .Width(100)
+            .Link(s => s.Name)
         )
         {
-            // TODO : List.AddFilter(e => e.User == user.Id);
         }        
 
         public ProfilesListViewModel() : base(c => c
-            .AddAllowed()
-            .DeleteAllowed()
-            .Column()
-                    .Header("{Name}")
-                    .Width(100)
-                    .Content(s => s.Name)
+                .Column()
+                .Header("{Name}")
+                .Width(100).Content(s => s.Name)
+// TODO                 .AddAllowed()
+// TODO                .DeleteAllowed()
         )
         {
         }

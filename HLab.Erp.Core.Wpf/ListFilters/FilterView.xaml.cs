@@ -10,7 +10,7 @@ namespace HLab.Erp.Core.ListFilters
     /// <summary>
     /// Logique d'interaction pour FilterView.xaml
     /// </summary>
-    public partial class FilterView : UserControl, IView<ViewModeDefault, IFilterViewModel>
+    public partial class FilterView : UserControl, IView<ViewModeDefault, IFilter>
     {
         public FilterView()
         {
@@ -21,9 +21,11 @@ namespace HLab.Erp.Core.ListFilters
 
         private void ToggleButton_Checked(object sender, RoutedEventArgs e)
         {
-            var content = ContentControl.FindVisualChildren<IFilterContentViewClass>().First();
-
-            content.SetFocus();
+            var content = ContentControl.FindVisualChildren<IFilterContentViewClass>();
+            foreach (var control in content)
+            {
+                control.SetFocus();
+            }
 
             //if(content is UIElement element)
             //    element?.Focus();

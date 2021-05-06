@@ -18,22 +18,22 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Data.Observables
 {
-    //public interface IObservableQuery
-    //{
-    //    IEntity SelectedEntity { get; set; }
-    //    void Update();
-    //}
-    //public interface IObservableQuery<T> : ITriggerable, IObservableQuery, IList<T>
-    //    where T : class, IEntity
-    //{
-    //    IObservableQuery<T> AddFilter(Expression<Func<T, bool>> expression, int order = 0, string name = null);
-    //    IObservableQuery<T> SetSource(Func<IEnumerable<T>> src);
-    //    IObservableQuery<T> SetSource(Func<IQueryable<T>, IQueryable<T>> src);
-    //    void Update(bool force = true);
-    //}
+    public interface IObservableQuery
+    {
+        void Update();
+    }
+    public interface IObservableQuery<T> : ITriggerable, IObservableQuery, IList<T>
+    {
+        Suspender Suspender { get; }
+
+        void AddFilter(Expression<Func<T, bool>> filter, int order = 0, object name = null);
+        void AddFilter(Func<Expression<Func<T, bool>>> filter, int order = 0, object name = null);
+        void RemoveFilter(object header);
+        void AddPostFilter(object header, Func<T, bool> postMatch);
+    }
 
     [Export(typeof(ObservableQuery<>))]
-    public class ObservableQuery<T> : ObservableCollectionNotifier<T>, ITriggerable//, IObservableQuery<T>
+    public class ObservableQuery<T> : ObservableCollectionNotifier<T>, IObservableQuery<T>, ITriggerable//, IObservableQuery<T>
         where T : class, IEntity
     {
 
@@ -195,6 +195,14 @@ namespace HLab.Erp.Data.Observables
 
         public ObservableQuery<T> AddFilter(Expression<Func<T, bool>> expression, int order = 0, object name = null)
             => AddFilter(() => expression, order, name);
+        void IObservableQuery<T>.AddFilter(Func<Expression<Func<T, bool>>> filter, int order, object name)
+            => AddFilter(filter, order, name);
+
+        void IObservableQuery<T>.RemoveFilter(object header) => RemoveFilter(header);
+
+        void IObservableQuery<T>.AddPostFilter(object header, Func<T, bool> postMatch)
+            => AddPostFilter(header, postMatch);
+
         public ObservableQuery<T> AddFilter(Func<Expression<Func<T, bool>>> expression, int order = 0, object name = null)
         {
             lock (_lockFilters)
@@ -656,6 +664,8 @@ namespace HLab.Erp.Data.Observables
             return false;
         }
 
+        void IObservableQuery<T>.AddFilter(Expression<Func<T, bool>> filter, int order, object name) => AddFilter(filter,order,name);
+
         public void OnTriggered()
         {
             Update();
@@ -669,5 +679,6 @@ namespace HLab.Erp.Data.Observables
         {
             throw new NotImplementedException("Observable Query is readOnly");
         }
+
     }
 }

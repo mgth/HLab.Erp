@@ -1,6 +1,7 @@
 ﻿using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Acl.Users
@@ -12,23 +13,32 @@ namespace HLab.Erp.Acl.Users
         }
 
         public UsersListViewModel() : base(c => c
-            .DeleteAllowed()
-            .AddAllowed()
-                .Column()
-                    .Header("{First Name}").Width(150)
-                    .Content(u => u.FirstName)
-                .Column()
-                    .Header("{Name}").Width(100)
-                    .Content(u => u.Name)
-                .Column()
-                    .Header("{Login}").Width(100)
-                    .Content(u => u.Login)
-                .Column()
-                    .Header("{Function}").Width(250)
-                    .Content(u => u.Function)
-                .Column()
-                    .Header("{Initials}").Width(70)
-                    .Content(u => u.Initials)
+// TODO :                .DeleteAllowed()
+//                .AddAllowed()
+            .Column()
+            .Header("{First Name}").Width(150)
+            .Link(u => u.FirstName)
+            .Filter()
+
+            .Column()
+            .Header("{Name}").Width(100)
+            .Link(u => u.Name)
+            .Filter()
+
+            .Column()
+            .Header("{Login}").Width(100)
+            .Link(u => u.Login)
+            .Filter()
+
+            .Column()
+            .Header("{Function}").Width(250)
+            .Link(u => u.Function)
+            .Filter()
+
+            .Column()
+            .Header("{Initials}").Width(70)
+            .Link(u => u.Initials)
+            .Filter()
         )
         {
         }

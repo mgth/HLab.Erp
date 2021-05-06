@@ -1,50 +1,47 @@
 ﻿using HLab.Base.Extensions;
-using HLab.Core.Annotations;
-using HLab.Erp.Core.Tools.Details;
 using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using HLab.Erp.Core.Annotations;
-using HLab.Mvvm.Application;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NPoco;
 using Grace.DependencyInjection.Attributes;
+using HLab.Erp.Core.ListFilterConfigurators;
+using HLab.Erp.Core.ListFilters;
+using HLab.Erp.Core.Tools.Details;
 
 namespace HLab.Erp.Core.EntityLists
 {
+    public interface IEntityListHelper<T> where T : class, IEntity, new()
+    {
+        void Populate(object grid, IColumnsProvider<T> provider);
+        object GetListView(IList list);
+        Task ExportAsync(ObservableQuery<T> list, IContractResolver resolver);
+        public Task<IEnumerable<T>> ImportAsync();
+    }
+
     public abstract class EntityListViewModel : ViewModel, IEntityListViewModel
     {
         protected Func<Type, object> _get;
         protected IErpServices Erp { get; private set; }
 
-        bool _injected;
-
         [Import]
         public void Inject(IErpServices erp, Func<Type, object> get)
         {
-            if (_injected) return;
-            _injected = true;
-
             _get = get;
             Erp = erp;
             Filters = new(filters);
@@ -55,12 +52,12 @@ namespace HLab.Erp.Core.EntityLists
 
         public abstract void SetOpenAction(Action<object> action);
         public abstract void SetSelectAction(Action<object> action);
-        protected readonly ObservableCollection<IFilterViewModel> filters = new();
-        public ReadOnlyObservableCollection<IFilterViewModel> Filters { get; private set; }
+        protected readonly ObservableCollection<IFilter> filters = new();
+        public ReadOnlyObservableCollection<IFilter> Filters { get; private set; }
 
 
-        public void AddFilter(IFilterViewModel filter) => filters.Add(filter);
-        public T GetFilter<T>() where T : IFilterViewModel => (T)_get(typeof(T));
+        public void AddFilter(IFilter filter) => filters.Add(filter);
+        public T GetFilter<T>() where T : IFilter => (T)_get(typeof(T));
         public abstract void Start();
 
 
@@ -78,6 +75,14 @@ namespace HLab.Erp.Core.EntityLists
     public class EntityListViewModel<T> : EntityListViewModel, IEntityListViewModel<T>
         where T : class, IEntity, new()
     {
+        private IEntityListHelper<T> _helper;
+        [Import]
+        public void Inject(IEntityListHelper<T> helper)
+        {
+            _helper = helper;
+        }
+
+
         public object Header
         {
             get => _header.Get();
@@ -111,7 +116,7 @@ namespace HLab.Erp.Core.EntityLists
 
 
         public IEntityListViewModel<T> AddFilter<TFilter>(Action<FiltersFluentConfigurator<T, TFilter>> configure)
-            where TFilter : IFilterViewModel, new()
+            where TFilter : IFilter, new()
         {
             var c = new FiltersFluentConfigurator<T, TFilter>(List, new TFilter());
             configure(c);
@@ -137,7 +142,7 @@ namespace HLab.Erp.Core.EntityLists
         public ObservableCollection<IObjectMapper> ListViewModel { get; } = new();
         private readonly ConcurrentDictionary<T, dynamic> _cache = new();
 
-        private Func<ObservableQuery<T>, ColumnsProvider<T>> _getColumnsProvider;
+        private Func<ObservableQuery<T>, IColumnsProvider<T>> _getColumnsProvider;
 
         bool _injected = false;
 
@@ -145,7 +150,7 @@ namespace HLab.Erp.Core.EntityLists
         public void Inject(
             Func<T> createInstance,
             ObservableQuery<T> list,
-            Func<ObservableQuery<T>, ColumnsProvider<T>> getColumnsProvider
+            Func<ObservableQuery<T>, IColumnsProvider<T>> getColumnsProvider
             )
         {
             if (_injected) return;
@@ -164,11 +169,8 @@ namespace HLab.Erp.Core.EntityLists
 
             H<EntityListViewModel<T>>.Initialize(this);
 
-//            using (var s = List.Suspender.Get())
-            using (var c = new ListConfigurator<T>(this))
-            {
-                _configurator.Invoke(c);
-            }
+            var c = new ColumnConfigurator<T,object,IFilter<object>>(this);
+            _configurator.Invoke(c)?.Dispose();
 
             Header ??= GetTitle();
 
@@ -176,8 +178,8 @@ namespace HLab.Erp.Core.EntityLists
                 IconPath = "Icons/Entities/" + typeof(T).Name;
         }
 
-        private readonly Func<IMainListConfigurator<T>, IListConfigurator<T>> _configurator;
-        public EntityListViewModel(Func<IMainListConfigurator<T>, IListConfigurator<T>> configurator)
+        private readonly Func<IColumnConfigurator<T,object,IFilter<object>>, IDisposable> _configurator;
+        public EntityListViewModel(Func<IColumnConfigurator<T,object,IFilter<object>>, IDisposable> configurator)
         {
             _configurator = configurator;
         }
@@ -293,32 +295,11 @@ namespace HLab.Erp.Core.EntityLists
             }
         }
 
-        public ListCollectionView ListCollectionView => _listCollectionView.Get();
-        private readonly IProperty<ListCollectionView> _listCollectionView = H<EntityListViewModel<T>>.Property<ListCollectionView>(c => c
-            .Set(setter: e =>
-            {
-                var lcv = new ListCollectionView(e.ListViewModel);
-                lcv.GroupDescriptions.Add(new PropertyGroupDescription("FileId"));
-                return lcv;
-            }));
+        public object ListCollectionView => _listCollectionView.Get();
+        private readonly IProperty<object> _listCollectionView = H<EntityListViewModel<T>>.Property<object>(c => c
+            .Set(setter: e => e._helper.GetListView(e.ListViewModel)));
 
-        public override void Populate(object grid)
-        {
-            if (grid is ItemsControl dataGrid)
-            {
-                dataGrid.SourceUpdated += delegate (object sender, DataTransferEventArgs args)
-                {
-                    ICollectionView cv = CollectionViewSource.GetDefaultView(dataGrid.ItemsSource);
-                    if (cv != null)
-                    {
-                        cv.GroupDescriptions.Clear();
-                        cv.GroupDescriptions.Add(new PropertyGroupDescription("Group"));
-                    }
-                };
-
-                Columns.Populate(grid);
-            }
-        }
+        public override void Populate(object grid) => _helper.Populate(grid, Columns);
 
         public T Selected
         {
@@ -437,29 +418,7 @@ namespace HLab.Erp.Core.EntityLists
         }
 
 
-        private async Task ExportAsync()
-        {
-            var filename = typeof(T).Name + "-export.gz";
-            SaveFileDialog saveFileDialog = new() { FileName = filename, DefaultExt = "gz" };
-            if (saveFileDialog.ShowDialog() == false) return;
-
-            var text = JsonConvert.SerializeObject(
-                List.ToList(),
-                Formatting.Indented,
-                new JsonSerializerSettings { ContractResolver = new ContractResolver() });
-
-            await using var sourceStream = new MemoryStream(Encoding.UTF8.GetBytes(text));
-            await using var fileStream = File.Create(saveFileDialog.FileName);
-            await using var gzipStream = new GZipStream(fileStream, CompressionMode.Compress);
-            try
-            {
-                await sourceStream.CopyToAsync(gzipStream);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
+        private Task ExportAsync() => _helper.ExportAsync(List, new ContractResolver());
 
         public ICommand ImportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
                 .CanExecute(e => e.CanExecuteAdd())
@@ -468,28 +427,13 @@ namespace HLab.Erp.Core.EntityLists
                 .CheckCanExecute()
         );
 
+        IObservableQuery<T> IEntityListViewModel<T>.List => List;
+
+        IColumnsProvider<T> IEntityListViewModel<T>.Columns => Columns;
+
         private async Task ImportAsync()
         {
-            var filename = typeof(T).Name + "-export.gz";
-            OpenFileDialog openFileDialog = new() { FileName = filename, Filter = $"{typeof(T).Name}|*.{typeof(T).Name}.gz" };
-            if (openFileDialog.ShowDialog() == false) return;
-
-            await using var fileStream = File.OpenRead(openFileDialog.FileName);
-            await using var resultStream = new MemoryStream();
-            await using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
-            try
-            {
-                await gzipStream.CopyToAsync(resultStream);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-
-
-            var text = Encoding.UTF8.GetString(resultStream.ToArray()); ;
-            List<T> list = JsonConvert.DeserializeObject<List<T>>(text);
+            var list = await _helper.ImportAsync();
             foreach (var entity in list)
             {
                 await ImportAsync(Erp.Data, entity);
@@ -526,5 +470,12 @@ namespace HLab.Erp.Core.EntityLists
         protected virtual bool CanExecuteOpen() => true;
 
         public override void Start() => List.Start();
+
+        IEntityListViewModel<T> IEntityListViewModel<T>.AddFilter<TFilter>(Action<FiltersFluentConfigurator<T, TFilter>> configure)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IEntityListViewModel<T>.AddFilter(IFilter filter) => AddFilter(filter);
     }
 }
