@@ -32,6 +32,28 @@ namespace HLab.Erp.Core.EntityLists
             _list = list;
         }
 
+        private IColumn<T> _orderByColumn = null;
+
+        private void SetOrderBy(IColumn<T> column)
+        {
+            if (column == _orderByColumn) return;
+
+            var next = column.OrderByNext;
+            column.OrderByNext = _orderByColumn;
+            _orderByColumn = column;
+            var c = _orderByColumn;
+            while (c.OrderByNext != null)
+            {
+                if (c.OrderByNext == column)
+                {
+                    c.OrderByNext = next;
+                    return;
+                }
+
+                c = c.OrderByNext;
+            }
+        }
+
         public object GetValue(T obj, string name) => _dict.ContainsKey(name) ? _dict[name].GetValue(obj) : null;
 
         public void Populate(object grid)
@@ -43,6 +65,7 @@ namespace HLab.Erp.Core.EntityLists
                 if (column.Hidden) continue;
 
                 var header = new ColumnHeaderView {
+                    IconPath = column.IconPath,
                     Caption = column.Header,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     HorizontalContentAlignment = HorizontalAlignment.Stretch,
@@ -51,15 +74,18 @@ namespace HLab.Erp.Core.EntityLists
 
                 header.SortDirectionChanged += (a, b) =>
                 {
-                    foreach (var c in _dict.Values.Where(c => c.OrderByOrder<column.OrderByOrder).ToArray())
+                    if (a is ColumnHeaderView h)
                     {
-                        c.OrderByOrder++;
+                        column.SortDirection = h.SortDirection;
                     }
-                    column.OrderByOrder = 0;
+
+                    SetOrderBy(column);
                     _list.ResetOrderBy();
-                    foreach (var c in _dict.Values.OrderBy(e => e.OrderByOrder))
+                    var c = _orderByColumn;
+                    while (c != null)
                     {
-                        _list.AddOrderBy(c.OrderBy,c.OrderDescending,c.OrderByOrder);
+                        _list.AddOrderBy(c.OrderBy,c.SortDirection);
+                        c = c.OrderByNext;
                     }
 
                     _list.Update();
@@ -125,14 +151,12 @@ namespace HLab.Erp.Core.EntityLists
 
                 header.Click += (a, b) =>
                 {
-                    foreach (var col in _dict.Values)
+                    SetOrderBy(column);
+                    _list.ResetOrderBy();
+                    var c = _orderByColumn;
+                    while (c != null)
                     {
-                        if (col.OrderByOrder < column.OrderByOrder) col.OrderByOrder++;
-                    }
-                    column.OrderByOrder = 0;
-                    foreach (var col in _dict.Values.OrderByDescending(e => e.OrderByOrder))
-                    {
-                        _list.AddOrderBy(col.OrderBy,col.OrderDescending);
+                        _list.AddOrderBy(c.OrderBy,c.SortDirection);
                     }
 
                     _list.Update();

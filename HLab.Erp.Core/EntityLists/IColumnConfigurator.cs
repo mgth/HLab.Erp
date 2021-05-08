@@ -10,6 +10,9 @@ namespace HLab.Erp.Core.EntityLists
     {
         IEntityListViewModel Target { get; }
         IColumn Column { get; }
+        IErpServices Erp { get; }
+
+        string Localize(string s) => Erp.Localization.Localize(s);
     }
 
     public interface IColumnConfigurator<T> : IColumnConfigurator
@@ -17,6 +20,9 @@ namespace HLab.Erp.Core.EntityLists
     {
         new IEntityListViewModel<T> Target { get; }
         new IColumn<T> Column { get; }
+        IColumnConfigurator<T, object, IFilter<object>> GetNewConfigurator();
+        IColumnConfigurator<T, TLinkChild, TFilterChild> GetChildConfigurator<TLinkChild, TFilterChild>()
+            where TFilterChild : IFilter<TLinkChild>;
     }
 
     public interface IColumnConfigurator<T, TLink> : IColumnConfigurator<T>
@@ -32,8 +38,7 @@ namespace HLab.Erp.Core.EntityLists
     {
         TFilter Filter { get; }
 
-        IColumnConfigurator<T, TLinkChild, TFilterChild> GetChildConfigurator<TLinkChild, TFilterChild>()
-            where TFilterChild : IFilter<TLinkChild>;
+
     }
 
     public class ColumnConfigurationException : Exception

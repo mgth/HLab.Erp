@@ -21,6 +21,30 @@ namespace HLab.Erp.Data
         private readonly AsyncDictionary<object,T> _cache = new();
         private bool _fullCache = false;
 
+        public IEnumerable<T> Fetch(Expression<Func<T, bool>> expression)
+        {
+#if DEBUG
+            var literal = expression.ToString();
+#endif
+
+            var e = expression.Compile();
+
+            if (!_fullCache)
+            {
+                using var db = DataService.Get();
+                var dbList = db.Query<T>().ToEnumerable();
+
+                foreach (var obj in dbList)
+                {
+                    var cached = GetOrAdd(obj);
+                    if(e(cached)) yield return cached;
+                }
+
+                _fullCache = true;
+            }
+            else
+                foreach (var item in _cache.Where(expression)) yield return item;
+        }
 
         public async IAsyncEnumerable<T> FetchAsync(Expression<Func<T, bool>> expression)
         {
@@ -55,6 +79,14 @@ namespace HLab.Erp.Data
         {
             var r = await _cache.TryRemoveAsync(obj.Id).ConfigureAwait(false);
             return r.Item1;
+        }
+        public IEnumerable<T> GetOrAdd(IEnumerable<T> list)
+        {
+            foreach (var e in list)
+            {
+                var obj = GetOrAdd(e);
+                yield return obj;
+            }
         }
 
         public async IAsyncEnumerable<T> GetOrAddAsync(IAsyncEnumerable<T> list)

@@ -88,6 +88,11 @@ namespace HLab.Erp.Data
         Task<T> GetOrAddAsync<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null) where T : class, IEntity;
         Task<T> GetOrAddAsync<T>(T entity) where T : class, IEntity;
 
+        IEnumerable<T> FetchWhere<T>(
+            Expression<Func<T, bool>> expression,
+            Expression<Func<T,object>> orderBy = null
+        ) where T : class, IEntity;
+
         IAsyncEnumerable<T> FetchWhereAsync<T>(
             Expression<Func<T, bool>> expression,
             Expression<Func<T,object>> orderBy = null

@@ -2,7 +2,6 @@
 { 
     public enum ConformityState
     {
-        Undefined = -1,
         NotChecked = 0,
         Running = 1,
         NotConform = 2,

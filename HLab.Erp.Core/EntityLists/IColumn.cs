@@ -4,6 +4,7 @@ using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.EntityLists
 {
+
     public interface IColumn
     {
         string Id { get; set; }
@@ -11,8 +12,7 @@ namespace HLab.Erp.Core.EntityLists
         object Header { get; set; }
         string IconPath { get; set; }
         double Width { get; set; }
-        int OrderByOrder { get; set; }
-        bool OrderDescending { get; set; }
+        SortDirection SortDirection { get; set; }
 
         public interface IHelper
         {
@@ -25,6 +25,9 @@ namespace HLab.Erp.Core.EntityLists
     {
         Func<T, object> OrderBy { get; set; }
         Func<T, object> Getter { get; set; }
+
+        IColumn<T> OrderByNext { get; set; }
+
         object GetValue(T target);
 
         public new interface IHelper : IColumn.IHelper
@@ -37,6 +40,7 @@ namespace HLab.Erp.Core.EntityLists
             Expression Link { get; set; }
             Expression<Func<T, TLink>> GetLinkExpression<TLink>() => (Expression<Func<T, TLink>>)Link;
 
+            IErpServices Erp { get; }
         }
     }
 }

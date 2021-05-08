@@ -27,7 +27,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             where T : class, IEntity, new()
             where TFilter : IFilter<TLink>
         {
-            var result = new ColumnConfigurator<T,object,IFilter<object>>(c.Target);
+            var result = c.GetNewConfigurator();
             c.Dispose();
             return result;
         }
@@ -114,6 +114,17 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             result.Link = GetterIdNullableFromGetter(getter);
 
             return result;
+        }
+        public static IColumnConfigurator<T,TLink,TFilter> Content<T, TLink, TFilter>(this IColumnConfigurator<T,TLink,TFilter> c, Func<T, object> getter)
+            where T : class, IEntity, new()
+            where TFilter : IFilter<TLink>
+        {
+            c.Column.Getter = getter;
+            if (c.Column.OrderBy == null)
+            {
+                c.Column.OrderBy = getter;
+            }
+            return c;
         }
 
         public static IColumnConfigurator<T, TLink, TFilterOut> Filter<T, TLink, TFilterIn, TFilterOut>(this IColumnConfigurator<T, TLink, TFilterIn> c, TFilterOut filter)
@@ -246,7 +257,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         }
         public static IColumnConfigurator<T, int?, EntityFilterNullable<TE>> Column<T, TLink, TFilter, TE>(this IColumnConfigurator<T, TLink, TFilter> c,
             Expression<Func<T, TE>> getter,
-            Expression<Func<T, int?>> getterId = null,
+//            Expression<Func<T, int?>> getterId = null,
             double width = double.NaN
         )
             where T : class, IEntity, new()
@@ -254,13 +265,14 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             where TE : class, IListableModel, IEntity<int>, new()
         {
             var lambda = getter.Compile();
-            getterId ??= GetterIdNullableFromGetter(getter);
+//            getterId ??= GetterIdNullableFromGetter(getter);
 
             return c.Column()
                 .Header($"{{{typeof(TE).Name}}}")
                 .Width(width)
-                .OrderBy(e => lambda(e)?.Caption)
                 .LinkNullable(getter)
+                .Content(e => lambda(e))
+                .OrderBy(e => c.Localize(lambda(e)?.Caption))
                 // TODO                .Icon(e => lambda(e)?.IconPath)
                 .Filter()
                 ;

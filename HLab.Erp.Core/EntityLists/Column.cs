@@ -1,4 +1,5 @@
 ﻿using System;
+using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.EntityLists
 {
@@ -22,11 +23,11 @@ namespace HLab.Erp.Core.EntityLists
 
         public Func<T, object> OrderBy { get;  set; }
 
-        public int OrderByOrder { get;  set; }
-
-        public bool OrderDescending { get;  set; }
+        public SortDirection SortDirection { get;  set; }
 
         public Func<T, object> Getter { get; set; }
+
+        public IColumn<T> OrderByNext { get; set; }
 
         public object GetValue(T value)
         {
@@ -48,7 +49,7 @@ namespace HLab.Erp.Core.EntityLists
 
         public override string ToString()
         {
-            return Header.ToString() + OrderByOrder.ToString();
+            return Header.ToString();
         }
     }
 }

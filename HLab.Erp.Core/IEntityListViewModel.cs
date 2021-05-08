@@ -43,9 +43,13 @@ namespace HLab.Erp.Core
         void SetOpenAction(Action<object> action);
         void SetSelectAction(Action<object> action);
         ReadOnlyObservableCollection<IFilter> Filters { get; }
+
         ICommand AddCommand { get; }
+        ICommand DeleteCommand { get; }
+
         dynamic SelectedViewModel { get; set; }
         IEnumerable<int> SelectedIds { get; set; }
+
         void RefreshColumn(string column);
         void RefreshColumn(string column, int id);
 
@@ -57,9 +61,6 @@ namespace HLab.Erp.Core
     {
         IObservableQuery<T> List { get; }
         IColumnsProvider<T> Columns { get; }
-
-        IEntityListViewModel<T> AddFilter<TFilter>(Action<FiltersFluentConfigurator<T,TFilter>> configure)
-            where TFilter : IFilter, new();
 
         void AddFilter(IFilter filter);
     }

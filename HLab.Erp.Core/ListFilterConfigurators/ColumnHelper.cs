@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Core.EntityLists;
 
 namespace HLab.Erp.Core.ListFilterConfigurators
 {
+    [Export(typeof(IColumn<>.IHelper)) ]
     public class ColumnHelper<T> : IColumn<T>.IHelper
     {
-        public ColumnHelper(IColumn<T> column, IEntityListViewModel<T> target)
+        public IErpServices Erp { get; }
+        public ColumnHelper(IColumn<T> column, IEntityListViewModel<T> target, IErpServices erp)
         {
             Column = column;
             Target = target;
+            Erp = erp;
         }
 
         public IEntityListViewModel<T> Target { get; }
@@ -39,5 +43,6 @@ namespace HLab.Erp.Core.ListFilterConfigurators
 
         IColumn IColumn.IHelper.Column => Column;
         IEntityListViewModel IColumn.IHelper.Target => Target;
+
     }
 }

@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using HLab.Base.Wpf;
+using HLab.Erp.Data;
 using HLab.Localization.Wpf.Lang;
 
 namespace HLab.Erp.Core.EntityLists
@@ -10,12 +11,6 @@ namespace HLab.Erp.Core.EntityLists
     using H = DependencyHelper<ColumnHeaderView>;
 
 
-    public enum SortDirection
-    {
-        None,
-        Ascending,
-        Descending
-    }
 
     public class SortDirectionEventArg : RoutedEventArgs
     {

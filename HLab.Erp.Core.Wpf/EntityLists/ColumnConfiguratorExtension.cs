@@ -25,17 +25,6 @@ namespace HLab.Erp.Core.EntityLists
             return c.Content(t => new IconView { Path = getPath(t) ?? "", IconMaxHeight = size, IconMaxWidth = size, Caption = getContent(t) ?? "" });
         }
 
-        public static IColumnConfigurator<T,TLink,TFilter> Content<T, TLink, TFilter>(this IColumnConfigurator<T,TLink,TFilter> c, Func<T, object> getter)
-            where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
-        {
-            c.Column.Getter = getter;
-            if (c.Column.OrderBy == null)
-            {
-                c.Column.OrderBy = getter;
-            }
-            return c;
-        }
 
         public static IColumnConfigurator<T,TLink,TFilter> Content<T, TLink, TFilter>(this IColumnConfigurator<T,TLink,TFilter> c, Func<T, Task<object>> getter)
             where T : class, IEntity, new()

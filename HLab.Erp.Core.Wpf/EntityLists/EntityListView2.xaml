@@ -13,8 +13,17 @@
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
              >
     <UserControl.Resources>
-
+        <ResourceDictionary>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                    <Style.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
+
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -40,18 +49,6 @@
         <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
 
             <Button Command ="{Binding AddCommand}">
-                <Button.Style>
-                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                        <Style.Triggers>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </Trigger>
-                                <DataTrigger Binding="{Binding AddAllowed}" Value="False">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
                 <Button.ToolTip><lang:Localize Id="{}{Add}"/></Button.ToolTip>
                 <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
             </Button>
@@ -63,9 +60,6 @@
                                 <Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </Trigger>
-                                <DataTrigger Binding="{Binding DeleteAllowed}" Value="False">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
@@ -80,19 +74,10 @@
             </Button>
 
             <Button Grid.Row="1" Grid.Column="1" Command="{Binding OpenCommand}">
-                <Button.Style>
-                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                        <Style.Triggers>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-
                 <Button.ToolTip><lang:Localize Id="{}{Open}"/></Button.ToolTip>
                 <icons:IconView Path="Icons/OpenForeign" MaxHeight="15"/>
             </Button>
+
             <Button Command="{Binding ExportCommand}">                    
                 <Button.ToolTip><lang:Localize Id="{}{Refresh}"/></Button.ToolTip>
                 <icons:IconView Path="Icons/Export" MaxHeight="15"/>

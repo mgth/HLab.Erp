@@ -16,7 +16,9 @@
             <converters:ToVisibilityConverter x:Key="ToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Button Click="ButtonBase_OnClick" HorizontalContentAlignment="Stretch">
+    <Button 
+        BorderThickness="0"
+        Click="ButtonBase_OnClick" HorizontalContentAlignment="Stretch">
             <Grid HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -27,19 +29,37 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <icons:IconView Grid.Column="0" Path ="{Binding IconPath,ElementName=UserControl}"/>
+                <icons:IconView 
+                    Grid.Column="0" 
+                    Path ="{Binding IconPath,ElementName=UserControl}"
+                    Caption="{Binding Caption,ElementName=UserControl}"
+                    Height="20"
+                    />
                 
-                <StackPanel Grid.Row="1" Grid.Column="1" Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource ToVisibilityConverter}}">
-                    <TextBlock Text="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type local:ColumnHeaderView}}}"/>
+                <!--<ContentControl 
+                    HorizontalAlignment="Stretch" 
+                    HorizontalContentAlignment="Center" 
+                    VerticalAlignment="Center"
+                    Grid.Row="0"
+                                Grid.Column="1" Content="{Binding Caption,ElementName=UserControl}">
+                    --><!--<ContentControl.ToolTip>
+                    </ContentControl.ToolTip>--><!--
+                </ContentControl>-->
+
+                <StackPanel 
+                    Grid.Row="0" 
+                    Grid.Column="1" 
+                    Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource ToVisibilityConverter}}">
+
+                    <TextBlock 
+                        Foreground="#80FFFFFF" 
+                        Text="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type local:ColumnHeaderView}}}"
+                        HorizontalAlignment="Right"
+                        />
                     <TextBlock Text="{Binding Type}"/>
 
                 </StackPanel>
                 
-                <ContentControl HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Row="0"
-                                Grid.Column="1" Content="{Binding Caption,ElementName=UserControl}">
-                    <!--<ContentControl.ToolTip>
-                    </ContentControl.ToolTip>-->
-                </ContentControl>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">
                     <!--<TextBlock Text="{Binding OrderByOrder,ElementName=UserControl}"/>-->

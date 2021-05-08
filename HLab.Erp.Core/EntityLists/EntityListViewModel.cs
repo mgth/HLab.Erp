@@ -82,13 +82,11 @@ namespace HLab.Erp.Core.EntityLists
             _helper = helper;
         }
 
-
         public object Header
         {
             get => _header.Get();
             set => _header.Set(value);
         }
-
         private readonly IProperty<object> _header = H<EntityListViewModel<T>>.Property<object>();
 
         public string IconPath
@@ -96,33 +94,17 @@ namespace HLab.Erp.Core.EntityLists
             get => _iconPath.Get();
             set => _iconPath.Set(value);
         }
-
         private readonly IProperty<string> _iconPath = H<EntityListViewModel<T>>.Property<string>();
 
         private string GetTitle() => $"{{{GetName().FromCamelCase()}}}";
         private string GetName() => GetType().Name.BeforeSuffix("ListViewModel");
 
-        public ICommand MenuCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-            .Action(e => e.Erp.Docs.OpenDocumentAsync(e.GetType()))
-        );
-
-
         protected Func<T> CreateInstance { get; private set; }
-
 
         public ObservableQuery<T> List { get; private set; }
 
         public IColumnsProvider<T> Columns { get; set; }
 
-
-        public IEntityListViewModel<T> AddFilter<TFilter>(Action<FiltersFluentConfigurator<T, TFilter>> configure)
-            where TFilter : IFilter, new()
-        {
-            var c = new FiltersFluentConfigurator<T, TFilter>(List, new TFilter());
-            configure(c);
-            filters.Add(c.Target);
-            return this;
-        }
 
         public override void RefreshColumn(string column)
         {
@@ -131,6 +113,7 @@ namespace HLab.Erp.Core.EntityLists
                 vm.Refresh(column);
             }
         }
+
         public override void RefreshColumn(string column, int id)
         {
             foreach (var vm in ListViewModel.Where(e => e.Id == id))
@@ -144,18 +127,14 @@ namespace HLab.Erp.Core.EntityLists
 
         private Func<ObservableQuery<T>, IColumnsProvider<T>> _getColumnsProvider;
 
-        bool _injected = false;
-
         [Import]
         public void Inject(
             Func<T> createInstance,
             ObservableQuery<T> list,
-            Func<ObservableQuery<T>, IColumnsProvider<T>> getColumnsProvider
+            Func<ObservableQuery<T>, IColumnsProvider<T>> getColumnsProvider,
+            Func<IEntityListViewModel<T>, IColumnConfigurator<T,object,IFilter<object>>> getConfigurator
             )
         {
-            if (_injected) return;
-            _injected = true;
-
             CreateInstance = createInstance;
             List = list;
 
@@ -169,7 +148,7 @@ namespace HLab.Erp.Core.EntityLists
 
             H<EntityListViewModel<T>>.Initialize(this);
 
-            var c = new ColumnConfigurator<T,object,IFilter<object>>(this);
+            var c = getConfigurator(this);
             _configurator.Invoke(c)?.Dispose();
 
             Header ??= GetTitle();
@@ -184,8 +163,9 @@ namespace HLab.Erp.Core.EntityLists
             _configurator = configurator;
         }
 
+        #region COMMANDS
         public ICommand OpenCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-            .CanExecute(e => e.Selected != null)
+            .CanExecute(e => e.CanExecuteOpen())
             .Action(e => e.OpenAction.Invoke(e.Selected))
             .On(e => e.Selected).CheckCanExecute()
         );
@@ -193,6 +173,42 @@ namespace HLab.Erp.Core.EntityLists
         public ICommand RefreshCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
             .Action(e => e.List.Update())
         );
+        
+        public override ICommand DeleteCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
+            .CanExecute(e => e.CanExecuteDelete())
+            .Action(async e => await e.DeleteEntityAsync(e.Selected))
+            .On(e => e.Selected)
+            .CheckCanExecute()
+        );
+
+        public override ICommand AddCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
+            .CanExecute(e => e.CanExecuteAdd())
+            .Action(async e => await e.AddEntityAsync())
+            .On(e => e.Selected)
+            .CheckCanExecute()
+        );
+        public ICommand ExportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
+            .CanExecute(e => e.CanExecuteExport())
+            .Action(async e => await e.ExportAsync())
+            .On(e => e.Selected)
+            .CheckCanExecute()
+        );
+        public ICommand ImportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
+            .CanExecute(e => e.CanExecuteImport())
+            .Action(async e => await e.ImportAsync())
+            .On(e => e.Selected)
+            .CheckCanExecute()
+        );
+        protected virtual bool CanExecuteOpen() => true;
+
+        protected virtual bool CanExecuteDelete() => false;
+        protected virtual bool CanExecuteAdd() => false;
+
+        protected virtual bool CanExecuteImport() => false;
+        protected virtual bool CanExecuteExport() => false;
+        #endregion
+
+
 
         protected Action<T> OpenAction;
         public override void SetOpenAction(Action<object> action) => OpenAction = action;
@@ -218,39 +234,6 @@ namespace HLab.Erp.Core.EntityLists
             set => _message.Set(value);
         }
         private readonly IProperty<string> _message = H<EntityListViewModel<T>>.Property<string>();
-
-        public bool AddAllowed
-        {
-            get => _addAllowed.Get();
-            set => _addAllowed.Set(value);
-        }
-        private readonly IProperty<bool> _addAllowed = H<EntityListViewModel<T>>.Property<bool>();
-
-        public bool DeleteAllowed
-        {
-            get => _deleteAllowed.Get();
-            set => _deleteAllowed.Set(value);
-        }
-        private readonly IProperty<bool> _deleteAllowed = H<EntityListViewModel<T>>.Property<bool>();
-        public bool ImportAllowed
-        {
-            get => _importAllowed.Get();
-            set => _importAllowed.Set(value);
-        }
-        private readonly IProperty<bool> _importAllowed = H<EntityListViewModel<T>>.Property<bool>();
-
-        public bool ExportAllowed
-        {
-            get => _exportAllowed.Get();
-            set => _exportAllowed.Set(value);
-        }
-        private readonly IProperty<bool> _exportAllowed = H<EntityListViewModel<T>>.Property<bool>();
-        public bool OpenAllowed
-        {
-            get => _openAllowed.Get();
-            set => _openAllowed.Set(value);
-        }
-        private readonly IProperty<bool> _openAllowed = H<EntityListViewModel<T>>.Property<bool>();
 
 
         private void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -315,7 +298,6 @@ namespace HLab.Erp.Core.EntityLists
                 }
             }
         }
-
         private readonly IProperty<T> _selected = H<EntityListViewModel<T>>.Property<T>();
 
         public override dynamic SelectedViewModel
@@ -323,11 +305,10 @@ namespace HLab.Erp.Core.EntityLists
             get => _selectedViewModel.Get();
             set => Selected = value?.Model;
         }
-
         private readonly IProperty<dynamic> _selectedViewModel = H<EntityListViewModel<T>>.Property<dynamic>(c => c
             .Set(e => e.Selected == null ? null : e._cache.GetOrAdd(e.Selected, o => new ObjectMapper<T>(o, e.Columns)))
             .On(e => e.Selected)
-        .Update()
+            .Update()
         );
 
         public override IEnumerable<int> SelectedIds
@@ -337,29 +318,10 @@ namespace HLab.Erp.Core.EntityLists
         }
         private readonly IProperty<IEnumerable<int>> _selectedIds = H<EntityListViewModel<T>>.Property<IEnumerable<int>>();
 
-        public override ICommand DeleteCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-                .CanExecute(e => e.CanExecuteDelete())
-                .Action(async e => await e.DeleteEntityAsync(e.Selected))
-                .On(e => e.Selected)
-                .CheckCanExecute()
-        );
-
-        public override ICommand AddCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-                .CanExecute(e => e.CanExecuteAdd())
-                .Action(async e => await e.AddEntityAsync())
-                .On(e => e.Selected)
-                .CheckCanExecute()
-        );
-        public ICommand ExportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-                .CanExecute(e => e.CanExecuteAdd())
-                .Action(async e => await e.ExportAsync())
-                .On(e => e.Selected)
-                .CheckCanExecute()
-        );
 
         private class ExportIdValueProvider : IValueProvider
         {
-            private IValueProvider _foreignProvider;
+            private readonly IValueProvider _foreignProvider;
 
             public ExportIdValueProvider(IValueProvider foreignProvider)
             {
@@ -420,17 +382,6 @@ namespace HLab.Erp.Core.EntityLists
 
         private Task ExportAsync() => _helper.ExportAsync(List, new ContractResolver());
 
-        public ICommand ImportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-                .CanExecute(e => e.CanExecuteAdd())
-                .Action(async e => await e.ImportAsync())
-                .On(e => e.Selected)
-                .CheckCanExecute()
-        );
-
-        IObservableQuery<T> IEntityListViewModel<T>.List => List;
-
-        IColumnsProvider<T> IEntityListViewModel<T>.Columns => Columns;
-
         private async Task ImportAsync()
         {
             var list = await _helper.ImportAsync();
@@ -465,17 +416,12 @@ namespace HLab.Erp.Core.EntityLists
             }
         }
 
-        protected virtual bool CanExecuteDelete() => false;
-        protected virtual bool CanExecuteAdd() => true;
-        protected virtual bool CanExecuteOpen() => true;
 
         public override void Start() => List.Start();
 
-        IEntityListViewModel<T> IEntityListViewModel<T>.AddFilter<TFilter>(Action<FiltersFluentConfigurator<T, TFilter>> configure)
-        {
-            throw new NotImplementedException();
-        }
 
         void IEntityListViewModel<T>.AddFilter(IFilter filter) => AddFilter(filter);
+        IObservableQuery<T> IEntityListViewModel<T>.List => List;
+        IColumnsProvider<T> IEntityListViewModel<T>.Columns => Columns;
     }
 }

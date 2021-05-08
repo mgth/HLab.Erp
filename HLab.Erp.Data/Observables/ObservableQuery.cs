@@ -100,8 +100,8 @@ namespace HLab.Erp.Data.Observables
         private class OrderByEntry
         {
             public object Name { get; init; }
-            public Func<T, object> Expression { get; set; }
-            public bool Descending { get; set; }
+            public Func<T, object> Expression { get; init; }
+            public SortDirection Direction { get; init; }
             public int Order { get; init; }
         }
 
@@ -257,20 +257,18 @@ namespace HLab.Erp.Data.Observables
         {
             lock (_lockFilters)
             {
-                var filters = _postFilters.ToList();
 
                 if (name != null)
                 {
-                    var filter = filters.FirstOrDefault(f => Equals(f.Name, name));
-                    if (filter != null) filters.Remove(filter);
+                    var filter = _postFilters.FirstOrDefault(f => Equals(f.Name, name));
+                    if (filter != null) _postFilters.Remove(filter);
                 }
-                filters.Add(new PostFilter
+                _postFilters.Add(new PostFilter
                 {
                     Name = name,
                     Expression = expression,
                     Order = order,
                 });
-                Interlocked.Exchange(ref _postFilters, filters);
                 return this;
             }
         }
@@ -284,25 +282,22 @@ namespace HLab.Erp.Data.Observables
             }
         }
 
-        public ObservableQuery<T> AddOrderBy(Func<T, object> expression, bool descending = false, int order = 0, string name = null)
+        public ObservableQuery<T> AddOrderBy(Func<T, object> expression, SortDirection direction = SortDirection.Ascending, int order = 0, string name = null)
         {
             lock (_lockFilters)
             {
-                var orderByList = _orderBy.ToList();
-
                 if (name != null)
                 {
-                    var filter = orderByList.FirstOrDefault(f => Equals(f.Name, name));
-                    if (filter != null) orderByList.Remove(filter);
+                    var filter = _orderBy.FirstOrDefault(f => Equals(f.Name, name));
+                    if (filter != null) _orderBy.Remove(filter);
                 }
-                orderByList.Add(new OrderByEntry
+                _orderBy.Add(new OrderByEntry
                 {
                     Name = name,
                     Expression = expression,
-                    Descending = descending,
+                    Direction = direction,
                     Order = order,
                 });
-                Interlocked.Exchange(ref _orderBy, orderByList);
                 return this;
             }
         }
@@ -554,10 +549,34 @@ namespace HLab.Erp.Data.Observables
 #endif
                     foreach (var orderBy in _orderBy.OrderBy(o => o.Order))
                     {
-                        if (list is IOrderedAsyncEnumerable<T> ordered)
-                            list = orderBy.Descending ? ordered.ThenByDescending(orderBy.Expression) : ordered.ThenBy(orderBy.Expression);
+                        if (orderBy.Expression != null)
+                        {
+                            if (list is IOrderedAsyncEnumerable<T> ordered)
+                            {
+                                list = orderBy.Direction switch
+                                {
+                                    SortDirection.None => ordered,
+                                    SortDirection.Ascending => ordered.ThenBy(orderBy.Expression),
+                                    SortDirection.Descending => ordered.ThenByDescending(orderBy.Expression),
+                                    _ => throw new ArgumentOutOfRangeException()
+                                };
+                            }
+                            else
+                            {
+                                list = orderBy.Direction switch
+                                {
+                                    SortDirection.None => list,
+                                    SortDirection.Ascending => list.OrderBy(orderBy.Expression),
+                                    SortDirection.Descending => list.OrderByDescending(orderBy.Expression),
+                                    _ => throw new ArgumentOutOfRangeException()
+                                };
+
+                            }
+                        }
                         else
-                            list = orderBy.Descending ? list.OrderByDescending(orderBy.Expression) : list.OrderBy(orderBy.Expression);
+                        {
+                            
+                        }
                     }
 
 #if DEBUG

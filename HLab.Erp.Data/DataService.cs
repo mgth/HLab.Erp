@@ -233,6 +233,54 @@ namespace HLab.Erp.Data
             using var db = Get();
             return db.Execute(sql);
         }
+        public IEnumerable<T> FetchWhere<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy = null)
+            where T : class, IEntity
+        {
+            var cache = GetCache<T>();
+
+
+            if (typeof(ILocalCache).IsAssignableFrom(typeof(T)))
+            {
+                var list = cache.Fetch(expression);
+                if (orderBy != null)
+                {
+                    var o = orderBy.Compile();
+                    list = list.OrderBy(o);
+                }
+
+                return list;
+            }
+
+            using var db = Get();
+            {
+                #if DEBUG
+                var literal = expression.ToString();
+                #endif
+                var list =
+                    db.Query<T>().Where(expression);
+
+                if (orderBy != null) list = list.OrderBy(orderBy);
+
+                var retry = true;
+                Exception ex = null;
+                while (retry)
+                {
+                    retry = false;
+                    try
+                    {
+                        return cache.GetOrAdd(list.ToEnumerable());
+
+                    }
+                    catch (ArgumentException e)
+                    {
+                        ex = e;
+                        retry = Configure(e);
+                    }
+                }
+
+                throw new DataException(ex.Message, ex);
+            }
+        }
 
         public IAsyncEnumerable<T> FetchWhereAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy = null)
             where T : class, IEntity
