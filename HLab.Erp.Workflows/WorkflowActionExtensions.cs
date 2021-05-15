@@ -144,6 +144,21 @@ namespace HLab.Erp.Workflows
         }
 
         /// <summary>
+        /// Add progress calculator to workflow element
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="getter"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            Progress<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, Func<TWf, double> getter)
+            where TWf : NotifierBase, IWorkflow<TWf>
+        {
+            t?.Target.SetProgress(getter);
+            return t;
+        }
+
+        /// <summary>
         /// Add Icon factory to a workflow element
         /// </summary>
         /// <typeparam name="TWf"></typeparam>
@@ -169,6 +184,11 @@ namespace HLab.Erp.Workflows
             Icon<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, string icon)
             where TWf : NotifierBase, IWorkflow<TWf>
             => t.Icon<TWf>(e => icon);
+
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> 
+            Progress<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> t, double progress)
+            where TWf : NotifierBase, IWorkflow<TWf>
+            => t.Progress<TWf>(e => progress);
 
         /// <summary>
         /// Add Icon path to a workflow element.

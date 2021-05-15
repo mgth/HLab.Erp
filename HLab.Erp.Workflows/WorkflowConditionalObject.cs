@@ -10,6 +10,7 @@ namespace HLab.Erp.Workflows
         string GetIconPath(IWorkflow workflow);
         string GetSubIconPath(IWorkflow workflow);
         string GetCaption(IWorkflow workflow);
+        double GetProgress(IWorkflow workflow);
     }
 
     public interface IWorkflowConditionalObject<T> : IWorkflowConditionalObject
@@ -20,6 +21,7 @@ namespace HLab.Erp.Workflows
         void SetIconPath(Func<T, string> getIcon);
         void SetSubIconPath(Func<T, string> getIcon);
         void SetAction(Action<T> action);
+        void SetProgress(Func<T, double> getProgress);
         WorkflowCondition<T> Condition { get; }
     }
 
@@ -55,6 +57,10 @@ namespace HLab.Erp.Workflows
         private Func<T,string> _getCaption;
         void IWorkflowConditionalObject<T>.SetCaption(Func<T, string> getCaption) => _getCaption = getCaption;
         public string GetCaption(IWorkflow workflow) => _getCaption?.Invoke((T)workflow) ?? "";
+
+       private Func<T,double> _getProgress;
+        void IWorkflowConditionalObject<T>.SetProgress(Func<T, double> getProgress) => _getProgress = getProgress;
+        public double GetProgress(IWorkflow workflow) => _getProgress?.Invoke((T)workflow) ?? 0.0;
 
 
         public WorkflowConditionResult Check(IWorkflow workflow)
