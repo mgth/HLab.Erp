@@ -27,9 +27,9 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             H.Initialize(this);
         }
 
-        public override string Title => _title.Get();
+        public override string Header => _header.Get();
 
-        private readonly IProperty<string> _title = H.Property<string>(c => c
+        private readonly IProperty<string> _header = H.Property<string>(c => c
             .Set(e => e.Model.Caption)
             .On(e => e.Model.Caption)
             .Update()

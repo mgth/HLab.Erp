@@ -1,14 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
-using HLab.Erp.Core.ListFilters;
-using HLab.Icons.Wpf;
 using HLab.Icons.Wpf.Icons;
 using HLab.Mvvm.Annotations;
 
@@ -16,6 +12,11 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
 {
     public class IconsListViewModel : EntityListViewModel<Icon>, IMvvmContextProvider
     {
+        public class Bootloader : NestedBootloader
+        {
+            public override string MenuPath => "param";
+        }
+
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }

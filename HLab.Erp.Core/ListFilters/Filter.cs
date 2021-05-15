@@ -78,20 +78,24 @@ namespace HLab.Erp.Core.ListFilters
         public override void Link<T1, TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T1>> getter)
             => Link<TSource>(q, getter as Expression<Func<TSource, T>>);
 
+        private bool _linked = false;
+
         public void Link<TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter)
 //            where TSource : class, IEntity, new()
         {
+            if(_linked) {}
+            _linked = true;
             Func<Expression<Func<TSource, bool>>> match = ()=>Match(getter);
-            void _enable()
+            void EnableFunc()
             {
                 q.AddFilter(match, 0, Header);
             }
-            void _disable()
+            void DisableFunc()
             {
                 q.RemoveFilter(Header);
             }
-            enabledAction = _enable;
-            disabledAction = _disable;
+            enabledAction = EnableFunc;
+            disabledAction = DisableFunc;
             Update = q.Update;
         }
 

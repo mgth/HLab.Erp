@@ -39,6 +39,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         }
 
         public Expression Link { get; set; }
+        public Delegate PostLink { get; set; }
 
 
         IColumn IColumn.IHelper.Column => Column;

@@ -38,6 +38,8 @@ namespace HLab.Erp.Core.EntityLists
             TFilter GetFilter<TFilter>() where TFilter : IFilter;
 
             Expression Link { get; set; }
+            Delegate PostLink { get; set; }
+
             Expression<Func<T, TLink>> GetLinkExpression<TLink>() => (Expression<Func<T, TLink>>)Link;
 
             IErpServices Erp { get; }

@@ -14,11 +14,11 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
     {
         public CountryViewModel() => H.Initialize(this);
 
-        public override string Title => _title.Get();
+        public override object Header => _header.Get();
 
-        private readonly IProperty<string> _title = H.Property<string>(c => c
+        private readonly IProperty<object> _header = H.Property<object>(c => c
             .On(e => e.Model.Name)
-            .Set(e => "{Country} - " + e.Model.Name)
+            .Set(e => (object)("{Country} - " + e.Model.Name))
         );
 
         public ICommand PastIconCommand { get; } = H.Command(c => c

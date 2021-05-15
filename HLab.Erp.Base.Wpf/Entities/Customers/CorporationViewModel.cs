@@ -19,9 +19,9 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
 
         protected CorporationViewModel() => H<CorporationViewModel<T>>.Initialize(this);
 
-        public override string Title => _title.Get();
-        private readonly IProperty<string> _title = H<CorporationViewModel<T>>.Property<string>(c => c
-            .Bind(e => e.Model.Caption)
+        public override object Header => _header.Get();
+        private readonly IProperty<object> _header = H<CorporationViewModel<T>>.Property<object>(c => c
+            .Bind(e => (object)e.Model.Caption)
         );
 
         ICorporation ICorporationViewModel.Model => Model;

@@ -9,14 +9,6 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core
 {
-    public abstract class ErpParamBootloader<TList> : ErpDataBootloader<TList>
-    {
-        public override string MenuPath => "param";
-    }
-    public abstract class ErpToolsBootloader<TList> : ErpDataBootloader<TList>
-    {
-        public override string MenuPath => "tools";
-    }
 
     public abstract class NestedBootloader : NotifierBase, IBootloader
     {
@@ -24,12 +16,9 @@ namespace HLab.Erp.Core
         public IErpServices Erp { protected get; set; }
 
 
-        bool _injected = false;
-//        [Import]
+        [Import]
         public void Inject(IErpServices erp)
         {
-            if(_injected) return;
-            _injected = true;
             Erp = erp;
         }
 
@@ -43,6 +32,9 @@ namespace HLab.Erp.Core
         public virtual string Header => "{" + Caption + "}";
         public virtual string IconPath => $"Icons/Entities/{_entityName}";
         public virtual string MenuPath => "data";
+        public virtual bool Allowed => true;
+
+
         public ICommand OpenCommand { get; } = H<NestedBootloader>.Command(c => c
             .Action(e => e.Erp.Docs.OpenDocumentAsync(e.GetType().DeclaringType))
             .CanExecute(e => true)
@@ -63,6 +55,8 @@ namespace HLab.Erp.Core
 
             foreach (var i in interfaces)
             {
+                if(i == typeof(IViewModel)) _suffix = "ViewModel";
+
                 if (i.IsConstructedGenericType)
                 {
                     if (i.GetGenericTypeDefinition() == typeof(IEntityListViewModel<>))
@@ -81,58 +75,13 @@ namespace HLab.Erp.Core
             }
         }
 
-        public void Load(IBootContext bootstrapper)
+        public virtual void Load(IBootContext bootstrapper)
         {
+            if (!Allowed) return;
+
             Erp.Menu.RegisterMenu(MenuPath + "/" + Name, Header,
                 OpenCommand,
                 IconPath);        }
     }
 
-
-    public abstract class ErpDataBootloader<TList> : NotifierBase, IBootloader 
-    {
-        protected IErpServices Erp;
-        [Import] public void Inject(IErpServices erp) => Erp = erp;
-
-        protected ErpDataBootloader()
-        {
-            EntityName = GetEntityName();
-            H<ErpDataBootloader<TList>>.Initialize(this);
-        }
-
-        public ICommand OpenCommand { get; } = H<ErpDataBootloader<TList>>.Command(c => c
-            .Action(e => e.Erp.Docs.OpenDocumentAsync(typeof(TList)))
-            .CanExecute(e => true)
-        );
-
-        public string EntityName { get; }
-        public virtual string Caption => Name.FromCamelCase();
-        public virtual string Name => GetType().Name.BeforeSuffix("DataModule");
-        public virtual string Header => "{" + Caption + "}";
-        public virtual string IconPath => $"Icons/Entities/{EntityName}";
-        public virtual string MenuPath => "data";
-
-        private static string GetEntityName()
-        {
-            var interfaces = typeof(TList).GetInterfaces();
-
-            foreach (var i in interfaces)
-            {
-                if (i.IsConstructedGenericType)
-                {
-                    if (i.GetGenericTypeDefinition() == typeof(IEntityListViewModel<>))
-                    {
-                        return i.GenericTypeArguments[0].Name;
-                    }
-                }
-            }
-
-            return "";
-        }
-
-        public virtual void Load(IBootContext b) => Erp.Menu.RegisterMenu(MenuPath + "/" + Name, Header,
-                OpenCommand,
-                IconPath);
-        
-    }
 }

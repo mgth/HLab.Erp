@@ -23,9 +23,9 @@ namespace HLab.Erp.Acl.Users
             H.Initialize(this);
         }
 
-        public override string Title => _title.Get();
-        private readonly IProperty<string> _title = H.Property<string>( c=> c
-            .Bind(e => e.Model.Name)
+        public override object Header => _title.Get();
+        private readonly IProperty<object> _title = H.Property<object>( c=> c
+            .Bind(e => (object)e.Model.Name)
         );
 
 

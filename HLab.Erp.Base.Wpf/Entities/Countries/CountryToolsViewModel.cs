@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using HLab.Erp.Base.Data;
+using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
@@ -16,13 +17,19 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
 
     public class CountryToolsViewModel : ViewModel
     {
-        public CountryToolsViewModel(DataService data)
+        public class Bootloader : NestedBootloader
+        {
+            public override string MenuPath => "tools";
+        }
+
+
+        public CountryToolsViewModel(IDataService data)
         {
             Data = data;
             H.Initialize(this);
         }
 
-        public DataService Data { get; } 
+        public IDataService Data { get; } 
 
         public ICommand ImportCommand { get; } = H.Command(c => c
         

@@ -65,7 +65,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             where TFilter : IFilter<TLink>
         {
             var result = c.GetChildConfigurator<string, IFilter<string>>();
-            result.Link = getter;
+            result.LinkExpression = getter;
 
             return result;
         }
@@ -75,7 +75,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             where TFilter : IFilter<TLink>
         {
             var result = c.GetChildConfigurator<DateTime?, IFilter<DateTime?>>();
-            result.Link = getter;
+            result.LinkExpression = getter;
 
             return result;
         }
@@ -86,7 +86,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             where TFilter : IFilter<TLink>
         {
             var result = c.GetChildConfigurator<TLinkOut, IFilter<TLinkOut>>();
-            result.Link = getter;
+            result.LinkExpression = getter;
 
             return result;
         }
@@ -98,7 +98,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         where TE : class, IEntity<int>, new()
         {
             var result = c.GetChildConfigurator<int, EntityFilter<TE>>();
-            result.Link = GetterIdFromGetter(getter);
+            result.LinkExpression = GetterIdFromGetter(getter);
 
             return result;
         }
@@ -111,7 +111,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             var result =
                 c.GetChildConfigurator<int?, EntityFilterNullable<TE>>();
 
-            result.Link = GetterIdNullableFromGetter(getter);
+            result.LinkExpression = GetterIdNullableFromGetter(getter);
 
             return result;
         }
@@ -134,9 +134,14 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         {
             var result = c.GetChildConfigurator<TLink, TFilterOut>();
             
-            result.Filter
-                ?.Link(c.Target.List, c.Link);
-
+            if(c.LinkExpression!=null)
+                result.Filter
+                    ?.Link(c.Target.List, c.LinkExpression);
+            else
+            {
+                result.Filter
+                    ?.PostLink(c.Target.List, c.LinkLambda);
+            }
             return result;
         }
 
@@ -147,7 +152,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             var result = c.GetChildConfigurator<string, TextFilter>();
 
             result.Filter
-                ?.Link(c.Target.List, c.Link);
+                ?.Link(c.Target.List, c.LinkExpression);
 
             return result;
         }
@@ -159,7 +164,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             var result = c.GetChildConfigurator<DateTime?, DateFilterNullable>();
 
             result.Filter
-                .Link(c.Target.List, c.Link);
+                .Link(c.Target.List, c.LinkExpression);
 
             return result;
         }
@@ -305,22 +310,19 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         public static IColumnConfigurator<T, string, TextFilter> PostLink<T>(this IColumnConfigurator<T, string, TextFilter> tf, Func<T, string> getter)
             where T : class, IEntity, new()
         {
+            tf.LinkLambda = getter;
             tf.Filter.PostLink(tf.Target.List, getter);
             return tf;
         }
+
         public static IColumnConfigurator<T, string, TextFilter> Link<T>(this IColumnConfigurator<T, string, TextFilter> tf, Expression<Func<T, string>> getter)
             where T : class, IEntity, new()
         {
-            tf.Link = getter;
+            tf.LinkExpression = getter;
+            tf.LinkLambda = getter.Compile();
             tf.Filter.Link(tf.Target.List, getter);
             return tf;
         }
-        //public static IColumnConfigurator<T, TLink, IFilter<TLink>> Link<T, TLink>(this IColumnConfigurator<T, TLink, IFilter<TLink>> tf, Expression<Func<T, TLink>> getter)
-        //    where T : class, IEntity, new()
-        //{
-        //    tf.CurrentFilter.Link(tf.Helper.Target.List, getter);
-        //    return tf;
-        //}
 
         public static T Id<T>(this T c, string id)
             where T : IColumnConfigurator

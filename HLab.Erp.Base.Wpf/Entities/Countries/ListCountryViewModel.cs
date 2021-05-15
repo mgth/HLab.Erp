@@ -10,6 +10,11 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
 {
     public class CountriesListViewModel : EntityListViewModel<Country>, IMvvmContextProvider
     {
+        public class Bootloader : NestedBootloader
+        {
+            public override string MenuPath => "param";
+        }
+
         public CountriesListViewModel(IErpServices erp) : base(c => c
                 .Header("{Country}")
                 .Column()
@@ -18,7 +23,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
                     .Localize()
                     // TODO                .OrderByOrder(0)
                     .Filter()
-                    .PostLink(s => erp.Localization.LocalizeAsync(s.Name).Result)
+                    .PostLink(s => erp.Localization.Localize(s.Name))
 
                 .Column()
                     .Header("{A2 Code}")

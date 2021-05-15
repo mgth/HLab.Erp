@@ -17,5 +17,6 @@ namespace HLab.Erp.Core
     public interface IFilter<T> : IFilter
     {
         void Link<TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter);
+        void PostLink<TSource>(IObservableQuery<TSource> q, Func<TSource, T> getter);
     }
 }

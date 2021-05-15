@@ -53,7 +53,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
 
 
         public TFilter Filter => Helper.GetFilter<TFilter>();
-        public Expression<Func<T, TLink>> Link
+        public Expression<Func<T, TLink>> LinkExpression
         {
             get => Helper.Link as Expression<Func<T, TLink>> ;
             set
@@ -61,6 +61,15 @@ namespace HLab.Erp.Core.ListFilterConfigurators
                 var lambda = value.CastReturn(default(object)).Compile(); 
                 Helper.Column.OrderBy ??= lambda; 
                 Helper.Link = value;
+            }
+        }
+        public Func<T, TLink> LinkLambda
+        {
+            get => Helper.PostLink as Func<T, TLink>;
+            set
+            {
+                Helper.Column.OrderBy ??= t => value(t); 
+                Helper.PostLink = value;
             }
         }
 
@@ -79,7 +88,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         {
             if (Column.Getter == null)
             {
-                var link = Link;
+                var link = LinkExpression;
                 if (link != null)
                 {
                     var lambda = link.Compile();

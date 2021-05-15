@@ -18,5 +18,9 @@
         /// Allow to add / remove rights for one profile
         /// </summary>
         public static readonly AclRight ManageRights = AclRight.Get();
+        /// <summary>
+        /// Allow users to test Beta features
+        /// </summary>
+        public static readonly AclRight BetaTest = AclRight.Get();
     }
 }

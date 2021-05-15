@@ -28,7 +28,8 @@ namespace HLab.Erp.Core.EntityLists
     public interface IColumnConfigurator<T, TLink> : IColumnConfigurator<T>
         where T : class, IEntity, new()
     {
-        Expression<Func<T, TLink>> Link { get; set; }
+        Expression<Func<T, TLink>> LinkExpression { get; set; }
+        Func<T, TLink> LinkLambda { get; set; }
     }
 
     public interface IColumnConfigurator<T, TLink, out TFilter> :

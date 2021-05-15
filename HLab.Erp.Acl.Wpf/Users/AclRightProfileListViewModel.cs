@@ -8,20 +8,23 @@ namespace HLab.Erp.Acl.Users
     public class AclRightProfileListViewModel : EntityListViewModel<AclRightProfile>
     {
         public AclRightProfileListViewModel(AclRight right) : base(c => c
+            .StaticFilter(e => e.AclRightId == right.Id)
             .Column()
-            .Header("{Name}").Content(s => s.Profile.Name)
+            .Header("{Name}")
+            .Content(s => s.Profile.Name)
         )
         {
             OpenAction = target => Erp.Docs.OpenDocumentAsync(target.Profile);
-            List.AddFilter(() => e => e.AclRightId == right.Id);
         }
 
-        public AclRightProfileListViewModel(Profile profile) : base (c => c
-            .Column().Header("{Name}").Content(s => s.AclRight.Caption)
+        public AclRightProfileListViewModel(Profile profile) : base(c => c
+           .StaticFilter(e => e.ProfileId == profile.Id)
+           .Column()
+           .Header("{Name}")
+           .Content(s => s.AclRight.Caption)
         )
         {
             OpenAction = target => { };
-            List.AddFilter(() => e => e.ProfileId == profile.Id);
         }
 
     }

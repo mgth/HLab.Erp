@@ -26,10 +26,14 @@ using HLab.Erp.Core.Tools.Details;
 
 namespace HLab.Erp.Core.EntityLists
 {
-    public interface IEntityListHelper<T> where T : class, IEntity, new()
+    public interface IEntityListHelper
+    {
+        object GetListView(IList list);
+    }
+
+    public interface IEntityListHelper<T> : IEntityListHelper where T : class, IEntity, new()
     {
         void Populate(object grid, IColumnsProvider<T> provider);
-        object GetListView(IList list);
         Task ExportAsync(ObservableQuery<T> list, IContractResolver resolver);
         public Task<IEnumerable<T>> ImportAsync();
     }

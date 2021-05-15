@@ -9,8 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using Microsoft.Win32;
@@ -19,7 +17,6 @@ using Newtonsoft.Json.Serialization;
 
 namespace HLab.Erp.Core.EntityLists
 {
-    [Export(typeof(IEntityListHelper<>))]
     public class EntityListHelper<T> : IEntityListHelper<T>
         where T : class, IEntity, new()
     {

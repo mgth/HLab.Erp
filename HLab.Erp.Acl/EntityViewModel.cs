@@ -76,7 +76,7 @@ namespace HLab.Erp.Acl
         );
 
         public virtual string EntityName => "{" + typeof(T).Name + "}";
-        public virtual string Title => EntityName;
+        public virtual object Header => EntityName;
 
         public virtual string IconPath => _iconPath.Get();
         private readonly IProperty<string> _iconPath = H<EntityViewModel<T>>.Property<string>(c => c
