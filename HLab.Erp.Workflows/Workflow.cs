@@ -87,6 +87,16 @@ namespace HLab.Erp.Workflows
             {
                 Name = name;
             }
+            public bool IsAny(Action<string> errorAction, params Stage[] stages)
+            {
+                if (stages.Contains(this)) return true;
+                foreach (var stage in stages)
+                {
+                    errorAction($"{{Stage needed}} : {{{stage.Name}}}");
+                }
+
+                return false;
+            }
         }
 
 
@@ -125,7 +135,7 @@ namespace HLab.Erp.Workflows
         private static List<Action> WorkflowActions => _workflowAction ??= new List<Action>();
         
         public static Stage StageFromName(string name) => WorkflowStages.Find(e => e.Name == name)??DefaultStage;
-        protected void SetStage(string stage) => CurrentStage = StageFromName(stage);
+        protected void SetStage(Stage stage) => CurrentStage = stage;
 
 
         public string Caption => _caption.Get();
@@ -207,20 +217,21 @@ namespace HLab.Erp.Workflows
             return false;
         }
 
-        protected abstract string StageName { get; set; }
+        protected abstract Stage TargetStage { get; set; }
 
         protected virtual async Task<bool> OnSetStageAsync(Stage stage, string caption, string iconPath, bool sign, bool motivate)
         {
-            if (StageName != stage.Name)
+            if (TargetStage != stage)
             {
-                var old = StageName;
-                StageName = stage.Name;
+                var old = TargetStage;
+                TargetStage = stage;
 
                 if (await Locker.SaveAsync(caption, iconPath, sign,motivate)) return true;
 
-                StageName = old;
+                TargetStage = old;
                 return false;
             }
+
             return true;
         }
 

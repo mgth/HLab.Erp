@@ -5,9 +5,9 @@ using HLab.Erp.Core.ListFilterConfigurators;
 
 namespace HLab.Erp.Acl.Users
 {
-    public class AclRightProfileListViewModel : EntityListViewModel<AclRightProfile>
+    public class ProfilesAclRightListViewModel : EntityListViewModel<AclRightProfile>
     {
-        public AclRightProfileListViewModel(AclRight right) : base(c => c
+        public ProfilesAclRightListViewModel(AclRight right) : base(c => c
             .StaticFilter(e => e.AclRightId == right.Id)
             .Column()
             .Header("{Name}")
@@ -17,15 +17,6 @@ namespace HLab.Erp.Acl.Users
             OpenAction = target => Erp.Docs.OpenDocumentAsync(target.Profile);
         }
 
-        public AclRightProfileListViewModel(Profile profile) : base(c => c
-           .StaticFilter(e => e.ProfileId == profile.Id)
-           .Column()
-           .Header("{Name}")
-           .Content(s => s.AclRight.Caption)
-        )
-        {
-            OpenAction = target => { };
-        }
 
     }
 }

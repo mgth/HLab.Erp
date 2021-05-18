@@ -2,6 +2,7 @@
 using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
+using System;
 
 namespace HLab.Erp.Acl.Profiles
 {
@@ -12,25 +13,15 @@ namespace HLab.Erp.Acl.Profiles
             public override string MenuPath => "param";
         }
 
-        public ProfilesListViewModel(User user) : base(c => c
-            // TODO .StaticFilter(e => e.Id == user.Id)
-            .Column()
-            .Header("{Name}")
-            .Width(100)
-            .Link(s => s.Name)
-        )
-        {
-        }        
-
         public ProfilesListViewModel() : base(c => c
                 .Column()
                 .Header("{Name}")
                 .Width(100).Content(s => s.Name)
-// TODO                 .AddAllowed()
-// TODO                .DeleteAllowed()
         )
         {
         }
 
+        protected override bool CanExecuteAdd(Action<string> errorAction) => Erp.Acl.IsGranted(errorAction, AclRights.ManageProfiles);
+        protected override bool CanExecuteDelete(Profile profile, Action<string> errorAction) => Erp.Acl.IsGranted(errorAction, AclRights.ManageProfiles);
     }
 }

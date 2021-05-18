@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Security;
 using System.Threading.Tasks;
 using HLab.Core.Annotations;
@@ -24,6 +25,7 @@ namespace HLab.Erp.Acl
         Task<AclNode> GetAclNode(object target);
 
         bool IsGranted(AclRight right, object grantedTo = null, object grantedOn = null);
+        bool IsGranted(Action<string> setMessage, params AclRight[] rights);
         void CancelLogin();
     }
 }

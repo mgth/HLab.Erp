@@ -12,35 +12,35 @@ namespace HLab.Erp.Acl.Users
     public class UserViewModel: EntityViewModel<User>
     {
         private readonly IDataService _data; 
-        private readonly Func<User, UserProfileListViewModel> _getUserProfiles;
-        private readonly Func<User, ProfilesListViewModel> _getProfiles;
+        private readonly Func<User, ProfilesPerUserListViewModel> _getProfilesPerUser;
+        private readonly Func<ProfilesListViewModel> _getProfiles;
 
-        public UserViewModel(Func<User, UserProfileListViewModel> getUserProfiles, Func<User, ProfilesListViewModel> getProfiles, IDataService data)
+        public UserViewModel(Func<User, ProfilesPerUserListViewModel> getUserProfiles, Func<ProfilesListViewModel> getProfiles, IDataService data)
         {
-            _getUserProfiles = getUserProfiles;
+            _getProfilesPerUser = getUserProfiles;
             _getProfiles = getProfiles;
             _data = data;
             H.Initialize(this);
         }
 
-        public override object Header => _title.Get();
-        private readonly IProperty<object> _title = H.Property<object>( c=> c
+        public override object Header => _header.Get();
+        private readonly IProperty<object> _header = H.Property<object>( c=> c
             .Bind(e => (object)e.Model.Name)
         );
 
 
-        public UserProfileListViewModel UserProfiles => _userProfiles.Get();
-        private readonly IProperty<UserProfileListViewModel> _userProfiles = H.Property<UserProfileListViewModel>(c => c
+        public ProfilesPerUserListViewModel UserProfiles => _userProfiles.Get();
+        private readonly IProperty<ProfilesPerUserListViewModel> _userProfiles = H.Property<ProfilesPerUserListViewModel>(c => c
             .On(e => e.Model)
             .NotNull(e => e.Model)
-            .Set(e => e._getUserProfiles(e.Model))
+            .Set(e => e._getProfilesPerUser(e.Model))
         );
 
 
         public ProfilesListViewModel Profiles => _profiles.Get();
         private readonly IProperty<ProfilesListViewModel> _profiles = H.Property<ProfilesListViewModel>(c => c
             .On(e => e.Model)
-            .Set(e => e._getProfiles(e.Model))
+            .Set(e => e._getProfiles())
         );
 
         public ICommand ChangePasswordCommand { get; } = H.Command(c => c

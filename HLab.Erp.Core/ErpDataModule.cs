@@ -12,9 +12,7 @@ namespace HLab.Erp.Core
 
     public abstract class NestedBootloader : NotifierBase, IBootloader
     {
-        [Import]
-        public IErpServices Erp { protected get; set; }
-
+        protected IErpServices Erp { get; private set;}
 
         [Import]
         public void Inject(IErpServices erp)
@@ -29,7 +27,7 @@ namespace HLab.Erp.Core
         }
         public virtual string Caption => Name.FromCamelCase();
         public virtual string Name => _parentType.Name.BeforeSuffix(_suffix);
-        public virtual string Header => "{" + Caption + "}";
+        public virtual string Header => $"{{{Caption}}}";
         public virtual string IconPath => $"Icons/Entities/{_entityName}";
         public virtual string MenuPath => "data";
         public virtual bool Allowed => true;
@@ -55,7 +53,7 @@ namespace HLab.Erp.Core
 
             foreach (var i in interfaces)
             {
-                if(i == typeof(IViewModel)) _suffix = "ViewModel";
+                if (i == typeof(IViewModel)) _suffix = "ViewModel";
 
                 if (i.IsConstructedGenericType)
                 {
@@ -81,7 +79,8 @@ namespace HLab.Erp.Core
 
             Erp.Menu.RegisterMenu(MenuPath + "/" + Name, Header,
                 OpenCommand,
-                IconPath);        }
+                IconPath);
+        }
     }
 
 }

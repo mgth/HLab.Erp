@@ -20,6 +20,8 @@ namespace HLab.Erp.Core.EntitySelectors
     [ContentProperty(nameof(ButtonContent))]
     public partial class ForeignView : UserControl, IView<IForeignViewModel>, IViewClassForeign, IMandatoryNotFilled
     {
+        public static DependencyInjectionContainer Container {get; set;}
+
         public ForeignView()
         {
             InitializeComponent();
@@ -153,6 +155,7 @@ namespace HLab.Erp.Core.EntitySelectors
                 {
                     if (typeof(IListableModel).IsAssignableFrom(ModelClass))
                         type = typeof(ListableEntityListViewModel<>).MakeGenericType(ModelClass);
+                        //type = typeof(IEntityListViewModel<>).MakeGenericType(ModelClass);
                 }
                 if(type==null)
                 { 
@@ -162,7 +165,10 @@ namespace HLab.Erp.Core.EntitySelectors
 
                 var ctx = ViewLocator.GetMvvmContext(this);
 
-                var vm = ctx.Scope.Locate(type,this);
+                var test = ctx.Scope.WhatDoIHave();//.Locate(type);
+                var vm = ctx.Scope.Locate(type);
+
+                //                ctx.Scope.Inject(vm);
 
                 if (vm is IEntityListViewModel lvm)
                 {

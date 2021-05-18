@@ -48,7 +48,7 @@ namespace HLab.Erp.Data
             t.IsLoaded = true;
             added?.Invoke(t);
 
-            return _service.GetCache<T>().GetOrAddAsync(t).Result;
+            return DataCache<T>.Cache.GetOrAddAsync(t).Result;
         }
 
         public async Task<T> AddAsync<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity
@@ -85,7 +85,7 @@ namespace HLab.Erp.Data
                 added?.Invoke(t);
             }
 
-            return await _service.GetCache<T>().GetOrAddAsync(t).ConfigureAwait(false);
+            return await DataCache<T>.Cache.GetOrAddAsync(t).ConfigureAwait(false);
         }
 
         public void Update<T>(T value, IEnumerable<string> columns) where T : class, IEntity
@@ -135,7 +135,7 @@ namespace HLab.Erp.Data
             var result = Database.Delete<T>(entity);
             if (result <= 0) return false;
             
-            _ = _service.GetCache<T>().ForgetAsync(entity);
+            _ = DataCache<T>.Cache.ForgetAsync(entity);
             deleted?.Invoke((T)entity);
             
             return true;
@@ -147,7 +147,7 @@ namespace HLab.Erp.Data
             var result = await Database.DeleteAsync(entity);
             if (result <= 0) return false;
             
-            await _service.GetCache<T>().ForgetAsync(entity);
+            await DataCache<T>.Cache.ForgetAsync(entity);
             deleted?.Invoke((T)entity);
             
             return true;

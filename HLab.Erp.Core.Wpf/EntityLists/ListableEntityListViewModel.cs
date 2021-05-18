@@ -11,7 +11,14 @@ using HLab.Notify.PropertyChanged;
 namespace HLab.Erp.Core.EntityLists
 {
 //    [Export(typeof(IEntityListViewModel<>))]
-    public class ListableEntityListViewModel<T> : EntityListViewModel<T>
+
+    public interface IListableEntityListViewModel<T>
+        where T : class, IEntity, IListableModel, new()
+    {
+
+    }
+
+    public class ListableEntityListViewModel<T> : EntityListViewModel<T>, IListableEntityListViewModel<T>
         where T : class, IEntity, IListableModel, new()
     {
         public ListableEntityListViewModel() : base(c => c

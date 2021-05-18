@@ -46,7 +46,8 @@
                     </ItemsControl>
         </ScrollViewer>
 
-        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
 
             <Button Command ="{Binding AddCommand}">
                 <Button.ToolTip><lang:Localize Id="{}{Add}"/></Button.ToolTip>
@@ -54,16 +55,6 @@
             </Button>
 
             <Button Grid.Row="0" Grid.Column="1" Command="{Binding DeleteCommand}">                    
-                <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                            <Style.Triggers>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                
                 <Button.ToolTip><lang:Localize Id="{}{Delete}"/></Button.ToolTip>
                 <icons:IconView Path="Icons/Delete" MaxHeight="15"/>
             </Button>
@@ -87,10 +78,14 @@
                 <Button.ToolTip><lang:Localize Id="{}{Refresh}"/></Button.ToolTip>
                 <icons:IconView Path="Icons/Import" MaxHeight="15"/>
             </Button>
-
+            <Button Click="ButtonBase_OnClick" BorderThickness="0" BorderBrush="Transparent" Background="Transparent">                    
+                <Button.ToolTip><lang:Localize Id="{}{Expand}"/></Button.ToolTip>
+                ...
+                <!--<icons:IconView Path="Icons/Import" MaxHeight="15"/>-->
+            </Button>
         </StackPanel>
-
-        <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding Message}" Foreground="Red"/>
+        </StackPanel>
+        <TextBlock Visibility="Collapsed" x:Name="MessageTextBlock" Grid.Column="1" Grid.Row="2" Text="{Binding ErrorMessage}" Foreground="Red"/>
 
          <ListView Grid.Column="1" Grid.Row="3"
                    VerticalAlignment="Top"
@@ -120,7 +115,7 @@
                 <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
                     <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
-                    
+                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
                     <Style.Triggers>
                          <DataTrigger Binding="{Binding IsValid}" Value="False">
                              <Setter Property="Opacity" Value="0.3" />
@@ -148,13 +143,6 @@
                  </Style>
 
             </ListView.ItemContainerStyle>
-
-
-             <i:Interaction.Triggers>
-                 <i:EventTrigger EventName="MouseDoubleClick">
-                     <i:InvokeCommandAction Command="{Binding OpenCommand}"/>
-                 </i:EventTrigger>
-             </i:Interaction.Triggers>
          
          </ListView>
     </Grid>

@@ -35,8 +35,12 @@
         <mvvm:ViewLocator Model="{Binding Locker}"/>
         
         <controlsEx:ScrollViewerEx Grid.Row="1">
-            <StackPanel>
-                <views:DetailView IconPath="Icons/entities/User" Text="{}{User}" EditMode="{Binding Locker.IsActive}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <views:DetailView Grid.Column="0" IconPath="Icons/entities/User" Text="{}{User}" EditMode="{Binding Locker.IsActive}">
 
                     <lang:LocalizedLabel Text="{}{Domain} : " />
                     <TextBox Text="{Binding Model.Domain,UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="TextBox_MouseDoubleClick"/>
@@ -72,7 +76,7 @@
                     </Button>
                 </views:DetailView>
         
-                <views:DetailView Text="{}{Profiles}" IconPath="Icons/Edit" EditMode="{Binding Locker.IsActive}">
+                <views:DetailView Grid.Column="1" Text="{}{Profiles}" IconPath="Icons/Edit" EditMode="{Binding Locker.IsActive}">
                     
                     <Label/>
                     
@@ -99,10 +103,10 @@
                     <mvvm:ViewLocator Model="{Binding UserProfiles}"/>
 
                 </views:DetailView>
-            </StackPanel>
+            </Grid>
         </controlsEx:ScrollViewerEx>
 
-        <views:DetailView Text="{}{Note}" IconPath="Icons/Edit"  Grid.Row="2" EditMode="{Binding Locker.IsActive}">
+        <views:DetailView    Text="{}{Note}" IconPath="Icons/Edit"  Grid.Row="2" EditMode="{Binding Locker.IsActive}">
 
             <TextBox 
                 Margin="50,0,15,0"  Grid.ColumnSpan="2"  

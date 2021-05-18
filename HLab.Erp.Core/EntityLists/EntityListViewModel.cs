@@ -10,10 +10,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Newtonsoft.Json;
@@ -21,8 +18,8 @@ using Newtonsoft.Json.Serialization;
 using NPoco;
 using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Core.ListFilterConfigurators;
-using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Core.Tools.Details;
+using System.ComponentModel;
 
 namespace HLab.Erp.Core.EntityLists
 {
@@ -44,7 +41,7 @@ namespace HLab.Erp.Core.EntityLists
         protected IErpServices Erp { get; private set; }
 
         [Import]
-        public void Inject(IErpServices erp, Func<Type, object> get)
+        public void Inject2(IErpServices erp, Func<Type, object> get)
         {
             _get = get;
             Erp = erp;
@@ -63,6 +60,7 @@ namespace HLab.Erp.Core.EntityLists
         public void AddFilter(IFilter filter) => filters.Add(filter);
         public T GetFilter<T>() where T : IFilter => (T)_get(typeof(T));
         public abstract void Start();
+        public abstract void Stop();
 
 
         public abstract dynamic SelectedViewModel { get; set; }
@@ -73,18 +71,29 @@ namespace HLab.Erp.Core.EntityLists
 
         public abstract ICommand AddCommand { get; }
         public abstract ICommand DeleteCommand { get; }
+        public abstract ICommand OpenCommand { get; }
 
+        public string ErrorMessage => string.Join(Environment.NewLine,_errors.OrderBy(e => e.Item1).Select(e => e.Item2));
+
+        private List<Tuple<string,string>> _errors = new List<Tuple<string, string>>();
+
+        public void AddErrorMessage(string key,string message)
+        {
+            _errors.Add(new(key,message));
+            ClassHelper.OnPropertyChanged(new PropertyChangedEventArgs(nameof(ErrorMessage)));
+        }
+
+        public void RemoveErrorMessage(string key)
+        {
+            _errors.RemoveAll(e => e.Item1 == key);
+            ClassHelper.OnPropertyChanged(new PropertyChangedEventArgs(nameof(ErrorMessage)));
+        }
     }
 
     public class EntityListViewModel<T> : EntityListViewModel, IEntityListViewModel<T>
         where T : class, IEntity, new()
     {
         private IEntityListHelper<T> _helper;
-        [Import]
-        public void Inject(IEntityListHelper<T> helper)
-        {
-            _helper = helper;
-        }
 
         public object Header
         {
@@ -133,12 +142,14 @@ namespace HLab.Erp.Core.EntityLists
 
         [Import]
         public void Inject(
+            IEntityListHelper<T> helper,
             Func<T> createInstance,
             ObservableQuery<T> list,
             Func<ObservableQuery<T>, IColumnsProvider<T>> getColumnsProvider,
             Func<IEntityListViewModel<T>, IColumnConfigurator<T,object,IFilter<object>>> getConfigurator
             )
         {
+            _helper = helper;
             CreateInstance = createInstance;
             List = list;
 
@@ -148,7 +159,6 @@ namespace HLab.Erp.Core.EntityLists
             List_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, List, 0));
             List.CollectionChanged += List_CollectionChanged;
 
-            OpenAction = target => Erp.Docs.OpenDocumentAsync(target);
 
             H<EntityListViewModel<T>>.Initialize(this);
 
@@ -156,9 +166,8 @@ namespace HLab.Erp.Core.EntityLists
             _configurator.Invoke(c)?.Dispose();
 
             Header ??= GetTitle();
-
-            if (string.IsNullOrWhiteSpace(IconPath))
-                IconPath = "Icons/Entities/" + typeof(T).Name;
+            OpenAction ??= target => Erp.Docs.OpenDocumentAsync(target);
+            IconPath ??= "Icons/Entities/" + typeof(T).Name;
         }
 
         private readonly Func<IColumnConfigurator<T,object,IFilter<object>>, IDisposable> _configurator;
@@ -168,48 +177,80 @@ namespace HLab.Erp.Core.EntityLists
         }
 
         #region COMMANDS
-        public ICommand OpenCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-            .CanExecute(e => e.CanExecuteOpen())
-            .Action(e => e.OpenAction.Invoke(e.Selected))
-            .On(e => e.Selected).CheckCanExecute()
+        public override ICommand OpenCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
+            .CanExecute((e, a) =>
+            {
+                e.RemoveErrorMessage("Open");
+                if(a is T target)
+                    return e.CanExecuteOpen(target,m=>e.AddErrorMessage("Open",m));
+                return false;
+            })
+            .Action((e,a) =>
+            {
+                if(a is T entity)
+                    e.OpenAction?.Invoke(entity);
+            })
+            .On(e => e.Selected).CheckCanExecute(e => e.Selected)
         );
+
+
 
         public ICommand RefreshCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
             .Action(e => e.List.Update())
         );
         
         public override ICommand DeleteCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-            .CanExecute(e => e.CanExecuteDelete())
+            .CanExecute((e, a) =>
+            {
+                e.RemoveErrorMessage("Delete");
+                if(a is T target)
+                {
+                    return e.CanExecuteDelete(target,m=>e.AddErrorMessage("Delete",m));
+                }
+                return false;
+            })
             .Action(async e => await e.DeleteEntityAsync(e.Selected))
             .On(e => e.Selected)
-            .CheckCanExecute()
+            .CheckCanExecute(e => e.Selected)
         );
 
         public override ICommand AddCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-            .CanExecute(e => e.CanExecuteAdd())
+            .CanExecute(e =>
+            {
+                e.RemoveErrorMessage("Add");
+                return e.CanExecuteAdd(m => e.AddErrorMessage("Add", m));
+            })
             .Action(async e => await e.AddEntityAsync())
             .On(e => e.Selected)
             .CheckCanExecute()
         );
         public ICommand ExportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-            .CanExecute(e => e.CanExecuteExport())
+            .CanExecute(e =>
+            {
+                e.RemoveErrorMessage("Export");
+                return e.CanExecuteExport(m => e.AddErrorMessage("Export", m));
+            })
             .Action(async e => await e.ExportAsync())
             .On(e => e.Selected)
             .CheckCanExecute()
         );
         public ICommand ImportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-            .CanExecute(e => e.CanExecuteImport())
+            .CanExecute(e =>
+            {
+                e.RemoveErrorMessage("Import");
+                return e.CanExecuteImport(m => e.AddErrorMessage("Import", m));
+            })
             .Action(async e => await e.ImportAsync())
             .On(e => e.Selected)
             .CheckCanExecute()
         );
-        protected virtual bool CanExecuteOpen() => true;
+        protected virtual bool CanExecuteOpen(T arg,Action<string> errorAction) => true;
 
-        protected virtual bool CanExecuteDelete() => false;
-        protected virtual bool CanExecuteAdd() => false;
+        protected virtual bool CanExecuteDelete(T arg,Action<string> errorAction) => false;
+        protected virtual bool CanExecuteAdd(Action<string> errorAction) => false;
 
-        protected virtual bool CanExecuteImport() => false;
-        protected virtual bool CanExecuteExport() => false;
+        protected virtual bool CanExecuteImport(Action<string> errorAction) => false;
+        protected virtual bool CanExecuteExport(Action<string> errorAction) => false;
         #endregion
 
 
@@ -421,7 +462,15 @@ namespace HLab.Erp.Core.EntityLists
         }
 
 
-        public override void Start() => List.Start();
+        public override void Start()
+        {
+            List.Update();
+            List.Start();
+        }
+        public override void Stop()
+        {
+            List.Stop();
+        }
 
 
         void IEntityListViewModel<T>.AddFilter(IFilter filter) => AddFilter(filter);

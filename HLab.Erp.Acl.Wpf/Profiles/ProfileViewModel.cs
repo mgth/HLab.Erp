@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Windows.Input;
 using HLab.Erp.Acl.Users;
+using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 
@@ -13,13 +15,28 @@ namespace HLab.Erp.Acl.Profiles
     {
         public ProfileViewModel(
             IDataService data,
-            Func<Profile, UserProfileListViewModel> getUserProfiles, 
-            Func<Profile, AclRightProfileListViewModel> getRightProfiles)
+            Func<Profile, UsersPerProfileListViewModel> getUserProfiles, 
+            Func<Profile, AclRightsProfileListViewModel> getRightProfiles)
         {
-            _getUserProfiles = getUserProfiles;
+            _getUsersPerProfile = getUserProfiles;
             _getRightProfiles = getRightProfiles;
             _data = data;
             H.Initialize(this);
+        }
+
+        public class AclRightsProfileListViewModel : EntityListViewModel<AclRightProfile>
+        {
+            public AclRightsProfileListViewModel(Profile profile) : base(c => c
+               .StaticFilter(e => e.ProfileId == profile.Id)
+               .Column()
+               .Header("{Name}")
+               .Content(s => s.AclRight.Caption)
+            )
+            {
+                OpenAction = target => { };
+            }
+
+            protected override bool CanExecuteOpen(AclRightProfile rightProfile, Action<string> errorAction) => false;
         }
 
         public override string Header => _header.Get();
@@ -28,18 +45,18 @@ namespace HLab.Erp.Acl.Profiles
         );
         public override string IconPath => "Icons/Entities/Profile";
 
-        private readonly Func<Profile, UserProfileListViewModel> _getUserProfiles;
+        private readonly Func<Profile, UsersPerProfileListViewModel> _getUsersPerProfile;
 
-        public UserProfileListViewModel UserProfiles => _userProfiles.Get();
-        private readonly IProperty<UserProfileListViewModel> _userProfiles = H.Property<UserProfileListViewModel>(c => c
+        public UsersPerProfileListViewModel UserProfiles => _userProfiles.Get();
+        private readonly IProperty<UsersPerProfileListViewModel> _userProfiles = H.Property<UsersPerProfileListViewModel>(c => c
             .On(e => e.Model)
             .NotNull(e => e.Model)
-            .Set(e => e._getUserProfiles(e.Model))
+            .Set(e => e._getUsersPerProfile(e.Model))
         );
 
-        private readonly Func<Profile, AclRightProfileListViewModel> _getRightProfiles;
-        public AclRightProfileListViewModel ProfileRights => _profileRights.Get();
-        private readonly IProperty<AclRightProfileListViewModel> _profileRights = H.Property<AclRightProfileListViewModel>(c => c
+        private readonly Func<Profile, AclRightsProfileListViewModel> _getRightProfiles;
+        public AclRightsProfileListViewModel ProfileRights => _profileRights.Get();
+        private readonly IProperty<AclRightsProfileListViewModel> _profileRights = H.Property<AclRightsProfileListViewModel>(c => c
             .On(e => e.Model)
             .NotNull(e => e.Model)
             .Set(e => e._getRightProfiles(e.Model))

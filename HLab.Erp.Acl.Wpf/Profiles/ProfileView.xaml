@@ -21,13 +21,13 @@
         <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
 
         <controlsEx:ScrollViewerEx Grid.Row="1">
-            <StackPanel>
+            <views:UniformGridAuto>
+                
                 <views:DetailView Text="{}{Profile}" IconPath="Icons/users">
-
                     <lang:LocalizedLabel Text="{}{Name} : "/>
                     <TextBox Text="{Binding Model.Name}" HorizontalContentAlignment="Left" />
                 </views:DetailView>
-                
+
                 <views:DetailView Text="{}{Users}" IconPath="Icons/Entities/User">
                     <Label/>
                     <StackPanel Orientation="Horizontal">
@@ -41,13 +41,12 @@
                             </Style>
                         </StackPanel.Style>
 
-
                         <entitySelectors:ForeignView 
-                    HorizontalAlignment="Left"
-                    IsReadOnly="{Binding Locker.IsReadOnly}"
-                    ModelClass="{x:Type data:User}" 
-                    Command="{Binding AddUserCommand}"
-                >
+                            HorizontalAlignment="Left"
+                            IsReadOnly="{Binding Locker.IsReadOnly}"
+                            ModelClass="{x:Type data:User}" 
+                            Command="{Binding AddUserCommand}"
+                            >
                             <lang:Localize Id="{}{Add}"/>
                         </entitySelectors:ForeignView>
 
@@ -91,7 +90,7 @@
                     <mvvm:ViewLocator Model="{Binding ProfileRights}"/>
 
                 </views:DetailView>
-            </StackPanel>
+            </views:UniformGridAuto>
         </controlsEx:ScrollViewerEx>
 
         <views:DetailView Grid.Row="2" Text="{}{Note}" IconPath="Icons/Edit">

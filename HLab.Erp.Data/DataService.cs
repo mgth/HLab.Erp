@@ -26,6 +26,7 @@ namespace HLab.Erp.Data
         {
             Locate = locate;
             _options = options;
+            DataCache.DataService = this;
             ServiceState = ServiceState.Available;
         }
 
@@ -66,7 +67,7 @@ namespace HLab.Erp.Data
                 added?.Invoke(t);
             }
 
-            return await GetCache<T>().GetOrAddAsync(t).ConfigureAwait(false);
+            return await DataCache<T>.Cache.GetOrAddAsync(t).ConfigureAwait(false);
         }
         public T Add<T>(Action<T> setter, Action<T> added = null)
             where T : class, IEntity
@@ -102,7 +103,7 @@ namespace HLab.Erp.Data
                 added?.Invoke(t);
             }
 
-            return GetCache<T>().GetOrAddAsync(t).Result;
+            return DataCache<T>.Cache.GetOrAddAsync(t).Result;
         }
 
 
@@ -116,7 +117,7 @@ namespace HLab.Erp.Data
 
             if (result > 0)
             {
-                var b = GetCache<T>().ForgetAsync(entity).Result;
+                var b = DataCache<T>.Cache.ForgetAsync(entity).Result;
                 deleted?.Invoke((T)entity);
                 return true;
             }
@@ -130,7 +131,7 @@ namespace HLab.Erp.Data
 
             if (result > 0)
             {
-                await GetCache<T>().ForgetAsync(entity);
+                await DataCache<T>.Cache.ForgetAsync(entity);
                 deleted?.Invoke((T)entity);
                 return true;
             }
@@ -153,14 +154,16 @@ namespace HLab.Erp.Data
                     return result;
                 }
 
-                return await GetCache<T>().GetOrAddAsync(t).ConfigureAwait(false);
+                return await DataCache<T>.Cache.GetOrAddAsync(t).ConfigureAwait(false);
             }
 
         }
         public T GetOrAdd<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {
-            using (var transaction = GetTransaction() as DataTransaction)
+            using var transaction = GetTransaction() as DataTransaction;
+
+            if (transaction != null)
             {
                 var t = transaction.Database.Query<T>().FirstOrDefault(getter);
 
@@ -172,19 +175,20 @@ namespace HLab.Erp.Data
                     return result;
                 }
 
-                return GetCache<T>().GetOrAdd(t);
+                return DataCache<T>.Cache.GetOrAdd(t);
             }
 
+            throw new DataException("Unable to create transaction");
         }
         public Task<T> GetOrAddAsync<T>(T entity)
             where T : class, IEntity
         {
-            return GetCache<T>().GetOrAddAsync(entity);
+            return DataCache<T>.Cache.GetOrAddAsync(entity);
         }
         //public static IQueryProviderWithIncludes<T> Query<T>() => D.Get().Query<T>();
         public async IAsyncEnumerable<T> FetchAsync<T>() where T : class, IEntity
         {
-            var cache = GetCache<T>();
+            var cache = DataCache<T>.Cache;
 
             var retry = true;
             while (retry)
@@ -236,7 +240,7 @@ namespace HLab.Erp.Data
         public IEnumerable<T> FetchWhere<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy = null)
             where T : class, IEntity
         {
-            var cache = GetCache<T>();
+            var cache = DataCache<T>.Cache;
 
 
             if (typeof(ILocalCache).IsAssignableFrom(typeof(T)))
@@ -285,7 +289,7 @@ namespace HLab.Erp.Data
         public IAsyncEnumerable<T> FetchWhereAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy = null)
             where T : class, IEntity
         {
-            var cache = GetCache<T>();
+            var cache = DataCache<T>.Cache;
 
 
             if (typeof(ILocalCache).IsAssignableFrom(typeof(T)))
@@ -336,7 +340,7 @@ namespace HLab.Erp.Data
         {
             var result = await DbGetAsync(async db => await db.QueryAsync<T>().Where(expression).FirstOrDefault().ConfigureAwait(false)).ConfigureAwait(false);
 
-            return result == null ? null : await GetCache<T>().GetOrAddAsync(result).ConfigureAwait(false);
+            return result == null ? null : await DataCache<T>.Cache.GetOrAddAsync(result).ConfigureAwait(false);
         }
 
 
@@ -345,7 +349,7 @@ namespace HLab.Erp.Data
             where T : class, IEntity
         {
             var result = DbGet(db => db.Query<T>().Where(expression).FirstOrDefault());
-            return result == null ? null : GetCache<T>().GetOrAddAsync(result).Result;
+            return result == null ? null : DataCache<T>.Cache.GetOrAddAsync(result).Result;
         }
 
         public Task<T> FetchOneAsync<T>(int id)
@@ -364,7 +368,7 @@ namespace HLab.Erp.Data
             if (entity == null) return null;
 
             var result = await DbGetAsync(async db => await db.SingleByIdAsync<T>(entity.Id).ConfigureAwait(false)).ConfigureAwait(true);
-            return await GetCache<T>().GetOrAddAsync(result).ConfigureAwait(true);
+            return await DataCache<T>.Cache.GetOrAddAsync(result).ConfigureAwait(true);
         }
 
         public async Task<T> FetchOneAsync<T>(object id)
@@ -372,7 +376,7 @@ namespace HLab.Erp.Data
         {
             var subscribe = false;
 
-            var obj = await GetCache<T>().GetOrAddAsync(id,
+            var obj = await DataCache<T>.Cache.GetOrAddAsync(id,
                  async k =>
                 {
                     subscribe = true;
@@ -392,11 +396,6 @@ namespace HLab.Erp.Data
         {
             return DbGet<bool>(db => db.Query<T>().Any(expression));
         }
-
-        private readonly ConcurrentDictionary<Type, DataCache> _caches = new();
-
-        internal DataCache<T> GetCache<T>() where T : class, IEntity
-            => (DataCache<T>)_caches.GetOrAdd(typeof(T), t => new DataCache<T>() { DataService = this });
 
         private IEnumerable<string> _connectionStrings;
         public IEnumerable<string> Connections
@@ -440,7 +439,7 @@ namespace HLab.Erp.Data
                 _source = value;
                 _options.SetValue<string>("", "Source", value, "registry");
                 _connectionString = null;
-                _caches.Clear();
+//                _caches.Clear();
             }
         }
 

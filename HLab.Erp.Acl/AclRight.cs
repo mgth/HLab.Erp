@@ -20,7 +20,6 @@ namespace HLab.Erp.Acl
             return Data.GetOrAdd<AclRight>(e => e.Name == name, e => e.Name = name);
         }
 
-
         public string Name
         {
             get => _name.Get(); 

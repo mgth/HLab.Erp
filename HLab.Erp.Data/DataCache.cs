@@ -13,11 +13,13 @@ namespace HLab.Erp.Data
 
     internal class DataCache
     {
-        public DataService DataService { get; set; }
+        public static DataService DataService { get; set; }
     }
 
     internal class DataCache<T> : DataCache where T : class, IEntity
     {
+        public static DataCache<T> Cache = new();
+
         private readonly AsyncDictionary<object,T> _cache = new();
         private bool _fullCache = false;
 
@@ -101,22 +103,25 @@ namespace HLab.Erp.Data
         public async Task<T> GetOrAddAsync(T obj)
         {
             var result = await _cache.GetOrAddAsync(obj.Id,
-                async k => obj).ConfigureAwait(true);
+                 k => Task.FromResult(obj)).ConfigureAwait(true);
 
-            obj.CopyPrimitivesTo(result);
+            if(!ReferenceEquals(obj,result))
+                obj.CopyPrimitivesTo(result);
 
-            if (result is IDataServiceProvider dbf && dbf.DataService==null) 
+            if (result is IDataServiceProvider {DataService: null} dbf) 
                 dbf.DataService = DataService;
 
             return result;
         }
+
         public T GetOrAdd(T obj)
         {
             var result = _cache.GetOrAdd(obj.Id, k => obj);
 
-            obj.CopyPrimitivesTo(result);
+            if(!ReferenceEquals(obj,result))
+                obj.CopyPrimitivesTo(result);
 
-            if (result is IDataServiceProvider dbf && dbf.DataService==null) 
+            if (result is IDataServiceProvider {DataService: null} dbf) 
                 dbf.DataService = DataService;
 
             return result;

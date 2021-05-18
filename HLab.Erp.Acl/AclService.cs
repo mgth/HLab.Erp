@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Grace.DependencyInjection.Attributes;
 using HLab.Core.Annotations;
 using HLab.Erp.Data;
+using NPoco;
 
 
 namespace HLab.Erp.Acl
@@ -33,7 +34,7 @@ namespace HLab.Erp.Acl
         private readonly IAclHelper _acl;
         private readonly IDataService _data;
 
-        [Import] public AclService(IMessageBus msg, IAclHelper acl, IDataService data)
+        public AclService(IMessageBus msg, IAclHelper acl, IDataService data)
         {
             _msg = msg;
             _acl = acl;
@@ -123,7 +124,7 @@ namespace HLab.Erp.Acl
             return node;
         }
 
-        public List<AclRight> CurrentRights;
+        public List<AclRight> CurrentRights { get; private set; }
 
         public bool IsGranted(AclRight right, object grantedTo = null, object grantedOn = null)
         {
@@ -131,6 +132,21 @@ namespace HLab.Erp.Acl
             if(Connection.User.Login=="admin") return true;
             if (right == null) return true;
             return CurrentRights.Contains(right);
+        }
+        public bool IsGranted(Action<string> setMessage,params AclRight[] rights)
+        {
+            if(Connection==null) return false;
+            if(Connection.User.Login=="admin") return true;
+            if (rights.Length == 0) return true;
+            foreach (var right in rights)
+            {
+                if (CurrentRights.Contains(right)) return true;
+            }
+            foreach (var right in rights)
+            {
+                setMessage($"{{Need right}} : {right.Caption}");
+            }
+            return false;
         }
 
         public void CancelLogin()
@@ -142,17 +158,16 @@ namespace HLab.Erp.Acl
         {
             List<AclRight> rights = new List<AclRight>();
 
-            var userId = Connection.UserId;
-            var userprofiles = _data.FetchWhereAsync<UserProfile>(e => e.UserId == userId, e => e.Id);
-            await foreach (var userprofile in userprofiles)
+            var userProfiles = _data.FetchWhereAsync<UserProfile>(e => e.UserId == Connection.UserId, e => e.Id);
+            await foreach (var userProfile in userProfiles)
             {
-                var profileRights = _data.FetchWhereAsync<AclRightProfile>(e => e.ProfileId == userprofile.ProfileId, e => e.Id);
+                var profileRights = _data.FetchWhereAsync<AclRightProfile>(e => e.ProfileId == userProfile.ProfileId, e => e.Id);
                 await foreach(var rightProfile in profileRights)
                 {
-                    if(rights.Any(r => r.Id == rightProfile.AclRightId)) continue;
-                    var right = await _data.FetchOneAsync<AclRight>(rightProfile.AclRightId.Value).ConfigureAwait(false);
+                    if(rights.Contains(rightProfile.AclRight))
+                        continue;
 
-                    rights.Add(right);
+                    rights.Add(rightProfile.AclRight);
                 }
             }
 

@@ -1,7 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using AvalonDock.Controls;
+using HLab.Base.Wpf;
 using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Mvvm.Annotations;
@@ -22,7 +26,9 @@ namespace HLab.Erp.Core.EntityLists
             DataContextChanged += EntityListView_DataContextChanged;
             Loaded += EntityListView2_Loaded;
             ListView.SelectionChanged += ListView_SelectionChanged;
+            Unloaded += EntityListView2_Unloaded;
         }
+
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -42,6 +48,13 @@ namespace HLab.Erp.Core.EntityLists
                 vm.Start();
             }
         }
+        private void EntityListView2_Unloaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (DataContext is IEntityListViewModel vm)
+            {
+                vm.Stop();
+            }
+        }
 
         private void EntityListView_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
@@ -59,6 +72,26 @@ namespace HLab.Erp.Core.EntityLists
                 {
 //                    header.Tag
                 }
+        }
+
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is not IEntityListViewModel vm) return;
+            if (sender is not ListViewItem item) return;
+            if (item.Content is not IObjectMapper mapper) return;
+            var entity = mapper.Model;
+            if (entity == null) return;
+
+            if (vm.OpenCommand.CanExecute(entity))
+            {
+                vm.OpenCommand.Execute(entity);
+            }
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+
+            MessageTextBlock.SwitchVisibility();
         }
     }
 }

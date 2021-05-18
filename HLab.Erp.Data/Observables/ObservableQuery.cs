@@ -58,16 +58,26 @@ namespace HLab.Erp.Data.Observables
         private SuspenderToken _token;
         public Suspender Suspender { get; }
 
+        private readonly object _lock = new();
+
         public void Start()
         {
-            if (_token != null)
+            lock (_lock)
             {
+                if (_token == null) return;
                 var token = _token;
                 _token = null;
                 token.Dispose();
             }
         }
-
+        public void Stop()
+        {
+            lock (_lock)
+            {
+                if (_token != null) return;
+                _token = Suspender.Get();
+            }
+        }
 
         private IAsyncEnumerable<T> _source = null;
 

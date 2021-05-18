@@ -46,6 +46,7 @@ namespace HLab.Erp.Core
 
         ICommand AddCommand { get; }
         ICommand DeleteCommand { get; }
+        ICommand OpenCommand { get; }
 
         dynamic SelectedViewModel { get; set; }
         IEnumerable<int> SelectedIds { get; set; }
@@ -55,6 +56,7 @@ namespace HLab.Erp.Core
 
         T GetFilter<T>() where T : IFilter;
         void Start();
+        void Stop();
     }
 
     public interface IEntityListViewModel<T> : IEntityListViewModel
