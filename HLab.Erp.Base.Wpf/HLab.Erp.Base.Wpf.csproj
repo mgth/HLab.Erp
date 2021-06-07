@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\HLab.Erp.Lims\HLab.Erp.Lims.Analysis\Hlab.Erp.Lims.Analysis.Data\HLab.Erp.Lims.Analysis.Data.csproj" />
+    <ProjectReference Include="..\..\HLab.Erp.Lims.Analysis\Hlab.Erp.Lims.Analysis.Data\HLab.Erp.Lims.Analysis.Data.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Base.Wpf\HLab.Base.Wpf.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
     <ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj" />

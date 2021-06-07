@@ -8,7 +8,6 @@
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
              xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance Type=core:IEntityListViewModel, IsDesignTimeCreatable=false}"
              d:DesignHeight="450" d:DesignWidth="800"
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
              >
@@ -156,11 +155,11 @@
                 </Style>
             </DataGrid.ColumnHeaderStyle>
 
-             <i:Interaction.Triggers>
+             <!--<i:Interaction.Triggers>
                  <i:EventTrigger EventName="MouseDoubleClick">
                      <i:InvokeCommandAction Command="{Binding OpenCommand}"/>
                  </i:EventTrigger>
-             </i:Interaction.Triggers>
+             </i:Interaction.Triggers>-->
          
          </DataGrid>
     </Grid>

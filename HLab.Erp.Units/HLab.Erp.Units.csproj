@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+    <Configurations>Debug;Release;DebugRelease</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\HLab.Erp\HLab.Erp.Data\HLab.Erp.Data.csproj" />
+    <ProjectReference Include="..\..\HLab\HLab.Notify.PropertyChanged\HLab.Notify.PropertyChanged.csproj" />
+  </ItemGroup>
+
+</Project>
