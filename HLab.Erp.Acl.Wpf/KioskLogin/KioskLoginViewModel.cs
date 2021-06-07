@@ -3,16 +3,15 @@ using System.Net;
 using System.Security;
 using System.Windows;
 using System.Windows.Input;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
+
 
 namespace HLab.Erp.Acl.KioskLogin
 {
     using H = H<KioskLoginViewModel>;
 
-    [Export(typeof(KioskLoginViewModel))]
     public class KioskLoginViewModel : ViewModel
     {
        
@@ -102,7 +101,6 @@ namespace HLab.Erp.Acl.KioskLogin
         //    Set(e => new ObservableQuery<User>(e._db).FluentUpdate())
         //);
 
-        [Import]
         public ObservableQuery<User> UsersList
         {
             get => _usersList.Get();

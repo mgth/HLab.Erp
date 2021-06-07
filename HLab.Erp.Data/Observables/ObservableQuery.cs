@@ -3,13 +3,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Grace.DependencyInjection.Attributes;
 using HLab.Base;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
@@ -22,7 +22,7 @@ namespace HLab.Erp.Data.Observables
     {
         void Update();
     }
-    public interface IObservableQuery<T> : ITriggerable, IObservableQuery, IList<T>
+    public interface IObservableQuery<T> : ITriggerable, IObservableQuery, IList<T>, INotifyCollectionChanged
     {
         Suspender Suspender { get; }
 
@@ -30,9 +30,14 @@ namespace HLab.Erp.Data.Observables
         void AddFilter(Func<Expression<Func<T, bool>>> filter, int order = 0, object name = null);
         void RemoveFilter(object header);
         void AddPostFilter(object header, Func<T, bool> postMatch);
+        void AddOrderBy(Func<T, object> orderBy, SortDirection sortDirection);
+        void ResetOrderBy();
+        void Start();
+        void Stop();
+        Task RefreshAsync();
+        Task UpdateAsync();
     }
 
-    [Export(typeof(ObservableQuery<>))]
     public class ObservableQuery<T> : ObservableCollectionNotifier<T>, IObservableQuery<T>, ITriggerable//, IObservableQuery<T>
         where T : class, IEntity
     {
@@ -519,6 +524,7 @@ namespace HLab.Erp.Data.Observables
 
         public Task UpdateAsync(Action postUpdate) => UpdateAsync(postUpdate, true, false);
         public Task UpdateAsync(bool force) => UpdateAsync(null, force, false);
+        public Task UpdateAsync() => UpdateAsync(null, true, false);
         public Task RefreshAsync() => UpdateAsync(null, true, true);
 
 
@@ -531,13 +537,13 @@ namespace HLab.Erp.Data.Observables
                 {
                     _updateNeeded = false;
                     doUpdate = true;
-                    _timer.Start();
                 }
             }
 
             if (doUpdate)
             {
                 await UpdateAsync(null, true, false);
+                _timer.Start();
             }
         }
 
@@ -709,5 +715,10 @@ namespace HLab.Erp.Data.Observables
             throw new NotImplementedException("Observable Query is readOnly");
         }
 
+        void IObservableQuery<T>.AddOrderBy(Func<T, object> orderBy, SortDirection sortDirection)
+        => AddOrderBy(orderBy,sortDirection);
+
+        void IObservableQuery<T>.ResetOrderBy()
+        => ResetOrderBy();
     }
 }

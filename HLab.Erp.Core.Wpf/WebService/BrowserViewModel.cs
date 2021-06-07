@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
-using Grace.DependencyInjection.Attributes;
 using HLab.Mvvm;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
@@ -11,11 +10,10 @@ namespace HLab.Erp.Core.WebService
 {
     using H = H<BrowserViewModel>;
 
-    [Export(typeof(IBrowserService)), Singleton]
     public class BrowserViewModel : ViewModel, IBrowserService
     {
        
-        private readonly IErpServices _erp;
+        private IErpServices _erp;
 
         public ICommand OpenCommand { get; } = H.Command(c => c
         .Action(e => e._erp.Docs.OpenDocumentAsync(e))
@@ -58,7 +56,7 @@ namespace HLab.Erp.Core.WebService
                 return web;
             }));
 
-        public BrowserViewModel(IErpServices erp)
+        public void Inject(IErpServices erp)
         {
             _erp = erp;
             H.Initialize(this);

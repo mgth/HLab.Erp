@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Notify.PropertyChanged;
 using NPoco;
+
 
 namespace HLab.Erp.Acl
 {
@@ -37,7 +37,7 @@ namespace HLab.Erp.Acl
 
         private readonly IProperty<int?> _targetId = H.Property<int?>();
 
-        [Import][Ignore]
+        [Ignore]
         public ObservableQuery<AclLink> Members
         {
             get => _members.Get();
@@ -46,7 +46,7 @@ namespace HLab.Erp.Acl
         }
         private readonly IProperty<ObservableQuery<AclLink>> _members = H.Property<ObservableQuery<AclLink>>();
 
-        [Import][Ignore]
+        [Ignore]
         public ObservableQuery<AclLink> Groups
         {
             get => _groups.Get();

@@ -1,12 +1,10 @@
 ﻿using System.Windows.Input;
-using Grace.DependencyInjection.Attributes;
 using HLab.Core.Annotations;
 using HLab.Notify.PropertyChanged;
 namespace HLab.Erp.Core.Localization
 {
     using H = H<LocalizeWpfBootloader>;
 
-    [Export(typeof(IBootloader))]
     public class LocalizeWpfBootloader : NotifierBase, IBootloader //postboot
     {
         public LocalizeWpfBootloader(IErpServices erp)
@@ -27,6 +25,8 @@ namespace HLab.Erp.Core.Localization
 
         public void Load(IBootContext b)
         {
+            if(b.WaitService(_erp)) return;
+
             _erp.Menu.RegisterMenu("tools/localization", "{Localization}",
                 LocalizationOpenDocumentCommand,
                 "Icons/Entities/Localize");

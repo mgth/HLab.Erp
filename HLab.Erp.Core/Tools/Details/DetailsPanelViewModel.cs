@@ -4,16 +4,16 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.Tools.Details
 {
-    public class DetailsViewModel : ViewModel
+    public class DetailsPanelViewModel : ViewModel
     {
 
-        public DetailsViewModel(IMessageBus messageBus)
+        public DetailsPanelViewModel(IMessageBus messageBus)
         {
             messageBus.Subscribe<DetailMessage>(a=> Item = a.Item);
-            H<DetailsViewModel>.Initialize(this);
+            H<DetailsPanelViewModel>.Initialize(this);
         }
 
-        public string Title => "Detail";
+        public string Title => "{Detail}";
 
 
         public object Item
@@ -21,6 +21,6 @@ namespace HLab.Erp.Core.Tools.Details
             get => _item.Get();
             set => _item.Set(value);
         }
-        private readonly IProperty<object> _item = H<DetailsViewModel>.Property<object>();
+        private readonly IProperty<object> _item = H<DetailsPanelViewModel>.Property<object>();
     }
 }

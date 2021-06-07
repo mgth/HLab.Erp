@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Text;
 using System.Windows.Input;
-using Grace.DependencyInjection.Attributes;
 using HLab.Base.Extensions;
 using HLab.Core.Annotations;
 using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
+
 
 namespace HLab.Erp.Core
 {
@@ -14,7 +14,6 @@ namespace HLab.Erp.Core
     {
         protected IErpServices Erp { get; private set;}
 
-        [Import]
         public void Inject(IErpServices erp)
         {
             Erp = erp;

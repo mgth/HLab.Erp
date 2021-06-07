@@ -1,33 +1,29 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Grace.DependencyInjection;
-using Grace.DependencyInjection.Attributes;
 using HLab.Base;
 using HLab.Core.Annotations;
-using HLab.Notify.PropertyChanged;
 using Npgsql;
 using NPoco;
 using HLab.Options;
 
 namespace HLab.Erp.Data
 {
-    [Export(typeof(IDataService)), Singleton]
     public class DataService : IDataService, IService
     {
-        public DataService(Func<Type, object> locate, IOptionsService options)
+        private IOptionsService _options;
+        public Func<Type, object> Locate { get; private set;}
+
+        public void Inject(Func<Type, object> locate, IOptionsService options)
         {
             Locate = locate;
             _options = options;
             DataCache.DataService = this;
-            ServiceState = ServiceState.Available;
         }
 
 
@@ -443,30 +439,19 @@ namespace HLab.Erp.Data
             }
         }
 
-        public Func<Type, object> Locate { get; }
         //public object Locate<T>(DbDataReader d) => _Locate(typeof(T));
 
-        private IExportLocatorScope _container;
 
-        private readonly IOptionsService _options;
 
-        [Import]
-        public void Inject(IExportLocatorScope container)
+        public void RegisterEntities(Action<Type> action)
         {
-            //TODO : _options.SetDataService(this);
-            RegisterEntities(container);
-        }
-
-
-        public void RegisterEntities(IExportLocatorScope container)
-        {
-            _container = container;
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             foreach (var assembly in assemblies)
             {
                 foreach (var type in assembly.GetTypesSafe().Where(t => t.IsClass && !t.IsAbstract && typeof(IEntity).IsAssignableFrom(t)))
                 {
+                    action(type);
                     Entities.Add(type);
                 }
             }
@@ -583,7 +568,11 @@ namespace HLab.Erp.Data
 
         private Func<string> _getConnectionString = null;
 
-        public void SetConfigureAction(Func<string> action) => _getConnectionString = action;
+        public void SetConfigureAction(Func<string> action)
+        {            
+            _getConnectionString = action;
+            ServiceState = ServiceState.Available;
+        }
 
         private bool Configure(Exception exception = null)
         {

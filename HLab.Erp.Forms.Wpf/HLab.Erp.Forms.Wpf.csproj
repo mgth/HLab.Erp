@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grace" Version="7.2.1-Beta811" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\HLab\Compiler.Wpf\HLab.Compiler.Wpf.csproj" />
   </ItemGroup>
 

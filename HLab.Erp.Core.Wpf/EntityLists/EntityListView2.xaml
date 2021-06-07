@@ -70,12 +70,12 @@
             </Button>
 
             <Button Command="{Binding ExportCommand}">                    
-                <Button.ToolTip><lang:Localize Id="{}{Refresh}"/></Button.ToolTip>
+                <Button.ToolTip><lang:Localize Id="{}{Export}"/></Button.ToolTip>
                 <icons:IconView Path="Icons/Export" MaxHeight="15"/>
             </Button>
 
             <Button Command="{Binding ImportCommand}">                    
-                <Button.ToolTip><lang:Localize Id="{}{Refresh}"/></Button.ToolTip>
+                <Button.ToolTip><lang:Localize Id="{}{Import}"/></Button.ToolTip>
                 <icons:IconView Path="Icons/Import" MaxHeight="15"/>
             </Button>
             <Button Click="ButtonBase_OnClick" BorderThickness="0" BorderBrush="Transparent" Background="Transparent">                    
@@ -91,14 +91,21 @@
                    VerticalAlignment="Top"
                    ItemsSource="{Binding ListCollectionView}" 
                    SelectedItem="{Binding SelectedViewModel}"
-                   VirtualizingStackPanel.VirtualizationMode="Recycling"
-                   VirtualizingPanel.IsContainerVirtualizable="True"
-                   VirtualizingPanel.IsVirtualizing="True"
-                   ScrollViewer.CanContentScroll ="True"
                    x:Name="ListView"
                    AlternationCount="2"
+                   VirtualizingPanel.IsVirtualizing="True"
+                   VirtualizingPanel.IsContainerVirtualizable="True"
+                   VirtualizingStackPanel.VirtualizationMode="Standard"
                    Background="{DynamicResource MahApps.Brushes.DataGrid.Background}"
-         ><!--AlternatingRowBackground="#08FFFFFF"-->
+                   VirtualizingPanel.ScrollUnit="Pixel"
+                   ScrollViewer.CanContentScroll ="True"
+                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                   MaxHeight="5000"
+         ><!--
+             
+             
+             
+             AlternatingRowBackground="#08FFFFFF"-->
             <ListView.Resources>
                 <Style TargetType="DataGridColumnHeader">
                     <EventSetter Event="Click" Handler="DataGridColumnHeader_Click" />
@@ -114,8 +121,9 @@
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
                     <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
-                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                    <!--<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>-->
                     <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                    <!--<Setter Property="Height" Value="50" />-->
                     <Style.Triggers>
                          <DataTrigger Binding="{Binding IsValid}" Value="False">
                              <Setter Property="Opacity" Value="0.3" />
@@ -123,7 +131,7 @@
                          <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
                              <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent4}" />
                          </Trigger>
-                         <Trigger Property="IsSelected"
+                         <!--<Trigger Property="IsSelected"
                                   Value="True">
                              <Setter Property="Foreground"
                                      Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.Text}" />
@@ -133,17 +141,26 @@
                                      Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.BorderBrush}" />
                              <Setter Property="BorderThickness"
                                      Value="2" />
-                         </Trigger>
+                         </Trigger>-->
 
-                         <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                         <!--<DataTrigger Binding="{Binding IsSelected}" Value="True">
                              <Setter Property="Background" Value="DarkGreen" />
-                         </DataTrigger>
+                         </DataTrigger>-->
 
                      </Style.Triggers>
                  </Style>
 
             </ListView.ItemContainerStyle>
-         
+             
+             <ListView.ItemsPanel>
+                 <ItemsPanelTemplate>
+                     <VirtualizingStackPanel
+                         VirtualizingPanel.IsVirtualizing="True"                                 
+                         VirtualizingPanel.ScrollUnit="Pixel"                                 
+                         VirtualizingPanel.VirtualizationMode="Standard"/>     
+                 </ItemsPanelTemplate> 
+             </ListView.ItemsPanel>
+             
          </ListView>
     </Grid>
 </UserControl>

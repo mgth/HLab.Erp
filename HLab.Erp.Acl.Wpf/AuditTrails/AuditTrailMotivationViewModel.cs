@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data;
 using HLab.Icons.Annotations.Icons;
 using HLab.Mvvm;
@@ -12,29 +11,27 @@ namespace HLab.Erp.Acl.AuditTrails
 {
     using H = H<AuditTrailMotivationViewModel>;
 
-    [Export(typeof(IAuditTrailProvider))]
     public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrailProvider, IMainViewModel
     {
 
-        private readonly IMvvmService _mvvm;
-        public IIconService IconService { get; }
-        public ILocalizationService LocalizationService { get; }
+        public IIconService IconService { get; private set; }
+        public ILocalizationService LocalizationService { get; private set; }
 
         public string Title => EntityCaption;
 
-        private readonly IDataTransaction _transaction;
+        private IMvvmService _mvvm;
+        private IDataTransaction _transaction;
 
-        public AuditTrailMotivationViewModel(
-            IAclService acl,
+        public void  Inject(
             IDataTransaction transaction, 
             IMvvmService mvvm, 
             IIconService icon, 
-            ILocalizationService localization):base(acl)
+            ILocalizationService localization)
         {
             IconService = icon;
             LocalizationService = localization;
-            _transaction = transaction;
             _mvvm = mvvm;
+            _transaction = transaction;
             H.Initialize(this);
             User = Acl.Connection.User;
         }
@@ -132,7 +129,7 @@ namespace HLab.Erp.Acl.AuditTrails
 
             var view = _mvvm.MainContext.GetView<ViewModeDefault>(this).AsDialog();
             if(view.ShowDialog()??false)
-            {
+            {   
                 var audit = _transaction.Add<AuditTrail>(e =>
                 {
                     e.Action = action;

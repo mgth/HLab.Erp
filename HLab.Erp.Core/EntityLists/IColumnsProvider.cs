@@ -1,4 +1,5 @@
-﻿using HLab.Mvvm.Annotations;
+﻿using HLab.Erp.Data.Observables;
+using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.EntityLists
 {
@@ -14,6 +15,8 @@ namespace HLab.Erp.Core.EntityLists
         object GetView();
 
         void AddColumn(IColumn<T> column);
+
+        IObservableQuery<T> List {get;}
     }
 
 }

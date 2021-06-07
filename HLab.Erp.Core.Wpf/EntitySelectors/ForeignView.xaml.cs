@@ -3,12 +3,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
-using Grace.DependencyInjection;
 using HLab.Base.Wpf;
 using HLab.Erp.Core.EntityLists;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
+
 
 namespace HLab.Erp.Core.EntitySelectors
 {
@@ -20,52 +20,50 @@ namespace HLab.Erp.Core.EntitySelectors
     [ContentProperty(nameof(ButtonContent))]
     public partial class ForeignView : UserControl, IView<IForeignViewModel>, IViewClassForeign, IMandatoryNotFilled
     {
-        public static DependencyInjectionContainer Container {get; set;}
-
         public ForeignView()
         {
             InitializeComponent();
-            Locator.SetValue(ViewLocator.ModelProperty,null);
+            Locator.SetValue(ViewLocator.ModelProperty, null);
         }
 
         public static readonly DependencyProperty ModelProperty = H.Property<object>()
             .BindsTwoWayByDefault
-            .OnChange((v,a) => v.OnModelChanged(a))
+            .OnChange((v, a) => v.OnModelChanged(a))
             .Register();
 
         private void OnModelChanged(DependencyPropertyChangedEventArgs<object> args)
         {
             var value = args.NewValue;
             Locator.SetValue(ViewLocator.ModelProperty, args.NewValue);
-            OpenButton.IsEnabled = value!=null;
+            OpenButton.IsEnabled = value != null;
         }
 
         public static readonly DependencyProperty ModelClassProperty = H.Property<Type>()
             .Register();
 
         public static readonly DependencyProperty ListClassProperty = H.Property<Type>()
-            .OnChange( s => s.SetList() )
+            .OnChange(s => s.SetList())
             .Register();
 
         public static readonly DependencyProperty IsReadOnlyProperty = H.Property<bool>()
-            .OnChange( (s,a) => s.SetReadOnly(a.NewValue) )
+            .OnChange((s, a) => s.SetReadOnly(a.NewValue))
             .Register();
 
         public static readonly DependencyProperty CommandProperty = H.Property<ICommand>()
-            .OnChange( (s,a) => s.SetCommand(a.OldValue,a.NewValue) )
+            .OnChange((s, a) => s.SetCommand(a.OldValue, a.NewValue))
             .Register();
 
         public static readonly DependencyProperty ButtonContentProperty = H.Property<object>()
-            .OnChange( (s,a) => s.SetButtonContent(a.NewValue) )
+            .OnChange((s, a) => s.SetButtonContent(a.NewValue))
             .Register();
 
         public static readonly DependencyProperty MandatoryNotFilledProperty = H.Property<bool>()
-            .OnChange( (s,a) => s.SetMandatoryNotFilled(a.NewValue) )
+            .OnChange((s, a) => s.SetMandatoryNotFilled(a.NewValue))
             .Register();
 
-        private void SetCommand(ICommand oldCommand,ICommand command)
+        private void SetCommand(ICommand oldCommand, ICommand command)
         {
-            if(oldCommand!=null) oldCommand.CanExecuteChanged -= Command_CanExecuteChanged;
+            if (oldCommand != null) oldCommand.CanExecuteChanged -= Command_CanExecuteChanged;
 
             if (command == null)
             {
@@ -78,13 +76,13 @@ namespace HLab.Erp.Core.EntitySelectors
                 Locator.Visibility = Visibility.Collapsed;
                 OpenButton.Visibility = Visibility.Collapsed;
                 command.CanExecuteChanged += Command_CanExecuteChanged;
-                Button.IsEnabled = command?.CanExecute(null)??true;
+                Button.IsEnabled = command?.CanExecute(null) ?? true;
             }
         }
 
         private void Command_CanExecuteChanged(object sender, EventArgs e)
         {
-            Button.IsEnabled = Command?.CanExecute(null)??true;
+            Button.IsEnabled = Command?.CanExecute(null) ?? true;
         }
 
         public object Model
@@ -155,20 +153,18 @@ namespace HLab.Erp.Core.EntitySelectors
                 {
                     if (typeof(IListableModel).IsAssignableFrom(ModelClass))
                         type = typeof(ListableEntityListViewModel<>).MakeGenericType(ModelClass);
-                        //type = typeof(IEntityListViewModel<>).MakeGenericType(ModelClass);
+                    //type = typeof(IEntityListViewModel<>).MakeGenericType(ModelClass);
                 }
-                if(type==null)
-                { 
+                if (type == null)
+                {
                     PopupContent.Content = null;
                     return;
                 }
 
                 var ctx = ViewLocator.GetMvvmContext(this);
 
-                var test = ctx.Scope.WhatDoIHave();//.Locate(type);
-                var vm = ctx.Scope.Locate(type);
+                var vm = ctx.Locate(type);
 
-                //                ctx.Scope.Inject(vm);
 
                 if (vm is IEntityListViewModel lvm)
                 {
@@ -192,15 +188,17 @@ namespace HLab.Erp.Core.EntitySelectors
                 }
 
 
-                var view = ctx.GetView(vm,typeof(ViewModeDefault),typeof(IViewClassDefault));
+                var view = ctx.GetView(vm, typeof(ViewModeDefault), typeof(IViewClassDefault));
                 PopupContent.Content = view;
             }
         }
 
         private void OpenButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if(Model == null) return;
-            ViewLocator.GetMvvmContext(this).Scope.Locate<IDocumentService>().OpenDocumentAsync(Model);
+            if (Model == null) return;
+            var ctx = ViewLocator.GetMvvmContext(this);
+            var doc = ctx.Locate<IDocumentService>();
+            doc?.OpenDocumentAsync(Model);
         }
     }
 }

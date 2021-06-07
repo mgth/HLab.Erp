@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Acl.AuditTrails;
 using HLab.Erp.Data;
 using HLab.Icons.Annotations.Icons;
@@ -15,15 +14,13 @@ namespace HLab.Erp.Acl.LoginServices
 {
     using H = H<LoginViewModel>;
 
-    [Export(typeof(ILoginViewModel))]
     public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainViewModel
     {
-        public LoginViewModel(
-            IAclService acl,
+        public void Inject(
             ILocalizationService localizationService, 
             IIconService iconService, 
             IDataService dataService, 
-            IApplicationInfoService infoService) : base(acl)
+            IApplicationInfoService infoService)
         {
             LocalizationService = localizationService;
             IconService = iconService;
@@ -44,10 +41,10 @@ namespace HLab.Erp.Acl.LoginServices
 
         public ObservableCollection<string> Databases { get; } = new();
         
-        public ILocalizationService LocalizationService { get; }
-        public IIconService IconService {get; }
-        public IDataService DataService {get; }
-        public IApplicationInfoService InfoService {get; }
+        public ILocalizationService LocalizationService { get; private set; }
+        public IIconService IconService {get; private set; }
+        public IDataService DataService {get; private set; }
+        public IApplicationInfoService InfoService {get; private set; }
 
         public string Database
         {

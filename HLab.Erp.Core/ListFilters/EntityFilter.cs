@@ -1,5 +1,4 @@
-﻿using Grace.DependencyInjection.Attributes;
-using HLab.Erp.Data;
+﻿using HLab.Erp.Data;
 using HLab.Mvvm.Application;
 
 namespace HLab.Erp.Core.ListFilters
@@ -26,7 +25,6 @@ namespace HLab.Erp.Core.ListFilters
         }
     }
 
-    [Export(typeof(EntityFilter<>))]
     public class EntityFilterListable<TClass> : EntityFilter<TClass>, IEntityFilterNotNull<TClass>
         where TClass : class, IEntity, IListableModel, new()
     {
@@ -37,7 +35,6 @@ namespace HLab.Erp.Core.ListFilters
         }
     }
 
-   [Export(typeof(EntityFilterNullable<>))]
     public class EntityFilterNullableListable<TClass> : EntityFilterNullable<TClass>, IEntityFilterNullable<TClass>
         where TClass : class, IEntity, IListableModel, new()
     {

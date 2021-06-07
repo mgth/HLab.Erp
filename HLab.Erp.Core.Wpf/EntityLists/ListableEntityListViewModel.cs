@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Windows.Input;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
@@ -24,7 +23,7 @@ namespace HLab.Erp.Core.EntityLists
         public ListableEntityListViewModel() : base(c => c
                 .Column()
                 .Header("{Name}")
-                .Width(150)
+                .Width(150).Content(e => e.Caption)
                 .Link(e => e.Caption)
                 .Icon(e => e.IconPath)
                     .Filter()

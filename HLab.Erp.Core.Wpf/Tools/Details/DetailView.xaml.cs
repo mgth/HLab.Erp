@@ -6,7 +6,7 @@ namespace HLab.Erp.Core.Tools.Details
     /// <summary>
     /// Logique d'interaction pour DetailView.xaml
     /// </summary>
-    public partial class DetailView : UserControl, IViewClassAnchorable, IView<ViewModeDefault, DetailsViewModel>
+    public partial class DetailView : UserControl, IViewClassAnchorable, IView<ViewModeDefault, DetailsPanelViewModel>
     {
         public DetailView()
         {

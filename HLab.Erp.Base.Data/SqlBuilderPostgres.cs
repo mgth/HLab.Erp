@@ -202,7 +202,7 @@ namespace HLab.Erp.Base.Data
 
         public ISqlBuilder Include(Func<string, ISqlBuilder, ISqlBuilder> callFunc)
         {
-            throw new NotImplementedException();
+            return callFunc(_builder._version, this);
         }
 
         public ISqlTableBuilder<T> RenameColumn(string oldName, Expression<Func<T, object>> property)

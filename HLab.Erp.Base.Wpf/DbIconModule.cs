@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Grace.DependencyInjection.Attributes;
 using HLab.Core.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
@@ -13,7 +12,7 @@ namespace HLab.Erp.Base.Wpf
         private readonly IIconService _icons;
         private readonly IDataService _data;
 
-        [Import] public DbIconModule(IIconService icons, IDataService data)
+        public DbIconModule(IIconService icons, IDataService data)
         {
             _icons = icons;
             _data = data;

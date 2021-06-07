@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Media;
-using Grace.DependencyInjection.Attributes;
 using HLab.Mvvm;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
@@ -29,7 +28,6 @@ namespace HLab.Erp.Core.ViewModelStates
         TextBackground
     }
 
-    [Export(typeof(State))]
     public class State : ViewModel, ITriggerable
     {
         public State() => H.Initialize(this);

@@ -36,7 +36,7 @@ namespace HLab.Erp.Core.EntityLists
                 vm.SelectedIds = ListView.SelectedItems.OfType<IObjectMapper>().Select(o => o.Id).ToList();
         }
 
-        private void EntityListView2_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void EntityListView2_Loaded(object sender, RoutedEventArgs e)
         {
             var filter = this.FindVisualAncestor<FilterView>();
             if (filter != null)
@@ -48,7 +48,7 @@ namespace HLab.Erp.Core.EntityLists
                 vm.Start();
             }
         }
-        private void EntityListView2_Unloaded(object sender, System.Windows.RoutedEventArgs e)
+        private void EntityListView2_Unloaded(object sender, RoutedEventArgs e)
         {
             if (DataContext is IEntityListViewModel vm)
             {
@@ -56,7 +56,7 @@ namespace HLab.Erp.Core.EntityLists
             }
         }
 
-        private void EntityListView_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        private void EntityListView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is IEntityListViewModel vm)
             {
@@ -66,7 +66,7 @@ namespace HLab.Erp.Core.EntityLists
 
         public string ContentId => nameof(EntityListView);
 
-        private void DataGridColumnHeader_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void DataGridColumnHeader_Click(object sender, RoutedEventArgs e)
         {
                 if (sender is DataGridColumnHeader header)
                 {
@@ -90,7 +90,6 @@ namespace HLab.Erp.Core.EntityLists
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-
             MessageTextBlock.SwitchVisibility();
         }
     }

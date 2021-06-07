@@ -1,5 +1,4 @@
-﻿using Grace.DependencyInjection.Attributes;
-using HLab.Erp.Core;
+﻿using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Mvvm.Annotations;

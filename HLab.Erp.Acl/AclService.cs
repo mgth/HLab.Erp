@@ -6,7 +6,6 @@ using System.Net;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
-using Grace.DependencyInjection.Attributes;
 using HLab.Core.Annotations;
 using HLab.Erp.Data;
 using NPoco;
@@ -27,14 +26,13 @@ namespace HLab.Erp.Acl
         int? GetAclId();
     }
 
-    [Export(typeof(IAclService)),Singleton]
     public class AclService : IAclService
     {
-        private readonly IMessageBus _msg;
-        private readonly IAclHelper _acl;
-        private readonly IDataService _data;
+        private IMessageBus _msg;
+        private IAclHelper _acl;
+        private IDataService _data;
 
-        public AclService(IMessageBus msg, IAclHelper acl, IDataService data)
+        public void Inject(IMessageBus msg, IAclHelper acl, IDataService data)
         {
             _msg = msg;
             _acl = acl;

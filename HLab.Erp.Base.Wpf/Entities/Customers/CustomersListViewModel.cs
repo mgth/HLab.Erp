@@ -1,4 +1,4 @@
-﻿using Grace.DependencyInjection.Attributes;
+﻿
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
@@ -29,9 +29,11 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
 
             .Column()
                 .Header("{Country}")
+                .Content(s => s.Country).Mvvm()
                 .Link(s => s.Country)
+                .Filter()
                 //.Icon(s => s.IconPath)
-// TODO                .Mvvm()
+// TODO                
             .Column()
                 .Header("{eMail}")
                 .Link(s => s.Email)

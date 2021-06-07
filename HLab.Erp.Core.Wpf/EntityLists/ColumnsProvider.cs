@@ -8,28 +8,23 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Markup;
 using System.Xml;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
-using HLab.Icons.Annotations.Icons;
 using HLab.Localization.Wpf.Lang;
-using HLab.Mvvm;
-using HLab.Mvvm.Annotations;
 using Binding = System.Windows.Data.Binding;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using ListView = System.Windows.Controls.ListView;
 
 namespace HLab.Erp.Core.EntityLists
 {
-    [Export(typeof(IColumnsProvider<>))]
     public class ColumnsProvider<T> : IColumnsProvider<T> where T:class, IEntity
     {
         private readonly Dictionary<string,IColumn<T>> _dict = new ();
-        private readonly ObservableQuery<T> _list;
+        public IObservableQuery<T> List {get;}
 
-        public ColumnsProvider(ObservableQuery<T> list)
+        public ColumnsProvider(IObservableQuery<T> list)
         {
-            _list = list;
+            List = list;
         }
 
         private IColumn<T> _orderByColumn = null;
@@ -65,8 +60,7 @@ namespace HLab.Erp.Core.EntityLists
                 if (column.Hidden) continue;
 
                 var header = new ColumnHeaderView {
-                    IconPath = column.IconPath,
-                    Caption = column.Header,
+                    DataContext = column,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     HorizontalContentAlignment = HorizontalAlignment.Stretch,
                     MinWidth = 30
@@ -80,15 +74,15 @@ namespace HLab.Erp.Core.EntityLists
                     }
 
                     SetOrderBy(column);
-                    _list.ResetOrderBy();
+                    List.ResetOrderBy();
                     var c = _orderByColumn;
                     while (c != null)
                     {
-                        _list.AddOrderBy(c.OrderBy,c.SortDirection);
+                        List.AddOrderBy(c.OrderBy,c.SortDirection);
                         c = c.OrderByNext;
                     }
 
-                    _list.Update();
+                    List.Update();
                 };
 
 
@@ -152,14 +146,14 @@ namespace HLab.Erp.Core.EntityLists
                 header.Click += (a, b) =>
                 {
                     SetOrderBy(column);
-                    _list.ResetOrderBy();
+                    List.ResetOrderBy();
                     var c = _orderByColumn;
                     while (c != null)
                     {
-                        _list.AddOrderBy(c.OrderBy,c.SortDirection);
+                        List.AddOrderBy(c.OrderBy,c.SortDirection);
                     }
 
-                    _list.Update();
+                    List.Update();
                 };
  
                 var c = new GridViewColumn
@@ -180,7 +174,9 @@ namespace HLab.Erp.Core.EntityLists
             var t = new DataTemplate();
 
             FrameworkElementFactory cc = new FrameworkElementFactory(typeof(ContentControl));
-            cc.SetBinding(ContentControl.ContentProperty,new Binding(property));
+            var binding = new Binding(property);
+            binding.Mode = System.Windows.Data.BindingMode.OneWay;
+            cc.SetBinding(ContentControl.ContentProperty,binding);
             t.VisualTree = cc;
 
             return t;

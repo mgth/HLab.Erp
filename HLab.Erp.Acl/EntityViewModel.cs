@@ -1,12 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Input;
-using Grace.DependencyInjection.Attributes;
+using HLab.Core.Annotations;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm;
 using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
+
 
 namespace HLab.Erp.Acl
 {
@@ -18,7 +19,7 @@ namespace HLab.Erp.Acl
         private Func<T, DataLocker<T>> _getLocker;
         protected IAclService Acl;
 
-        [Import] public void Inject(IDocumentService docs, Func<T, DataLocker<T>> getLocker, IAclService acl)
+        public void Inject(IDocumentService docs, Func<T, DataLocker<T>> getLocker, IAclService acl)
         {
             _docs = docs;
             _getLocker = getLocker;

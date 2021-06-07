@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Grace.DependencyInjection.Attributes;
 using HLab.Base;
 using HLab.Notify.PropertyChanged;
 using NPoco;

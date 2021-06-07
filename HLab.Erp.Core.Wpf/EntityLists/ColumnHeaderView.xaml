@@ -31,8 +31,8 @@
                 </Grid.RowDefinitions>
                 <icons:IconView 
                     Grid.Column="0" 
-                    Path ="{Binding IconPath,ElementName=UserControl}"
-                    Caption="{Binding Caption,ElementName=UserControl}"
+                    Path ="{Binding IconPath}"
+                    Caption="{Binding Header}"
                     Height="20"
                     />
                 
@@ -56,7 +56,7 @@
                         Text="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type local:ColumnHeaderView}}}"
                         HorizontalAlignment="Right"
                         />
-                    <TextBlock Text="{Binding Type}"/>
+                    <TextBlock Text="{Binding Benchmark}"/>
 
                 </StackPanel>
                 

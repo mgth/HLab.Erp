@@ -18,6 +18,8 @@ namespace HLab.Erp.Base.Data
 
         public void Load(IBootContext bootstrapper)
         {
+            if(bootstrapper.WaitService(Data)) return;
+
             string oldVersion = "";
             while (true)
             {

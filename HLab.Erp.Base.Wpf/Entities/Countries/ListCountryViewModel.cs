@@ -1,10 +1,11 @@
-﻿using Grace.DependencyInjection.Attributes;
+﻿
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Erp.Core.ListFilters;
 using HLab.Mvvm.Annotations;
+using System;
 
 namespace HLab.Erp.Base.Wpf.Entities.Countries
 {
@@ -14,6 +15,9 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
         {
             public override string MenuPath => "param";
         }
+
+        protected override bool CanExecuteExport(Action<string> errorAction) => Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
+        protected override bool CanExecuteImport(Action<string> errorAction) => Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
 
         public CountriesListViewModel(IErpServices erp) : base(c => c
                 .Header("{Country}")

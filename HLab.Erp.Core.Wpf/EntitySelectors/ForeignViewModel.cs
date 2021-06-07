@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Acl;
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
+
 
 namespace HLab.Erp.Core.EntitySelectors
 {
@@ -13,7 +13,7 @@ namespace HLab.Erp.Core.EntitySelectors
     {
         private IDocumentService _doc;
 
-        [Import] public void Inject(IDocumentService doc) => _doc = doc;
+        public void Inject(IDocumentService doc) => _doc = doc;
 
          public ForeignViewModel() => H<ForeignViewModel<T>>.Initialize(this);
 

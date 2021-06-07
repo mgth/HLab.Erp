@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Grace.DependencyInjection;
 using HLab.Base.Fluent;
 using HLab.Core.Annotations;
 
@@ -107,7 +104,6 @@ namespace HLab.Erp.Data
         //void Execute(Action<IDatabase> action);
         IAsyncEnumerable<T> FetchAsync<T>() where T : class, IEntity;
 
-        void RegisterEntities(IExportLocatorScope container);
         List<Type> Entities { get; }
 
         string ConnectionString { get; }

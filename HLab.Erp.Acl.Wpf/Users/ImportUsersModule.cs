@@ -26,7 +26,7 @@ namespace HLab.Erp.Acl.Users
 
         public virtual void Load(IBootContext b)
         {
-            if (b.StillContainsAndRequeue("BootLoaderErpWpf")) return;
+            if (b.WaitDependency("BootLoaderErpWpf")) return;
 
             if (_erp.Acl.Connection == null)
             {

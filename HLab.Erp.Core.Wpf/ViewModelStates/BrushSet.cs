@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Media;
-using Grace.DependencyInjection.Attributes;
 using HLab.Mvvm;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
@@ -9,7 +8,6 @@ namespace HLab.Erp.Core.ViewModelStates
 {
     using H = H<BrushSet>;
 
-    [Export(typeof(BrushSet))]
     public class BrushSet : ViewModel, IChildObject
     {
         public BrushSet(ViewModelState vmState)

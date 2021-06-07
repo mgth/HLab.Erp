@@ -10,8 +10,8 @@ namespace HLab.Erp.Acl.AuditTrails
 
     public class AuthenticationViewModel : ViewModel
     {
-        protected readonly IAclService Acl;
-        public AuthenticationViewModel(IAclService acl)
+        protected IAclService Acl;
+        public void Inject(IAclService acl)
         {
             Acl = acl;
             H.Initialize(this);

@@ -1,11 +1,10 @@
 ﻿using System.Windows.Media;
-using Grace.DependencyInjection.Attributes;
 using HLab.ColorTools.Wpf;
 using HLab.Erp.Core.ViewModelStates;
 using HLab.Erp.Data;
-using HLab.Icons.Annotations.Icons;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
+
 
 namespace HLab.Erp.Core.DragDrops
 {
@@ -17,7 +16,6 @@ namespace HLab.Erp.Core.DragDrops
             H<DragDropItemViewModel<T>>.Initialize(this);
         }
 
-        [Import]
         public State State
         {
             get => _state.Get();

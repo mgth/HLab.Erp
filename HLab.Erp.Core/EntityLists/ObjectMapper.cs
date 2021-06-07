@@ -23,7 +23,7 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
         {
             get
             {
-                if (Model is IEntity<int> e) return e.Id; 
+                if (Model is IEntity<int> e) return e.Id;
                 return -1;
             }
         }
@@ -47,12 +47,8 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            switch (binder.Name)
-            {
-                default:
-                    result = _columns.GetValue(Model, binder.Name);
-                    return true;
-            }
+            result = _columns.GetValue(Model, binder.Name);
+            return true;
         }
 
         public void Refresh(string column) => OnPropertyChanged(column);

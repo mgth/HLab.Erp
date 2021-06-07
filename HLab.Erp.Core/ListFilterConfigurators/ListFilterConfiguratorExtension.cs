@@ -115,6 +115,18 @@ namespace HLab.Erp.Core.ListFilterConfigurators
 
             return result;
         }
+        public static IColumnConfigurator<T, int?, EntityFilterNullable<TE>> LinkNullable<T, TE, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, TE>> getter, Expression<Func<T,int?>> idGetter)
+            where T : class, IEntity, new()
+            where TFilter : IFilter<TLink>
+        where TE : class, IEntity<int>, new()
+        {
+            var result =
+                c.GetChildConfigurator<int?, EntityFilterNullable<TE>>();
+
+            result.LinkExpression = GetterIdNullableFromGetter(getter);
+
+            return result;
+        }
         public static IColumnConfigurator<T,TLink,TFilter> Content<T, TLink, TFilter>(this IColumnConfigurator<T,TLink,TFilter> c, Func<T, object> getter)
             where T : class, IEntity, new()
             where TFilter : IFilter<TLink>
@@ -228,12 +240,12 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             if (getter.Body is MemberExpression member)
             {
                 var name = member.Member.Name;
-                var method = typeof(T).GetProperty($"{name}Id")?.GetMethod;
+                var method = member.Member.DeclaringType.GetProperty($"{name}Id")?.GetMethod;
 
                 if (method?.ReturnType != typeof(int?)) throw new InvalidOperationException("Entity should have been nullable");
 
-                var entity = Expression.Parameter(typeof(T), "e");
-                var property = Expression.Property(entity, method);
+                var entity = getter.Parameters[0];
+                var property = Expression.Property(member.Expression, method);
                 return Expression.Lambda<Func<T, int?>>(property, entity);
             }
 

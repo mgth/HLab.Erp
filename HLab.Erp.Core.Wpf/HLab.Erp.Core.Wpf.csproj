@@ -321,8 +321,7 @@
 	<ItemGroup>
 		<Resource Include="Icons\Delete.xaml" />
 		<Resource Include="Icons\Entities\Localize.svg" />
-		<Resource Include="Icons\Export.svg" />
-		<Resource Include="Icons\Import.svg" />
+		<Resource Include="Icons\export.svg" />
 		<Resource Include="Icons\Filters\filter.svg" />
 		<Resource Include="Icons\Flags\abkhazia.svg" />
 		<Resource Include="Icons\Flags\afghanistan.svg" />
@@ -584,6 +583,7 @@
 		<Resource Include="Icons\Flags\yemen.svg" />
 		<Resource Include="Icons\Flags\zambia.svg" />
 		<Resource Include="Icons\Flags\zimbabwe.svg" />
+		<Resource Include="Icons\import.svg" />
 		<Resource Include="Icons\Refresh.xaml" />
 		<Resource Include="Icons\SelectForeign.svg" />
 		<Resource Include="Icons\sort\descending.svg" />

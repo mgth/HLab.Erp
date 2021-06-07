@@ -7,8 +7,8 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data;
+
 
 namespace HLab.Erp.Acl
 {
@@ -34,8 +34,7 @@ namespace HLab.Erp.Acl
 
         protected IDataService Data;
 
-        [Import]
-        public void  AclHelperInject(IDataService db)
+        public void Inject(IDataService db)
         {
             Data = db;
         }

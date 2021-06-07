@@ -13,5 +13,6 @@ namespace HLab.Erp.Base.Wpf
         public static readonly AclRight ErpSignCustomer = AclRight.Get();
         public static readonly AclRight ErpViewCustomer = AclRight.Get();
         public static readonly AclRight ErpValidateCustomer = AclRight.Get();
+        public static readonly AclRight ErpManageCountries = AclRight.Get();
     }
 }

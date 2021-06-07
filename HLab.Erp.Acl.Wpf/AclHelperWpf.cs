@@ -1,13 +1,11 @@
 ﻿using System.DirectoryServices.AccountManagement;
 using System.Net;
 using System.Threading.Tasks;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data;
 using NPoco.Expressions;
 
 namespace HLab.Erp.Acl
 {
-    [Export(typeof(IAclHelper)), Singleton]
     public class AclHelperWpf : AclHelper
     {
         public override async Task<User> GetUser(NetworkCredential credential)

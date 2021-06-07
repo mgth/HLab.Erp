@@ -2,43 +2,37 @@
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Grace.DependencyInjection.Attributes;
 using HLab.Base.Extensions;
 using HLab.Erp.Core.EntityLists;
-using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.ListFilterConfigurators
 {
-    [Export( typeof(IColumnConfigurator<,,>))]
-    public class ColumnConfigurator<T, TLink, TFilter> :  IColumnConfigurator<T, TLink, TFilter>
-        
+    public class ColumnConfigurator<T, TLink, TFilter> : IColumnConfigurator<T, TLink, TFilter>
+
         where T : class, IEntity, new()
         where TFilter : IFilter<TLink>
     {
-        private readonly Func<IColumn<T>, IEntityListViewModel<T>, IColumn<T>.IHelper> _getHelper;
-        public ColumnConfigurator(IEntityListViewModel<T> list, Func<IColumn<T>, IEntityListViewModel<T>, IColumn<T>.IHelper> getHelper)
-            : this(getHelper(new Column<T>(),list),getHelper)
+        public IErpServices Erp { get; }
+        public ColumnConfigurator(IEntityListViewModel<T> list, IErpServices erp)
+            : this(new ColumnHelper<T>(new Column<T>(), list, erp))
         {
-            _getHelper = getHelper;
+            Erp = erp;
         }
 
         public IColumnConfigurator<T, TLinkChild, TFilterChild> GetChildConfigurator<TLinkChild, TFilterChild>()
         where TFilterChild : IFilter<TLinkChild>
         {
-            return new ColumnConfigurator<T, TLinkChild, TFilterChild>(Helper,_getHelper);
+            return new ColumnConfigurator<T, TLinkChild, TFilterChild>(Helper);
         }
 
         public IColumnConfigurator<T, object, IFilter<object>> GetNewConfigurator()
         {
-            return new ColumnConfigurator<T, object, IFilter<object>>(_getHelper(new Column<T>(), Target), _getHelper);
+            return new ColumnConfigurator<T, object, IFilter<object>>(new ColumnHelper<T>(new Column<T>(), Target, Erp));
         }
 
-        public IErpServices Erp => Helper.Erp;
-
-        protected ColumnConfigurator(IColumn<T>.IHelper helper, Func<IColumn<T>, IEntityListViewModel<T>, IColumn<T>.IHelper> getHelper)
+        protected ColumnConfigurator(IColumn<T>.IHelper helper)
         {
-            _getHelper = getHelper;
             Helper = helper;
 
             var filter = helper.GetFilter<TFilter>();
@@ -50,25 +44,24 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             filter?.Link(helper.Target.List, link);
         }
 
-
-
         public TFilter Filter => Helper.GetFilter<TFilter>();
         public Expression<Func<T, TLink>> LinkExpression
         {
-            get => Helper.Link as Expression<Func<T, TLink>> ;
+            get => Helper.Link as Expression<Func<T, TLink>>;
             set
             {
-                var lambda = value.CastReturn(default(object)).Compile(); 
-                Helper.Column.OrderBy ??= lambda; 
+                var lambda = value.CastReturn(default(object)).Compile();
+                Helper.Column.OrderBy ??= lambda;
                 Helper.Link = value;
             }
         }
+
         public Func<T, TLink> LinkLambda
         {
             get => Helper.PostLink as Func<T, TLink>;
             set
             {
-                Helper.Column.OrderBy ??= t => value(t); 
+                Helper.Column.OrderBy ??= t => value(t);
                 Helper.PostLink = value;
             }
         }
@@ -96,7 +89,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
                     Target.Columns.AddColumn(Column);
                 }
             }
-            else        
+            else
                 Target.Columns.AddColumn(Column);
 
             if (Filter != null)

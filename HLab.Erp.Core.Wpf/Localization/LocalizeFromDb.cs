@@ -12,8 +12,8 @@ namespace HLab.Erp.Core.Localization
     public class LocalizeFromDb : ILocalizationProvider
     {
         
-        private readonly IDataService _db;
-        public LocalizeFromDb(IDataService db)
+        private IDataService _db;
+        public void Inject(IDataService db)
         {
             _db = db;
         }

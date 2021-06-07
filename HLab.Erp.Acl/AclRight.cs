@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
@@ -28,11 +27,11 @@ namespace HLab.Erp.Acl
         private readonly IProperty<string> _name = HD<AclRight>.Property<string>();
 
         [Ignore]
-        public string Caption => _caption.Get();
-        private readonly IProperty<string> _caption = HD<AclRight>.Property<string>(c => c.Bind(e => e.Name));
+        public string Caption => $"{{{Name}}}";//_caption.Get();
+        private readonly IProperty<string> _caption = HD<AclRight>.Property<string>(c => c.Set(e => $"{{{e.Name}}}").On(e => e.Name).Update());
 
         [Ignore]
-        public string IconPath => "";
+        public string IconPath => "icons/approved";
 
         public override string ToString() => Name;
     }

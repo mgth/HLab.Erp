@@ -1,5 +1,5 @@
 ﻿using System;
-using Grace.DependencyInjection.Attributes;
+
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
 using HLab.Erp.Core.EntityLists;

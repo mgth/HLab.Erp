@@ -24,7 +24,7 @@ namespace HLab.Erp.Acl.LoginServices
         public void Load(IBootContext bootstrapper)
         {
             //if we can have localization and picture lets do it
-            if (bootstrapper.StillContainsAndRequeue("LocalizeBootloader", "IconBootloader")) return;
+            if (bootstrapper.WaitDependency("LocalizeBootloader", "IconBootloader")) return;
 
             //retrieve login window
             var loginWindow = _mvvm.MainContext.GetView(_getViewModel(),typeof(ViewModeDefault)).AsWindow();
@@ -32,10 +32,8 @@ namespace HLab.Erp.Acl.LoginServices
             loginWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             loginWindow.ShowDialog();
 
-            //if connection was ok
-            if (_acl.Connection is not null) return;
-
-            Application.Current.Shutdown();
+            //if connection failed
+            if (_acl.Connection is null) Application.Current.Shutdown();
         }
     }
 }

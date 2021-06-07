@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Notify.PropertyChanged;
+
 
 namespace HLab.Erp.Acl
 {
@@ -30,7 +30,7 @@ namespace HLab.Erp.Acl
 
         private readonly IProperty<string> _parentId = H.Property<string>(c => c.Default(""));
 
-        [NotMapped][Import]
+        [NotMapped]
         public ObservableQuery<AclGranted> Granted
         {
             get => _granted.Get();

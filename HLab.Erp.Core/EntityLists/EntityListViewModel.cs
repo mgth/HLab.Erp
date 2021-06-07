@@ -16,10 +16,9 @@ using System.Windows.Input;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NPoco;
-using Grace.DependencyInjection.Attributes;
-using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Erp.Core.Tools.Details;
 using System.ComponentModel;
+using HLab.Erp.Core.ListFilterConfigurators;
 
 namespace HLab.Erp.Core.EntityLists
 {
@@ -31,7 +30,7 @@ namespace HLab.Erp.Core.EntityLists
     public interface IEntityListHelper<T> : IEntityListHelper where T : class, IEntity, new()
     {
         void Populate(object grid, IColumnsProvider<T> provider);
-        Task ExportAsync(ObservableQuery<T> list, IContractResolver resolver);
+        Task ExportAsync(IObservableQuery<T> list, IContractResolver resolver);
         public Task<IEnumerable<T>> ImportAsync();
     }
 
@@ -40,8 +39,7 @@ namespace HLab.Erp.Core.EntityLists
         protected Func<Type, object> _get;
         protected IErpServices Erp { get; private set; }
 
-        [Import]
-        public void Inject2(IErpServices erp, Func<Type, object> get)
+        public void Inject(IErpServices erp, Func<Type, object> get)
         {
             _get = get;
             Erp = erp;
@@ -58,7 +56,12 @@ namespace HLab.Erp.Core.EntityLists
 
 
         public void AddFilter(IFilter filter) => filters.Add(filter);
-        public T GetFilter<T>() where T : IFilter => (T)_get(typeof(T));
+        public T GetFilter<T>() where T : IFilter
+        {
+            var locate = (Func<IEntityListViewModel,T>)_get(typeof(Func<IEntityListViewModel,T>));
+            return locate(this);
+        }
+
         public abstract void Start();
         public abstract void Stop();
 
@@ -90,7 +93,7 @@ namespace HLab.Erp.Core.EntityLists
         }
     }
 
-    public class EntityListViewModel<T> : EntityListViewModel, IEntityListViewModel<T>
+    public abstract class EntityListViewModel<T> : EntityListViewModel, IEntityListViewModel<T>
         where T : class, IEntity, new()
     {
         private IEntityListHelper<T> _helper;
@@ -114,7 +117,7 @@ namespace HLab.Erp.Core.EntityLists
 
         protected Func<T> CreateInstance { get; private set; }
 
-        public ObservableQuery<T> List { get; private set; }
+        public IObservableQuery<T> List { get; private set; }
 
         public IColumnsProvider<T> Columns { get; set; }
 
@@ -138,23 +141,19 @@ namespace HLab.Erp.Core.EntityLists
         public ObservableCollection<IObjectMapper> ListViewModel { get; } = new();
         private readonly ConcurrentDictionary<T, dynamic> _cache = new();
 
-        private Func<ObservableQuery<T>, IColumnsProvider<T>> _getColumnsProvider;
 
-        [Import]
         public void Inject(
             IEntityListHelper<T> helper,
             Func<T> createInstance,
-            ObservableQuery<T> list,
-            Func<ObservableQuery<T>, IColumnsProvider<T>> getColumnsProvider,
-            Func<IEntityListViewModel<T>, IColumnConfigurator<T,object,IFilter<object>>> getConfigurator
+            IColumnsProvider<T> columnsProvider
             )
         {
             _helper = helper;
             CreateInstance = createInstance;
-            List = list;
 
-            _getColumnsProvider = getColumnsProvider;
-            Columns = _getColumnsProvider(List);
+            Columns = columnsProvider;
+            List = columnsProvider.List;
+
 
             List_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, List, 0));
             List.CollectionChanged += List_CollectionChanged;
@@ -162,8 +161,7 @@ namespace HLab.Erp.Core.EntityLists
 
             H<EntityListViewModel<T>>.Initialize(this);
 
-            var c = getConfigurator(this);
-            _configurator.Invoke(c)?.Dispose();
+            _configurator.Invoke(new ColumnConfigurator<T,object,IFilter<object>>(this,Erp))?.Dispose();
 
             Header ??= GetTitle();
             OpenAction ??= target => Erp.Docs.OpenDocumentAsync(target);
@@ -171,7 +169,7 @@ namespace HLab.Erp.Core.EntityLists
         }
 
         private readonly Func<IColumnConfigurator<T,object,IFilter<object>>, IDisposable> _configurator;
-        public EntityListViewModel(Func<IColumnConfigurator<T,object,IFilter<object>>, IDisposable> configurator)
+        protected EntityListViewModel(Func<IColumnConfigurator<T,object,IFilter<object>>, IDisposable> configurator)
         {
             _configurator = configurator;
         }

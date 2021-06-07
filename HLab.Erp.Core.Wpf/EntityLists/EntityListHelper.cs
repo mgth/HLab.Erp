@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Grace.DependencyInjection.Attributes;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using Microsoft.Win32;
@@ -18,7 +17,6 @@ using Newtonsoft.Json.Serialization;
 
 namespace HLab.Erp.Core.EntityLists
 {
-    [Export(typeof(IEntityListHelper<>))]
     public class EntityListHelper<T> : IEntityListHelper<T>
         where T : class, IEntity, new()
     {
@@ -29,11 +27,11 @@ namespace HLab.Erp.Core.EntityLists
                 dataGrid.SourceUpdated += delegate (object sender, DataTransferEventArgs args)
                 {
                     ICollectionView cv = CollectionViewSource.GetDefaultView(dataGrid.ItemsSource);
-                    if (cv != null)
-                    {
-                        cv.GroupDescriptions.Clear();
-                        cv.GroupDescriptions.Add(new PropertyGroupDescription("Group"));
-                    }
+                    //if (cv != null)
+                    //{
+                    //    cv.GroupDescriptions.Clear();
+                    //    cv.GroupDescriptions.Add(new PropertyGroupDescription("Group"));
+                    //}
                 };
 
                 provider.Populate(grid);
@@ -47,7 +45,7 @@ namespace HLab.Erp.Core.EntityLists
             return lcv;
         }
 
-        public async Task ExportAsync(ObservableQuery<T> list, IContractResolver resolver)
+        public async Task ExportAsync(IObservableQuery<T> list, IContractResolver resolver)
         {
             var filename = typeof(T).Name + "-export.gz";
             SaveFileDialog saveFileDialog = new() { FileName = filename, DefaultExt = "gz" };
@@ -87,8 +85,6 @@ namespace HLab.Erp.Core.EntityLists
             {
                 Console.WriteLine(ex.Message);
             }
-
-
 
             var text = Encoding.UTF8.GetString(resultStream.ToArray()); ;
             return JsonConvert.DeserializeObject<List<T>>(text);

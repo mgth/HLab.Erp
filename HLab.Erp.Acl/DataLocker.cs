@@ -4,13 +4,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Grace.DependencyInjection.Attributes;
-using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 using Nito.AsyncEx;
+
 
 namespace HLab.Erp.Acl
 {
@@ -80,8 +79,12 @@ namespace HLab.Erp.Acl
 
         }
 
-        [Import]
-        public void Configure(IDataService db, IAclService acl, Func<T, EntityPersister<T>> getPersister, Func<DataLock, EntityPersister<DataLock>> getLockPersister, Func<IDataTransaction, IAuditTrailProvider> getAudit)
+        public void Inject(
+            IDataService db, 
+            IAclService acl, 
+            Func<T, EntityPersister<T>> getPersister, 
+            Func<DataLock, EntityPersister<DataLock>> getLockPersister, 
+            Func<IDataTransaction, IAuditTrailProvider> getAudit)
         {
             _db = db;
             _acl = acl;

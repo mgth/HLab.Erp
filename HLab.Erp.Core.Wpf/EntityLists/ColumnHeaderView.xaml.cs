@@ -43,13 +43,9 @@ namespace HLab.Erp.Core.EntityLists
             .BindsTwoWayByDefault
             .Default(SortDirection.None)
             .Register();
-        public static readonly DependencyProperty IconPathProperty = H.Property<string>().BindsTwoWayByDefault.Register();
+
         public static readonly DependencyProperty OrderByOrderProperty = H.Property<int>().BindsTwoWayByDefault.Register();
 
-        public static readonly DependencyProperty CaptionProperty = H.Property<object>()
-            .OnChange((e,a) => e.OnCaptionChange(a.NewValue))
-            .BindsTwoWayByDefault
-            .Register();
 
         public static readonly RoutedEvent SortDirectionChangedEvent = H.Event<SortDirectionEventHandler>().Bubble.Register();
         public event SortDirectionEventHandler SortDirectionChanged
@@ -58,12 +54,6 @@ namespace HLab.Erp.Core.EntityLists
             remove => RemoveHandler(SortDirectionChangedEvent, value);
         }
             
-        private void OnCaptionChange(object value)
-        {
-            if (value is string s)
-                Caption = new Localize { Id = s };
-        }
-
         private void OnSortDirectionChange(SortDirection value)
         {
             SortingIcon.Path = value switch
@@ -76,17 +66,6 @@ namespace HLab.Erp.Core.EntityLists
             RaiseEvent(new SortDirectionEventArg(SortDirectionChangedEvent,this,value));
         }
 
-        public string  IconPath
-        {
-            get => (string) GetValue(IconPathProperty);
-            set => SetValue(IconPathProperty, value);
-        }
-
-        public object Caption
-        {
-            get => (object) GetValue(CaptionProperty);
-            set => SetValue(CaptionProperty, value);
-        }
 
         public SortDirection SortDirection
         {
