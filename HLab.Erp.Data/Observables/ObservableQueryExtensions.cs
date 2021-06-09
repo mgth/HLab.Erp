@@ -21,7 +21,7 @@ namespace HLab.Erp.Data.Observables
         public static ObservableQuery<T> FluentUpdate<T>(this ObservableQuery<T> oq, bool force = true)
             where T : class, IEntity
         {
-            oq.UpdateAsync(force);
+            oq.Update();
             return oq;
         }
     }

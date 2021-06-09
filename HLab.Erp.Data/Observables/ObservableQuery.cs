@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using HLab.Base;
+using HLab.Base.Extensions;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 
@@ -34,6 +35,7 @@ namespace HLab.Erp.Data.Observables
         void ResetOrderBy();
         void Start();
         void Stop();
+        void Refresh();
         Task RefreshAsync();
         Task UpdateAsync();
     }
@@ -486,33 +488,35 @@ namespace HLab.Erp.Data.Observables
 
         private Thread _updateThread = null;
 
-        public ObservableQuery<T> FluentUpdateAsync(bool force = true)
+        public async Task UpdateAsync()
         {
-            var oldThread = _updateThread;
-
-            _updateThread = new Thread(() =>
+            Mutex w = new();
+            lock (_lockUpdateNeeded)
             {
-                lock (_lockUpdate)
-                {
-                    if (oldThread?.IsAlive ?? false) _updateNeeded = true;
-                }
-
-                oldThread?.Join();
-
-                UpdateAsync(force);
-            });
-            _updateThread.Start();
-            return this;
+                _updateNeeded = true;
+                _wait.Push(w);
+            }
+            _ = await Task.Run(() => w.WaitOne());
+        }
+        public async Task RefreshAsync()
+        {
+            Mutex w = new();
+            lock (_lockUpdateNeeded)
+            {
+                _updateNeeded = true;
+                _refresh = true;
+                _wait.Push(w);
+            }
+            _ = await Task.Run(() => w.WaitOne());
         }
 
         private readonly object _lockUpdateNeeded = new();
 
 
         private volatile bool _updateNeeded;
-
-
-        private volatile bool _updating = false;
-
+        private volatile bool _refresh = false;
+        private Action _postUpdateAction;
+        private Stack<WaitHandle> _wait = new();
 
         public void Update()
         {
@@ -522,27 +526,58 @@ namespace HLab.Erp.Data.Observables
             }
         }
 
-        public Task UpdateAsync(Action postUpdate) => UpdateAsync(postUpdate, true, false);
-        public Task UpdateAsync(bool force) => UpdateAsync(null, force, false);
-        public Task UpdateAsync() => UpdateAsync(null, true, false);
-        public Task RefreshAsync() => UpdateAsync(null, true, true);
+        public void Update(Action postUpdate)
+        {
+            lock (_lockUpdateNeeded)
+            {
+                _updateNeeded = true;
+                _postUpdateAction += postUpdate;
+            }
+            //return UpdateAsync(postUpdate, true, false);
+        }
 
+        public void Refresh()
+        {
+            lock (_lockUpdateNeeded)
+            {
+                _refresh = true;
+                _updateNeeded = true;
+            }
+        }
 
         private async Task _timer_TickAsync(object sender, EventArgs e)
         {
             var doUpdate = false;
+            Action postupdate = null;
+            Stack<WaitHandle> handles = null;
+            bool refresh = false;
+
             lock (_lockUpdateNeeded)
             {
                 if (_updateNeeded)
                 {
+                    _timer.Stop();
+                    
                     _updateNeeded = false;
+
+                    postupdate = _postUpdateAction;
+                    _postUpdateAction = null;
+
+                    handles = _wait;
+                    _wait = new();
+
+                    refresh = _refresh;
+                    _refresh = false;
+
                     doUpdate = true;
                 }
             }
 
             if (doUpdate)
             {
-                await UpdateAsync(null, true, false);
+                await UpdateAsync(postupdate, true, refresh);
+                while(handles.TryPop(out var result))
+                    result.Close();
                 _timer.Start();
             }
         }
@@ -615,12 +650,6 @@ namespace HLab.Erp.Data.Observables
 
                         if (_updateNeeded)
                         {
-                            lock (_lockUpdate)
-                            {
-                                _updating = false;
-                                _updateNeeded = false;
-                            }
-
                             return;
                         }
 
@@ -671,8 +700,6 @@ namespace HLab.Erp.Data.Observables
                     Debug.Assert(Count == n);
 #endif
                 }
-
-                _updating = false;
 
                 postUpdate?.Invoke();
             }
