@@ -15,24 +15,24 @@ namespace HLab.Erp.Core.ListFilterConfigurators
     {
         public IErpServices Erp { get; }
         public ColumnConfigurator(IEntityListViewModel<T> list, IErpServices erp)
-            : this(new ColumnHelper<T>(new Column<T>(), list, erp))
+            : this(new ColumnHelper<T>(new Column<T>(), list, erp), erp)
         {
-            Erp = erp;
         }
 
         public IColumnConfigurator<T, TLinkChild, TFilterChild> GetChildConfigurator<TLinkChild, TFilterChild>()
         where TFilterChild : IFilter<TLinkChild>
         {
-            return new ColumnConfigurator<T, TLinkChild, TFilterChild>(Helper);
+            return new ColumnConfigurator<T, TLinkChild, TFilterChild>(Helper, Erp);
         }
 
         public IColumnConfigurator<T, object, IFilter<object>> GetNewConfigurator()
         {
-            return new ColumnConfigurator<T, object, IFilter<object>>(new ColumnHelper<T>(new Column<T>(), Target, Erp));
+            return new ColumnConfigurator<T, object, IFilter<object>>(new ColumnHelper<T>(new Column<T>(), Target, Erp), Erp);
         }
 
-        protected ColumnConfigurator(IColumn<T>.IHelper helper)
+        protected ColumnConfigurator(IColumn<T>.IHelper helper, IErpServices erp)
         {
+            Erp = erp;
             Helper = helper;
 
             var filter = helper.GetFilter<TFilter>();

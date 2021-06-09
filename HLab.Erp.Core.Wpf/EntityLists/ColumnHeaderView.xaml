@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:HLab.Erp.Core.EntityLists"
              xmlns:diag="clr-namespace:System.Diagnostics;assembly=System.Runtime"
              xmlns:converters="clr-namespace:HLab.Base.Wpf.Converters;assembly=HLab.Base.Wpf"
-             xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
+             xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf" xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="UserControl"
@@ -29,14 +29,14 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <icons:IconView 
+                <icons:IconView
                     Grid.Column="0" 
                     Path ="{Binding IconPath}"
                     Caption="{Binding Header}"
                     Height="20"
                     />
-                
-                <!--<ContentControl 
+
+            <!--<ContentControl 
                     HorizontalAlignment="Stretch" 
                     HorizontalContentAlignment="Center" 
                     VerticalAlignment="Center"

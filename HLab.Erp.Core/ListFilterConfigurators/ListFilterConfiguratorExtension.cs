@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
@@ -300,6 +296,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             where T : class, IEntity, new()
             where TFilter : IFilter<TLink>
         {
+            if(caption is string s) caption = c.Localize(s);
             c.Column.Header = caption;
             return c;
         }

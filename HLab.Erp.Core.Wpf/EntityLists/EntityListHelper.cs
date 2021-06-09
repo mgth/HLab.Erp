@@ -27,11 +27,6 @@ namespace HLab.Erp.Core.EntityLists
                 dataGrid.SourceUpdated += delegate (object sender, DataTransferEventArgs args)
                 {
                     ICollectionView cv = CollectionViewSource.GetDefaultView(dataGrid.ItemsSource);
-                    //if (cv != null)
-                    //{
-                    //    cv.GroupDescriptions.Clear();
-                    //    cv.GroupDescriptions.Add(new PropertyGroupDescription("Group"));
-                    //}
                 };
 
                 provider.Populate(grid);
