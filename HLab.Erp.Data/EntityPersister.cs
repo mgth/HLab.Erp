@@ -58,10 +58,18 @@ namespace HLab.Erp.Data
             }
         }
 
+        private static string GetColumnName(PropertyInfo info)
+        {
+            var attr = info.GetCustomAttribute<ColumnAttribute>();
+            if(attr != null) return attr.Name;
+            return info.Name;
+        }
+
+
         public override Task<bool> SaveAsync() => SaveAsync(null);
         public async Task<bool> SaveAsync(IDataTransaction transaction)
         {
-            var tr =  transaction??_data.GetTransaction();
+            var tr = transaction ?? _data.GetTransaction();
 
             var columns = new List<PropertyInfo>();
             while (Dirty.TryTake(out var e))
@@ -79,7 +87,7 @@ namespace HLab.Erp.Data
                     return true;
                 }
 
-                if (await tr.UpdateAsync(Target, columns.Select(e => e.Name)))
+                if (await tr.UpdateAsync(Target, columns.Select(GetColumnName)))
                 {
                     if (transaction == null) tr.Done();
 
