@@ -6,6 +6,47 @@ using HLab.Core.Annotations;
 
 namespace HLab.Erp.Acl
 {
+    public abstract class AclServiceBase : IAclService
+    {
+        public virtual ServiceState ServiceState => default;
+        public virtual Connection Connection => default;
+        public virtual bool Cancelled => default;
+        public virtual Task<string> Login(NetworkCredential credential, bool pin = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<User> Check(NetworkCredential credential, bool pin = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual string Crypt(SecureString password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<AclNode> GetAclNode(object target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual bool IsGranted(AclRight right, object grantedTo = null, object grantedOn = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual bool IsGranted(Action<string> setMessage, params AclRight[] rights)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void CancelLogin()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public interface IAclService : IService
     {
         Connection Connection { get; }

@@ -13,12 +13,6 @@ using System.Threading.Tasks;
 
 namespace HLab.Erp.Workflows
 {
-    public static class WorkflowExtension
-    {
-    }
-
-
-
     public interface IWorkflowStage : IWorkflowConditionalObject
     {
         string Name { get; }
@@ -97,6 +91,8 @@ namespace HLab.Erp.Workflows
 
                 return false;
             }
+
+            public override string ToString() => Name;
         }
 
 
@@ -119,6 +115,7 @@ namespace HLab.Erp.Workflows
             public bool MotivationMandatory { get; set; }
 
             public WorkflowAction GetAction(T workflow) => new WorkflowAction(workflow,this);
+            public override string ToString() => GetAction(null).Caption;
         }
 
         //Todo : user never set

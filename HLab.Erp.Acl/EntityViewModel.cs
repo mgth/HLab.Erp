@@ -17,36 +17,41 @@ namespace HLab.Erp.Acl
         private IDocumentService _docs;
         
         private Func<T, DataLocker<T>> _getLocker;
-        protected IAclService Acl;
+        protected IAclService Acl { get; private set; }
+        protected IDataService Data { get; private set; }
 
-        public void Inject(IDocumentService docs, Func<T, DataLocker<T>> getLocker, IAclService acl)
+        public void Inject(IDocumentService docs, Func<T, DataLocker<T>> getLocker, IAclService acl, IDataService data)
         {
             _docs = docs;
             _getLocker = getLocker;
             Acl = acl;
+            Data = data;
         }
 
-        public EntityViewModel()
-        {
-            H<EntityViewModel<T>>.Initialize(this);
-        }
+        public EntityViewModel() => H<EntityViewModel<T>>.Initialize(this);
 
         public DataLocker<T> Locker => _locker.Get();
 
         private readonly IProperty<DataLocker<T>> _locker = H<EntityViewModel<T>>.Property<DataLocker<T>>(c => c
-            .Set(e => e.GetLocker())
-            .On(e => e.Model)
-            .NotNull(e => e.Model)
-            .Update()
+                .NotNull(e => e.Model)
+                .Set(e =>
+                {
+                    var locker = e._getLocker(e.Model);
+                    locker.PropertyChanged += e.Locker_PropertyChanged;
+                    return locker;
+                })
+                .On(e => e.Model)
+                .NotNull(e => e.Model)
+                .Update()
         );
 
-        private DataLocker<T> GetLocker()
-        {
-            if (Model == null) return null;
-            var locker = _getLocker(Model);
-            locker.PropertyChanged += Locker_PropertyChanged;
-            return locker;
-        }
+        //public bool IsActive => _isActive.Get();
+        //private readonly IProperty<bool> _isActive = H<EntityViewModel<T>>.Property<bool>(c => c
+        //    .Set(e => e.Locker?.IsActive??false)
+        //    .On(e => e.Locker.IsActive)
+        //    .Update()
+        //);
+
 
         private void Locker_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {

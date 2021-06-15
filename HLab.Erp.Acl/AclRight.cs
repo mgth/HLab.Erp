@@ -1,4 +1,7 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using HLab.Erp.Core;
 using HLab.Erp.Data;
@@ -14,14 +17,23 @@ namespace HLab.Erp.Acl
 
         public static IDataService Data { get; set; }
 
-        public static  AclRight Get([CallerMemberName] string name = null)
+        private static readonly ConcurrentDictionary<string, AclRight> _cache = new();
+        public static AclRight Get([CallerMemberName] string name = null)
         {
-            return Data.GetOrAdd<AclRight>(e => e.Name == name, e => e.Name = name);
+            return _cache.GetOrAdd(name, e => GetFromDb(name));
+        }
+        private static AclRight GetFromDb(string name)
+        {
+            return Data?.GetOrAdd<AclRight>(
+                e => e.Name == name,
+                e => e.Name = name)
+                ?? new AclRight { Name = name }
+                ;
         }
 
         public string Name
         {
-            get => _name.Get(); 
+            get => _name.Get();
             set => _name.Set(value);
         }
         private readonly IProperty<string> _name = HD<AclRight>.Property<string>();

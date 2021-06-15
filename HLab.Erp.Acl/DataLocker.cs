@@ -33,7 +33,7 @@ namespace HLab.Erp.Acl
 
     public class DataLockerDesign : DataLocker<DataLockerEntityDesign>, IViewModelDesign
     {
-        public DataLockerDesign() : base(new DataLockerEntityDesign())
+        public DataLockerDesign() : base(new DataLockerEntityDesign(),null,null,null,null,null)
         {
         }
     }
@@ -49,13 +49,14 @@ namespace HLab.Erp.Acl
     {
         private const int HeartBeat = 10000;
 
-        private IDataService _db;
-        private IAclService _acl;
-        private DataLock _lock = null;
+        private readonly IDataService _db;
+        private readonly IAclService _acl;
         private readonly string _entityClass;
         private readonly int _entityId;
-        private Timer _timer;
+        private readonly Timer _timer;
         private readonly T _entity;
+
+        private DataLock _lock = null;
 
         public EntityPersister<T> Persister {
             get => _persister.Get(); 
@@ -66,31 +67,30 @@ namespace HLab.Erp.Acl
         private EntityPersister<DataLock> _lockPersister;
 
         private Func<T,EntityPersister<T>> _getPersister;
-        private Func<DataLock,EntityPersister<DataLock>> _getLockPersister;
-        private Func<IDataTransaction,IAuditTrailProvider> _getAudit;
+        private readonly Func<DataLock,EntityPersister<DataLock>> _getLockPersister;
+        private readonly Func<IDataTransaction,IAuditTrailProvider> _getAudit;
 
-        public DataLocker(T entity)
-        {
-            _entity = entity;
-            _entityClass = entity.GetType().Name;
-            _entityId = (int)entity.Id;
+        public DataLocker(
+            T entity,
 
-            H<DataLocker<T>>.Initialize(this);
-
-        }
-
-        public void Inject(
             IDataService db, 
             IAclService acl, 
             Func<T, EntityPersister<T>> getPersister, 
             Func<DataLock, EntityPersister<DataLock>> getLockPersister, 
-            Func<IDataTransaction, IAuditTrailProvider> getAudit)
+            Func<IDataTransaction, IAuditTrailProvider> getAudit
+        )
         {
+            _entity = entity;
+            _entityClass = entity.GetType().Name;
+            _entityId = (int)entity.Id;
             _db = db;
             _acl = acl;
             _getPersister = getPersister;
             _getLockPersister = getLockPersister;
             _getAudit = getAudit;
+
+            H<DataLocker<T>>.Initialize(this);
+
             _timer = new Timer((o) => {
                 _lock?.Heartbeat(HeartBeat);
                 try
@@ -109,12 +109,12 @@ namespace HLab.Erp.Acl
                     IsConnected = false;
                 }
             }, null,Timeout.Infinite,Timeout.Infinite);
-            Persister = _getPersister(_entity);
+
+            Persister = _getPersister?.Invoke(_entity);
 
             // default to edit mode when entity is new and not saved.
             if (_entity.Id < 0)
                 IsActive = true;
-
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace HLab.Erp.Acl
             get => _isActive.Get();
             private set => _isActive.Set(value);
         }
-        private readonly IProperty<bool> _isActive = H<DataLocker<T>>.Property<bool>(c => c.Default(false));
+        private readonly IProperty<bool> _isActive = H<DataLocker<T>>.Property<bool>();
 
         /// <summary>
         /// True when locking allowed
