@@ -49,7 +49,7 @@ namespace HLab.Erp.Acl
     {
         private const int HeartBeat = 10000;
 
-        private readonly IDataService _db;
+        private readonly IDataService _data;
         private readonly IAclService _acl;
         private readonly string _entityClass;
         private readonly int _entityId;
@@ -83,7 +83,7 @@ namespace HLab.Erp.Acl
             _entity = entity;
             _entityClass = entity.GetType().Name;
             _entityId = (int)entity.Id;
-            _db = db;
+            _data = db;
             _acl = acl;
             _getPersister = getPersister;
             _getLockPersister = getLockPersister;
@@ -193,7 +193,7 @@ namespace HLab.Erp.Acl
                 return;
 
             var existing =
-                await _db.FetchOneAsync<DataLock>(e => e.EntityClass == _entityClass && e.EntityId == _entityId).ConfigureAwait(true);
+                await _data.FetchOneAsync<DataLock>(e => e.EntityClass == _entityClass && e.EntityId == _entityId).ConfigureAwait(true);
 
             if (existing != null)
             {
@@ -204,7 +204,7 @@ namespace HLab.Erp.Acl
                     return;
                 }
 
-                _db.Delete(existing);
+                _data.Delete(existing);
             }
 
             if(_entityId >= 0)
@@ -215,7 +215,7 @@ namespace HLab.Erp.Acl
                     Message = null;
 
                     //Generate data lock token
-                    _lock = await _db.AddAsync<DataLock>(t =>
+                    _lock = await _data.AddAsync<DataLock>(t =>
                     {
                         t.UserId = _acl.Connection.UserId;
                         t.EntityClass = _entityClass;
@@ -226,12 +226,12 @@ namespace HLab.Erp.Acl
                     _lockPersister = _getLockPersister(_lock);
 
                     //Reload entity to be sure no changes occured before locking
-                    await _db.ReFetchOneAsync(_entity).ConfigureAwait(true);
+                    await _data.ReFetchOneAsync(_entity).ConfigureAwait(true);
                 }
                 catch (Exception e)
                 {
                     Message = e.Message;
-                    if(_lock!=null) _db.Delete(_lock);
+                    if(_lock!=null) _data.Delete(_lock);
                     _lock = null;
 
                     _lockPersister=null;
@@ -260,7 +260,10 @@ namespace HLab.Erp.Acl
         {
             BeforeSavingAction?.Invoke(_entity);
 
-            var transaction = _db.GetTransaction();
+            // used in unit tests : todo have test unit db
+            if (_data == null) return true;
+
+            var transaction = _data.GetTransaction();
             try
             {
                 Message = null;
@@ -308,7 +311,7 @@ namespace HLab.Erp.Acl
 
                 try
                 {
-                    _db.ReFetchOneAsync(_entity).ConfigureAwait(true);
+                    _data.ReFetchOneAsync(_entity).ConfigureAwait(true);
                 }
                 catch{}
 
@@ -330,10 +333,10 @@ namespace HLab.Erp.Acl
                     if (_lock != null)
                     {
                         _timer.Change(Timeout.Infinite, Timeout.Infinite);
-                        if (_db.Delete(_lock))
+                        if (_data.Delete(_lock))
                         {
                             _lock = null;
-                            await _db.ReFetchOneAsync(_entity).ConfigureAwait(true);
+                            await _data.ReFetchOneAsync(_entity).ConfigureAwait(true);
                             Persister.Reset();
                             IsActive = false;
                         }

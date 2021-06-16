@@ -143,9 +143,9 @@
                                      Value="2" />
                          </Trigger>-->
 
-                         <!--<DataTrigger Binding="{Binding IsSelected}" Value="True">
+                         <DataTrigger Binding="{Binding IsSelected}" Value="True">
                              <Setter Property="Background" Value="DarkGreen" />
-                         </DataTrigger>-->
+                         </DataTrigger>
 
                      </Style.Triggers>
                  </Style>

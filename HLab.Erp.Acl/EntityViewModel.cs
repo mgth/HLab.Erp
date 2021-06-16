@@ -17,8 +17,8 @@ namespace HLab.Erp.Acl
         private IDocumentService _docs;
         
         private Func<T, DataLocker<T>> _getLocker;
-        protected IAclService Acl { get; private set; }
-        protected IDataService Data { get; private set; }
+        public IAclService Acl { get; private set; }
+        public IDataService Data { get; private set; }
 
         public void Inject(IDocumentService docs, Func<T, DataLocker<T>> getLocker, IAclService acl, IDataService data)
         {
