@@ -54,17 +54,17 @@
                 <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
             </Button>
 
-            <Button Grid.Row="0" Grid.Column="1" Command="{Binding DeleteCommand}">                    
+            <Button Command="{Binding DeleteCommand}">                    
                 <Button.ToolTip><lang:Localize Id="{}{Delete}"/></Button.ToolTip>
-                <icons:IconView Path="Icons/Delete" MaxHeight="15"/>
+                <icons:IconView Path="Icons/Delete" MaxHeight="15" MaxWidth="15"/>
             </Button>
             
-            <Button Grid.Row="1" Grid.Column="0" Command="{Binding RefreshCommand}">                    
+            <Button Command="{Binding RefreshCommand}">                    
                 <Button.ToolTip><lang:Localize Id="{}{Refresh}"/></Button.ToolTip>
                 <icons:IconView Path="Icons/Refresh" MaxHeight="15"/>
             </Button>
 
-            <Button Grid.Row="1" Grid.Column="1" Command="{Binding OpenCommand}">
+            <Button Command="{Binding OpenCommand}">
                 <Button.ToolTip><lang:Localize Id="{}{Open}"/></Button.ToolTip>
                 <icons:IconView Path="Icons/OpenForeign" MaxHeight="15"/>
             </Button>
