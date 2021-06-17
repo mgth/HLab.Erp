@@ -241,6 +241,29 @@ namespace HLab.Erp.Workflows
         }
 
         /// <summary>
+        /// Enable an action when some state is allowed
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="c"></param>
+        /// <param name="getStage"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>>
+            WhenStageAllowed<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> c, Func<TWf, Workflow<TWf>.Stage> getStage)
+            where TWf : class, IWorkflow<TWf>
+        {
+            var cond = new WorkflowCondition<TWf>(w =>
+                getStage(w).Check(w) == WorkflowConditionResult.Passed
+                    ? WorkflowConditionResult.Passed
+                    : WorkflowConditionResult.Failed);
+
+            cond.SetMessage(w => getStage(w).GetMessages(w));
+            cond.SetHighlights(w => getStage(w).GetHighlights(w));
+
+            c?.Target.AddCondition(cond);
+            return c;
+        }
+
+        /// <summary>
         /// Enable an action when current stage is in provided list
         /// </summary>
         /// <typeparam name="TWf"></typeparam>
@@ -288,6 +311,25 @@ namespace HLab.Erp.Workflows
             {
                 c.WhenStageAllowed(getStage);
                 c.Action(async w => await w.SetStageAsync(getStage, action.GetCaption(w), action.GetIconPath(w), action.SigningMandatory, action.MotivationMandatory));
+                return c;
+            }
+            return c;
+        }
+
+        /// <summary>
+        /// Define target stage for a workflow element
+        /// </summary>
+        /// <typeparam name="TWf"></typeparam>
+        /// <param name="c"></param>
+        /// <param name="getStage"></param>
+        /// <returns></returns>
+        public static IFluentConfigurator<IWorkflowConditionalObject<TWf>> ToStage<TWf>(this IFluentConfigurator<IWorkflowConditionalObject<TWf>> c, Func<TWf, Workflow<TWf>.Stage> getStage)
+            where TWf : class, IWorkflow<TWf>
+        {
+            if (c.Target is Workflow<TWf>.Action action)
+            {
+                c.WhenStageAllowed(getStage);
+                c.Action(async w => await w.SetStageAsync(() => getStage(w), action.GetCaption(w), action.GetIconPath(w), action.SigningMandatory, action.MotivationMandatory));
                 return c;
             }
             return c;
