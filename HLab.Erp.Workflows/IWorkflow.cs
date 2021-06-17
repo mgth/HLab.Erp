@@ -8,7 +8,7 @@ namespace HLab.Erp.Workflows
 {
     public interface IWorkflow
     {
-        User User { get; set; }
+        //User User { get; set; }
         string Caption { get; }
         string IconPath { get; }
         string SubIconPath { get; }

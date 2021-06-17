@@ -119,7 +119,7 @@ namespace HLab.Erp.Workflows
         }
 
         //Todo : user never set
-        public User User { get; set; }
+        //public User User { get; set; }
         public object Target { get; }
         public IDataLocker Locker => _locker.Get();
         private readonly IProperty<IDataLocker> _locker = H<Workflow<T>>.Property<IDataLocker>();
@@ -215,21 +215,20 @@ namespace HLab.Erp.Workflows
         }
 
         protected abstract Stage TargetStage { get; set; }
+        protected virtual Stage TargetPreviousStage { get; set; }
 
         protected virtual async Task<bool> OnSetStageAsync(Stage stage, string caption, string iconPath, bool sign, bool motivate)
         {
-            if (TargetStage != stage)
-            {
-                var old = TargetStage;
-                TargetStage = stage;
+            if (TargetStage == stage) return true;
 
-                if (await Locker.SaveAsync(caption, iconPath, sign,motivate)) return true;
+            var old = TargetStage;
+            TargetStage = stage;
 
-                TargetStage = old;
-                return false;
-            }
+            if (await Locker.SaveAsync(caption, iconPath, sign, motivate)) return true;
 
-            return true;
+            TargetStage = old;
+            return false;
+
         }
 
 
