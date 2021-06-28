@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:HLab.Erp.Core.ListFilters"
              xmlns:base="clr-namespace:HLab.Base;assembly=HLab.Base.Wpf"
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
+             xmlns:wpf="clr-namespace:HLab.Base.Wpf;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=local:DateDateFiDesignViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -31,7 +32,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         Visibility="{Binding MinDateCalculated,Converter={StaticResource ToVisibilityConverter}}">
-                <base:NumTextBox Width="50" Value="{Binding MinDateShift}"/>
+                <wpf:NumTextBox Width="50" Value="{Binding MinDateShift}"/>
                 <ComboBox>
                     <ComboBox.Items>
                         <lang:Localize Id="{}{Days}"/>
@@ -52,7 +53,7 @@
                 <!--<CheckBox IsChecked="{Binding MaxDateCalculated}"/>-->
             </StackPanel>
             <StackPanel Orientation="Horizontal" IsEnabled="{Binding MaxDateCalculated}" Visibility="{Binding MaxDateCalculated,Converter={StaticResource ToVisibilityConverter}}">
-                <base:NumTextBox Width="50" Value="{Binding MaxDateShift}"/>
+                <wpf:NumTextBox Width="50" Value="{Binding MaxDateShift}"/>
                 <ComboBox>
                     <ComboBox.Items>
                         <lang:Localize Id="{}{Days}"/>

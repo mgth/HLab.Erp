@@ -14,6 +14,7 @@
         <!--<Viewbox Opacity="0.1">
             <icons:IconView Path="icons/Logo"/>
         </Viewbox>-->
+        <Border Background="{DynamicResource MahApps.Brushes.ThemeBackground}" CornerRadius="10"/>
 
         <StackPanel Margin="30,20,20,0" VerticalAlignment="Center" HorizontalAlignment="Center">
 

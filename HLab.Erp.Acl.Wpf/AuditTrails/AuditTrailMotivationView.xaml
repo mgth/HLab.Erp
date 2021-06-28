@@ -6,6 +6,7 @@
              xmlns:base="clr-namespace:HLab.Base;assembly=HLab.Base.Wpf"
              xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
+             xmlns:wpf="clr-namespace:HLab.Base.Wpf;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel HorizontalAlignment="Center" Margin="20">
@@ -21,7 +22,7 @@
             </TextBox>
         <lang:LocalizedLabel>{Motivation} :</lang:LocalizedLabel>
         <Grid>
-            <base:MandatoryAdorner IsHitTestVisible="False" Visibility="{Binding MotivationNeeded, Converter={StaticResource ToVisibilityConverter}}"/>
+            <wpf:MandatoryAdorner IsHitTestVisible="False" Visibility="{Binding MotivationNeeded, Converter={StaticResource ToVisibilityConverter}}"/>
         <TextBox 
             MinWidth="400" 
             TextWrapping="Wrap" 

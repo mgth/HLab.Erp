@@ -205,7 +205,7 @@ namespace HLab.Erp.Core.EntityLists
                 {
                     return e.CanExecuteDelete(target,m=>e.AddErrorMessage("Delete",m));
                 }
-                return e.CanExecuteDelete(null,m=>e.AddErrorMessage("Delete",m));
+                return e.CanExecuteDelete(e.Selected,m=>e.AddErrorMessage("Delete",m));
             })
             .Action(async e => await e.DeleteEntityAsync(e.Selected))
             .On(e => e.Selected)

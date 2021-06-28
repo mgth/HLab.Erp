@@ -11,16 +11,16 @@
             <ColumnDefinition Width="120"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" Background="Black" >
-            <Label FontSize="16" FontWeight="ExtraBlack" HorizontalContentAlignment="Center" Content="{Binding Initials,FallbackValue=IN}" Foreground="White"/>
-            <Label HorizontalContentAlignment="Center" Content="{Binding Login,FallbackValue=m.truc}" Foreground="White"/>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" Background="{DynamicResource MahApps.Brushes.Badged.Background}" >
+            <Label FontSize="16" FontWeight="ExtraBlack" HorizontalContentAlignment="Center" Content="{Binding Initials,FallbackValue=IN}" Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}"/>
+            <Label HorizontalContentAlignment="Center" Content="{Binding Login,FallbackValue=m.truc}" Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}"/>
             </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Label Foreground="Black" FontWeight="Bold" Content="{Binding FirstName,FallbackValue=machin}"/>
-                <Label Foreground="Black" FontWeight="Bold" Content="{Binding Name,FallbackValue=bidule}"/>
+                <Label Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" FontWeight="Bold" Content="{Binding FirstName,FallbackValue=machin}"/>
+                <Label Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" FontWeight="Bold" Content="{Binding Name,FallbackValue=bidule}"/>
             </StackPanel>
-            <Label Foreground="Black" FontStyle="Italic" Content="{Binding Function, FallbackValue=responsable}" HorizontalAlignment="Center"/>
+            <Label Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" FontStyle="Italic" Content="{Binding Function, FallbackValue=responsable}" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </UserControl>

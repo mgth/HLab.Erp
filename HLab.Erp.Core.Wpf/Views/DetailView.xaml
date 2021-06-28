@@ -116,7 +116,7 @@
                         </Trigger>
                         </Style.Triggers>
                     </Style>
-                    <Style TargetType="base:NumTextBox">
+                    <Style TargetType="wpf:NumTextBox">
                         <Setter Property="IsReadOnly" Value="{Binding EditMode, RelativeSource={RelativeSource AncestorType={x:Type views:DetailView}},Converter={StaticResource InvertBooleanConverter}}"/>
                         <Style.Triggers>
                         <Trigger Property="IsReadOnly" Value="True">
