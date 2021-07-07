@@ -2,14 +2,13 @@
 using System.Linq.Expressions;
 using System.Windows.Input;
 using HLab.Erp.Core.ListFilterConfigurators;
-using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.EntityLists
+namespace HLab.Erp.Core.Wpf.EntityLists
 {
-//    [Export(typeof(IEntityListViewModel<>))]
+    //    [Export(typeof(IEntityListViewModel<>))]
 
     public interface IListableEntityListViewModel<T>
         where T : class, IEntity, IListableModel, new()

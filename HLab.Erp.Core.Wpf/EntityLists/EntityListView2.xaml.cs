@@ -1,17 +1,16 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using AvalonDock.Controls;
 using HLab.Base.Wpf;
-using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Core.ViewModels.EntityLists;
+using HLab.Erp.Core.Wpf.ListFilters;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
 
-namespace HLab.Erp.Core.EntityLists
+namespace HLab.Erp.Core.Wpf.EntityLists
 {
     /// <summary>
     /// Logique d'interaction pour EntityListView2.xaml

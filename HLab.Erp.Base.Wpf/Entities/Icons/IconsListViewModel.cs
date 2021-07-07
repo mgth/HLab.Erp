@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
-using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Icons.Wpf.Icons;
 using HLab.Mvvm.Annotations;

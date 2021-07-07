@@ -20,7 +20,7 @@ using HLab.Erp.Core.Tools.Details;
 using System.ComponentModel;
 using HLab.Erp.Core.ListFilterConfigurators;
 
-namespace HLab.Erp.Core.EntityLists
+namespace HLab.Erp.Core.Wpf.EntityLists
 {
     public interface IEntityListHelper
     {

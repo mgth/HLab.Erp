@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using HLab.Base.Fluent;
-using HLab.Notify.PropertyChanged;
+﻿using System.Collections.Generic;
 
 namespace HLab.Erp.Workflows
 {

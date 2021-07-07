@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using HLab.Base.Fluent;
-using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 

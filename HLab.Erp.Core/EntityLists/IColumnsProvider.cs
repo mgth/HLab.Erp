@@ -1,7 +1,7 @@
 ﻿using HLab.Erp.Data.Observables;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Core.EntityLists
+namespace HLab.Erp.Core.Wpf.EntityLists
 {
     public interface IListElementViewClass : IViewClass {}
 

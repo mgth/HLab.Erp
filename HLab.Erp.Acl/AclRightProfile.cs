@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HLab.Erp.Data;
+﻿using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 using NPoco;
 

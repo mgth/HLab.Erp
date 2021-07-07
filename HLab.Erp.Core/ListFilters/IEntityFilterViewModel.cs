@@ -1,9 +1,8 @@
-﻿using HLab.Erp.Data;
-using HLab.Erp.Data.Observables;
+﻿using HLab.Erp.Data.Observables;
 using System;
 using System.Linq.Expressions;
 
-namespace HLab.Erp.Core.ListFilters
+namespace HLab.Erp.Core.Wpf.ListFilters
 {
     public interface IEntityFilterViewModel : IFilter { }
 

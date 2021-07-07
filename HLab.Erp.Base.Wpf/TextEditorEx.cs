@@ -2,13 +2,12 @@
 using System.Windows;
 using HLab.Base.Wpf;
 using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Search;
 
 namespace HLab.Erp.Base.Wpf
 {
     using H = DependencyHelper<TextEditorEx>;
-    
+
     public class TextEditorEx : TextEditor
 
     {

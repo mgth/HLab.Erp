@@ -4,7 +4,7 @@ using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.ListFilters
+namespace HLab.Erp.Core.Wpf.ListFilters
 {
     public abstract class Filter : ViewModel, IFilter
     {

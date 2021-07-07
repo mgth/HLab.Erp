@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using HLab.Base.Wpf;
-using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;

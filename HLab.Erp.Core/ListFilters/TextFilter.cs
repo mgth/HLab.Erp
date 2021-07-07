@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using HLab.Erp.Data;
-using HLab.Erp.Data.Observables;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.ListFilters
+namespace HLab.Erp.Core.Wpf.ListFilters
 {
     using H = H<TextFilter>;
 

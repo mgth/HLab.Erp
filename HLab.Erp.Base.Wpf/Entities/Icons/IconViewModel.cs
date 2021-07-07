@@ -10,7 +10,6 @@ using HLab.ColorTools.Wpf;
 using HLab.Erp.Acl;
 using HLab.Erp.Base.Data;
 using HLab.Icons.Annotations.Icons;
-using HLab.Icons.Wpf;
 using HLab.Icons.Wpf.Icons;
 using HLab.Notify.PropertyChanged;
 

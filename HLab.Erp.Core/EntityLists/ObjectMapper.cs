@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Dynamic;
 using System.Runtime.CompilerServices;
-using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.ViewModels.EntityLists

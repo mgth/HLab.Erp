@@ -1,8 +1,6 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
@@ -13,7 +11,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace HLab.Erp.Base.Wpf.Entities.Countries
-{    using H = H<CountryToolsViewModel>;
+{
+    using H = H<CountryToolsViewModel>;
 
     public class CountryToolsViewModel : ViewModel
     {

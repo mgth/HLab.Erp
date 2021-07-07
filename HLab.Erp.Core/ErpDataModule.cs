@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Windows.Input;
 using HLab.Base.Extensions;
 using HLab.Core.Annotations;

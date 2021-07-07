@@ -1,11 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using HLab.Erp.Base.Data;
+using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.Localization
+namespace HLab.Erp.Core.Wpf.Localization
 {
     using H = H<LocalizationViewModel>;
 
@@ -44,4 +45,5 @@ namespace HLab.Erp.Core.Localization
         private readonly IProperty<string> _tag = H.Property<string>();
 
     }
+
 }

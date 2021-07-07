@@ -7,7 +7,7 @@ using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Core.Localization
+namespace HLab.Erp.Core.Wpf.Localization
 {
     public class LocalizeFromDb : ILocalizationProvider
     {

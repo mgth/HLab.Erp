@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HLab.Erp.Data;
-
-namespace HLab.Erp.Acl
+﻿namespace HLab.Erp.Acl
 {
     public static class AclTargetExtentions
     {

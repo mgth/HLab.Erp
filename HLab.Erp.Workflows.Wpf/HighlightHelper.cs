@@ -1,5 +1,4 @@
-﻿using HLab.Base;
-using HLab.Base.Wpf;
+﻿using HLab.Base.Wpf;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Views;
 using Microsoft.Xaml.Behaviors.Layout;

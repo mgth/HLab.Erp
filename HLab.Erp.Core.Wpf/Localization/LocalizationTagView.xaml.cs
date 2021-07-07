@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace HLab.Erp.Core.Localization
+namespace HLab.Erp.Core.Wpf.Localization
 {
     /// <summary>
     /// Logique d'interaction pour LocalizationTagView.xaml

@@ -9,7 +9,7 @@
              xmlns:data="clr-namespace:HLab.Erp.Base.Data;assembly=HLab.Erp.Base.Data"
              xmlns:customers="clr-namespace:HLab.Erp.Base.Wpf.Entities.Customers"
              xmlns:countries="clr-namespace:HLab.Erp.Base.Wpf.Entities.Countries"
-             xmlns:views="clr-namespace:HLab.Erp.Core.Views;assembly=HLab.Erp.Core.Wpf"
+             xmlns:views="clr-namespace:HLab.Erp.Core.Wpf.Views;assembly=HLab.Erp.Core.Wpf"
              xmlns:workflows="clr-namespace:HLab.Erp.Workflows;assembly=HLab.Erp.Workflows.Wpf"
              d:DataContext="{d:DesignInstance {x:Type customers:CustomerViewModelDesign}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
