@@ -57,12 +57,27 @@ namespace HLab.Erp.Core.Wpf.Localization
 
         protected override async Task ImportAsync(IDataService data, LocalizeEntry newValue)
         {
-            await foreach (var e in data.FetchAsync<LocalizeEntry>().Where(e => e.Tag == newValue.Tag && e.Code == newValue.Code && e.Custom == false && (e.Value != newValue.Value || e.Todo)))
+            var e = await data.FetchOneAsync<LocalizeEntry>(e =>
+                e.Tag == newValue.Tag && e.Code == newValue.Code && e.Custom == false &&
+                (e.Value != newValue.Value || e.Todo));
+
+            if(e != null)
             {
                 e.Value = newValue.Value;
                 e.Todo = false;
                 e.Custom = newValue.Custom;
                 await data.UpdateAsync(e, "Value", "Todo", "Custom");
+            }
+            else
+            {
+                await data.AddAsync<LocalizeEntry>(i =>
+                {
+                    i.Tag = newValue.Tag;
+                    i.Value = newValue.Value;
+                    i.Todo = false;
+                    i.Custom = newValue.Custom;
+                });
+                
             }
         }
     }
