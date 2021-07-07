@@ -6,16 +6,16 @@ namespace HLab.Erp.Core.Wpf.ListFilters
     /// <summary>
     /// Logique d'interaction pour FilterTextView.xaml
     /// </summary>
-    public partial class TextFilterView : UserControl, IView<ViewModeDefault, TextFilter>, IFilterContentViewClass
+    public partial class BoolFilterView : UserControl, IView<ViewModeDefault, BoolFilter>, IFilterContentViewClass
     {
-        public TextFilterView()
+        public BoolFilterView()
         {
             InitializeComponent();
         }
 
         public void SetFocus()
         {
-            TextBox.Focus();
+            CheckBox.Focus();
         }
     }
 }
