@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Input;
 using HLab.Erp.Acl.Users;
-using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;

@@ -61,7 +61,7 @@ namespace HLab.Erp.Data
         private static string GetColumnName(PropertyInfo info)
         {
             var attr = info.GetCustomAttribute<ColumnAttribute>();
-            if(attr != null) return attr.Name;
+            if(attr?.Name != null) return attr.Name;
             return info.Name;
         }
 

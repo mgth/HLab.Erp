@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using HLab.Core;
 using HLab.Core.Annotations;
 using HLab.Erp.Acl.Annotations;
 using HLab.Erp.Acl.LoginServices;

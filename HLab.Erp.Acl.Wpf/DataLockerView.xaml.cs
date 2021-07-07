@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Acl

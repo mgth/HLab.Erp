@@ -1,4 +1,4 @@
-﻿namespace HLab.Erp.Core.ListFilters
+﻿namespace HLab.Erp.Core.Wpf.ListFilters
 {
     public enum DateShiftUnit
     {

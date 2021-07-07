@@ -2,7 +2,7 @@
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
 
-namespace HLab.Erp.Core.Localization
+namespace HLab.Erp.Core.Wpf.Localization
 {
     /// <summary>
     /// Logique d'interaction pour LocalizationView.xaml

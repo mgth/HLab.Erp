@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using HLab.Erp.Data;
 
-namespace HLab.Erp.Core.EntityLists
+namespace HLab.Erp.Core.Wpf.EntityLists
 {
 
     public interface IColumn

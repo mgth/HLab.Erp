@@ -1,7 +1,8 @@
 ﻿using System.Windows.Input;
 using HLab.Core.Annotations;
 using HLab.Notify.PropertyChanged;
-namespace HLab.Erp.Core.Localization
+
+namespace HLab.Erp.Core.Wpf.Localization
 {
     using H = H<LocalizeWpfBootloader>;
 

@@ -79,7 +79,12 @@ namespace HLab.Erp.Base.Data
             _builder = builder;
         }
 
-        public ISqlTableBuilder<T> AddColumn(Expression<Func<T, object>> property)
+        public override string ToString()
+        {
+            return _builder.ToString();
+        }
+
+            public ISqlTableBuilder<T> AddColumn(Expression<Func<T, object>> property)
         {
                 var p = GetPropertyInfo(property);
 
@@ -279,22 +284,22 @@ namespace HLab.Erp.Base.Data
 
         private static string GetSqlType(Type type, PropertyInfo p)
         {
-            if (type == typeof(int)) return "integer NOT NULL";
+            if (type == typeof(int)) return "integer DEFAULT 0 NOT NULL";
             if(type == typeof(int?)) return "integer";
 
             if(type == typeof(string)) return "text";
 
-            if(type == typeof(double)) return "double precision NOT NULL";
+            if(type == typeof(double)) return "double precision DEFAULT 0 NOT NULL";
             if(type == typeof(double?)) return "double precision";
 
-            if(type == typeof(float)) return "real NOT NULL";
+            if(type == typeof(float)) return "real DEFAULT 0 NOT NULL";
             if(type == typeof(float?)) return "real";
 
-            if(type == typeof(decimal)) return "numeric NOT NULL";
+            if(type == typeof(decimal)) return "numeric DEFAULT 0 NOT NULL";
             if(type == typeof(decimal?)) return "numeric";
 
 
-            if(type == typeof(bool)) return "boolean NOT NULL";
+            if(type == typeof(bool)) return "boolean DEFAULT 0 NOT NULL";
             if(type == typeof(bool?)) return "boolean";
 
             if(type == typeof(byte[])) return "bytea";

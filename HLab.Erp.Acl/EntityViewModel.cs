@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Input;
-using HLab.Core.Annotations;
-using HLab.Erp.Core;
 using HLab.Erp.Data;
 using HLab.Mvvm;
 using HLab.Mvvm.Application;
@@ -45,14 +43,6 @@ namespace HLab.Erp.Acl
                 .Update()
         );
 
-        //public bool IsActive => _isActive.Get();
-        //private readonly IProperty<bool> _isActive = H<EntityViewModel<T>>.Property<bool>(c => c
-        //    .Set(e => e.Locker?.IsActive??false)
-        //    .On(e => e.Locker.IsActive)
-        //    .Update()
-        //);
-
-
         private void Locker_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if(e.PropertyName=="IsActive")
@@ -68,13 +58,12 @@ namespace HLab.Erp.Acl
         }
 
         public virtual AclRight EditRight => null;
-
         public virtual bool EditAllowed => _editAllowed.Get();
         private readonly IProperty<bool> _editAllowed = H<EntityViewModel<T>>.Property<bool>(c => c
             .Set(e => e.Acl.IsGranted(e.EditRight))
         );
 
-        private IProperty<bool> _onEditAllowed = H<EntityViewModel<T>>.Property<bool>(c => c
+        private ITrigger _editAllowedTrigger = H<EntityViewModel<T>>.Trigger(c => c
             .On(e => e.EditAllowed)
             .On(e => e.Locker)
             .NotNull(e => e.Locker)

@@ -2,15 +2,15 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using HLab.Erp.Core.ListFilterConfigurators;
+using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
 using HLab.Icons.Wpf.Icons;
 using HLab.Localization.Wpf.Lang;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Core.EntityLists
+namespace HLab.Erp.Core.Wpf.EntityLists
 {
     public static class ColumnConfiguratorExtension
     {

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq.Expressions;
-using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
-using HLab.Erp.Data.Observables;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.ListFilters
+namespace HLab.Erp.Core.Wpf.ListFilters
 {
     public static class DateFilterViewModelExtension
     {

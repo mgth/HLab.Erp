@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using HLab.Base.Wpf;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Core.ListFilters
+namespace HLab.Erp.Core.Wpf.ListFilters
 {
     /// <summary>
     /// Logique d'interaction pour FilterEntityView.xaml

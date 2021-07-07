@@ -1,7 +1,7 @@
 ﻿using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.Localization
+namespace HLab.Erp.Core.Wpf.Localization
 {
     class TagViewModel : ViewModel
     {

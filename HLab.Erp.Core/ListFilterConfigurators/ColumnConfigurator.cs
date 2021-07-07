@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using HLab.Base.Extensions;
-using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.ListFilterConfigurators

@@ -2,11 +2,10 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
 using HLab.Base.Wpf;
 
-namespace HLab.Erp.Core.Views
+namespace HLab.Erp.Core.Wpf.Views
 {
     using H = DependencyHelper<DetailView>;
     /// <summary>

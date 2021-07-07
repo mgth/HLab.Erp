@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HLab.Erp.Core.ListFilters
+namespace HLab.Erp.Core.Wpf.ListFilters
 {
     public class DateFilterDesignViewModel : DateFilter
     {

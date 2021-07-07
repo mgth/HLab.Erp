@@ -1,7 +1,7 @@
 ﻿using HLab.Erp.Data;
 using HLab.Mvvm.Application;
 
-namespace HLab.Erp.Core.ListFilters
+namespace HLab.Erp.Core.Wpf.ListFilters
 {
     public class EntityFilter<TClass, TList> : EntityFilter<TClass>, IEntityFilterNotNull<TClass>
         where TClass : class, IEntity, IListableModel, new()

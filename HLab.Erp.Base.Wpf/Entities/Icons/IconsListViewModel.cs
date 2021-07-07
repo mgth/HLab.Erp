@@ -1,10 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
-using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
+using HLab.Erp.Data;
 using HLab.Icons.Wpf.Icons;
 using HLab.Mvvm.Annotations;
 
@@ -16,6 +18,43 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         {
             public override string MenuPath => "param";
         }
+
+        protected override bool CanExecuteExport(Action<string> errorAction) => true;
+
+        protected override bool CanExecuteImport(Action<string> errorAction) => true;
+
+        protected override async Task ImportAsync(IDataService data, Icon newValue)
+        {
+            var icon = await data.FetchOneAsync<Icon>(i => i.Path == newValue.Path);
+            if(icon != null)
+            {
+                if(newValue.Foreground.HasValue)
+                    icon.Foreground = newValue.Foreground;
+
+                if(newValue.SourceXaml != null)
+                    icon.SourceXaml = newValue.SourceXaml;
+
+                if(newValue.SourceSvg != null)
+                    icon.SourceSvg = newValue.SourceSvg;
+
+
+                await data.UpdateAsync(icon, "Foreground", "SourceXaml", "SourceSvg");
+            }
+            else
+            {
+                await data.AddAsync<Icon>(i =>
+                {
+                    i.Path = newValue.Path;
+                    i.Foreground = newValue.Foreground;
+                    i.SourceXaml = newValue.SourceXaml;
+                    i.SourceSvg = newValue.SourceSvg;
+                });
+
+            }
+        }
+
+        protected override bool CanExecuteDelete(Icon arg, Action<string> errorAction) => true;
+        protected override bool CanExecuteAdd(Action<string> errorAction) => true;
 
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
@@ -42,7 +81,6 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         }
 
         public IconsListViewModel() : base(c => c
-// TODO            .AddAllowed()
                .Column()
                    .Header("{Path}")
                    .Link(s => s.Path)
