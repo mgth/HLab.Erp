@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Page Remove="Icons\Approved.xaml" />
+    <Page Remove="Icons\Entities\AuditTrail.xaml" />
     <Page Remove="Icons\Eye.xaml" />
     <Page Remove="Icons\eye2.xaml" />
     <Page Remove="Icons\eye3.xaml" />
@@ -38,6 +39,10 @@
 
   <ItemGroup>
     <Resource Include="Icons\Approved.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Icons\Entities\AuditTrail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Resource>

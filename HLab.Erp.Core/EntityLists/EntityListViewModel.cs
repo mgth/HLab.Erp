@@ -434,7 +434,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             }
         }
 
-        protected virtual async Task ImportAsync(IDataService data, T newValue)
+        protected virtual async Task ImportAsync(IDataService data, T importValue)
         { }
 
         protected async Task DeleteEntityAsync(T entity)
