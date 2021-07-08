@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Linq.Expressions;
 using HLab.Base.Fluent;
-using HLab.Erp.Data;
-using HLab.Erp.Data.Observables;
 
-namespace HLab.Erp.Core.ListFilters
+namespace HLab.Erp.Core.Wpf.ListFilters
 {
     public static class DateFilterExtension
     {

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Markup;
 using System.Xml;
 using HLab.Erp.Data;
@@ -15,7 +11,7 @@ using Binding = System.Windows.Data.Binding;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using ListView = System.Windows.Controls.ListView;
 
-namespace HLab.Erp.Core.EntityLists
+namespace HLab.Erp.Core.Wpf.EntityLists
 {
     public class ColumnsProvider<T> : IColumnsProvider<T> where T:class, IEntity
     {

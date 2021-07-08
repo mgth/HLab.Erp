@@ -1,4 +1,4 @@
-﻿using HLab.Erp.Core.EntityLists;
+﻿using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 
 namespace HLab.Erp.Acl.Users

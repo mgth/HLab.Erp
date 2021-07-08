@@ -15,7 +15,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace HLab.Erp.Core.EntityLists
+namespace HLab.Erp.Core.Wpf.EntityLists
 {
     public class EntityListHelper<T> : IEntityListHelper<T>
         where T : class, IEntity, new()
@@ -42,8 +42,14 @@ namespace HLab.Erp.Core.EntityLists
 
         public async Task ExportAsync(IObservableQuery<T> list, IContractResolver resolver)
         {
-            var filename = typeof(T).Name + "-export.gz";
-            SaveFileDialog saveFileDialog = new() { FileName = filename, DefaultExt = "gz" };
+            var date = DateTime.Now.ToString("u").Replace(':','-');
+            var filename = $"Export-{date}.{typeof(T).Name}.gz";
+            SaveFileDialog saveFileDialog = new()
+            {
+                FileName = filename, 
+                DefaultExt = $"{typeof(T).Name}.gz",
+                Filter = $"{typeof(T).Name} (*.{typeof(T).Name}.gz)|*.{typeof(T).Name}.gz"
+            };
             if (saveFileDialog.ShowDialog() == false) return;
 
             var text = JsonConvert.SerializeObject(
@@ -65,8 +71,8 @@ namespace HLab.Erp.Core.EntityLists
         }
         public async Task<IEnumerable<T>> ImportAsync()
         {
-            var filename = typeof(T).Name + "-export.gz";
-            OpenFileDialog openFileDialog = new() { FileName = filename, Filter = $"{typeof(T).Name}|*.{typeof(T).Name}.gz" };
+            var filename = typeof(T).Name + ".gz";
+            OpenFileDialog openFileDialog = new() { Filter = $"{typeof(T).Name} (*.{typeof(T).Name}.gz)|*.{typeof(T).Name}.gz" };
             if (openFileDialog.ShowDialog() == false) return new List<T>();
 
             await using var fileStream = File.OpenRead(openFileDialog.FileName);

@@ -7,7 +7,7 @@ using HLab.Base;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.ListFilters
+namespace HLab.Erp.Core.Wpf.ListFilters
 {
     public class EntityFilter<TClass> : Filter<int>, IEntityFilterNotNull<TClass>
         where TClass : class, IEntity, new()

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using HLab.Erp.Data;
-using HLab.Notify.PropertyChanged;
-
-namespace HLab.Erp.Core.ListFilters
+﻿namespace HLab.Erp.Core.ListFilters
 {
     //using H = H<EntityFilterViewModel>;
 

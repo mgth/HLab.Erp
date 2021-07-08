@@ -4,14 +4,14 @@
 		<TargetFramework>net5.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
-		<RootNamespace>HLab.Erp.Core</RootNamespace>
+		<RootNamespace>HLab.Erp.Core.Wpf</RootNamespace>
 		<Platforms>AnyCPU;x64;x86</Platforms>
 		<Configurations>Debug;Release;DebugRelease</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Remove="colors.xml" />
-		<None Remove="Icons\Entities\Localize.svg" />
+		<None Remove="Icons\Entities\LocalizeEntry.svg" />
 		<None Remove="Icons\export.svg" />
 		<None Remove="Icons\Filters\filter.svg" />
 		<None Remove="Icons\Flags\abkhazia.svg" />
@@ -319,7 +319,7 @@
 
 	<ItemGroup>
 		<Resource Include="Icons\Delete.xaml" />
-		<Resource Include="Icons\Entities\Localize.svg" />
+		<Resource Include="Icons\Entities\LocalizeEntry.svg" />
 		<Resource Include="Icons\export.svg" />
 		<Resource Include="Icons\Filters\filter.svg" />
 		<Resource Include="Icons\Flags\abkhazia.svg" />
@@ -618,9 +618,6 @@
 		<Compile Update="Localization\LocalizationTagView.xaml.cs">
 			<DependentUpon>LocalizationTagView.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="Localization\LocalizationView.xaml.cs">
-			<DependentUpon>LocalizationView.xaml</DependentUpon>
-		</Compile>
 		<Compile Update="Options\OptionCore.xaml.cs">
 			<DependentUpon>OptionCore.xaml</DependentUpon>
 		</Compile>
@@ -682,13 +679,16 @@
 		<Page Update="ListFilters\FilterView.xaml">
 			<SubType>Designer</SubType>
 		</Page>
+		<Page Update="ListFilters\BoolFilterView.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
 		<Page Update="Lists\EntityListViewGrid.xaml">
 			<SubType>Designer</SubType>
 		</Page>
-		<Page Update="Localization\LocalizationTagView.xaml">
-			<SubType>Designer</SubType>
+		<Page Update="Localization\LocalizeEntryView.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		</Page>
-		<Page Update="Localization\LocalizationView.xaml">
+		<Page Update="Localization\LocalizationTagView.xaml">
 			<SubType>Designer</SubType>
 		</Page>
 		<Page Update="Options\OptionCore.xaml">

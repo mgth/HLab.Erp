@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HLab.Erp.Acl;
+﻿using HLab.Erp.Acl;
 
 namespace HLab.Erp.Base.Wpf
 {

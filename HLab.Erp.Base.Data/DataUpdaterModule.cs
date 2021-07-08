@@ -1,6 +1,7 @@
 ﻿using HLab.Core.Annotations;
 using HLab.Erp.Data;
 using Npgsql;
+using System;
 
 namespace HLab.Erp.Base.Data
 {
@@ -53,8 +54,16 @@ namespace HLab.Erp.Base.Data
 
                 if (version.Version == CurrentVersion)
                 {
-                    #if DEBUG
-                    Upgrade(version.Version);
+#if DEBUG
+                    try
+                    {
+                        Upgrade(version.Version);
+
+                    }
+                    catch(Exception ex)
+                    {
+
+                    }
                     #endif
                     return;
                 }

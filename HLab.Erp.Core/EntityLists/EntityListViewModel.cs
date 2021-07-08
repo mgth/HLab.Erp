@@ -20,7 +20,7 @@ using HLab.Erp.Core.Tools.Details;
 using System.ComponentModel;
 using HLab.Erp.Core.ListFilterConfigurators;
 
-namespace HLab.Erp.Core.EntityLists
+namespace HLab.Erp.Core.Wpf.EntityLists
 {
     public interface IEntityListHelper
     {
@@ -434,7 +434,7 @@ namespace HLab.Erp.Core.EntityLists
             }
         }
 
-        protected virtual async Task ImportAsync(IDataService data, T newValue)
+        protected virtual async Task ImportAsync(IDataService data, T importValue)
         { }
 
         protected async Task DeleteEntityAsync(T entity)

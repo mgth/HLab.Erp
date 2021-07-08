@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using HLab.Base.Wpf;
-using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
@@ -23,7 +23,6 @@ namespace HLab.Erp.Core.EntitySelectors
         public ForeignView()
         {
             InitializeComponent();
-            Locator.SetValue(ViewLocator.ModelProperty, null);
         }
 
         public static readonly DependencyProperty ModelProperty = H.Property<object>()
@@ -33,9 +32,8 @@ namespace HLab.Erp.Core.EntitySelectors
 
         private void OnModelChanged(DependencyPropertyChangedEventArgs<object> args)
         {
-            var value = args.NewValue;
-            Locator.SetValue(ViewLocator.ModelProperty, args.NewValue);
-            OpenButton.IsEnabled = value != null;
+            Locator.SetValue(ViewLocator.ModelProperty,args.NewValue);
+            OpenButton.IsEnabled = args.NewValue != null;
         }
 
         public static readonly DependencyProperty ModelClassProperty = H.Property<Type>()
@@ -54,7 +52,6 @@ namespace HLab.Erp.Core.EntitySelectors
             .Register();
 
         public static readonly DependencyProperty ButtonContentProperty = H.Property<object>()
-            .OnChange((s, a) => s.SetButtonContent(a.NewValue))
             .Register();
 
         public static readonly DependencyProperty MandatoryNotFilledProperty = H.Property<bool>()
@@ -84,6 +81,7 @@ namespace HLab.Erp.Core.EntitySelectors
         {
             Button.IsEnabled = Command?.CanExecute(null) ?? true;
         }
+
 
         public object Model
         {
@@ -124,11 +122,6 @@ namespace HLab.Erp.Core.EntitySelectors
         {
             get => (object)GetValue(ButtonContentProperty);
             set => SetValue(ButtonContentProperty, value);
-        }
-
-        private void SetButtonContent(object content)
-        {
-            Label.Content = content;
         }
 
         private void SetList()
@@ -182,7 +175,8 @@ namespace HLab.Erp.Core.EntitySelectors
                         lvm.SetSelectAction(t =>
                         {
                             Popup.IsOpen = false;
-                            Model = t;
+                            SetCurrentValue(ModelProperty,t);
+                            Locator.DataContext = t;
                         });
                     }
                 }

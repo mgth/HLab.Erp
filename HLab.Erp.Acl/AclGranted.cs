@@ -1,11 +1,10 @@
 ﻿using HLab.Erp.Data;
-using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 using NPoco;
 
 namespace HLab.Erp.Acl
 {
-    using H = HD<AclGranted> ;
+    using H = HD<AclGranted>;
 
     public class AclGranted : Entity
     {

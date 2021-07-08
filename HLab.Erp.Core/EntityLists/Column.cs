@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.EntityLists
+namespace HLab.Erp.Core.Wpf.EntityLists
 {
     public class Column<T> : NotifierBase, IColumn<T> where T : class
     {

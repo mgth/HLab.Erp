@@ -11,7 +11,6 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using HLab.Base;
-using HLab.Base.Extensions;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 

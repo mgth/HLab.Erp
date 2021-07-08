@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using HLab.Base;
 using HLab.Base.Wpf;
 using HLab.Notify.PropertyChanged;
 using HLab.Notify.PropertyChanged.PropertyHelpers;

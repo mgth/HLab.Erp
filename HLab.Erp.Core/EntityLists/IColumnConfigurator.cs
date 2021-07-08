@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
-using HLab.Erp.Core.EntityLists;
-using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
 
-namespace HLab.Erp.Core.EntityLists
+namespace HLab.Erp.Core.Wpf.EntityLists
 {
     public interface IColumnConfigurator : IDisposable
     {

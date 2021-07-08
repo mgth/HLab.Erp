@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HLab.Erp.Data
+﻿namespace HLab.Erp.Data
 {
     public interface IErpContext
     {

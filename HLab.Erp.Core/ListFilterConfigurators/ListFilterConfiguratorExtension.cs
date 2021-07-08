@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using HLab.Erp.Core.EntityLists;
-using HLab.Erp.Core.ListFilters;
+using HLab.Erp.Core.Wpf.EntityLists;
+using HLab.Erp.Core.Wpf.ListFilters;
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
-using TextFilter = HLab.Erp.Core.ListFilters.TextFilter;
 
 namespace HLab.Erp.Core.ListFilterConfigurators
 {
@@ -61,6 +60,15 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             where TFilter : IFilter<TLink>
         {
             var result = c.GetChildConfigurator<string, IFilter<string>>();
+            result.LinkExpression = getter;
+
+            return result;
+        }
+        public static IColumnConfigurator<T, bool?, IFilter<bool?>> Link<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, bool?>> getter)
+            where T : class, IEntity, new()
+            where TFilter : IFilter<TLink>
+        {
+            var result = c.GetChildConfigurator<bool?, IFilter<bool?>>();
             result.LinkExpression = getter;
 
             return result;
@@ -158,6 +166,17 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             where TFilter : IFilter<string>
         {
             var result = c.GetChildConfigurator<string, TextFilter>();
+
+            result.Filter
+                ?.Link(c.Target.List, c.LinkExpression);
+
+            return result;
+        }
+        public static IColumnConfigurator<T, bool?, BoolFilter> Filter<T, TFilter>(this IColumnConfigurator<T, bool?, TFilter> c)
+            where T : class, IEntity, new()
+            where TFilter : IFilter<bool?>
+        {
+            var result = c.GetChildConfigurator<bool?, BoolFilter>();
 
             result.Filter
                 ?.Link(c.Target.List, c.LinkExpression);

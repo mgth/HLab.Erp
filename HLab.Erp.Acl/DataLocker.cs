@@ -1,11 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Text;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using HLab.Erp.Data;
-using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 using Nito.AsyncEx;
@@ -13,39 +11,9 @@ using Nito.AsyncEx;
 
 namespace HLab.Erp.Acl
 {
-    public class DataLockerEntityDesign : IEntity<int>
-    {
-        private int _id;
-        public object Id { get; } = 1;
-
-        int IEntity<int>.Id
-        {
-            get => 1;
-            set => throw new NotImplementedException();
-        }
-
-        public bool IsLoaded { get; set; } = true;
-        public void OnLoaded()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class DataLockerDesign : DataLocker<DataLockerEntityDesign>, IViewModelDesign
-    {
-        public DataLockerDesign() : base(new DataLockerEntityDesign(),null,null,null,null,null)
-        {
-        }
-    }
-
-    public interface IDataLocker<T> : IDataLocker
-    where T : class,IEntity<int>
-    {
-            EntityPersister<T> Persister { get; }
-    }
 
     public class DataLocker<T> : NotifierBase, IDataLocker<T>
-    where T : class,IEntity<int>
+    where T : class, IEntity<int>
     {
         private const int HeartBeat = 10000;
 
@@ -56,27 +24,36 @@ namespace HLab.Erp.Acl
         private readonly Timer _timer;
         private readonly T _entity;
 
-        private DataLock _lock = null;
+        private DataLock _lock;
+        private List<IDataLocker> _dependencies = new List<IDataLocker>();
 
-        public EntityPersister<T> Persister {
-            get => _persister.Get(); 
-            private set => _persister.Set(value); 
+        public void AddDependencyLocker(params IDataLocker[] lockers)
+        {
+            foreach(var locker in lockers)
+                _dependencies.Add(locker);
         }
+
+        public EntityPersister<T> Persister
+        {
+            get => _persister.Get();
+            private set => _persister.Set(value);
+        }
+
         private readonly IProperty<EntityPersister<T>> _persister = H<DataLocker<T>>.Property<EntityPersister<T>>();
 
         private EntityPersister<DataLock> _lockPersister;
 
-        private Func<T,EntityPersister<T>> _getPersister;
-        private readonly Func<DataLock,EntityPersister<DataLock>> _getLockPersister;
-        private readonly Func<IDataTransaction,IAuditTrailProvider> _getAudit;
+        private Func<T, EntityPersister<T>> _getPersister;
+        private readonly Func<DataLock, EntityPersister<DataLock>> _getLockPersister;
+        private readonly Func<IDataTransaction, IAuditTrailProvider> _getAudit;
 
         public DataLocker(
             T entity,
 
-            IDataService db, 
-            IAclService acl, 
-            Func<T, EntityPersister<T>> getPersister, 
-            Func<DataLock, EntityPersister<DataLock>> getLockPersister, 
+            IDataService db,
+            IAclService acl,
+            Func<T, EntityPersister<T>> getPersister,
+            Func<DataLock, EntityPersister<DataLock>> getLockPersister,
             Func<IDataTransaction, IAuditTrailProvider> getAudit
         )
         {
@@ -91,24 +68,25 @@ namespace HLab.Erp.Acl
 
             H<DataLocker<T>>.Initialize(this);
 
-            _timer = new Timer((o) => {
+            _timer = new Timer(async (o) =>
+            {
                 _lock?.Heartbeat(HeartBeat);
                 try
                 {
                     Message = null;
-                    if (_lockPersister.Save())
+                    if (await _lockPersister.SaveAsync())
                     {
                         IsConnected = true;
                         return;
                     }
-                    else DirtyCancel();
+                    else await DirtyCancelAsync();
                 }
                 catch (DataException ex)
                 {
                     Message = "{Disconnected}";
                     IsConnected = false;
                 }
-            }, null,Timeout.Infinite,Timeout.Infinite);
+            }, null, Timeout.Infinite, Timeout.Infinite);
 
             Persister = _getPersister?.Invoke(_entity);
 
@@ -164,9 +142,9 @@ namespace HLab.Erp.Acl
                 string caption = "";
                 string iconPath = "";
 
-                if(e._entity is IListableModel lm)
-                { 
-                    caption = lm.Caption; 
+                if (e._entity is IListableModel lm)
+                {
+                    caption = lm.Caption;
                     iconPath = lm.IconPath;
                 }
 
@@ -183,14 +161,25 @@ namespace HLab.Erp.Acl
             .Action(async e => await e.CancelAsync().ConfigureAwait(false))
         );
 
+
+        private async Task CancelDependenciesAsync()
+        {
+            foreach (var locker in _dependencies)
+            {
+                if(locker.IsActive)
+                    await locker.CancelAsync();
+            }
+        }
+
+
         /// <summary>
         /// Try to activate locker
         /// </summary>
         /// <returns></returns>
-        public async Task ActivateAsync()
+        public async Task<bool> ActivateAsync()
         {
             if (IsActive)
-                return;
+                return true;
 
             var existing =
                 await _data.FetchOneAsync<DataLock>(e => e.EntityClass == _entityClass && e.EntityId == _entityId).ConfigureAwait(true);
@@ -201,18 +190,29 @@ namespace HLab.Erp.Acl
                 if ((DateTime.Now - existing.HeartbeatTime).TotalMilliseconds < HeartBeat)
                 {
                     Message = $"{{Object locked by}} {existing.User.Initials}";
-                    return;
+                    return false;
                 }
 
                 _data.Delete(existing);
             }
 
-            if(_entityId >= 0)
+            if (_entityId >= 0)
             {
                 try
                 {
                     //Clear error message
                     Message = null;
+
+                    //First lock all dependencies
+                    foreach (var locker in _dependencies)
+                    {
+                        if (!await locker.ActivateAsync())
+                        {
+                            Message = locker.Message;
+                            await CancelDependenciesAsync();
+                            return false;
+                        }
+                    }
 
                     //Generate data lock token
                     _lock = await _data.AddAsync<DataLock>(t =>
@@ -231,18 +231,19 @@ namespace HLab.Erp.Acl
                 catch (Exception e)
                 {
                     Message = e.Message;
-                    if(_lock!=null) _data.Delete(_lock);
+                    if (_lock != null) _data.Delete(_lock);
                     _lock = null;
 
-                    _lockPersister=null;
+                    _lockPersister = null;
 
-                    return;
+                    return false;
                 }
 
                 _timer.Change(HeartBeat, HeartBeat);
             }
 
             IsActive = true;
+            return true;
         }
 
 
@@ -275,15 +276,7 @@ namespace HLab.Erp.Acl
                 //TODO : add AclRight needed to do the action
                 if (_getAudit(transaction).Audit(action, null, log, _entity, caption, iconPath, sign, motivate))
                 {
-                    await Persister.SaveAsync(transaction);
-                    _timer.Change(Timeout.Infinite, Timeout.Infinite);
-
-                    if (_lock != null)
-                        await transaction.DeleteAsync(_lock);
-
-                    IsActive = false;
-                    _lock = null;
-
+                    await SaveAsync(transaction);
                     transaction.Done();
                     return true;
                 }
@@ -300,20 +293,44 @@ namespace HLab.Erp.Acl
             return false;
         }
 
+        public async Task SaveAsync(IDataTransaction transaction)
+        {
+            _ = await Persister.SaveAsync(transaction);
+            _ = _timer.Change(Timeout.Infinite, Timeout.Infinite);
+
+            if (_lock != null)
+            {
+                _ = await transaction.DeleteAsync(_lock);
+            }
+
+            IsActive = false;
+            _lock = null;
+
+            foreach (var locker in _dependencies)
+            {
+                await locker.SaveAsync(transaction);
+            }
+        }
+
         private readonly AsyncReaderWriterLock _cancelLock = new AsyncReaderWriterLock();
 
-
-        private void DirtyCancel()
+        // TODO : possible bug if dependency gets canceled
+        public async Task DirtyCancelAsync()
         {
-            using(_cancelLock.WriterLock())
+            using (_cancelLock.WriterLock())
             {
-                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                _ = _timer.Change(Timeout.Infinite, Timeout.Infinite);
 
                 try
                 {
-                    _data.ReFetchOneAsync(_entity).ConfigureAwait(true);
+                    foreach (var locker in _dependencies)
+                    {
+                        await locker.DirtyCancelAsync();
+                    }
+
+                    _ = await _data.ReFetchOneAsync(_entity).ConfigureAwait(true);
                 }
-                catch{}
+                catch { }
 
                 _lock = null;
                 Persister.Reset();
@@ -321,7 +338,10 @@ namespace HLab.Erp.Acl
             }
         }
 
-
+        /// <summary>
+        /// Abort editing
+        /// </summary>
+        /// <returns></returns>
         public async Task CancelAsync()
         {
             try
@@ -344,6 +364,8 @@ namespace HLab.Erp.Acl
 
                     else IsActive = false;
                 }
+
+                await CancelDependenciesAsync();
             }
             catch (DataException e)
             {
@@ -355,12 +377,14 @@ namespace HLab.Erp.Acl
             }
         }
 
+        /// <summary>
+        /// Message describing why lock is not possible
+        /// </summary>
         public string Message
         {
             get => _message.Get();
             private set => _message.Set(value);
         }
-
         private readonly IProperty<string> _message = H<DataLocker<T>>.Property<string>();
 
         public bool IsReadOnly => _isReadOnly.Get();
@@ -371,7 +395,7 @@ namespace HLab.Erp.Acl
         );
         public async void Dispose()
         {
-            if(IsActive)
+            if (IsActive)
                 await CancelAsync().ConfigureAwait(false);
             await _timer.DisposeAsync();
         }

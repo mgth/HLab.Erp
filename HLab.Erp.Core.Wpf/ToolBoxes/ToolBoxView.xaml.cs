@@ -29,7 +29,7 @@ namespace HLab.Erp.Core.ToolBoxes
             _mvvm = mvvm;
             _dragDrop = dragDrop;
             InitializeComponent();
-            SetDragDrop();
+            // TODO : SetDragDrop();
         }
         private void drag_Drop(object source)
         {

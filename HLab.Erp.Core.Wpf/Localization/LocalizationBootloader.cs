@@ -3,7 +3,7 @@ using HLab.Core.Annotations;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Core.Localization
+namespace HLab.Erp.Core.Wpf.Localization
 {
     public class LocalizeBootloader : IBootloader
     {

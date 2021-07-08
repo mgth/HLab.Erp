@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Net;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using HLab.Core.Annotations;
 using HLab.Erp.Data;
-using NPoco;
 
 
 namespace HLab.Erp.Acl

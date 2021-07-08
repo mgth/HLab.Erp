@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using HLab.Base;
 using HLab.Base.Wpf;
 using HLab.Erp.Base.Data;
 

@@ -1,14 +1,14 @@
 ﻿using System.Windows.Controls;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Core.ListFilters
+namespace HLab.Erp.Core.Wpf.ListFilters
 {
     /// <summary>
     /// Logique d'interaction pour FilterTextView.xaml
     /// </summary>
-    public partial class FilterTextView : UserControl, IView<ViewModeDefault, TextFilter>, IFilterContentViewClass
+    public partial class TextFilterView : UserControl, IView<ViewModeDefault, TextFilter>, IFilterContentViewClass
     {
-        public FilterTextView()
+        public TextFilterView()
         {
             InitializeComponent();
         }

@@ -1,5 +1,5 @@
 ﻿using HLab.Erp.Core;
-using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Mvvm.Annotations;
 
@@ -7,6 +7,11 @@ namespace HLab.Erp.Acl.Users
 {
     public class UsersListViewModel : EntityListViewModel<User>, IMvvmContextProvider
     {
+        public class Bootloader : NestedBootloader
+        {
+            public override string MenuPath => "param";
+        }
+
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
