@@ -23,6 +23,7 @@ namespace HLab.Erp.Core.EntitySelectors
         public ForeignView()
         {
             InitializeComponent();
+            Visibility = Visibility.Collapsed;
         }
 
         public static readonly DependencyProperty ModelProperty = H.Property<object>()
@@ -37,6 +38,7 @@ namespace HLab.Erp.Core.EntitySelectors
         }
 
         public static readonly DependencyProperty ModelClassProperty = H.Property<Type>()
+            .OnChange(s => s.SetModelClass())
             .Register();
 
         public static readonly DependencyProperty ListClassProperty = H.Property<Type>()
@@ -126,6 +128,17 @@ namespace HLab.Erp.Core.EntitySelectors
 
         private void SetList()
         {
+        }
+        private void SetModelClass()
+        {
+            if(ModelClass == null)
+            {
+                Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                Visibility = Visibility.Visible;
+            }
         }
         private void SetMandatoryNotFilled(bool mnf)
         {

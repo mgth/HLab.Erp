@@ -37,8 +37,12 @@
 
         <Button Grid.Column="3" x:Name="Button" Click="ButtonBase_OnClick">
             <StackPanel>
-                <ContentControl Content="{Binding ButtonContent, ElementName=UserControl}"/>
-                <icons:IconView Path="Icons/SelectForeign" MaxHeight="10"/>
+                <StackPanel Orientation="Horizontal">
+                    <ContentControl Content="{Binding ButtonContent, ElementName=UserControl}"/>
+                    <icons:IconView VerticalAlignment="Bottom" Path="Icons/SelectForeign" MaxHeight="10"/>
+                </StackPanel>
+                
+                
                 <Popup 
                     x:Name="Popup" 
                     StaysOpen="False" 

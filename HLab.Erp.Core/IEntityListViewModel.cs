@@ -14,16 +14,16 @@ namespace HLab.Erp.Core
         IObservableQuery<T> List { get; }
     }
 
-    public interface IFiltersFluentConfigurator<T,out TFilter> : IFluentConfigurator<TFilter>, IFiltersFluentConfigurator<T>
+    public interface IFiltersFluentConfigurator<T, out TFilter> : IFluentConfigurator<TFilter>, IFiltersFluentConfigurator<T>
         where TFilter : IFilter, new()
         where T : class, IEntity
     {
     }
 
 
-    public class FiltersFluentConfigurator<T,TFilter> : FluentConfigurator<TFilter>, IFiltersFluentConfigurator<T>//IFiltersFluentConfigurator<T, TFilter>
+    public class FiltersFluentConfigurator<T, TFilter> : FluentConfigurator<TFilter>, IFiltersFluentConfigurator<T>//IFiltersFluentConfigurator<T, TFilter>
         where TFilter : IFilter, new()
-//        where T : class, IEntity
+        //        where T : class, IEntity
     {
         public IObservableQuery<T> List { get; }
         public FiltersFluentConfigurator(IObservableQuery<T> list, TFilter target) : base(target)
@@ -56,6 +56,8 @@ namespace HLab.Erp.Core
         T GetFilter<T>() where T : IFilter;
         void Start();
         void Stop();
+
+        public bool IsEnabledSimpleAddButton { get; }
     }
 
     public interface IEntityListViewModel<T> : IEntityListViewModel

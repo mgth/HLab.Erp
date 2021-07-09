@@ -70,11 +70,16 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public abstract IEnumerable<int> SelectedIds { get; set; }
         public abstract void RefreshColumn(string column);
         public abstract void RefreshColumn(string column, int id);
+
+        protected abstract Task AddEntityAsync(object arg);
         protected abstract Task AddEntityAsync();
 
         public abstract ICommand AddCommand { get; }
         public abstract ICommand DeleteCommand { get; }
         public abstract ICommand OpenCommand { get; }
+        public virtual Type AddArgumentClass => null;
+
+        public bool IsEnabledSimpleAddButton => AddArgumentClass == null;
 
         public string ErrorMessage => string.Join(Environment.NewLine,_errors.OrderBy(e => e.Item1).Select(e => e.Item2));
 
@@ -218,7 +223,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
                 e.RemoveErrorMessage("Add");
                 return e.CanExecuteAdd(m => e.AddErrorMessage("Add", m));
             })
-            .Action(async e => await e.AddEntityAsync())
+            .Action(async (e,a) => await e.AddEntityAsync(a))
             .On(e => e.Selected)
             .CheckCanExecute()
         );
@@ -247,6 +252,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         protected virtual bool CanExecuteDelete(T arg,Action<string> errorAction) => false;
         protected virtual bool CanExecuteAdd(Action<string> errorAction) => false;
 
+
         protected virtual bool CanExecuteImport(Action<string> errorAction) => false;
         protected virtual bool CanExecuteExport(Action<string> errorAction) => false;
         #endregion
@@ -261,6 +267,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public override void SetSelectAction(Action<object> action) => SelectAction = action;
         public void SetSelectAction(Action<T> action) => SelectAction = action;
 
+        protected override Task AddEntityAsync(object arg) => AddEntityAsync();
         protected override Task AddEntityAsync()
         {
             var entity = CreateInstance();

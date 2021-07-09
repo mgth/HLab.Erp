@@ -24,7 +24,9 @@ namespace HLab.Erp.Workflows
                 {
                     if (!view.TryGetViewModel(out var vm)) return;
 
-                    if (w(vm).Highlights is INotifyCollectionChanged c)
+                    var workflow = w(vm);
+
+                    if (workflow.Highlights is INotifyCollectionChanged c)
                     {
                         c.CollectionChanged += (target, arg) =>
                         {

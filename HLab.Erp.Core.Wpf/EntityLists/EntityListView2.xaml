@@ -6,7 +6,7 @@
              xmlns:core="clr-namespace:HLab.Erp.Core;assembly=HLab.Erp.Core"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf" 
-             xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
+             xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf" xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=core:IEntityListViewModel, IsDesignTimeCreatable=false}"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -14,13 +14,13 @@
              >
     <UserControl.Resources>
         <ResourceDictionary>
-                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                    <Style.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -37,57 +37,81 @@
         </Grid.ColumnDefinitions>
 
         <ScrollViewer Grid.Column="0" Grid.Row="3">
-                    <ItemsControl ItemsSource="{Binding Filters}">
-                        <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+            <ItemsControl ItemsSource="{Binding Filters}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
         </ScrollViewer>
 
         <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical">
-        <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal">
 
-            <Button Command ="{Binding AddCommand}">
-                <Button.ToolTip><lang:Localize Id="{}{Add}"/></Button.ToolTip>
-                <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
-            </Button>
+                <Button Command ="{Binding AddCommand}" IsEnabled="{Binding IsEnabledSimpleAddButton}">
+                    
+                    <Button.ToolTip>
+                        <lang:Localize Id="{}{Add}"/>
+                    </Button.ToolTip>
+                    <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
+                </Button>
 
-            <Button Command="{Binding DeleteCommand}">                    
-                <Button.ToolTip><lang:Localize Id="{}{Delete}"/></Button.ToolTip>
-                <icons:IconView Path="Icons/Delete" MaxHeight="15" MaxWidth="15"/>
-            </Button>
-            
-            <Button Command="{Binding RefreshCommand}">                    
-                <Button.ToolTip><lang:Localize Id="{}{Refresh}"/></Button.ToolTip>
-                <icons:IconView Path="Icons/Refresh" MaxHeight="15"/>
-            </Button>
+                <entitySelectors:ForeignView DockPanel.Dock="Top"
+                                IsReadOnly="False"
+                                ModelClass="{Binding AddArgumentClass}"
+                                Command="{Binding AddCommand}"
+                                >
+                    <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
+                </entitySelectors:ForeignView>
 
-            <Button Command="{Binding OpenCommand}">
-                <Button.ToolTip><lang:Localize Id="{}{Open}"/></Button.ToolTip>
-                <icons:IconView Path="Icons/OpenForeign" MaxHeight="15"/>
-            </Button>
 
-            <Button Command="{Binding ExportCommand}">                    
-                <Button.ToolTip><lang:Localize Id="{}{Export}"/></Button.ToolTip>
-                <icons:IconView Path="Icons/Export" MaxHeight="15"/>
-            </Button>
+                <Button Command="{Binding DeleteCommand}">
+                    <Button.ToolTip>
+                        <lang:Localize Id="{}{Delete}"/>
+                    </Button.ToolTip>
+                    <icons:IconView Path="Icons/Delete" MaxHeight="15" MaxWidth="15"/>
+                </Button>
 
-            <Button Command="{Binding ImportCommand}">                    
-                <Button.ToolTip><lang:Localize Id="{}{Import}"/></Button.ToolTip>
-                <icons:IconView Path="Icons/Import" MaxHeight="15"/>
-            </Button>
-            <Button Click="ButtonBase_OnClick" BorderThickness="0" BorderBrush="Transparent" Background="Transparent">                    
-                <Button.ToolTip><lang:Localize Id="{}{Expand}"/></Button.ToolTip>
-                ...
-                <!--<icons:IconView Path="Icons/Import" MaxHeight="15"/>-->
-            </Button>
-        </StackPanel>
+                <Button Command="{Binding RefreshCommand}">
+                    <Button.ToolTip>
+                        <lang:Localize Id="{}{Refresh}"/>
+                    </Button.ToolTip>
+                    <icons:IconView Path="Icons/Refresh" MaxHeight="15"/>
+                </Button>
+
+                <Button Command="{Binding OpenCommand}">
+                    <Button.ToolTip>
+                        <lang:Localize Id="{}{Open}"/>
+                    </Button.ToolTip>
+                    <icons:IconView Path="Icons/OpenForeign" MaxHeight="15"/>
+                </Button>
+
+                <Button Command="{Binding ExportCommand}">
+                    <Button.ToolTip>
+                        <lang:Localize Id="{}{Export}"/>
+                    </Button.ToolTip>
+                    <icons:IconView Path="Icons/Export" MaxHeight="15"/>
+                </Button>
+
+                <Button Command="{Binding ImportCommand}">
+                    <Button.ToolTip>
+                        <lang:Localize Id="{}{Import}"/>
+                    </Button.ToolTip>
+                    <icons:IconView Path="Icons/Import" MaxHeight="15"/>
+                </Button>
+                <Button Click="ButtonBase_OnClick" BorderThickness="0" BorderBrush="Transparent" Background="Transparent">
+                    <Button.ToolTip>
+                        <lang:Localize Id="{}{Expand}"/>
+                    </Button.ToolTip>
+                    ...
+                    <!--<icons:IconView Path="Icons/Import" MaxHeight="15"/>-->
+                </Button>
+            </StackPanel>
         </StackPanel>
         <TextBlock Visibility="Collapsed" x:Name="MessageTextBlock" Grid.Column="1" Grid.Row="2" Text="{Binding ErrorMessage}" Foreground="Red"/>
 
-         <ListView Grid.Column="1" Grid.Row="3"
+        <ListView Grid.Column="1" Grid.Row="3"
                    VerticalAlignment="Top"
                    ItemsSource="{Binding ListCollectionView}" 
                    SelectedItem="{Binding SelectedViewModel}"
@@ -101,7 +125,8 @@
                    ScrollViewer.CanContentScroll ="True"
                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                    MaxHeight="5000"
-         ><!--
+         >
+            <!--
              
              
              
@@ -125,13 +150,13 @@
                     <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
                     <!--<Setter Property="Height" Value="50" />-->
                     <Style.Triggers>
-                         <DataTrigger Binding="{Binding IsValid}" Value="False">
-                             <Setter Property="Opacity" Value="0.3" />
-                         </DataTrigger>
-                         <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
-                             <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent4}" />
-                         </Trigger>
-                         <!--<Trigger Property="IsSelected"
+                        <DataTrigger Binding="{Binding IsValid}" Value="False">
+                            <Setter Property="Opacity" Value="0.3" />
+                        </DataTrigger>
+                        <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent4}" />
+                        </Trigger>
+                        <!--<Trigger Property="IsSelected"
                                   Value="True">
                              <Setter Property="Foreground"
                                      Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.Text}" />
@@ -143,24 +168,24 @@
                                      Value="2" />
                          </Trigger>-->
 
-                         <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                             <Setter Property="Background" Value="DarkGreen" />
-                         </DataTrigger>
+                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                            <Setter Property="Background" Value="DarkGreen" />
+                        </DataTrigger>
 
-                     </Style.Triggers>
-                 </Style>
+                    </Style.Triggers>
+                </Style>
 
             </ListView.ItemContainerStyle>
-             
-             <ListView.ItemsPanel>
-                 <ItemsPanelTemplate>
-                     <VirtualizingStackPanel
+
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel
                          VirtualizingPanel.IsVirtualizing="True"                                 
                          VirtualizingPanel.ScrollUnit="Pixel"                                 
-                         VirtualizingPanel.VirtualizationMode="Standard"/>     
-                 </ItemsPanelTemplate> 
-             </ListView.ItemsPanel>
-             
-         </ListView>
+                         VirtualizingPanel.VirtualizationMode="Standard"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+
+        </ListView>
     </Grid>
 </UserControl>
