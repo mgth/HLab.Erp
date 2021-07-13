@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using HLab.Erp.Data;
+using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
+using HLab.Notify.PropertyChanged.NotifyHelpers;
 
 namespace HLab.Erp.Core.Wpf.EntityLists
 {
@@ -27,6 +31,10 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public Func<T, object> Getter { get; set; }
 
         public IColumn<T> OrderByNext { get; set; }
+
+        private readonly List<TriggerPath> _triggerPathes = new();
+
+        public void AddTrigger(Expression expression) => _triggerPathes.Add(TriggerPath.Factory(expression));
 
 //        ConditionalWeakTable<T,object> _cache = new();
         private Stopwatch _watch = new Stopwatch();
@@ -64,6 +72,14 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public override string ToString()
         {
             return Header.ToString();
+        }
+
+        public void RegisterTriggers(T model, Action<string> handler)
+        {
+            foreach(var path in _triggerPathes)
+            {
+                path.GetTrigger(NotifyClassHelper.GetHelper(model),(s,e)=>handler(Id));
+            }
         }
     }
 }

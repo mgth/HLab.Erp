@@ -122,7 +122,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         protected Func<T> CreateInstance { get; private set; }
 
-        public IObservableQuery<T> List { get; private set; }
+        public IObservableQuery<T> List { get => _list.Get(); private set => _list.Set(value); }
+        private IProperty<IObservableQuery<T>> _list = H<EntityListViewModel<T>>.Property<IObservableQuery<T>>();
 
         public IColumnsProvider<T> Columns { get; set; }
 
@@ -157,6 +158,9 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             CreateInstance = createInstance;
 
             Columns = columnsProvider;
+            H<EntityListViewModel<T>>.Initialize(this);
+
+
             List = columnsProvider.List;
 
 
@@ -164,7 +168,6 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             List.CollectionChanged += List_CollectionChanged;
 
 
-            H<EntityListViewModel<T>>.Initialize(this);
 
             _configurator.Invoke(new ColumnConfigurator<T,object,IFilter<object>>(this,Erp))?.Dispose();
 
@@ -199,7 +202,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
 
         public ICommand RefreshCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
-            .Action(e => e.List.Update())
+            .Action(e => e.List.Refresh())
         );
         
         public override ICommand DeleteCommand { get; } = H<EntityListViewModel<T>>.Command(c => c

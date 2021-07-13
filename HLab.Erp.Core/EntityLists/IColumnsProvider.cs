@@ -1,5 +1,7 @@
-﻿using HLab.Erp.Data.Observables;
+﻿using HLab.Erp.Data;
+using HLab.Erp.Data.Observables;
 using HLab.Mvvm.Annotations;
+using System;
 
 namespace HLab.Erp.Core.Wpf.EntityLists
 {
@@ -17,6 +19,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         void AddColumn(IColumn<T> column);
 
         IObservableQuery<T> List {get;}
+
+        void RegisterTriggers(T model, Action<string> handler);
     }
 
 }

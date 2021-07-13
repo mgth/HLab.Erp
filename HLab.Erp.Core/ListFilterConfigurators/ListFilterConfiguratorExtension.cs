@@ -60,6 +60,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             where TFilter : IFilter<TLink>
         {
             var result = c.GetChildConfigurator<string, IFilter<string>>();
+            result.Column.AddTrigger(getter);
             result.LinkExpression = getter;
 
             return result;
@@ -69,6 +70,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             where TFilter : IFilter<TLink>
         {
             var result = c.GetChildConfigurator<bool?, IFilter<bool?>>();
+            result.Column.AddTrigger(getter);
             result.LinkExpression = getter;
 
             return result;
@@ -81,7 +83,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             var result = c.GetChildConfigurator<DateTime?, IFilter<DateTime?>>();
             result.LinkExpression = getter;
 
-            return result;
+            return result.UpdateOn(getter);
         }
 
         //1
@@ -92,7 +94,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             var result = c.GetChildConfigurator<TLinkOut, IFilter<TLinkOut>>();
             result.LinkExpression = getter;
 
-            return result;
+            return result.UpdateOn(getter);
         }
 
         //2
@@ -104,7 +106,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             var result = c.GetChildConfigurator<int, EntityFilter<TE>>();
             result.LinkExpression = GetterIdFromGetter(getter);
 
-            return result;
+            return result.UpdateOn(getter);
         }
 
         public static IColumnConfigurator<T, int?, EntityFilterNullable<TE>> LinkNullable<T, TE, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, TE>> getter)
@@ -117,7 +119,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
 
             result.LinkExpression = GetterIdNullableFromGetter(getter);
 
-            return result;
+            return result.UpdateOn(getter);
         }
         public static IColumnConfigurator<T, int?, EntityFilterNullable<TE>> LinkNullable<T, TE, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, TE>> getter, Expression<Func<T,int?>> idGetter)
             where T : class, IEntity, new()
@@ -129,7 +131,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
 
             result.LinkExpression = GetterIdNullableFromGetter(getter);
 
-            return result;
+            return result.UpdateOn(getter);
         }
         public static IColumnConfigurator<T,TLink,TFilter> Content<T, TLink, TFilter>(this IColumnConfigurator<T,TLink,TFilter> c, Func<T, object> getter)
             where T : class, IEntity, new()
@@ -317,6 +319,20 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         {
             if(caption is string s) caption = c.Localize(s);
             c.Column.Header = caption;
+            return c;
+        }
+        public static IColumnConfigurator<T, TLink, TFilter> UpdateOn<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression trigger)
+            where T : class, IEntity, new()
+            where TFilter : IFilter<TLink>
+        {
+            c.Column.AddTrigger(trigger);
+            return c;
+        }
+        public static IColumnConfigurator<T, TLink, TFilter> UpdateOn<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T,object>> trigger)
+            where T : class, IEntity, new()
+            where TFilter : IFilter<TLink>
+        {
+            c.Column.AddTrigger(trigger);
             return c;
         }
 

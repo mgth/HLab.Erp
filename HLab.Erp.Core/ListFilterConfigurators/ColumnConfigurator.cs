@@ -85,6 +85,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
                 {
                     var lambda = link.Compile();
                     Column.Getter = t => lambda(t); //TODO manipulate expression before
+
                     Target.Columns.AddColumn(Column);
                 }
             }
@@ -93,6 +94,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
 
             if (Filter != null)
                 Target.AddFilter(Filter);
+
         }
 
     }

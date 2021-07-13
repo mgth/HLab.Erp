@@ -38,6 +38,8 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
         {
             Model = model;
             _columns = columns;
+
+            columns.RegisterTriggers(model, OnPropertyChanged);
         }
 
         public override bool TrySetMember(SetMemberBinder binder, object value)

@@ -26,6 +26,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         Func<T, object> OrderBy { get; set; }
         Func<T, object> Getter { get; set; }
 
+        void AddTrigger(Expression expression);
+
         IColumn<T> OrderByNext { get; set; }
 
         object GetValue(T target);
@@ -44,5 +46,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
             IErpServices Erp { get; }
         }
+
+        void RegisterTriggers(T model, Action<string> handler);
     }
 }

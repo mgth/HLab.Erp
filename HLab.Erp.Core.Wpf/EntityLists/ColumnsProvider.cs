@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -200,6 +201,19 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public void AddColumn(IColumn<T> column)
         {
             _dict.Add(column.Id,column);
+        }
+
+        void RegisterTriggers(T model, Action<string> handler)
+        {
+            foreach(var column in _dict.Values)
+            {
+                column.RegisterTriggers(model,handler);
+            }
+        }
+
+        void IColumnsProvider<T>.RegisterTriggers(T model, Action<string> handler)
+        {
+            RegisterTriggers(model, handler);
         }
     }
 }
