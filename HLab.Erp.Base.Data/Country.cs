@@ -57,7 +57,7 @@ namespace HLab.Erp.Base.Data
         public Continent Continent
         {
             //get => E.GetForeign<Continent>(() => ContinentId);
-            set => ContinentId = value.Id;
+            set => ContinentId = value?.Id;
             get => _continent.Get();
         }
 
