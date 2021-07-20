@@ -22,7 +22,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public ListableEntityListViewModel() : base(c => c
                 .Column()
                 .Header("{Name}")
-                .Width(150).Content(e => e.Caption)
+                .Width(150).Content(e => e.Caption).Localize()
                 .Link(e => e.Caption)
                 .Icon(e => e.IconPath)
                     .Filter()
