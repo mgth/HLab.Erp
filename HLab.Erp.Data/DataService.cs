@@ -123,6 +123,8 @@ namespace HLab.Erp.Data
         public async Task<bool> DeleteAsync<T>(T entity, Action<T> deleted = null)
             where T : class, IEntity
         {
+            if (entity == null) return false;
+
             var result = await DbGetAsync(async db => await db.DeleteAsync(entity));
 
             if (result > 0)
@@ -228,10 +230,18 @@ namespace HLab.Erp.Data
             using var db = Get();
             await db.ExecuteAsync(sql);
         }
+
         public int ExecuteSql(string sql)
         {
-            using var db = Get();
-            return db.Execute(sql);
+            try
+            {
+                using var db = Get();
+                return db.Execute(sql);
+            }
+            catch (Exception e)
+            {
+                return -1;
+            }
         }
         public IEnumerable<T> FetchWhere<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy = null)
             where T : class, IEntity

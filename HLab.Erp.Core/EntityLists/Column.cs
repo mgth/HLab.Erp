@@ -32,11 +32,21 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         public IColumn<T> OrderByNext { get; set; }
 
-        private readonly List<TriggerPath> _triggerPathes = new();
+        private readonly List<TriggerPath> _triggerPaths = new();
 
-        public void AddTrigger(Expression expression) => _triggerPathes.Add(TriggerPath.Factory(expression));
+        public void AddTrigger(Expression expression)
+        {
+            try
+            {
+                _triggerPaths.Add(TriggerPath.Factory(expression));
+            }
+            catch (Exception e)
+            {
 
-//        ConditionalWeakTable<T,object> _cache = new();
+            }
+        }
+
+        //        ConditionalWeakTable<T,object> _cache = new();
         private Stopwatch _watch = new Stopwatch();
         private long _requestCount = 0;
 
@@ -76,7 +86,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         public void RegisterTriggers(T model, Action<string> handler)
         {
-            foreach(var path in _triggerPathes)
+            foreach(var path in _triggerPaths)
             {
                 path.GetTrigger(NotifyClassHelper.GetHelper(model),(s,e)=>handler(Id));
             }

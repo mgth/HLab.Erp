@@ -15,10 +15,10 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
             // TODO .OrderByOrder(0)
             .Filter()
 
-            .Column()
-            .Header("{Continent}")
-            .Link(e => e.Continent)
-                   .Filter()
+            //.Column()
+            //.Header("{Continent}")
+            //.Link(e => e.Continent)
+            //       .Filter()
 
            .Column()
                .Header("{Flag}").Width(60)
