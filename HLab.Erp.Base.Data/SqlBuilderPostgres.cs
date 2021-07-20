@@ -299,7 +299,7 @@ namespace HLab.Erp.Base.Data
             if(type == typeof(decimal?)) return "numeric";
 
 
-            if(type == typeof(bool)) return "boolean DEFAULT 0 NOT NULL";
+            if(type == typeof(bool)) return "boolean DEFAULT False NOT NULL";
             if(type == typeof(bool?)) return "boolean";
 
             if(type == typeof(byte[])) return "bytea";
