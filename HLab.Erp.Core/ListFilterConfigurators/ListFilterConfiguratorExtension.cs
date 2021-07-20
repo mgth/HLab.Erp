@@ -308,7 +308,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
                 .Content(e => lambda(e))
                 .OrderBy(e => c.Localize(lambda(e)?.Caption))
                 // TODO                .Icon(e => lambda(e)?.IconPath)
-                .Filter()
+                .Filter().IconPath($"Icons/Entities/{typeof(TE).Name}")
                 ;
         }
 

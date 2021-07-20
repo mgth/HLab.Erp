@@ -55,29 +55,39 @@ namespace HLab.Erp.Core.Wpf.Localization
         {
         }
 
-        protected override async Task ImportAsync(IDataService data, LocalizeEntry newValue)
+        protected override async Task ImportAsync(IDataService data, LocalizeEntry importValue)
         {
             var e = await data.FetchOneAsync<LocalizeEntry>(e =>
-                e.Tag == newValue.Tag && e.Code == newValue.Code && e.Custom == false &&
-                (e.Value != newValue.Value || e.Todo));
+                e.Tag == importValue.Tag && e.Code == importValue.Code && e.Custom == importValue.Custom);
 
-            if(e != null)
+            try
             {
-                e.Value = newValue.Value;
-                e.Todo = false;
-                e.Custom = newValue.Custom;
-                await data.UpdateAsync(e, "Value", "Todo", "Custom");
-            }
-            else
-            {
-                await data.AddAsync<LocalizeEntry>(i =>
+                if (e != null)
                 {
-                    i.Tag = newValue.Tag;
-                    i.Value = newValue.Value;
-                    i.Todo = false;
-                    i.Custom = newValue.Custom;
-                });
-                
+                    if (e.Value == importValue.Value && e.Todo == false) return;
+
+                    e.Value = importValue.Value;
+                    e.Todo = false;
+                    e.Custom = importValue.Custom;
+                    await data.UpdateAsync(e, "Value", "Todo", "Custom");
+                }
+                else
+                {
+                    await data.AddAsync<LocalizeEntry>(i =>
+                    {
+                        i.Tag = importValue.Tag;
+                        i.Code = importValue.Code;
+                        i.Value = importValue.Value;
+                        i.Todo = false;
+                        i.Custom = importValue.Custom;
+                    });
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+
             }
         }
     }
