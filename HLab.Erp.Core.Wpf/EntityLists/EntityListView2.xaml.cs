@@ -5,7 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using AvalonDock.Controls;
 using HLab.Base.Wpf;
-using HLab.Erp.Core.ViewModels.EntityLists;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.Wpf.ListFilters;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;

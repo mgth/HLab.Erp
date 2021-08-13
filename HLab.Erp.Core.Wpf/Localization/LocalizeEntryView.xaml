@@ -16,10 +16,10 @@
             <TextBox Text="{Binding Model.Tag}"/>
 
             <lang:LocalizedLabel Text="{}{Code} : "/>
-            <TextBox Text="{Binding Model.Code}"/>
+            <TextBox Text="{Binding Model.Code, UpdateSourceTrigger=PropertyChanged}"/>
 
             <lang:LocalizedLabel Text="{}{Value} : "/>
-            <TextBox Text="{Binding Model.Value}"/>
+            <TextBox Text="{Binding Model.Value, UpdateSourceTrigger=PropertyChanged}"/>
 
             <lang:LocalizedLabel Text="{}{Todo} : "/>
             <CheckBox IsChecked="{Binding Model.Todo}"/>

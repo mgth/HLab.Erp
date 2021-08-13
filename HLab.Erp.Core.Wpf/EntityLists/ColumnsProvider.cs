@@ -4,10 +4,12 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using System.Windows.Media;
 using System.Xml;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Localization.Wpf.Lang;
+using HLab.Mvvm;
 using Binding = System.Windows.Data.Binding;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using ListView = System.Windows.Controls.ListView;
@@ -104,12 +106,12 @@ namespace HLab.Erp.Core.Wpf.EntityLists
                         {
                             Header = header,
                             Width = column.Width,
-                        
-                            CellTemplate = CreateColumnTemplate(column.Id),
+                            
+                            //DisplayMemberBinding = new Binding(column.Id),
+                            CellTemplate = CreateColumnTemplate(column.Id,column.Width),
                         };
                         gridView.Columns.Add(c);
                         c.Width = column.Width;
-
                         break;
                     }
                 }
@@ -118,84 +120,84 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         }
 
 
-        public object GetView()
-        {
-            var gv = new GridView();
+        //public object GetView()
+        //{
+        //    var gv = new GridView();
 
-            foreach (var column in _dict.Values)
-            {
-                if (column.Hidden) continue;
+        //    foreach (var column in _dict.Values)
+        //    {
+        //        if (column.Hidden) continue;
 
-                object content;
-                if (column.Header is string s)
-                    content = new Localize {Id = s};
-                else
-                {
-                    content = column.Header;
-                }
+        //        object content;
+        //        if (column.Header is string s)
+        //            content = new Localize {Id = s};
+        //        else
+        //        {
+        //            content = column.Header;
+        //        }
 
-                var header = new GridViewColumnHeader 
-                {
-                    Width = column.Width,
-                    Content = content
-                };
+        //        var header = new GridViewColumnHeader 
+        //        {
+        //            Width = column.Width,
+        //            Content = content
+        //        };
 
-                header.Click += (a, b) =>
-                {
-                    SetOrderBy(column);
-                    List.ResetOrderBy();
-                    var c = _orderByColumn;
-                    while (c != null)
-                    {
-                        List.AddOrderBy(c.OrderBy,c.SortDirection);
-                    }
+        //        header.Click += (a, b) =>
+        //        {
+        //            SetOrderBy(column);
+        //            List.ResetOrderBy();
+        //            var c = _orderByColumn;
+        //            while (c != null)
+        //            {
+        //                List.AddOrderBy(c.OrderBy,c.SortDirection);
+        //            }
 
-                    List.Update();
-                };
+        //            List.Update();
+        //        };
  
-                var c = new GridViewColumn
-                {
-                    Header = header,
-                    //DisplayMemberBinding = new Binding(column.Id),
-                    CellTemplate = CreateColumnTemplate(column.Id)
-                };
+        //        var c = new GridViewColumn
+        //        {
+        //            Header = header,
+        //            DisplayMemberBinding = new Binding(column.Id),
+        //            //CellTemplate = CreateColumnTemplate(column.Id)
+        //        };
 
-                gv.Columns.Add(c);
-            }
+        //        gv.Columns.Add(c);
+        //    }
 
-            return gv;
-        }
-        public DataTemplate CreateColumnTemplate(string property)
+        //    return gv;
+        //}
+
+        public DataTemplate CreateColumnTemplate(string property,double width = 100.0)
         {
+            var template = new DataTemplate();
 
-            var t = new DataTemplate();
+            FrameworkElementFactory contentFactory = new FrameworkElementFactory(typeof(ContentControl));
+            Binding binding = new(property)
+            {
+                Mode = System.Windows.Data.BindingMode.OneWay
+            };
 
-            FrameworkElementFactory cc = new FrameworkElementFactory(typeof(ContentControl));
-            var binding = new Binding(property);
-            binding.Mode = System.Windows.Data.BindingMode.OneWay;
-            cc.SetBinding(ContentControl.ContentProperty,binding);
-            t.VisualTree = cc;
+            //contentFactory.SetValue(ContentControl.WidthProperty, width); 
+            //contentFactory.SetValue(ContentControl.ForegroundProperty, Brushes.White); //TODO : replace with themed color
 
-            return t;
+            contentFactory.SetBinding(ContentControl.ContentProperty, binding);
 
-            //    StringReader stringReader = new StringReader(
-            //        @"<DataTemplate 
-            //xmlns:mvvm=""clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm""
-            //xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> 
-            //    <mvvm:ViewLocator Model=""{Binding " + property + @"}""/> 
-            //</DataTemplate>");
+            template.VisualTree = contentFactory;
 
-
-            StringReader stringReader = new StringReader(
-                @$"<DataTemplate 
-        xmlns:mvvm=""clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm""
-        xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> 
-            <ContentControl Content=""{{Binding {property}}}""/> 
-        </DataTemplate>");
+            return template;
 
 
-            XmlReader xmlReader = XmlReader.Create(stringReader);
-            return XamlReader.Load(xmlReader) as DataTemplate;
+        //    StringReader stringReader = new StringReader(
+        //        @$"<DataTemplate 
+        //xmlns:mvvm=""clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm""
+        //xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> 
+        //    <ContentControl Content=""{{Binding {property}}}""/> 
+        //</DataTemplate>");
+
+
+        //    XmlReader xmlReader = XmlReader.Create(stringReader);
+        //    return XamlReader.Load(xmlReader) as DataTemplate;
         }
 
         public void AddColumn(IColumn<T> column)

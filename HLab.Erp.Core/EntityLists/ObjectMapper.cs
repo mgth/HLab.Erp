@@ -1,10 +1,12 @@
-﻿using System.ComponentModel;
+﻿#nullable enable
+using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Runtime.CompilerServices;
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
 
-namespace HLab.Erp.Core.ViewModels.EntityLists
+namespace HLab.Erp.Core.EntityLists
 {
     public interface IObjectMapper : INotifyPropertyChanged
     {
@@ -47,9 +49,11 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
             return true;
         }
 
+        private readonly ConcurrentDictionary<string, object> _dict = new();
+
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            result = _columns.GetValue(Model, binder.Name);
+            result = _dict.GetOrAdd(binder.Name, n => _columns.GetValue(Model, n));
             return true;
         }
 
@@ -59,6 +63,7 @@ namespace HLab.Erp.Core.ViewModels.EntityLists
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
+            _dict.TryRemove(propertyName, out var o);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

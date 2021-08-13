@@ -22,22 +22,28 @@ namespace HLab.Erp.Core.Wpf.EntityLists
     {
         public void Populate(object grid, IColumnsProvider<T> provider)
         {
-            if (grid is ItemsControl dataGrid)
-            {
-                dataGrid.SourceUpdated += delegate (object sender, DataTransferEventArgs args)
-                {
-                    ICollectionView cv = CollectionViewSource.GetDefaultView(dataGrid.ItemsSource);
-                };
+            //if (grid is ItemsControl dataGrid)
+            //{
+            //    dataGrid.SourceUpdated += delegate (object sender, DataTransferEventArgs args)
+            //    {
+            //        ICollectionView cv = CollectionViewSource.GetDefaultView(dataGrid.ItemsSource);
+            //    };
 
-                provider.Populate(grid);
-            }
+            //}
+            provider.Populate(grid);
         }
+
 
         public object GetListView(IList list)
         {
             var lcv = new ListCollectionView(list);
-            lcv.GroupDescriptions?.Add(new PropertyGroupDescription("FileId"));
+            //lcv.GroupDescriptions?.Add(new PropertyGroupDescription("FileId"));
             return lcv;
+        }
+
+        public void DoOnDispatcher(object grid, Action action)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task ExportAsync(IObservableQuery<T> list, IContractResolver resolver)

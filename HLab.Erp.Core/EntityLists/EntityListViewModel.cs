@@ -1,5 +1,4 @@
 ﻿using HLab.Base.Extensions;
-using HLab.Erp.Core.ViewModels.EntityLists;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
@@ -18,6 +17,8 @@ using Newtonsoft.Json.Serialization;
 using NPoco;
 using HLab.Erp.Core.Tools.Details;
 using System.ComponentModel;
+using System.Net.Mime;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 
 namespace HLab.Erp.Core.Wpf.EntityLists
@@ -25,11 +26,13 @@ namespace HLab.Erp.Core.Wpf.EntityLists
     public interface IEntityListHelper
     {
         object GetListView(IList list);
+        void DoOnDispatcher(object grid, Action action);
     }
 
     public interface IEntityListHelper<T> : IEntityListHelper where T : class, IEntity, new()
     {
         void Populate(object grid, IColumnsProvider<T> provider);
+
         Task ExportAsync(IObservableQuery<T> list, IContractResolver resolver);
         public Task<IEnumerable<T>> ImportAsync();
     }
@@ -77,6 +80,9 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public abstract ICommand AddCommand { get; }
         public abstract ICommand DeleteCommand { get; }
         public abstract ICommand OpenCommand { get; }
+        public abstract ICommand ImportCommand { get; }
+        public abstract ICommand ExportCommand { get; }
+
         public virtual Type AddArgumentClass => null;
 
         public bool IsEnabledSimpleAddButton => AddArgumentClass == null;
@@ -98,7 +104,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         }
     }
 
-    public abstract class EntityListViewModel<T> : EntityListViewModel, IEntityListViewModel<T>
+    public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEntityListViewModel<T>
         where T : class, IEntity, new()
     {
         private IEntityListHelper<T> _helper;
@@ -127,7 +133,6 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         public IColumnsProvider<T> Columns { get; set; }
 
-
         public override void RefreshColumn(string column)
         {
             foreach (var vm in ListViewModel)
@@ -147,7 +152,6 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public ObservableCollection<IObjectMapper> ListViewModel { get; } = new();
         private readonly ConcurrentDictionary<T, dynamic> _cache = new();
 
-
         public void Inject(
             IEntityListHelper<T> helper,
             Func<T> createInstance,
@@ -160,14 +164,10 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             Columns = columnsProvider;
             H<EntityListViewModel<T>>.Initialize(this);
 
-
             List = columnsProvider.List;
-
 
             List_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, List, 0));
             List.CollectionChanged += List_CollectionChanged;
-
-
 
             _configurator.Invoke(new ColumnConfigurator<T,object,IFilter<object>>(this,Erp))?.Dispose();
 
@@ -230,7 +230,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             .On(e => e.Selected)
             .CheckCanExecute()
         );
-        public ICommand ExportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
+
+        public override ICommand ExportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
             .CanExecute(e =>
             {
                 e.RemoveErrorMessage("Export");
@@ -240,7 +241,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             .On(e => e.Selected)
             .CheckCanExecute()
         );
-        public ICommand ImportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
+
+        public override ICommand ImportCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
             .CanExecute(e =>
             {
                 e.RemoveErrorMessage("Import");
@@ -250,6 +252,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             .On(e => e.Selected)
             .CheckCanExecute()
         );
+
         protected virtual bool CanExecuteOpen(T arg,Action<string> errorAction) => true;
 
         protected virtual bool CanExecuteDelete(T arg,Action<string> errorAction) => false;
@@ -274,6 +277,12 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         protected override Task AddEntityAsync()
         {
             var entity = CreateInstance();
+
+            //TODO : this is temporary fix data service not injected
+            if (entity is IDataServiceProvider {DataService: null} p)
+            {
+                p.DataService = Erp.Data;
+            }
 
             ConfigureEntity(entity);
 
@@ -332,6 +341,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         }
 
         public object ListCollectionView => _listCollectionView.Get();
+
+
         private readonly IProperty<object> _listCollectionView = H<EntityListViewModel<T>>.Property<object>(c => c
             .Set(setter: e => e._helper.GetListView(e.ListViewModel)));
 
@@ -393,45 +404,6 @@ namespace HLab.Erp.Core.Wpf.EntityLists
                 return null;
             }
         }
-        private class ContractResolver : DefaultContractResolver
-        {
-            protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
-            {
-                var properties = base.CreateProperties(type, memberSerialization);
-
-                List<JsonProperty> outputList = new();
-
-                foreach (var p in properties)
-                {
-                    if (!p.Writable) continue;
-                    if (p.PropertyType == null) continue;
-                    if (p.PropertyType == typeof(string))
-                    {
-                        if (p.AttributeProvider.GetAttributes(true).OfType<IgnoreAttribute>().Any()) continue;
-                        outputList.Add(p);
-                        continue;
-                    }
-                    if (p.PropertyType.IsClass)
-                    {
-                        if (typeof(IEntityWithExportId).IsAssignableFrom(p.PropertyType))
-                        {
-                            p.ValueProvider = new ExportIdValueProvider(p.ValueProvider);
-                            outputList.Add(p);
-                            continue;
-                        }
-                    }
-                    if (p.AttributeProvider.GetAttributes(true).OfType<IgnoreAttribute>().Any()) continue;
-
-                    if (p.PropertyType.IsInterface) continue;
-
-                    outputList.Add(p);
-                }
-
-
-                return outputList;
-            }
-        }
-
 
         private Task ExportAsync() => _helper.ExportAsync(List, new ContractResolver());
 
@@ -444,8 +416,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             }
         }
 
-        protected virtual async Task ImportAsync(IDataService data, T importValue)
-        { }
+        protected virtual Task ImportAsync(IDataService data, T importValue) => Task.CompletedTask;
 
         protected async Task DeleteEntityAsync(T entity)
         {

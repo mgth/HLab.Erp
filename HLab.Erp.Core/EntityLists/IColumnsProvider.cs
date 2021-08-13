@@ -14,7 +14,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         object GetValue(T obj, string name);
 
-        object GetView();
+        //object GetView();
 
         void AddColumn(IColumn<T> column);
 

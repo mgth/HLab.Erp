@@ -47,6 +47,9 @@ namespace HLab.Erp.Core
         ICommand DeleteCommand { get; }
         ICommand OpenCommand { get; }
 
+        ICommand ImportCommand { get; }
+        ICommand ExportCommand { get; }
+
         dynamic SelectedViewModel { get; set; }
         IEnumerable<int> SelectedIds { get; set; }
 
