@@ -5,6 +5,7 @@
     <RootNamespace>HLab.Erp.Core</RootNamespace>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <Configurations>Debug;Release;DebugRelease</Configurations>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

@@ -4,7 +4,8 @@
         <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
-    <Configurations>Debug;Release;DebugRelease</Configurations>  
+    <Configurations>Debug;Release;DebugRelease</Configurations>
+    <LangVersion>default</LangVersion>  
   </PropertyGroup>
 
   <ItemGroup>

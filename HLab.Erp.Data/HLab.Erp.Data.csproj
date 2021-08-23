@@ -4,7 +4,7 @@
         <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
     <RootNamespace>HLab.Erp.Data</RootNamespace>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <Configurations>Debug;Release;DebugRelease</Configurations>
   </PropertyGroup>
 
