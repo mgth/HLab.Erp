@@ -255,12 +255,29 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         protected virtual bool CanExecuteOpen(T arg,Action<string> errorAction) => true;
 
-        protected virtual bool CanExecuteDelete(T arg,Action<string> errorAction) => false;
-        protected virtual bool CanExecuteAdd(Action<string> errorAction) => false;
+        protected virtual bool CanExecuteDelete(T arg, Action<string> errorAction)
+        {
+            errorAction("{Delete} : {Not implemented}");
+            return false;
+        }
 
+        protected virtual bool CanExecuteAdd(Action<string> errorAction)
+        {
+            errorAction("{Add} : {Not implemented}");
+            return false;
+        }
 
-        protected virtual bool CanExecuteImport(Action<string> errorAction) => false;
-        protected virtual bool CanExecuteExport(Action<string> errorAction) => false;
+        protected virtual bool CanExecuteImport(Action<string> errorAction)
+        {
+            errorAction("{Import} : {Not implemented}");
+            return false;
+        }
+
+        protected virtual bool CanExecuteExport(Action<string> errorAction)
+        {
+            errorAction("{Export} : {Not implemented}");
+            return false;
+        }
         #endregion
 
 
