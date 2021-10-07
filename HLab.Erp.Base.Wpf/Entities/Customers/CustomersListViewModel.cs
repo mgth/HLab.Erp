@@ -4,6 +4,7 @@ using HLab.Erp.Core;
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Mvvm.Annotations;
+using System;
 
 namespace HLab.Erp.Base.Wpf.Entities.Customers
 {
@@ -15,12 +16,12 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
+        protected override bool CanExecuteAdd(Action<string> errorAction) => Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+        protected override bool CanExecuteDelete(Customer customer, Action<string> errorAction) =>  Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
 
         public CustomersListViewModel() : base(c => c
-// TODO             .AddAllowed()
-//TODO             .DeleteAllowed()
             .Column()
-                .Header("{Name}")
+                .Header("{Name}") 
 //                .OrderByOrder(0)
                 .Link(s => s.Name)
                 .Filter()
