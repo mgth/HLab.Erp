@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NPoco" Version="5.1.2" />
+    <PackageReference Include="NPoco" Version="5.3.1" />
   </ItemGroup>
 
   <ItemGroup>

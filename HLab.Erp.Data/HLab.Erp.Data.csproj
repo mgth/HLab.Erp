@@ -9,10 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.25" />
-    <PackageReference Include="Nito.AsyncEx" Version="5.1.0" />
-    <PackageReference Include="Npgsql" Version="5.0.7" />
-    <PackageReference Include="NPoco" Version="5.1.2" />
+    <PackageReference Include="MySql.Data" Version="8.0.26" />
+    <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
+    <PackageReference Include="Npgsql" Version="5.0.10" />
+    <PackageReference Include="NPoco" Version="5.3.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
