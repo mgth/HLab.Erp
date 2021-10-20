@@ -159,24 +159,32 @@ namespace HLab.Erp.Data
         public T GetOrAdd<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
             where T : class, IEntity
         {
-            using var transaction = GetTransaction() as DataTransaction;
-
-            if (transaction != null)
+            try
             {
-                var t = transaction.Database.Query<T>().FirstOrDefault(getter);
 
-                if (t == null)
+                using var transaction = GetTransaction() as DataTransaction;
+
+                if (transaction != null)
                 {
+                    var t = transaction.Database.Query<T>().FirstOrDefault(getter);
 
-                    var result = transaction.Add(setter, added);
-                    transaction.Done();
-                    return result;
+                    if (t == null)
+                    {
+
+                        var result = transaction.Add(setter, added);
+                        transaction.Done();
+                        return result;
+                    }
+
+                    return DataCache<T>.Cache.GetOrAdd(t);
                 }
-
-                return DataCache<T>.Cache.GetOrAdd(t);
+                throw new DataException("Unable to create transaction");
+            }
+            catch (Exception ex)
+            {
+                throw new DataException("Unable to create transaction",ex);
             }
 
-            throw new DataException("Unable to create transaction");
         }
         public Task<T> GetOrAddAsync<T>(T entity)
             where T : class, IEntity

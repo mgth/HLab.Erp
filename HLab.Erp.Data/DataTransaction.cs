@@ -18,7 +18,16 @@ namespace HLab.Erp.Data
         {
             _service = service;
             Database = database;
-            _transaction = database.GetTransaction();
+
+            try
+            {
+                _transaction = database.GetTransaction();
+
+            }
+            catch (Exception ex)
+            {
+                throw new DataException("Failed to create new transaction", ex);
+            }
         }
 
         public T Add<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity
@@ -165,7 +174,15 @@ namespace HLab.Erp.Data
 
         public void Dispose()
         {
-            _transaction.Dispose();
+            try
+            {
+                _transaction.Dispose();
+
+            }
+            catch (Exception ex)
+            {
+                throw new DataException("Failed to close transaction",ex);
+            }
         }
     }
 }

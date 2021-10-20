@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -69,16 +70,18 @@ namespace HLab.Erp.Data
         public override Task<bool> SaveAsync() => SaveAsync(null);
         public async Task<bool> SaveAsync(IDataTransaction transaction)
         {
-            var tr = transaction ?? _data.GetTransaction();
-
             var columns = new List<PropertyInfo>();
             while (Dirty.TryTake(out var e))
             {
                 columns.Add(e);
             }
+            
+            IDataTransaction tr = null;
 
             try
             {
+                tr = transaction ?? _data.GetTransaction();
+
                 if (Target is IEntity<int> ei && ei.Id < 0)
                 {
                     var t = await tr.AddAsync<T>(e => Target.CopyPrimitivesTo(e));
@@ -97,18 +100,18 @@ namespace HLab.Erp.Data
 
                 return false;
             }
-            catch
+            catch(Exception ex)
             {
                 foreach (var p in columns)
                 {
                     Dirty.Add(p);
                 }
 
-                throw;
+                throw new DataException("Save failure",ex);
             }
             finally
             {
-                if (transaction == null) tr.Dispose();
+                if (transaction == null) tr?.Dispose();
             }
         }
 
