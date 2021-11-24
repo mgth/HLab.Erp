@@ -18,37 +18,38 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
         protected override bool CanExecuteExport(Action<string> errorAction) => Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
         protected override bool CanExecuteImport(Action<string> errorAction) => Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
 
-        public CountriesListViewModel(IErpServices erp) : base(c => c
+        public CountriesListViewModel(ILocalizationService localization) : base(c => c
                 .Header("{Country}")
-                .Column()
+                .Column("Name")
                     .Header("{Name}")
+                    .Content(s => s.Name).Localize()
                     .Link(s => s.Name)
-                    .Localize()
+                    
                     // TODO                .OrderByOrder(0)
                     .Filter()
-                    .PostLink(s => erp.Localization.Localize(s.Name))
+                    .PostLink(s => localization.Localize(s.Name))
 
-                .Column()
+                .Column("A2Code")
                     .Header("{A2 Code}")
                     .Link(s => s.IsoA2)
                     .Filter()
 
-                .Column()
+                .Column("A3Code")
                     .Header("{A3 Code}")
                     .Link(s => s.IsoA3)
                     .Filter()
 
-                .Column()
+                .Column("Code")
                     .Header("{Code}")
                     .Content(s => s.Iso)
                     //.Filter()
 
-                .Column()
+                .Column("Continent")
                     .Header("{Continent}")
                     .Content(s => s.Continent.Name)
                     .Localize()
 
-                .Column()
+                .Column("Flag")
                     .Header("{Flag}")
                     .Icon(s => s.IconPath, 50)
             // TODO                .OrderBy(s => s.Name)

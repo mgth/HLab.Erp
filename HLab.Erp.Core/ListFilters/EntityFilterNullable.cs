@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Xml;
+using System.Xml.Linq;
+
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 
@@ -14,6 +17,8 @@ namespace HLab.Erp.Core.Wpf.ListFilters
         private static readonly MethodInfo ContainsMethod = typeof(List<int?>).GetMethod("Contains", new[] { typeof(int?) });
 
         public IEntityListViewModel<TClass> Target { get; }
+
+        public virtual string Name => typeof(TClass).Name;
 
         public EntityFilterNullable(IEntityListViewModel<TClass> target)
         {
@@ -61,6 +66,42 @@ namespace HLab.Erp.Core.Wpf.ListFilters
 
             return e => listId.Contains(getter(e));
         }
+        public override XElement ToXml()
+        {
+            var element = base.ToXml();
 
+            element.Add(Target.FiltersToXml());
+
+            if(Target.SelectedIds!=null && Target.SelectedIds.Count() > 0)
+            {
+                var xItems = new XElement("SelectedItems");
+                foreach(var item in Target.SelectedIds)
+                {
+                    var xItem = new XElement("item");
+                    xItem.SetAttributeValue("Id", item.ToString());
+                    xItems.Add(xItem);
+                }
+                element.Add(xItems);
+            }
+
+
+            element.SetAttributeValue("Value",Value);
+
+            return element;
+        }
+        public override void FromXml(XElement element)
+        {
+            foreach(var child in element.Elements())
+            {
+                if(child.Name == "Filters")
+                {
+                    Target.FiltersFromXml(child);
+                }
+                else if(child.Name == "SelectedItems")
+                {
+                    Target.SelectedIds = child.Elements().Select(c => int.Parse(c.Attribute("Id")?.Value)).ToArray();
+                }
+            }
+        }    
     }
 }

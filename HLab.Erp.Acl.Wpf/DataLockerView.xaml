@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:HLab.Erp.Acl;assembly=HLab.Erp.Acl"
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
-             xmlns:wpf="clr-namespace:HLab.Icons.Wpf;assembly=HLab.Icons.Wpf"
              xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:DataLockerDesign}, IsDesignTimeCreatable=True}"             
@@ -72,9 +71,7 @@
                     </Button.Style>
                 </Button>
             </StackPanel>
-            <Label Foreground="DarkRed">
-                <lang:Localize HorizontalAlignment="Right" Id="{Binding Message}"/>
-            </Label>
+            <lang:Localize Foreground="{DynamicResource MahApps.Brushes.SystemControlErrorTextForeground}" Id="{Binding Message}" TextWrapping="WrapWithOverflow" MaxWidth="200"/>
         </StackPanel>
     </Grid>
 </UserControl>

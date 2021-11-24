@@ -31,14 +31,14 @@
                 <lang:Localize Grid.Column="2" VerticalAlignment="Center" Id="{Binding Model.Caption}"/>
             </Grid>
         </Button>
-        <Grid Grid.Row ="1" Background="Red">
+        <Grid Grid.Row ="1">
             <ListView ItemsSource="{Binding Model.Messages}" Grid.Row ="1" MaxHeight="50">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid>
                             <lang:Localize 
                                 HorizontalAlignment="Left" 
-                                Foreground="{DynamicResource MahApps.Brushes.Control.Validation}"  
+                                Foreground="{DynamicResource MahApps.Brushes.SystemControlErrorTextForeground}"  
                                 VerticalAlignment="Center" Id="{Binding}"/>
                         </Grid>
                     </DataTemplate>

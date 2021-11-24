@@ -81,16 +81,16 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         }
 
         public IconsListViewModel() : base(c => c
-               .Column()
+               .Column("Path")
                    .Header("{Path}")
                    .Link(s => s.Path)
                        .Filter()
 
-               .Column()
+               .Column("Xaml")
                     .Header("{Xaml}")
                     .Content(async s => await GetXamlIconAsync(s.SourceXaml, s.Foreground))
 
-               .Column()
+               .Column("Svg")
                     .Header("{Svg}")
                     .Content(async s => await GetSvgIconAsync(s.SourceSvg, s.Foreground))
         )

@@ -1,6 +1,6 @@
 ﻿namespace HLab.Erp.Acl.AuditTrails
 {
-    public class AuditTrailViewModel : EntityViewModel<AuditTrail>
+    public class AuditTrailViewModel : ListableEntityViewModel<AuditTrail>
     {
 
     }

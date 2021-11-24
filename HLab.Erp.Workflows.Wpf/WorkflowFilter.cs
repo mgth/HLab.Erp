@@ -4,6 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Xml;
+using System.Xml.Linq;
+
 using HLab.Erp.Core.Wpf.ListFilters;
 using HLab.Notify.PropertyChanged;
 
@@ -78,5 +81,26 @@ namespace HLab.Erp.Workflows
             throw new NotImplementedException();
         }
 
+        public override XElement ToXml()
+        {
+            var element = base.ToXml();
+
+            foreach(var value in List)
+            {
+                if(value.Selected)
+                {
+                    element.Add(new XElement(value.Stage.Name));
+                }
+            }
+            return element;
+        }
+
+        public override void FromXml(XElement element)
+        {
+            foreach(var stage in _list)
+            {
+                stage.Selected = element.Elements().Any(e => e.Name == stage.Stage.Name);
+            }
+        }    
     }
 }

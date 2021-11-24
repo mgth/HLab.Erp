@@ -26,7 +26,7 @@ namespace HLab.Erp.Acl.LoginServices
 
         private void LoginView_Loaded(object sender, RoutedEventArgs e)
         {
-            var win = this.FindVisualParent<Window>();
+            var win =  Window.GetWindow(this); //this.FindVisualParent<Window>();
             if (win != null)
             {
                 _messageBus.Subscribe<UserLoggedInMessage>(m =>
@@ -36,6 +36,13 @@ namespace HLab.Erp.Acl.LoginServices
                 });
 
                 win.Closed += LoginView_Closed;
+
+
+                win.Width = 400;
+                win.Height = 300;
+                win.Left = (SystemParameters.PrimaryScreenWidth - win.Width) / 2;
+                win.Top = (SystemParameters.PrimaryScreenHeight - win.Height) / 2;
+
             }
         }
 

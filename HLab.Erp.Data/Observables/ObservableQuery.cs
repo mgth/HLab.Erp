@@ -645,6 +645,8 @@ namespace HLab.Erp.Data.Observables
                     await
                         foreach (var item in list.ConfigureAwait(true))
                     {
+                        if(item==null) continue; //TODO : append once check why
+
                         var id = item.Id;
 
                         if (_updateNeeded)

@@ -1,7 +1,6 @@
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
-using NPoco;
 
 namespace HLab.Erp.Base.Data
 {
@@ -53,16 +52,17 @@ namespace HLab.Erp.Base.Data
         }
         private readonly IProperty<int?> _continentId = H.Property<int?>();
 
-        [Ignore]
         public Continent Continent
         {
-            //get => E.GetForeign<Continent>(() => ContinentId);
             set => ContinentId = value?.Id;
             get => _continent.Get();
         }
 
-        [Ignore]
-        public string Caption => Name;
+        public string Caption => _caption.Get();
+        private readonly IProperty<string> _caption = H.Property<string>(c => c
+            .On(e => e.Name)
+            .Set(e => string.IsNullOrWhiteSpace(e.Name)?"{New country}":e.Name)
+        );
 
         readonly IProperty<Continent> _continent = H.Property<Continent>(c => c
             .Foreign(e => e.ContinentId));

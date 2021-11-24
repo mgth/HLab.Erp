@@ -16,7 +16,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
             
-        <icons:IconView Path="{Binding IconPath}" MaxHeight="25" HorizontalAlignment="Center"/>
+        <icons:IconView Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"  Path="{Binding IconPath}" MaxHeight="25" HorizontalAlignment="Center"/>
         <Label Grid.Column="1"/>
         <lang:LocalizedLabel 
             Grid.Column="2" 

@@ -28,7 +28,7 @@ namespace HLab.Erp.Acl.LoginServices
 
             //retrieve login window
             var loginWindow = _mvvm.MainContext.GetView(_getViewModel(),typeof(ViewModeDefault)).AsWindow();
-            loginWindow.SizeToContent = SizeToContent.WidthAndHeight;
+            //loginWindow.SizeToContent = SizeToContent.WidthAndHeight;
             loginWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             loginWindow.ShowDialog();
 

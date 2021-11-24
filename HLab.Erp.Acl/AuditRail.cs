@@ -1,13 +1,13 @@
 ﻿using System;
 using HLab.Erp.Data;
+using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
-using NPoco;
 
 namespace HLab.Erp.Acl
 {
     using H = HD<AuditTrail>;
 
-    public class AuditTrail : Entity
+    public class AuditTrail : Entity, IListableModel
     {
         public AuditTrail() => H.Initialize(this);
 
@@ -38,8 +38,8 @@ namespace HLab.Erp.Acl
         private readonly IProperty<int?> _entityId = H.Property<int?>();
         public DateTime TimeStamp
         { 
-            get => _timeStamp.Get();
-            set => _timeStamp.Set(value);    
+            get => _timeStamp.Get().ToUniversalTime();
+            set => _timeStamp.Set(value.ToUniversalTime());    
         }
         private readonly IProperty<DateTime> _timeStamp = H.Property<DateTime>();
         public string Motivation 
@@ -74,7 +74,6 @@ namespace HLab.Erp.Acl
             set => _user.Id.Set(value);    
         }
 
-        [Ignore]
         public User User
         { 
             get => _user.Get();

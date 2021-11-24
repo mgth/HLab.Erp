@@ -1,13 +1,13 @@
 ﻿using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
+using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
-
 
 namespace HLab.Erp.Base.Data
 {
     using H = HD<LocalizeEntry>;
 
-    public class LocalizeEntry : Entity, ILocalizeEntry
+    public class LocalizeEntry : Entity, ILocalizeEntry, IListableModel
     {
         public LocalizeEntry() => H.Initialize(this);
 
@@ -51,5 +51,14 @@ namespace HLab.Erp.Base.Data
             set => _custom.Set(value);
         }
         private readonly IProperty<bool> _custom = H.Property<bool>(c => c.Default(false));
+
+        public string Caption => _caption.Get();
+        private readonly IProperty<string> _caption = H.Property<string>(c => c
+            .Set(e => string.IsNullOrWhiteSpace(e.Code)?"{New localize entry}":$"{e.Tag} - {e.Code}")
+            .On(e => e.Code)
+            .On(e => e.Tag)
+            .Update()
+        );
+
     }
 }

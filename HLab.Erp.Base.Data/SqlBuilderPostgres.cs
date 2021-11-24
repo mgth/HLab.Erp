@@ -7,13 +7,13 @@ using System.Reflection;
 using System.Text;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
-using NPoco;
 
 namespace HLab.Erp.Base.Data
 {
     public interface ISqlTableBuilder<T> : ISqlBuilder  where T : class, IEntity
     {
         ISqlTableBuilder<T> Create();
+        ISqlTableBuilder<T> RenamedFrom(string oldName);
         ISqlTableBuilder<T> AddColumn(Expression<Func<T, object>> property);
         ISqlTableBuilder<T> AlterColumn(Expression<Func<T, object>> property);
         ISqlTableBuilder<T> RenameColumn(string oldName, Expression<Func<T, object>> property);
@@ -142,13 +142,22 @@ namespace HLab.Erp.Base.Data
                 return this;
         }
 
+        public ISqlTableBuilder<T> RenamedFrom(string oldName)
+        {
+                _builder._builder.Append($@"
+                    ALTER TABLE IF EXISTS ""{oldName}""
+                    RENAME TO ""{typeof(T).Name}"";
+                ");
+                return this;
+        }
+
         public ISqlTableBuilder<T> Create()
         {
             var columns = "";
             var foreign = "";
             foreach (var property in typeof(T).GetProperties())
             {
-                if (property.GetCustomAttributes().OfType<IgnoreAttribute>().Any()) continue;
+                if (property.GetCustomAttributes().Where(e => e.GetType().Name.Contains("Ignore")).Any()) continue;
                 if (!property.CanWrite) continue;
                 var type = property.PropertyType;
                 if(type != typeof(string) && type.IsClass && !type.IsArray) continue;

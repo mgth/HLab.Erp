@@ -53,18 +53,18 @@ namespace HLab.Erp.Acl
             get => _startTime.Get();
             set => _startTime.Set(value);
         }
-        private readonly IProperty<DateTime> _startTime = H.Property<DateTime>(c => c.Set(e => DateTime.Now));
+        private readonly IProperty<DateTime> _startTime = H.Property<DateTime>(c => c.Set(e => DateTime.Now.ToUniversalTime()));
 
         public DateTime HeartbeatTime
         {
             get => _heartbeatTime.Get();
             set => _heartbeatTime.Set(value);
         }
-        private readonly IProperty<DateTime> _heartbeatTime = H.Property<DateTime>(c => c.Set(e => DateTime.Now));
+        private readonly IProperty<DateTime> _heartbeatTime = H.Property<DateTime>(c => c.Set(e => DateTime.Now.ToUniversalTime()));
 
         public void Heartbeat(int heartBeat)
         {
-            HeartbeatTime = DateTime.Now.AddMilliseconds(heartBeat);
+            HeartbeatTime = DateTime.Now.AddMilliseconds(heartBeat).ToUniversalTime();
         }
 
         private const string Charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

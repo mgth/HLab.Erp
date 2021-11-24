@@ -1,6 +1,5 @@
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
-using NPoco;
 
 namespace HLab.Erp.Base.Data
 {
@@ -55,7 +54,7 @@ namespace HLab.Erp.Base.Data
             set => _country.Id.Set(value);
         }
 
-        [Ignore] public Country Country
+        public Country Country
         {
             get => _country.Get();
             set => _country.Set(value);

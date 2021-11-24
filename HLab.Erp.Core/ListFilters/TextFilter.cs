@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Xml;
+using System.Xml.Linq;
+
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.Wpf.ListFilters
@@ -28,7 +31,23 @@ namespace HLab.Erp.Core.Wpf.ListFilters
         }
 
         public override Func<TSource, bool> PostMatch<TSource>(Func<TSource, string> getter)
-            => s => Value == null || getter(s).Contains(Value);
+            => s => Value == null || getter(s).ToLower().Contains(Value.ToLower());
 
+        public override XElement ToXml()
+        {
+            var element = base.ToXml();
+
+            element.SetAttributeValue("Value",Value);
+
+            return element;
+        }
+        public override void FromXml(XElement element)
+        {
+            var value = element.Attribute("Value");
+            if (value != null)
+            {
+                Value = value.Value;
+            }
+        }    
     }
 }

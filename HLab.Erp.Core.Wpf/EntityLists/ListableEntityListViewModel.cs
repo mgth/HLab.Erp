@@ -20,7 +20,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         where T : class, IEntity, IListableModel, new()
     {
         public ListableEntityListViewModel() : base(c => c
-                .Column()
+                .Column("Name")
                 .Header("{Name}")
                 .Width(150).Content(e => e.Caption).Localize()
                 .Link(e => e.Caption)
@@ -31,7 +31,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         }
 
         public ListableEntityListViewModel(Expression<Func<T, bool>> filter) : base(c => c
-            .Column().Header("{Name}").Content(e => e.Caption)
+            .Column("Name").Header("{Name}").Content(e => e.Caption)
                 .Icon(e => e.IconPath)
         )
         {

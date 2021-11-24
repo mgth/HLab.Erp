@@ -29,41 +29,41 @@ namespace HLab.Erp.Acl.AuditTrails
         }
 
         public AuditTrailsListViewModel() : base(c => c
-            .Column()
+            .Column("Date")
             .Header("{Date}").Width(110)
             .Link(at => at.TimeStamp)
             .Filter()
             .MaxDate(DateTime.Now)
             .MinDate(DateTime.Now - TimeSpan.FromDays(30))
 
-            .Column()
+            .Column("Action")
             .Header("{Action}").Width(80)
             .Link(at => at.Action)
             .Filter()
 
-            .Column()
+            .Column("Caption")
             .Header("{Caption}").Width(200)
             .Link(at => at.EntityCaption)
             .Filter()
 
-            .Column()
+            .Column("Class")
             .Header("{Class}").Width(80)
             .Link(at => at.EntityClass)
             .Filter()
 
-            .Column()
+            .Column("Icon")
             .Header("{Icon}").Width(60)
             .Icon(at => at.IconPath)
 
-            .Column()
+            .Column("Log")
             .Header("{Log}").Width(350).Content(at => LogAbstract(at.Log, 50))
 
-            .Column()
+            .Column("Motivation")
             .Header("{Motivation}").Width(250)
             .Link(at => at.Motivation)
             .Filter()
 
-            .Column()
+            .Column("User")
             .Header("{User}").Width(150)
             .Link(at => at.UserCaption)
             .Filter()

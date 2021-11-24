@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Schema;
+
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
@@ -16,14 +20,21 @@ namespace HLab.Erp.Core.Wpf.ListFilters
         }
         private readonly IProperty<object> _header = H<Filter>.Property<object>();
 
+        public string Name
+        {
+            get => _name.Get();
+            set => _name.Set(value);
+        }
+        private readonly IProperty<string> _name = H<Filter>.Property<string>();
+
         public string IconPath
         {
             get => _iconPath.Get();
             set => _iconPath.Set(value);
         }
+        private readonly IProperty<string> _iconPath = H<Filter>.Property<string>();
 
         public abstract void Link<T, TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter);
-        private readonly IProperty<string> _iconPath = H<Filter>.Property<string>();
 
         public bool Enabled
         {
@@ -37,6 +48,9 @@ namespace HLab.Erp.Core.Wpf.ListFilters
                 }
             }
         }
+
+        public abstract string StringValue { get; set; }
+
         private readonly IProperty<bool> _enabled = H<Filter>.Property<bool>();
 
         protected Action enabledAction;
@@ -45,6 +59,15 @@ namespace HLab.Erp.Core.Wpf.ListFilters
 
         protected virtual void Disable() => disabledAction?.Invoke();
 
+        public abstract void FromXml(XElement child);
+
+        public virtual XElement ToXml()
+        {
+            var filter = new XElement(Name);
+//            filter.SetAttributeValue("Name",Name);
+
+            return filter;
+        }
     }
 
 
@@ -56,6 +79,27 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             set => _value.Set(value);
         }
         private readonly IProperty<T> _value = H<Filter<T>>.Property<T>();
+
+        public override string StringValue
+        {
+            get => Value==null ? "" : Value.ToString();
+            set
+            {
+                if(typeof(T) == typeof(int?))
+                {
+                    if(int.TryParse(value, out var i))
+                    {
+                        Value = (T)(object)i;
+                    }
+                    else Value = default;
+                }
+
+                if(typeof(T) == typeof(string))
+                {
+                    Value = (T)(object)value;
+                }
+            }
+        }
 
         public Action Update
         {

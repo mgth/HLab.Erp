@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Xml;
+using System.Xml.Linq;
+
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
@@ -33,12 +36,10 @@ namespace HLab.Erp.Core.Wpf.ListFilters
     }
     public class DateFilter : DateFilter<DateTime>
     {
-
     }
 
     public class DateFilterNullable : DateFilter<DateTime?>
     {
-
     }
 
     public abstract class DateFilter<TDate> : Filter<TDate>
@@ -172,8 +173,8 @@ namespace HLab.Erp.Core.Wpf.ListFilters
         public override Expression<Func<T, bool>> Match<T>(Expression<Func<T, TDate>> getter)
         {
             var entity = getter.Parameters[0];
-            var minDate = Expression.Constant(MinDate, typeof(TDate));
-            var maxDate = Expression.Constant(MaxDate, typeof(TDate));
+            var minDate = Expression.Constant(MinDate.ToUniversalTime(), typeof(TDate));
+            var maxDate = Expression.Constant(MaxDate.ToUniversalTime(), typeof(TDate));
 
             var ex1 = Expression.LessThanOrEqual(getter.Body, maxDate);
             var ex2 = Expression.GreaterThanOrEqual(getter.Body, minDate);
@@ -257,6 +258,34 @@ namespace HLab.Erp.Core.Wpf.ListFilters
         public override Func<TSource, bool> PostMatch<TSource>(Func<TSource, TDate> getter)
         {
             throw new NotImplementedException();
+        }
+
+        public override XElement ToXml()
+        {
+            var element = base.ToXml();
+
+            element.SetAttributeValue("MinDate",MinDate.ToString());
+            element.SetAttributeValue("MaxDate",MaxDate.ToString());
+
+            return element;
+        }
+
+        public override void FromXml(XElement element)
+        {
+            GetXmlDate(element,"MinDate",d => MinDate = d);
+            GetXmlDate(element,"MaxDate",d => MaxDate = d);
+        }    
+
+        private static void GetXmlDate(XElement element, string Name, Action<DateTime> setter)
+        {
+            var attribute = element.Attribute("MinDate");
+            if (attribute != null)
+            {
+                if(DateTime.TryParse(attribute.Value, out var date))
+                {
+                    setter(date);
+                }
+            }
         }
 
     }

@@ -7,7 +7,7 @@ namespace HLab.Erp.Acl.Users
     {
         public ProfilesAclRightListViewModel(AclRight right) : base(c => c
             .StaticFilter(e => e.AclRightId == right.Id)
-            .Column()
+            .Column("Name")
             .Header("{Name}")
             .Content(s => s.Profile.Name)
         )

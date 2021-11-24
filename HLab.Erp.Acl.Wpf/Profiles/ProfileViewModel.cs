@@ -11,7 +11,7 @@ namespace HLab.Erp.Acl.Profiles
 {
     using H = H<ProfileViewModel>;
 
-    public class ProfileViewModel : EntityViewModel<Profile>
+    public class ProfileViewModel : ListableEntityViewModel<Profile>
     {
         public ProfileViewModel(
             IDataService data,
@@ -28,7 +28,7 @@ namespace HLab.Erp.Acl.Profiles
         {
             public AclRightsProfileListViewModel(Profile profile) : base(c => c
                .StaticFilter(e => e.ProfileId == profile.Id)
-               .Column()
+               .Column("Name")
                .Header("{Name}")
                .Content(s => s.AclRight.Caption)
             )
@@ -39,27 +39,23 @@ namespace HLab.Erp.Acl.Profiles
             protected override bool CanExecuteOpen(AclRightProfile rightProfile, Action<string> errorAction) => false;
         }
 
-        public override string Header => _header.Get();
-        private readonly IProperty<string> _header = H.Property<string>(c => c
-            .On(e => e.Model.Name).Set(e => "{Profile}\n"+e.Model.Name)
-        );
-        public override string IconPath => "Icons/Entities/Profile";
-
         private readonly Func<Profile, UsersPerProfileListViewModel> _getUsersPerProfile;
 
         public UsersPerProfileListViewModel UserProfiles => _userProfiles.Get();
         private readonly IProperty<UsersPerProfileListViewModel> _userProfiles = H.Property<UsersPerProfileListViewModel>(c => c
-            .On(e => e.Model)
             .NotNull(e => e.Model)
             .Set(e => e._getUsersPerProfile(e.Model))
+            .On(e => e.Model)
+            .Update()
         );
 
         private readonly Func<Profile, AclRightsProfileListViewModel> _getRightProfiles;
         public AclRightsProfileListViewModel ProfileRights => _profileRights.Get();
         private readonly IProperty<AclRightsProfileListViewModel> _profileRights = H.Property<AclRightsProfileListViewModel>(c => c
-            .On(e => e.Model)
             .NotNull(e => e.Model)
-            .Set(e => e._getRightProfiles(e.Model))
+            .Set(e => e._getRightProfiles(e.Model))            
+            .On(e => e.Model)
+            .Update()
         );
 
         public ICommand AddUserCommand { get; } = H.Command(c => c

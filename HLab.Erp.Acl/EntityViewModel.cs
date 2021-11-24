@@ -9,6 +9,26 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl
 {
+    public class ListableEntityViewModel<T> : EntityViewModel<T>
+        where T : class, IEntity<int>, INotifyPropertyChanged, IListableModel
+    {
+        public ListableEntityViewModel() => H<ListableEntityViewModel<T>>.Initialize(this);
+
+        public override object Header => _header.Get();
+        private readonly IProperty<string> _header = H<ListableEntityViewModel<T>>.Property<string>(c => c
+            .Set(e => $"{e.EntityName}\n{e.Model.Caption}")
+            .On(e => e.Model.Caption)
+            .Update()
+        );
+
+        public override string IconPath => _iconPath.Get();
+        private readonly IProperty<string> _iconPath = H<ListableEntityViewModel<T>>.Property<string>(c => c
+            .Set(e => e.Model.IconPath)
+            .On(e => e.Model.IconPath)
+            .Update()
+        );
+
+    }
     public class EntityViewModel<T> : ViewModel<T>
         where T : class, IEntity<int>, INotifyPropertyChanged
     {
@@ -36,12 +56,18 @@ namespace HLab.Erp.Acl
                 {
                     var locker = e._getLocker(e.Model);
                     locker.PropertyChanged += e.Locker_PropertyChanged;
+                    locker.BeforeSavingAction = a => e.BeforeSaving(a);
                     return locker;
                 })
                 .On(e => e.Model)
                 .NotNull(e => e.Model)
                 .Update()
         );
+
+        protected virtual void BeforeSaving(T entity)
+        {
+
+        }
 
         private void Locker_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {

@@ -8,7 +8,7 @@ namespace HLab.Erp.Acl.Users
     {
         public UsersPerProfileListViewModel(Profile profile) : base(c => c
             .StaticFilter(e => e.ProfileId == profile.Id)
-            .Column()
+            .Column("Name")
             .Header("{Name}")
             .Content(s => s.User.Caption)
         )

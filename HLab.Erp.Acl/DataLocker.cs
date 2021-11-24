@@ -187,7 +187,7 @@ namespace HLab.Erp.Acl
             if (existing != null)
             {
                 //Already locked
-                if ((DateTime.Now - existing.HeartbeatTime).TotalMilliseconds < HeartBeat)
+                if ((DateTime.Now.ToUniversalTime() - existing.HeartbeatTime).TotalMilliseconds < HeartBeat)
                 {
                     Message = $"{{Object locked by}} {existing.User.Initials}";
                     return false;

@@ -13,7 +13,7 @@ namespace HLab.Erp.Acl.Profiles
         }
 
         public ProfilesListViewModel() : base(c => c
-                .Column()
+                .Column("Name")
                 .Header("{Name}")
                 .Width(100).Content(s => s.Name)
         )

@@ -2,7 +2,6 @@ using HLab.Erp.Data;
 using HLab.Mvvm.Application;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
-using NPoco;
 
 namespace HLab.Erp.Base.Data
 {
@@ -13,7 +12,6 @@ namespace HLab.Erp.Base.Data
         public Customer() => H.Initialize(this); 
 
 
-        [Ignore]
         public string Caption => _caption.Get();
         private readonly IProperty<string> _caption = H.Property<string>(c => c
             .On(e => e.Name)
@@ -21,7 +19,7 @@ namespace HLab.Erp.Base.Data
             .Set(e => (e.Id < 0 && string.IsNullOrEmpty(e.Name)) ? "{New customer}" : e.Name)
         );
 
-        [Ignore] public string IconPath => _iconPath.Get();
+        public string IconPath => _iconPath.Get();
         private readonly IProperty<string> _iconPath = H.Property<string>(c => c
             .On(e => e.Country.IconPath)
             .Set(e => e.Country?.IconPath)

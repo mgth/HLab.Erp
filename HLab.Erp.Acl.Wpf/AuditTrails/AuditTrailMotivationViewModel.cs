@@ -110,7 +110,7 @@ namespace HLab.Erp.Acl.AuditTrails
         );
         public ICommand CancelCommand { get; } = H.Command( c => c
             .CanExecute(e => (e.Login?.Length??0)>0)
-            .Action(async e =>
+            .Action(e =>
                 {
                     e.Message = "Action canceled";
                     e.Result = false;
@@ -126,31 +126,39 @@ namespace HLab.Erp.Acl.AuditTrails
 
             EntityCaption = caption;
             IconPath = iconPath;
+            SetPassword(new System.Security.SecureString());
 
-            var view = _mvvm.MainContext.GetView<ViewModeDefault>(this).AsDialog();
-            if(view.ShowDialog()??false)
-            {   
-                var audit = _transaction.Add<AuditTrail>(e =>
-                {
-                    e.Action = action;
-                    e.Motivation = Motivation;
-                    e.Log = log;
-                    e.TimeStamp = DateTime.Now;
-                    e.UserId = User.Id;
-                    e.UserCaption = User.Caption;
-                    e.EntityCaption = EntityCaption;
-                    e.IconPath = IconPath;
-                    e.EntityClass = entity.GetType().Name;
+            try
+            {
+                var view = _mvvm.MainContext.GetView<ViewModeDefault>(this).AsDialog();
+                if(view.ShowDialog()??false)
+                {   
+                    var audit = _transaction.Add<AuditTrail>(e =>
+                    {
+                        e.Action = action;
+                        e.Motivation = Motivation;
+                        e.Log = log;
+                        e.TimeStamp = DateTime.Now;
+                        e.UserId = User.Id;
+                        e.UserCaption = User.Caption;
+                        e.EntityCaption = EntityCaption;
+                        e.IconPath = IconPath;
+                        e.EntityClass = entity.GetType().Name;
 
-                    if(entity is IEntity<int> entityInt)
-                        e.EntityId = entityInt.Id;
+                        if(entity is IEntity<int> entityInt)
+                            e.EntityId = entityInt.Id;
 
-                    e.Failed = false;
-                });
-                if(audit!=null) return true;
-                Message = "Failed to write audit entry";
+                        e.Failed = false;
+                    });
+                    if(audit!=null) return true;
+                    Message = "Failed to write audit entry";
+                }
+                return false;
             }
-            return false;
+            finally
+            {
+                SetPassword(new System.Security.SecureString());
+            }
         }
 
     }

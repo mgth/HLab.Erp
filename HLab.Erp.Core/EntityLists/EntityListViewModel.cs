@@ -20,6 +20,11 @@ using System.ComponentModel;
 using System.Net.Mime;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
+using HLab.Options;
+using System.Xml;
+using System.IO;
+using System.Xml.Schema;
+using System.Xml.Linq;
 
 namespace HLab.Erp.Core.Wpf.EntityLists
 {
@@ -37,17 +42,29 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public Task<IEnumerable<T>> ImportAsync();
     }
 
-    public abstract class EntityListViewModel : ViewModel, IEntityListViewModel
+    public abstract class EntityListViewModel : ViewModel
     {
         protected Func<Type, object> _get;
         protected IErpServices Erp { get; private set; }
+        protected IOptionsService Options { get; private set; }
 
-        public void Inject(IErpServices erp, Func<Type, object> get)
+        public void Inject(IOptionsService options,  IErpServices erp, Func<Type, object> get)
         {
+            Options = options;
             _get = get;
             Erp = erp;
             Filters = new(filters);
             H<EntityListViewModel>.Initialize(this);
+
+            PopulatePresets();
+
+        }
+
+        private void PopulatePresets()
+        {
+            _filterPresets.Clear();
+            var list = Options.GetOptions($"Filters", GetType().Name, null);
+            foreach(var item in list) _filterPresets.Add(item);
         }
 
         public abstract void Populate(object grid);
@@ -62,11 +79,12 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public T GetFilter<T>() where T : IFilter
         {
             var locate = (Func<IEntityListViewModel,T>)_get(typeof(Func<IEntityListViewModel,T>));
-            return locate(this);
+            return locate((IEntityListViewModel)this);
         }
 
         public abstract void Start();
         public abstract void Stop();
+        
 
 
         public abstract dynamic SelectedViewModel { get; set; }
@@ -83,13 +101,75 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public abstract ICommand ImportCommand { get; }
         public abstract ICommand ExportCommand { get; }
 
+        public ICommand SaveFiltersPresetCommand {get; } = H<EntityListViewModel>.Command(c => c
+            .CanExecute((e, a) => !string.IsNullOrEmpty(e.FiltersPresetName))
+            .Action((e,a) =>
+            {
+                e.SaveFilters();
+                e.PopulatePresets();
+            })
+            .On(e => e.FiltersPresetName).CheckCanExecute()
+        );
+
+        private void SaveFilters()
+        {
+            var doc = new XDocument();
+
+            doc.Add(FiltersToXml());
+
+            var xml = doc.ToString();
+
+            Options.SetValue($"Filters\\{GetType().Name}",FiltersPresetName, xml);
+        }
+
+
+
+        public string FiltersPresetName
+        {
+            get => _filtersPresetName.Get();
+            set => _filtersPresetName.Set(value);
+        }
+        private readonly IProperty<string> _filtersPresetName = H<EntityListViewModel>.Property<string>();
+
+        public string FiltersPresetSelected
+        {
+            get => _filtersPresetSelected.Get();
+            set
+            {
+                if(_filtersPresetSelected.Set(value) && value!=null)
+                {
+                    var xml = Options.GetValue($"Filters\\{GetType().Name}",FiltersPresetSelected,null, ()=>"");
+
+                    if(!string.IsNullOrWhiteSpace(xml))
+                    {
+                        var doc = XDocument.Parse(xml);
+
+                        foreach(var item in doc.Elements())
+                            FiltersFromXml(item);
+                    }
+                }
+            }
+        }
+        private readonly IProperty<string> _filtersPresetSelected = H<EntityListViewModel>.Property<string>();
+
         public virtual Type AddArgumentClass => null;
 
         public bool IsEnabledSimpleAddButton => AddArgumentClass == null;
 
         public string ErrorMessage => string.Join(Environment.NewLine,_errors.OrderBy(e => e.Item1).Select(e => e.Item2));
 
+
+        private ObservableCollection<string> _filterPresets = new ObservableCollection<string>();
+        public ReadOnlyObservableCollection<string> FilterPresets {get;}
+
+        protected EntityListViewModel()
+        {
+            FilterPresets = new ReadOnlyObservableCollection<string>(_filterPresets);
+        }
+
+
         private List<Tuple<string,string>> _errors = new List<Tuple<string, string>>();
+
 
         public void AddErrorMessage(string key,string message)
         {
@@ -102,9 +182,52 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             _errors.RemoveAll(e => e.Item1 == key);
             ClassHelper.OnPropertyChanged(new PropertyChangedEventArgs(nameof(ErrorMessage)));
         }
+
+        public XmlSchema GetSchema()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void  FiltersFromXml(XElement element)
+        {
+            var filters = Filters.ToList();
+
+            if(element.Name=="Filters")
+            {
+                foreach(XElement child in element.Elements())
+                {
+                        var filter = filters.Where(f => f.Name==child.Name).FirstOrDefault();
+                        if(filter!= null)
+                        {
+                            filters.Remove(filter);
+                            filter.FromXml(child);
+                            filter.Enabled = true;
+                        }
+                }
+            }
+
+            foreach(var filter in filters) filter.Enabled = false;
+        }
+
+
+        public XElement FiltersToXml()
+        {
+            var xFilters = new XElement("Filters");
+
+            foreach(var filter in Filters)
+            {
+                if(filter.Enabled)
+                {
+                    var xFilter = filter.ToXml();
+                    xFilters.Add(xFilter);
+                }
+            }
+
+            return xFilters;
+        }
     }
 
-    public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEntityListViewModel<T>
+    public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEntityListViewModel<T>, IEntityListViewModel
         where T : class, IEntity, new()
     {
         private IEntityListHelper<T> _helper;

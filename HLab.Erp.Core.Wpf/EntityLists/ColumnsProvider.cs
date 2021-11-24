@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
@@ -20,6 +21,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
     {
         private readonly Dictionary<string,IColumn<T>> _dict = new ();
         public IObservableQuery<T> List {get;}
+
+        public Dictionary<string,IColumn> Columns => _dict.ToDictionary(p=>p.Key,p=>(IColumn)p.Value);
 
         public ColumnsProvider(IObservableQuery<T> list)
         {

@@ -9,7 +9,7 @@ namespace HLab.Erp.Acl.Users
 {
     using H = H<UserViewModel>;
 
-    public class UserViewModel: EntityViewModel<User>
+    public class UserViewModel: ListableEntityViewModel<User>
     {
         private readonly IDataService _data; 
         private readonly Func<User, ProfilesPerUserListViewModel> _getProfilesPerUser;
@@ -22,11 +22,6 @@ namespace HLab.Erp.Acl.Users
             _data = data;
             H.Initialize(this);
         }
-
-        public override object Header => _header.Get();
-        private readonly IProperty<object> _header = H.Property<object>( c=> c
-            .Bind(e => (object)e.Model.Name)
-        );
 
 
         public ProfilesPerUserListViewModel UserProfiles => _userProfiles.Get();

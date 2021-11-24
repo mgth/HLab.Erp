@@ -18,11 +18,12 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         /// <typeparam name="TFilter"></typeparam>
         /// <param name="c"></param>
         /// <returns></returns>
-        public static IColumnConfigurator<T,object,IFilter<object>> Column<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c)
+        public static IColumnConfigurator<T,object,IFilter<object>> Column<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, string id=null)
             where T : class, IEntity, new()
             where TFilter : IFilter<TLink>
         {
             var result = c.GetNewConfigurator();
+            if(id!=null) result.Id(id);
             c.Dispose();
             return result;
         }
@@ -291,6 +292,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         }
         public static IColumnConfigurator<T, int?, EntityFilterNullable<TE>> Column<T, TLink, TFilter, TE>(this IColumnConfigurator<T, TLink, TFilter> c,
             Expression<Func<T, TE>> getter,
+            string id = null,
 //            Expression<Func<T, int?>> getterId = null,
             double width = double.NaN
         )
@@ -301,7 +303,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             var lambda = getter.Compile();
 //            getterId ??= GetterIdNullableFromGetter(getter);
 
-            return c.Column()
+            return c.Column(id)
                 .Header($"{{{typeof(TE).Name}}}")
                 .Width(width)
                 .LinkNullable(getter)

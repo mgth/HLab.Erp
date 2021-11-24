@@ -25,165 +25,204 @@
     </UserControl.Resources>
 
     <Grid >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="5"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer Grid.Column="0" Grid.Row="3">
-            <ItemsControl ItemsSource="{Binding Filters}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+        <ScrollViewer Grid.Column="0" Grid.Row="3" VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/><!--  -->
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <icons:IconView Path="icons/filters/filter"/>
+                    <ComboBox Grid.Column="1"
+                        IsTextSearchEnabled="False"
+                        IsEditable="True" 
+                        Text="{Binding FiltersPresetName}" 
+                        SelectedValue="{Binding FiltersPresetSelected}" 
+                        ItemsSource="{Binding FilterPresets}"
+                        />
+                    <StackPanel Orientation="Horizontal" Grid.Column="2">
+                        <Button Command="{Binding SaveFiltersPresetCommand}"><icons:IconView Path="icons/save" Height="15"/></Button>
+                    </StackPanel>
+                </Grid>
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding Filters}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Grid>
         </ScrollViewer>
+        
+        <GridSplitter Grid.Column="1" Grid.RowSpan="4" />
 
-        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical">
-            <StackPanel Orientation="Horizontal">
-
-                <Button Command ="{Binding AddCommand}" IsEnabled="{Binding IsEnabledSimpleAddButton}">
-                    
-                    <Button.ToolTip>
-                        <lang:Localize Id="{}{Add}"/>
-                    </Button.ToolTip>
-                    <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
-                </Button>
-
-                <entitySelectors:ForeignView DockPanel.Dock="Top"
-                                IsReadOnly="False"
-                                ModelClass="{Binding AddArgumentClass}"
-                                Command="{Binding AddCommand}"
-                                >
-                    <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
-                </entitySelectors:ForeignView>
-
-
-                <Button Command="{Binding DeleteCommand}">
-                    <Button.ToolTip>
-                        <lang:Localize Id="{}{Delete}"/>
-                    </Button.ToolTip>
-                    <icons:IconView Path="Icons/Delete" MaxHeight="15" MaxWidth="15"/>
-                </Button>
-
-                <Button Command="{Binding RefreshCommand}">
-                    <Button.ToolTip>
-                        <lang:Localize Id="{}{Refresh}"/>
-                    </Button.ToolTip>
-                    <icons:IconView Path="Icons/Refresh" MaxHeight="15"/>
-                </Button>
-
-                <Button Command="{Binding OpenCommand}">
-                    <Button.ToolTip>
-                        <lang:Localize Id="{}{Open}"/>
-                    </Button.ToolTip>
-                    <icons:IconView Path="Icons/OpenForeign" MaxHeight="15"/>
-                </Button>
-
-                <Button Command="{Binding ExportCommand}">
-                    <Button.ToolTip>
-                        <lang:Localize Id="{}{Export}"/>
-                    </Button.ToolTip>
-                    <icons:IconView Path="Icons/Export" MaxHeight="15"/>
-                </Button>
-
-                <Button Command="{Binding ImportCommand}">
-                    <Button.ToolTip>
-                        <lang:Localize Id="{}{Import}"/>
-                    </Button.ToolTip>
-                    <icons:IconView Path="Icons/Import" MaxHeight="15"/>
-                </Button>
-                <Button Click="ButtonBase_OnClick" BorderThickness="0" BorderBrush="Transparent" Background="Transparent">
-                    <Button.ToolTip>
-                        <lang:Localize Id="{}{Expand}"/>
-                    </Button.ToolTip>
-                    ...
-                    <!--<icons:IconView Path="Icons/Import" MaxHeight="15"/>-->
-                </Button>
-            </StackPanel>
-        </StackPanel>
-        <TextBlock Visibility="Collapsed" x:Name="MessageTextBlock" Grid.Column="1" Grid.Row="2" Text="{Binding ErrorMessage}" Foreground="Red"/>
-
-
-        <ListView Grid.Column="1" Grid.Row="3"
-                   VerticalAlignment="Top"
-                   ItemsSource="{Binding ListCollectionView}" 
-                   SelectedItem="{Binding SelectedViewModel}"
-                   x:Name="ListView"
-                   Background="{DynamicResource MahApps.Brushes.DataGrid.Background}"
-
-                   VirtualizingPanel.IsVirtualizing="True"    
-                   VirtualizingPanel.IsContainerVirtualizable="True"
-
-                   VirtualizingPanel.ScrollUnit="Pixel"     
-                   VirtualizingPanel.CacheLengthUnit="Pixel"
-                   VirtualizingPanel.VirtualizationMode="Recycling"
-
-                   ScrollViewer.CanContentScroll ="True"
-                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                   ScrollViewer.IsDeferredScrollingEnabled="False"
-
-         >
-            <ListView.Resources>
-                <Style TargetType="DataGridColumnHeader">
-                    <EventSetter Event="Click" Handler="DataGridColumnHeader_Click" />
-                </Style>
-                <Style TargetType="{x:Type GridViewColumnHeader}">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="Margin" Value="0" />
-                    <Setter Property="FontWeight" Value="Black" />
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="BorderThickness" Value="0" />
-                </Style>
-            </ListView.Resources>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             
-            <ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
-                    <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+            <StackPanel Grid.Row="0" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
 
-                    <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
-                    <Style.Triggers>
+                    <Button Command ="{Binding AddCommand}" IsEnabled="{Binding IsEnabledSimpleAddButton}">
+                    
+                        <Button.ToolTip>
+                            <lang:Localize Id="{}{Add}"/>
+                        </Button.ToolTip>
+                        <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
+                    </Button>
 
-                        <DataTrigger Binding="{Binding IsValid}" Value="False">
-                            <Setter Property="Opacity" Value="0.3" />
-                        </DataTrigger>
+                    <entitySelectors:ForeignView DockPanel.Dock="Top"
+                                    IsReadOnly="False"
+                                    ModelClass="{Binding AddArgumentClass}"
+                                    Command="{Binding AddCommand}"
+                                    >
+                        <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
+                    </entitySelectors:ForeignView>
 
-                        <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
-                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent4}" />
-                        </Trigger>
 
-                        <Trigger Property="IsSelected"
-                                  Value="True">
-                             <Setter Property="Foreground"
-                                     Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.Text}" />
-                             <Setter Property="Background"
-                                     Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.Background}" />
-                             <Setter Property="BorderBrush"
-                                     Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.BorderBrush}" />
-                             <Setter Property="BorderThickness"
-                                     Value="2" />
-                         </Trigger>
+                    <Button Command="{Binding DeleteCommand}">
+                        <Button.ToolTip>
+                            <lang:Localize Id="{}{Delete}"/>
+                        </Button.ToolTip>
+                        <icons:IconView Path="Icons/Delete" MaxHeight="15" MaxWidth="15"/>
+                    </Button>
 
-                    </Style.Triggers>
-                </Style>
+                    <Button Command="{Binding RefreshCommand}">
+                        <Button.ToolTip>
+                            <lang:Localize Id="{}{Refresh}"/>
+                        </Button.ToolTip>
+                        <icons:IconView Path="Icons/Refresh" MaxHeight="15"/>
+                    </Button>
 
-            </ListView.ItemContainerStyle>
+                    <Button Command="{Binding OpenCommand}">
+                        <Button.ToolTip>
+                            <lang:Localize Id="{}{Open}"/>
+                        </Button.ToolTip>
+                        <icons:IconView Path="Icons/OpenForeign" MaxHeight="15"/>
+                    </Button>
 
-            <!--<ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel
-                        IsItemsHost = "True"> 
-                        </VirtualizingStackPanel>
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>-->
+                    <Button Command="{Binding ExportCommand}">
+                        <Button.ToolTip>
+                            <lang:Localize Id="{}{Export}"/>
+                        </Button.ToolTip>
+                        <icons:IconView Path="Icons/Export" MaxHeight="15"/>
+                    </Button>
 
-        </ListView>
+                    <Button Command="{Binding ImportCommand}">
+                        <Button.ToolTip>
+                            <lang:Localize Id="{}{Import}"/>
+                        </Button.ToolTip>
+                        <icons:IconView Path="Icons/Import" MaxHeight="15"/>
+                    </Button>
+                    
+                    <Button Click="Button_Click">
+                        <Button.ToolTip>
+                            <lang:Localize Id="{}{Resize}"/>
+                        </Button.ToolTip>
+                        <icons:IconView Path="Icons/horizontal-resize" MaxHeight="15"/>
+                    </Button>
+                    
+                    <Button Click="ButtonBase_OnClick" BorderThickness="0" BorderBrush="Transparent" Background="Transparent">
+                        <Button.ToolTip>
+                            <lang:Localize Id="{}{Expand}"/>
+                        </Button.ToolTip>
+                        ...
+                        <!--<icons:IconView Path="Icons/Import" MaxHeight="15"/>-->
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+            <TextBlock Visibility="Collapsed" x:Name="MessageTextBlock" Grid.Row="1" Text="{Binding ErrorMessage}" Foreground="{DynamicResource MahApps.Brushes.SystemControlErrorTextForeground}"/>
+
+            <ListView Grid.Row="2"
+                      
+                       VerticalAlignment="Top"
+                       ItemsSource="{Binding ListCollectionView}" 
+                       SelectedItem="{Binding SelectedViewModel}"
+                       x:Name="ListView"
+                       Background="{DynamicResource MahApps.Brushes.DataGrid.Background}"
+
+                       VirtualizingPanel.IsVirtualizing="True"    
+                       VirtualizingPanel.IsContainerVirtualizable="True"
+
+                       VirtualizingPanel.ScrollUnit="Pixel"     
+                       VirtualizingPanel.CacheLengthUnit="Pixel"
+                       VirtualizingPanel.VirtualizationMode="Recycling"
+
+                       ScrollViewer.CanContentScroll ="True"
+                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                       ScrollViewer.IsDeferredScrollingEnabled="False"
+                      
+             >
+                <ListView.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <EventSetter Event="Click" Handler="DataGridColumnHeader_Click" />
+                    </Style>
+                    <Style TargetType="{x:Type GridViewColumnHeader}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="FontWeight" Value="Black" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="0" />
+                    </Style>
+                </ListView.Resources>
+            
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                        <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+
+                        <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                        <Style.Triggers>
+
+                            <DataTrigger Binding="{Binding IsValid}" Value="False">
+                                <Setter Property="Opacity" Value="0.3" />
+                            </DataTrigger>
+
+                            <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent4}" />
+                            </Trigger>
+
+                            <Trigger Property="IsSelected"
+                                      Value="True">
+                                 <Setter Property="Foreground"
+                                         Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.Text}" />
+                                 <Setter Property="Background"
+                                         Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.Background}" />
+                                 <Setter Property="BorderBrush"
+                                         Value="{DynamicResource MahApps.Brushes.DataGrid.Selection.BorderBrush}" />
+                                 <Setter Property="BorderThickness"
+                                         Value="2" />
+                             </Trigger>
+
+                        </Style.Triggers>
+                    </Style>
+
+                </ListView.ItemContainerStyle>
+
+                <!--<ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel
+                            IsItemsHost = "True"> 
+                            </VirtualizingStackPanel>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>-->
+
+            </ListView>
+            
+        </Grid>
+        
     </Grid>
 </UserControl>

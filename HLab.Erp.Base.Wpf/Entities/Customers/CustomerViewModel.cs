@@ -1,4 +1,5 @@
 ﻿using HLab.Erp.Base.Data;
+using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf.Entities.Customers
 {
@@ -9,7 +10,6 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
 
     public class CustomerViewModel : CorporationViewModel<Customer>
     {
-
 
     }
 }

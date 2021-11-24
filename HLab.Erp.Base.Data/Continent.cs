@@ -1,7 +1,6 @@
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
-using NPoco;
 
 namespace HLab.Erp.Base.Data
 {
@@ -23,8 +22,8 @@ namespace HLab.Erp.Base.Data
         }
 
         private readonly IProperty<string> _code = HD<Continent>.Property<string>(c => c.Default(""));
-        [Ignore] public string ExportId => Code;
-        [Ignore] public string Caption => Name;
-        [Ignore] public string IconPath => $"icon/continent/{Name}";
+        public string ExportId => Code;
+        public string Caption => Name;
+        public string IconPath => $"icon/continent/{Name}";
     }
 }

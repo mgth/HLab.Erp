@@ -97,7 +97,14 @@ namespace HLab.Erp.Acl
         private readonly IProperty<DateTime?> _expiry = H.Property<DateTime?>();
 
         [Ignore]
-        public string Caption => FirstName + " " + Name + " (" + Initials + ")";
+        public string Caption => _caption.Get();
+        private readonly IProperty<string> _caption = H.Property<string>(c => c
+            .On(e => e.Name)
+            .Set(e => string.IsNullOrWhiteSpace(e.Name)?"{New user}":e.FirstName + " " + e.Name + " (" + e.Initials + ")")
+        );
+
+
+
         [Ignore]
         public string IconPath => "Icon/User";
 

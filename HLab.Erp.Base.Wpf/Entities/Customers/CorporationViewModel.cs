@@ -8,7 +8,7 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf.Entities.Customers
 {
-    public abstract class CorporationViewModel<T> : EntityViewModel<T>, ICorporationViewModel
+    public abstract class CorporationViewModel<T> : ListableEntityViewModel<T>, ICorporationViewModel
     where T : class, IEntity<int>, INotifyPropertyChanged, ICorporation, IListableModel
     {
         public IErpServices Erp { get; private set; }
@@ -18,11 +18,6 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
         }
 
         protected CorporationViewModel() => H<CorporationViewModel<T>>.Initialize(this);
-
-        public override object Header => _header.Get();
-        private readonly IProperty<object> _header = H<CorporationViewModel<T>>.Property<object>(c => c
-            .Bind(e => (object)e.Model.Caption)
-        );
 
         ICorporation ICorporationViewModel.Model => Model;
     }

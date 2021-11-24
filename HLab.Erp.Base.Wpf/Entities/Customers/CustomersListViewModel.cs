@@ -20,24 +20,24 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
         protected override bool CanExecuteDelete(Customer customer, Action<string> errorAction) =>  Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
 
         public CustomersListViewModel() : base(c => c
-            .Column()
+            .Column("Name")
                 .Header("{Name}") 
 //                .OrderByOrder(0)
                 .Link(s => s.Name)
                 .Filter()
 
-            .Column()
+            .Column("Country")
                 .Header("{Country}")
                 .Content(s => s.Country).Mvvm()
                 .Link(s => s.Country)
                 .Filter()
                 //.Icon(s => s.IconPath)
 // TODO                
-            .Column()
+            .Column("Email")
                 .Header("{eMail}")
                 .Link(s => s.Email)
                 .Filter()
-            .Column()
+            .Column("Address")
                 .Header("{Address}")
                 .Link(s => s.Address)
                 .Filter()

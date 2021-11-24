@@ -30,6 +30,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             
             filter.Header = Column.Header;
             filter.IconPath = Column.IconPath;
+            filter.Name = Column.Id;
 
             _filter = filter;
             return filter;

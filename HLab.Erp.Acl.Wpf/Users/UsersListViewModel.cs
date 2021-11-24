@@ -19,27 +19,27 @@ namespace HLab.Erp.Acl.Users
         public UsersListViewModel() : base(c => c
 // TODO :                .DeleteAllowed()
 //                .AddAllowed()
-            .Column()
+            .Column("FirstName")
             .Header("{First Name}").Width(150)
             .Link(u => u.FirstName)
             .Filter()
 
-            .Column()
+            .Column("Name")
             .Header("{Name}").Width(100)
             .Link(u => u.Name)
             .Filter()
 
-            .Column()
+            .Column("Login")
             .Header("{Login}").Width(100)
             .Link(u => u.Login)
             .Filter()
 
-            .Column()
+            .Column("Function")
             .Header("{Function}").Width(250)
             .Link(u => u.Function)
             .Filter()
 
-            .Column()
+            .Column("Initials")
             .Header("{Initials}").Width(70)
             .Link(u => u.Initials)
             .Filter()

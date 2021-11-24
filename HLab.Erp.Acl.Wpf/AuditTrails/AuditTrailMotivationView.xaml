@@ -9,21 +9,24 @@
              xmlns:wpf="clr-namespace:HLab.Base.Wpf;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel HorizontalAlignment="Center" Margin="20">
-        <icons:IconView Path="{Binding IconPath}" MaxHeight="30" MaxWidth="30"/>
-        <lang:LocalizedLabel HorizontalAlignment="Center" Margin="5" Text="{Binding EntityCaption}" FontSize="14" FontWeight="Bold"/>
-        <TextBox IsReadOnly="True" MaxHeight="250" MaxWidth="800" BorderThickness="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Padding="5" Text="{Binding Log}" FontStyle="Italic" Foreground="#80FFFFFF" BorderBrush="Transparent">
-            <TextBox.Background>
-                <LinearGradientBrush>
-                    <GradientStop Color="#10FFFFFF" Offset="0"/>
-                    <GradientStop Color="#10000000" Offset="1"/>
-                </LinearGradientBrush>
-            </TextBox.Background>
+    <Grid>
+        <Border Background="{DynamicResource MahApps.Brushes.ThemeBackground}" CornerRadius="10" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}"/>
+        
+        <StackPanel HorizontalAlignment="Center" Margin="20">
+            <icons:IconView Path="{Binding IconPath}" MaxHeight="30" MaxWidth="30"/>
+            <lang:LocalizedLabel HorizontalAlignment="Center" Margin="5" Text="{Binding EntityCaption}" FontSize="14" FontWeight="Bold"/>
+            <TextBox IsReadOnly="True" MaxHeight="250" MaxWidth="800" BorderThickness="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Padding="5" Text="{Binding Log}" FontStyle="Italic" Foreground="#80FFFFFF" BorderBrush="Transparent">
+                <TextBox.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Color="#10FFFFFF" Offset="0"/>
+                        <GradientStop Color="#10000000" Offset="1"/>
+                    </LinearGradientBrush>
+                </TextBox.Background>
             </TextBox>
-        <lang:LocalizedLabel>{Motivation} :</lang:LocalizedLabel>
-        <Grid>
-            <wpf:MandatoryAdorner IsHitTestVisible="False" Visibility="{Binding MotivationNeeded, Converter={StaticResource ToVisibilityConverter}}"/>
-        <TextBox 
+            <lang:LocalizedLabel>{Motivation} :</lang:LocalizedLabel>
+            <Grid>
+                <wpf:MandatoryAdorner IsHitTestVisible="False" Visibility="{Binding MotivationNeeded, Converter={StaticResource ToVisibilityConverter}}"/>
+                <TextBox 
             MinWidth="400" 
             TextWrapping="Wrap" 
             AcceptsReturn="True" 
@@ -32,59 +35,83 @@
             MaxHeight="150"
             Text="{Binding Motivation, UpdateSourceTrigger=PropertyChanged}"
             >
-    <TextBox.Style>
-        <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-            <Style.Resources>
-                <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
-                    <VisualBrush.Visual>
-                        <lang:Localize Id="{}{Enter audit trail justification}" Foreground="#A0FFFFFF" />
-                    </VisualBrush.Visual>
-                </VisualBrush>
-            </Style.Resources>
-            <Style.Triggers>
-                <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
-                    <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-                </Trigger>
-                <Trigger Property="Text" Value="{x:Null}">
-                    <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-                </Trigger>
-                <Trigger Property="IsKeyboardFocused" Value="True">
-                    <Setter Property="Background" Value="#10FFFFFF" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </TextBox.Style>            
-        </TextBox></Grid>
-<Label/>
-        <TextBlock Text="{Binding User.Caption}"/>
-
-        <DockPanel Margin="0,5" Visibility="{Binding Signing,Converter={StaticResource ToVisibilityConverter}}">
-            <lang:LocalizedLabel Text="{}{Password} :"/>
+                    <TextBox.Style>
+                        <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                            <Style.Resources>
+                                <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                    <VisualBrush.Visual>
+                                        <lang:Localize Id="{}{Enter audit trail justification}" Foreground="#A0FFFFFF" />
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Style.Resources>
+                            <Style.Triggers>
+                                <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                                    <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                                </Trigger>
+                                <Trigger Property="Text" Value="{x:Null}">
+                                    <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                    <Setter Property="Background" Value="#10FFFFFF" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                    
+                    <TextBox.ToolTip>
+                        <StackPanel Orientation="Horizontal">
+                            <icons:IconView Path="Icons/Edit" Height="10"/>
+                            <Label/>
+                            <lang:Localize>{Motivation to log in the audit trail}</lang:Localize>
+                        </StackPanel>
+                    </TextBox.ToolTip>
+                    
+                </TextBox>
+            </Grid>
             <Label/>
-            <PasswordBox DockPanel.Dock="Right" Height="23" x:Name="PasswordBox" VerticalAlignment="Center" PasswordChanged="PasswordBox_OnTextChanged"/>
-        </DockPanel>
-        <TextBlock Foreground="Red" Text="{Binding Message}"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
-            <Button 
+            <TextBlock Text="{Binding User.Caption}"/>
+
+            <DockPanel Margin="0,5" Visibility="{Binding Signing,Converter={StaticResource ToVisibilityConverter}}">
+                <lang:LocalizedLabel Text="{}{Password} :"/>
+                <Label/>
+                <PasswordBox DockPanel.Dock="Right" Height="23" x:Name="PasswordBox" VerticalAlignment="Center" PasswordChanged="PasswordBox_OnTextChanged"/>
+            </DockPanel>
+            <TextBlock Foreground="Red" Text="{Binding Message}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
+                <Button 
                 HorizontalAlignment="Left" 
                 VerticalAlignment="Top" 
                 Width="80" 
                 IsCancel="True"
                 Tag="Actions/Revert.xaml" 
                 Command="{Binding CancelCommand}">
-                <icons:IconView Path="Icons/Cancel" Height="30"/>
-            </Button>
-<Label/>
-            <Button 
+                    <Button.ToolTip>
+                        <StackPanel Orientation="Horizontal">
+                            <icons:IconView Path="Icons/Cancel" Height="10"/>
+                            <Label/>
+                            <lang:Localize>{Cancel}</lang:Localize>
+                        </StackPanel>
+                    </Button.ToolTip>
+                    <icons:IconView Path="Icons/Cancel" Height="30"/>
+                </Button>
+                <Label/>
+                <Button 
                 HorizontalAlignment="Right" 
                 x:Name="BT_Ok" 
                 VerticalAlignment="Top" 
                 Width="80" 
-                Tag="Validations/ValidateDocument.xaml" 
                 Command="{Binding OkCommand}" IsDefault="True">
-                <icons:IconView Path="Icons/Save" Height="30"/>                
-            </Button>
+                    <Button.ToolTip>
+                        <StackPanel Orientation="Horizontal">
+                            <icons:IconView Path="Icons/Save" Height="10"/>
+                            <Label/>
+                            <lang:Localize>{Validate}</lang:Localize>
+                        </StackPanel>
+                    </Button.ToolTip>
+                    <icons:IconView Path="Icons/Save" Height="30"/>
+                </Button>
 
+            </StackPanel>
         </StackPanel>
-    </StackPanel>
+    </Grid>
 </UserControl>

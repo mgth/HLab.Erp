@@ -275,6 +275,7 @@
 		<None Remove="Icons\Flags\yemen.svg" />
 		<None Remove="Icons\Flags\zambia.svg" />
 		<None Remove="Icons\Flags\zimbabwe.svg" />
+		<None Remove="Icons\horizontal-resize.svg" />
 		<None Remove="Icons\import.svg" />
 		<None Remove="Icons\SelectForeign.svg" />
 		<None Remove="Icons\sort\ascending.svg" />
@@ -303,8 +304,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dirkster.AvalonDock" Version="4.51.1" />
-		<PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.51.1" />
+		<PackageReference Include="Dirkster.AvalonDock" Version="4.60.0" />
+		<PackageReference Include="Dirkster.AvalonDock.Themes.Aero" Version="4.60.0" />
+		<PackageReference Include="Dirkster.AvalonDock.Themes.Expression" Version="4.60.0" />
+		<PackageReference Include="Dirkster.AvalonDock.Themes.Metro" Version="4.60.0" />
+		<PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.60.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -583,6 +587,7 @@
 		<Resource Include="Icons\Flags\yemen.svg" />
 		<Resource Include="Icons\Flags\zambia.svg" />
 		<Resource Include="Icons\Flags\zimbabwe.svg" />
+		<Resource Include="Icons\horizontal-resize.svg" />
 		<Resource Include="Icons\import.svg" />
 		<Resource Include="Icons\Refresh.xaml" />
 		<Resource Include="Icons\SelectForeign.svg" />

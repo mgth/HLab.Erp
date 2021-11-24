@@ -447,7 +447,7 @@ namespace HLab.Erp.Data
 
         public string Source
         {
-            get => _source ??= _options.GetValue<string>("", "Source", null, ()=>"", "registry");
+            get => _source ??= _options.GetValue("", "Source", null, ()=>"", "registry");
             set
             {
                 _source = value;

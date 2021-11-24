@@ -14,6 +14,16 @@ namespace HLab.Erp.Base.Wpf
         public TextEditorEx()
         {
             SearchPanel.Install(this);
+
+            //using (var stream = System.Reflection.Assembly.GetAssembly(typeof(TextEditorEx)).GetManifestResourceStream("HLab.Erp.Base.Wpf.SQL.xshd"))
+            //{
+            //    using (var reader = new System.Xml.XmlTextReader(stream))
+            //    {
+            //        this.SyntaxHighlighting = 
+            //            ICSharpCode.AvalonEdit.Highlighting.Xshd.HighlightingLoader.Load(reader, 
+            //            ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance);
+            //    }
+            //}
         }
 
         public static readonly DependencyProperty TextProperty = H.Property<string>()
