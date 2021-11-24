@@ -1,7 +1,8 @@
 ﻿using HLab.Erp.Data;
 using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
-using NPoco;
+
+using System.Linq;
 
 namespace HLab.Erp.Base.Data
 {
@@ -11,7 +12,6 @@ namespace HLab.Erp.Base.Data
     {
         public Icon() => H.Initialize(this);
 
-        [Column]
         public string Path
         {
             get => _path.Get();
@@ -19,7 +19,6 @@ namespace HLab.Erp.Base.Data
         }
         private readonly IProperty<string> _path = H.Property<string>(c => c.Default(""));
 
-        [Column]
         public string SourceSvg
         {
             get => _sourceSvg.Get();
@@ -27,7 +26,6 @@ namespace HLab.Erp.Base.Data
         }
         private readonly IProperty<string> _sourceSvg = H.Property<string>(c => c.Default(""));
 
-        [Column]
         public string SourceXaml
         {
             get => _sourceXaml.Get();
@@ -35,7 +33,6 @@ namespace HLab.Erp.Base.Data
         }
         private readonly IProperty<string> _sourceXaml = H.Property<string>(c => c.Default(""));
 
-        [Column]
         public int? Foreground
         {
             get => _foreground.Get();
@@ -43,9 +40,15 @@ namespace HLab.Erp.Base.Data
         }
         private readonly IProperty<int?> _foreground = H.Property<int?>(c => c.Default((int?)null));
 
-        [Ignore]
-        public string Caption => Path;
-        [Ignore]
-        public string IconPath => Path;
+        public string Caption => _caption.Get();
+        private readonly IProperty<string> _caption = H.Property<string>(c => c
+            .On(e => e.Path)
+            .Set(e => string.IsNullOrWhiteSpace(e.Path)?"{New icon}":e.Path.Split('/').Last())
+        );
+        public string IconPath => _iconPath.Get();
+        private readonly IProperty<string> _iconPath = H.Property<string>(c => c
+            .On(e => e.Path)
+            .Set(e => string.IsNullOrWhiteSpace(e.Path)?"icons/Entities/icon":e.Path)
+        );
     }
 }

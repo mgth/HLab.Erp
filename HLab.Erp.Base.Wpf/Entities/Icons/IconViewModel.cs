@@ -1,23 +1,27 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+
 using HLab.ColorTools.Wpf;
 using HLab.Erp.Acl;
 using HLab.Erp.Base.Data;
 using HLab.Icons.Annotations.Icons;
 using HLab.Icons.Wpf.Icons;
+using HLab.Icons.Wpf.Icons.Providers;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Wpf.Entities.Icons
 {
     using H = H<IconViewModel>;
 
-    public class IconViewModel : EntityViewModel<Icon>
+    public class IconViewModel : ListableEntityViewModel<Icon>
     {
         private IIconService _icons;
         public IconViewModel(IIconService icons)
@@ -26,20 +30,11 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             H.Initialize(this);
         }
 
-        public override string Header => _header.Get();
-
-        private readonly IProperty<string> _header = H.Property<string>(c => c
-            .Set(e => e.Model.Caption)
-            .On(e => e.Model.Caption)
-            .Update()
-        );
-
-
         public object Icon => _icon.Get();
         private readonly IProperty<object> _icon = H.Property<object>(c => c
-            .Set(async e => (object)XamlTools.SetBinding(
+            .Set(async e => (object)XamlTools.SetForeground(
                 (UIElement)await XamlTools.FromXamlStringAsync(e.Model.SourceXaml),
-                e.Model.Foreground.ToColor())
+                e.Model.Foreground.ToColor(),Brushes.White)
             )
             .On(e => e.Model.SourceXaml)
             .Update()
@@ -75,6 +70,27 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
 
             }
             //pEditor.StartInfo.Arguments = ""; 
+        }
+
+        private ITrigger _onSave = H.Trigger(c => c
+            .On(e => e.Locker.IsActive)
+            .Do(e => e.UpdateIcon())
+        );
+
+        private void UpdateIcon()
+        {
+            if(Locker.IsActive) return;
+
+            var path = Model.Path.ToLower();
+
+            if (!string.IsNullOrWhiteSpace(Model.SourceXaml))
+            {
+                _icons.AddIconProvider(path, new IconProviderXamlFromSource(Model.SourceXaml, path, Model.Foreground));
+            }
+            else if (!string.IsNullOrWhiteSpace(Model.SourceSvg))
+            {
+                _icons.AddIconProvider(path, new IconProviderSvgFromSource(Model.SourceSvg, path, Model.Foreground));
+            }
         }
 
         private async Task LoadSvgAsync(string path)
