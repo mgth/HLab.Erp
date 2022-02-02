@@ -43,7 +43,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <icons:IconView Path="icons/filters/filter"/>
+                    <icons:IconView Path="icons/filters/filter" Foreground="AliceBlue"/>
                     <ComboBox Grid.Column="1"
                         IsTextSearchEnabled="False"
                         IsEditable="True" 
