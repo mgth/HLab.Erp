@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HLab.Erp.Units
+namespace HLab.Erp.Base.Data
 {
     public static class UnitExtensions
     {
@@ -12,11 +12,14 @@ namespace HLab.Erp.Units
             {
                 var qty = unit.Qty(absQty);
 
-                if (bestUnit == null || (qty < bestQty && qty >= 1) || (bestQty < 1 && qty > bestQty))
-                {
-                    bestUnit = unit;
-                    bestQty = qty;
-                }
+                if (
+                    bestUnit != null 
+                    && (qty >= bestQty || qty < 1.0) 
+                    && (bestQty >= 1.0 || qty <= bestQty)
+                    ) continue;
+
+                bestUnit = unit;
+                bestQty = qty;
             }
             return bestUnit;
 

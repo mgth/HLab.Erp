@@ -21,6 +21,13 @@ namespace HLab.Erp.Base.Data
                             .AlterColumn(c => c.Name)
                         .Include(base.GetSqlUpdater)
                         .Version("2.1.0.0");
+                case "2.1.0.0":
+                    return builder
+                        .Table<UnitClass>().Create()
+                        .Table<Unit>().Create()
+                        .Include(base.GetSqlUpdater)
+                        //.Version("2.1.0.0")
+                        ;
             }
 
             return builder.Include(base.GetSqlUpdater);

@@ -304,11 +304,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dirkster.AvalonDock" Version="4.60.0" />
-		<PackageReference Include="Dirkster.AvalonDock.Themes.Aero" Version="4.60.0" />
-		<PackageReference Include="Dirkster.AvalonDock.Themes.Expression" Version="4.60.0" />
-		<PackageReference Include="Dirkster.AvalonDock.Themes.Metro" Version="4.60.0" />
-		<PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.60.0" />
+		<PackageReference Include="Dirkster.AvalonDock" Version="4.70.1" />
+		<PackageReference Include="Dirkster.AvalonDock.Themes.Aero" Version="4.70.1" />
+		<PackageReference Include="Dirkster.AvalonDock.Themes.Expression" Version="4.70.1" />
+		<PackageReference Include="Dirkster.AvalonDock.Themes.Metro" Version="4.70.1" />
+		<PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.70.1" />
 	</ItemGroup>
 
 	<ItemGroup>

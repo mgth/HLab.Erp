@@ -3,7 +3,7 @@ using System.Linq;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 
-namespace HLab.Erp.Units
+namespace HLab.Erp.Base.Data
 {
     public interface IUnitService
     {
@@ -27,12 +27,12 @@ namespace HLab.Erp.Units
 
         public IEnumerable<Unit> GetGroup(string group)
         {
-            return Units.Where(u => u.Group == group);
+            return Units.Where(u => u.UnitClass.Symbol == group);
         }
 
         public Unit Default(string @group)
         {
-            return Units.FirstOrDefault(u => u.Group == group && u.Default);
+            return Units.FirstOrDefault(u => u.UnitClass.Symbol == group && u.Default);
         }
     }
 }

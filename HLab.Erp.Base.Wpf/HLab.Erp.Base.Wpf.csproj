@@ -11,6 +11,12 @@
   <ItemGroup>
     <None Remove="Icons\Entities\Country.svg" />
     <None Remove="Icons\Entities\Icon.svg" />
+    <None Remove="Icons\Entities\Units\Count.svg" />
+    <None Remove="Icons\Entities\Units\Mass.svg" />
+    <None Remove="Icons\Entities\Units\Mole.svg" />
+    <None Remove="Icons\Entities\Units\Temp.svg" />
+    <None Remove="Icons\Entities\Units\Time.svg" />
+    <None Remove="Icons\Entities\Units\Volume.svg" />
     <None Remove="SQL.xshd" />
   </ItemGroup>
 
@@ -23,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="6.1.2.30" />
+    <PackageReference Include="AvalonEdit" Version="6.1.3.50" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,6 +60,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Resource>
     <Resource Include="Icons\Entities\Icon.svg" />
+    <Resource Include="Icons\Entities\Units\Count.svg" />
+    <Resource Include="Icons\Entities\Units\Mass.svg" />
+    <Resource Include="Icons\Entities\Units\Mole.svg" />
+    <Resource Include="Icons\Entities\Units\Temp.svg" />
+    <Resource Include="Icons\Entities\Units\Time.svg" />
+    <Resource Include="Icons\Entities\Units\Volume.svg" />
     <Resource Include="Icons\OpenForeign.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>
@@ -78,6 +90,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Entities\Customers\CorporationView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Entities\Units\UnitView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Icons\Entities\Profile.xaml">

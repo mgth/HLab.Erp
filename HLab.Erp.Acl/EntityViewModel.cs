@@ -56,7 +56,7 @@ namespace HLab.Erp.Acl
                 {
                     var locker = e._getLocker(e.Model);
                     locker.PropertyChanged += e.Locker_PropertyChanged;
-                    locker.BeforeSavingAction = a => e.BeforeSaving(a);
+                    locker.BeforeSavingAction = e.BeforeSaving;
                     return locker;
                 })
                 .On(e => e.Model)
@@ -71,15 +71,11 @@ namespace HLab.Erp.Acl
 
         private void Locker_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if(e.PropertyName=="IsActive")
+            if (e.PropertyName != "IsActive") return;
+            if (Locker.IsActive) return;
+            if(Model.Id==-1)
             {
-                if (Locker.IsActive==false)
-                {
-                    if(Model.Id==-1)
-                    {
-                        CloseCommand.Execute(null);
-                    }
-                }
+                CloseCommand.Execute(null);
             }
         }
 

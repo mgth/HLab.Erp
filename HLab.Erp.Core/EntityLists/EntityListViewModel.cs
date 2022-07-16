@@ -152,6 +152,9 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         }
         private readonly IProperty<string> _filtersPresetSelected = H<EntityListViewModel>.Property<string>();
 
+        /// <summary>
+        /// Type of entity to be passed as argument when adding new entity to list
+        /// </summary>
         public virtual Type AddArgumentClass => null;
 
         public bool IsEnabledSimpleAddButton => AddArgumentClass == null;
@@ -159,7 +162,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public string ErrorMessage => string.Join(Environment.NewLine,_errors.OrderBy(e => e.Item1).Select(e => e.Item2));
 
 
-        private ObservableCollection<string> _filterPresets = new ObservableCollection<string>();
+        private readonly ObservableCollection<string> _filterPresets = new ObservableCollection<string>();
         public ReadOnlyObservableCollection<string> FilterPresets {get;}
 
         protected EntityListViewModel()
