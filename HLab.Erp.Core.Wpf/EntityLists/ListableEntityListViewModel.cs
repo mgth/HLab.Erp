@@ -16,10 +16,10 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
     }
 
-    public class ListableEntityListViewModel<T> : EntityListViewModel<T>, IListableEntityListViewModel<T>
+    public class ListableEntityListViewModel<T> : Core.EntityLists.EntityListViewModel<T>, IListableEntityListViewModel<T>
         where T : class, IEntity, IListableModel, new()
     {
-        public ListableEntityListViewModel() : base(c => c
+        public ListableEntityListViewModel(Injector i) : base(i, c => c
                 .Column("Name")
                 .Header("{Name}")
                 .Width(150).Content(e => e.Caption).Localize()
@@ -30,7 +30,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         {
         }
 
-        public ListableEntityListViewModel(Expression<Func<T, bool>> filter) : base(c => c
+        public ListableEntityListViewModel(Injector i, Expression<Func<T, bool>> filter) : base(i, c => c
             .Column("Name").Header("{Name}").Content(e => e.Caption)
                 .Icon(e => e.IconPath)
         )

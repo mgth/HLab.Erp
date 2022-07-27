@@ -15,18 +15,19 @@ namespace HLab.Erp.Data.Wpf
             InitializeComponent();
         }
 
-        private void CbServer_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        void CbServer_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
         }
 
-        private void OkButton_OnClick(object sender, RoutedEventArgs e)
+        void OkButton_OnClick(object sender, RoutedEventArgs e)
         {
             var window = Window.GetWindow(this);
             window.DialogResult = true;
             window?.Close();
 
         }
-        private void CancelButton_OnClick(object sender, RoutedEventArgs e)
+
+        void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
             var window = Window.GetWindow(this);
             window.DialogResult = false;

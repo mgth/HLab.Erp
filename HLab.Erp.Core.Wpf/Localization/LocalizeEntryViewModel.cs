@@ -8,5 +8,8 @@ namespace HLab.Erp.Core.Wpf.Localization
 
     public class LocalizeEntryViewModel : ListableEntityViewModel<LocalizeEntry>
     {
+        public LocalizeEntryViewModel(Injector i) : base(i)
+        {
+        }
     }
 }

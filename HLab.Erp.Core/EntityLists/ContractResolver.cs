@@ -1,17 +1,17 @@
-﻿using HLab.Erp.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HLab.Erp.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NPoco;
 
-namespace HLab.Erp.Core.Wpf.EntityLists
+namespace HLab.Erp.Core.EntityLists
 {
 
     public abstract partial class EntityListViewModel<T> where T : class, IEntity, new()
     {
-        private class ContractResolver : DefaultContractResolver
+        class ContractResolver : DefaultContractResolver
         {
             protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
             {

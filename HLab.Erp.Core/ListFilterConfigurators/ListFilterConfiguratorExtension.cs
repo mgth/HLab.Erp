@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.Wpf.ListFilters;
 using HLab.Erp.Data;
@@ -205,9 +206,9 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             return c.GetChildConfigurator<DateTime, DateFilter>();
         }
 
-        private static readonly MethodInfo GetIdMethod = typeof(IEntity<int>).GetProperty("Id").GetMethod;
+        static readonly MethodInfo GetIdMethod = typeof(IEntity<int>).GetProperty("Id").GetMethod;
 
-        private static Expression<Func<T, int>> GetIdExpression<T, TE>(Expression<Func<T, TE>> getter)
+        static Expression<Func<T, int>> GetIdExpression<T, TE>(Expression<Func<T, TE>> getter)
             where T : class, IEntity, new()
             where TE : class, IListableModel, IEntity<int>, new()
         {
@@ -216,11 +217,11 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             return Expression.Lambda<Func<T, int>>(ex, entity);
         }
 
-        private static PropertyInfo PropertyHasValue => typeof(int?).GetProperty("HasValue");
-        private static PropertyInfo PropertyValue => typeof(int?).GetProperty("Value");
+        static PropertyInfo PropertyHasValue => typeof(int?).GetProperty("HasValue");
+        static PropertyInfo PropertyValue => typeof(int?).GetProperty("Value");
 
         // TODO : may return int?
-        private static Expression<Func<T, int>> GetterIdFromGetter<T, TE>(Expression<Func<T, TE>> getter)
+        static Expression<Func<T, int>> GetterIdFromGetter<T, TE>(Expression<Func<T, TE>> getter)
             where T : class, IEntity, new()
             where TE : class, IEntity<int>, new()
         {
@@ -251,7 +252,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             return t => -1;
         }
 
-        private static Expression<Func<T, int?>> GetterIdNullableFromGetter<T, TE>(Expression<Func<T, TE>> getter)
+        static Expression<Func<T, int?>> GetterIdNullableFromGetter<T, TE>(Expression<Func<T, TE>> getter)
             where T : class, IEntity, new()
             where TE : class, IEntity<int>, new()
         {

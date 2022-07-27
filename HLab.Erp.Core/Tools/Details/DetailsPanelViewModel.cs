@@ -21,6 +21,7 @@ namespace HLab.Erp.Core.Tools.Details
             get => _item.Get();
             set => _item.Set(value);
         }
-        private readonly IProperty<object> _item = H<DetailsPanelViewModel>.Property<object>();
+
+        readonly IProperty<object> _item = H<DetailsPanelViewModel>.Property<object>();
     }
 }

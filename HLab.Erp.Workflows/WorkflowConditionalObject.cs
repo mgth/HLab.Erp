@@ -26,8 +26,7 @@ namespace HLab.Erp.Workflows
     public abstract class WorkflowConditionalObject<T> : IWorkflowConditionalObject<T>
         where T : class, IWorkflow<T>
     {
-
-        private Action<T> _action = null;
+        Action<T> _action = null;
         public void Action(IWorkflow workflow) => _action?.Invoke((T)workflow);
         void IWorkflowConditionalObject<T>.SetAction(Action<T> action) => _action += action;
 
@@ -43,20 +42,20 @@ namespace HLab.Erp.Workflows
             Condition = condition;
         }
 
-        private Func<T,string> _getIconPath;
+        Func<T,string> _getIconPath;
         void IWorkflowConditionalObject<T>.SetIconPath(Func<T, string> getIcon) => _getIconPath = getIcon;
         public string GetIconPath(IWorkflow workflow) => _getIconPath?.Invoke((T)workflow) ?? "";
 
-        private Func<T,string> _getSubIconPath;
+        Func<T,string> _getSubIconPath;
         void IWorkflowConditionalObject<T>.SetSubIconPath(Func<T, string> getIcon) => _getSubIconPath = getIcon;
         public string GetSubIconPath(IWorkflow workflow) => _getSubIconPath?.Invoke((T)workflow) ?? "";
 
 
-        private Func<T,string> _getCaption;
+        Func<T,string> _getCaption;
         void IWorkflowConditionalObject<T>.SetCaption(Func<T, string> getCaption) => _getCaption = getCaption;
         public string GetCaption(IWorkflow workflow) => _getCaption?.Invoke((T)workflow) ?? "";
 
-       private Func<T,double> _getProgress;
+        Func<T,double> _getProgress;
         void IWorkflowConditionalObject<T>.SetProgress(Func<T, double> getProgress) => _getProgress = getProgress;
         public double GetProgress(IWorkflow workflow) => _getProgress?.Invoke((T)workflow) ?? 0.0;
 

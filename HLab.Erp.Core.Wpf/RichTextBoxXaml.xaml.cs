@@ -20,10 +20,9 @@ namespace HLab.Erp.Core
         }
 
 
+        string _xaml = null;
 
-        private string _xaml = null;
-
-        private void RichTextBoxOnTextChanged(object sender, TextChangedEventArgs e)
+        void RichTextBoxOnTextChanged(object sender, TextChangedEventArgs e)
         {
             _xaml = XamlWriter.Save(RichTextBox.Document);
             DocumentXaml = _xaml;
@@ -36,7 +35,8 @@ namespace HLab.Erp.Core
         {
             get => (string)GetValue(DocumentXamlProperty); set => SetValue(DocumentXamlProperty, value);
         }
-        private static void OnDocumentXamlChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+
+        static void OnDocumentXamlChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             (d as RichTextBoxXaml)?.SetDocumentFromXaml();
         }
@@ -60,7 +60,7 @@ namespace HLab.Erp.Core
             }
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             var selection = RichTextBox.Selection;
             if (!selection.IsEmpty)

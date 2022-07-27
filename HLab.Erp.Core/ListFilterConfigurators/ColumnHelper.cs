@@ -17,7 +17,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         public IEntityListViewModel<T> Target { get; }
         public IColumn<T> Column { get; }
 
-        private IFilter _filter;
+        IFilter _filter;
 
         public TFilter GetFilter<TFilter>() where TFilter : IFilter
         {

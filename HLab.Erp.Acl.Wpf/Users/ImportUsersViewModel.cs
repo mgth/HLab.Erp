@@ -26,8 +26,8 @@ namespace HLab.Erp.Acl.Users
 
     public class ImportUsersViewModel : ViewModel
     {
-        private readonly IAclService _acl;
-        private readonly IDataService _data;
+        readonly IAclService _acl;
+        readonly IDataService _data;
         public ImportUsersViewModel(IAclService acl, IDataService data)
         {
             _acl = acl;
@@ -44,23 +44,23 @@ namespace HLab.Erp.Acl.Users
         public ObservableCollection<AdUser> Users { get; } = new ObservableCollection<AdUser>();
 
         public string Domain { get => _domain.Get(); set => _domain.Set(value); }
-        private readonly IProperty<string> _domain = H.Property<string>();
+        readonly IProperty<string> _domain = H.Property<string>();
 
         public string Message { get => _message.Get(); set => _message.Set(value); }
-        private readonly IProperty<string> _message = H.Property<string>();
+        readonly IProperty<string> _message = H.Property<string>();
 
         public bool Success { get => _success.Get(); set => _success.Set(value); }
-        private readonly IProperty<bool> _success = H.Property<bool>();
+        readonly IProperty<bool> _success = H.Property<bool>();
 
         public string UserName { get => _userName.Get(); set => _userName.Set(value); }
-        private readonly IProperty<string> _userName = H.Property<string>();
+        readonly IProperty<string> _userName = H.Property<string>();
         public AdUser SelectedUser { get => _selectedUser.Get(); set => _selectedUser.Set(value); }
-        private readonly IProperty<AdUser> _selectedUser = H.Property<AdUser>();
+        readonly IProperty<AdUser> _selectedUser = H.Property<AdUser>();
 
         public ICommand RetrievetUsersCommand { get; } = H.Command(c => c
               .Action((e, a) => e.RetrieveUsers(a as PasswordBox)));
 
-        private void RetrieveUsers(PasswordBox password)
+        void RetrieveUsers(PasswordBox password)
         {
             try
             {
@@ -147,7 +147,8 @@ namespace HLab.Erp.Acl.Users
         public ICommand ImportUserCommand { get; } = H.Command(c => c
               .CanExecute(e => e._acl.IsGranted(AclRights.ManageUser))
               .Action(e => e.ImportUsers()));
-        private void ImportUsers()
+
+        void ImportUsers()
         {
             var user = SelectedUser;
             if (user == null) return;

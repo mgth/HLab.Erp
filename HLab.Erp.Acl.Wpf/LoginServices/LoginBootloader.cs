@@ -9,9 +9,9 @@ namespace HLab.Erp.Acl.LoginServices
 {
     public class LoginBootloader : IBootloader
     {
-        private readonly Func<ILoginViewModel> _getViewModel;
-        private readonly IMvvmService _mvvm;
-        private readonly IAclService _acl;
+        readonly Func<ILoginViewModel> _getViewModel;
+        readonly IMvvmService _mvvm;
+        readonly IAclService _acl;
 
         public LoginBootloader(IMvvmService mvvm, Func<ILoginViewModel> getViewModel, IAclService acl)
         {

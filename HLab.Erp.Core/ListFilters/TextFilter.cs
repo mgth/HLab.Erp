@@ -14,8 +14,8 @@ namespace HLab.Erp.Core.Wpf.ListFilters
     {
         public TextFilter() => H.Initialize(this);
 
-        private static readonly MethodInfo ContainsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-        private static readonly MethodInfo ToLowerMethod = typeof(string).GetMethod("ToLower", new Type[] { });
+        static readonly MethodInfo ContainsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+        static readonly MethodInfo ToLowerMethod = typeof(string).GetMethod("ToLower", new Type[] { });
 
         public override Expression<Func<T, bool>> Match<T>(Expression<Func<T, string>> getter)
         {

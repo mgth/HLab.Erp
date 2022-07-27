@@ -52,8 +52,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             add => AddHandler(SortDirectionChangedEvent, value);
             remove => RemoveHandler(SortDirectionChangedEvent, value);
         }
-            
-        private void OnSortDirectionChange(SortDirection value)
+
+        void OnSortDirectionChange(SortDirection value)
         {
             SortingIcon.Path = value switch
             {
@@ -78,7 +78,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         }
 
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             switch (SortDirection)
             {

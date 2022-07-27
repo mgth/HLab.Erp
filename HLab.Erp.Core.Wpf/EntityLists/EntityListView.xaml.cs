@@ -16,7 +16,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             DataContextChanged += EntityListView_DataContextChanged;
         }
 
-        private void EntityListView_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        void EntityListView_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is IEntityListViewModel vm)
             {
@@ -26,7 +26,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         public string ContentId => nameof(EntityListView);
 
-        private void DataGridColumnHeader_Click(object sender, System.Windows.RoutedEventArgs e)
+        void DataGridColumnHeader_Click(object sender, System.Windows.RoutedEventArgs e)
         {
                 if (sender is DataGridColumnHeader header)
                 {

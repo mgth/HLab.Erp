@@ -20,8 +20,8 @@ namespace HLab.Erp.Data
     {
         public static DataCache<T> Cache = new();
 
-        private readonly AsyncDictionary<object,T> _cache = new();
-        private bool _fullCache = false;
+        readonly AsyncDictionary<object,T> _cache = new();
+        bool _fullCache = false;
 
         public IEnumerable<T> Fetch(Expression<Func<T, bool>> expression)
         {

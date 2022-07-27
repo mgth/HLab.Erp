@@ -24,7 +24,7 @@ namespace HLab.Erp.Core.ListViewLayout
 				typeof( FixedColumn ) );
 
 		// ----------------------------------------------------------------------
-		private FixedColumn()
+        FixedColumn()
 		{
 		} // FixedColumn
 

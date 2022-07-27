@@ -42,8 +42,7 @@ namespace HLab.Erp.Data.Observables
     public class ObservableQuery<T> : ObservableCollectionNotifier<T>, IObservableQuery<T>, ITriggerable//, IObservableQuery<T>
         where T : class, IEntity
     {
-
-        private readonly IGuiTimer _timer;
+        readonly IGuiTimer _timer;
 
         public ObservableQuery(IDataService db)
         {
@@ -59,12 +58,12 @@ namespace HLab.Erp.Data.Observables
             _token = Suspender.Get();
         }
 
-        private readonly IDataService _db;
+        readonly IDataService _db;
 
-        private SuspenderToken _token;
+        SuspenderToken _token;
         public Suspender Suspender { get; }
 
-        private readonly object _lock = new();
+        readonly object _lock = new();
 
         public void Start()
         {
@@ -85,7 +84,7 @@ namespace HLab.Erp.Data.Observables
             }
         }
 
-        private IAsyncEnumerable<T> _source = null;
+        IAsyncEnumerable<T> _source = null;
 
         public class CreateHelper : IDisposable
         {
@@ -98,14 +97,16 @@ namespace HLab.Erp.Data.Observables
                 //                Context?.Dispose();
             }
         }
-        private class Filter
+
+        class Filter
         {
             public object Name { get; set; }
             public Func<Expression<Func<T, bool>>> GetExpression { get; init; } = null;
             public Func<IQueryable<T>, IQueryable<T>> Func { get; init; } = null;
             public int Order { get; init; }
         }
-        private class PostFilter
+
+        class PostFilter
         {
             public object Name { get; init; }
             public Func<T, bool> Expression { get; init; } = null;
@@ -113,7 +114,7 @@ namespace HLab.Erp.Data.Observables
             public int Order { get; init; }
         }
 
-        private class OrderByEntry
+        class OrderByEntry
         {
             public object Name { get; init; }
             public Func<T, object> Expression { get; init; }
@@ -121,10 +122,10 @@ namespace HLab.Erp.Data.Observables
             public int Order { get; init; }
         }
 
-        private readonly object _lockFilters = new object();
-        private List<Filter> _filters = new();
-        private List<PostFilter> _postFilters = new();
-        private List<OrderByEntry> _orderBy = new();
+        readonly object _lockFilters = new object();
+        List<Filter> _filters = new();
+        List<PostFilter> _postFilters = new();
+        List<OrderByEntry> _orderBy = new();
 
         public ObservableQuery<T> SetSource(Func<IAsyncEnumerable<T>> src)
         {
@@ -143,7 +144,8 @@ namespace HLab.Erp.Data.Observables
             get => _sourceQuery.Get();
             set => _sourceQuery.Set(value);
         }
-        private readonly IProperty<Func<IQueryable<T>, IQueryable<T>>> _sourceQuery = H<ObservableQuery<T>>.Property<Func<IQueryable<T>, IQueryable<T>>>(c => c
+
+        readonly IProperty<Func<IQueryable<T>, IQueryable<T>>> _sourceQuery = H<ObservableQuery<T>>.Property<Func<IQueryable<T>, IQueryable<T>>>(c => c
            .Set(e => (Func<IQueryable<T>, IQueryable<T>>)(q => q))
         );
 
@@ -152,9 +154,10 @@ namespace HLab.Erp.Data.Observables
             get => _sourceEnumerable.Get();
             set => _sourceEnumerable.Set(value);
         }
-        private readonly IProperty<Func<IAsyncEnumerable<T>>> _sourceEnumerable = H<ObservableQuery<T>>.Property<Func<IAsyncEnumerable<T>>>();
 
-        private Expression<Func<T, bool>> Where()
+        readonly IProperty<Func<IAsyncEnumerable<T>>> _sourceEnumerable = H<ObservableQuery<T>>.Property<Func<IAsyncEnumerable<T>>>();
+
+        Expression<Func<T, bool>> Where()
         {
 
             var filters = _filters;
@@ -182,7 +185,7 @@ namespace HLab.Erp.Data.Observables
         }
 
         //TODO : use where function to compile expression and cache it
-        private IAsyncEnumerable<T> PostQuery(IAsyncEnumerable<T> q)
+        IAsyncEnumerable<T> PostQuery(IAsyncEnumerable<T> q)
         {
             if (q == null) return null;
             var filters = _postFilters;
@@ -193,7 +196,7 @@ namespace HLab.Erp.Data.Observables
             return q;
         }
 
-        private IAsyncEnumerable<T> PostQueryAsync(bool force = true)
+        IAsyncEnumerable<T> PostQueryAsync(bool force = true)
         {
             if (_source == null || force)
             {
@@ -412,7 +415,7 @@ namespace HLab.Erp.Data.Observables
             }
         }
 
-        private ObservableQuery<T> AddCreator(IDictionary<string, Action<CreateHelper>> dict, Action<CreateHelper> func,
+        ObservableQuery<T> AddCreator(IDictionary<string, Action<CreateHelper>> dict, Action<CreateHelper> func,
             string name = "")
         {
             lock (_lockFilters) // Todo : insuffisent 
@@ -474,10 +477,7 @@ namespace HLab.Erp.Data.Observables
         //}
 
 
-
-
-
-        private readonly object _lockUpdate = new object();
+        readonly object _lockUpdate = new object();
 
         public ObservableQuery<T> Do(Action<ObservableQuery<T>> action)
         {
@@ -485,7 +485,7 @@ namespace HLab.Erp.Data.Observables
             return this;
         }
 
-        private Thread _updateThread = null;
+        Thread _updateThread = null;
 
         public async Task UpdateAsync()
         {
@@ -509,13 +509,13 @@ namespace HLab.Erp.Data.Observables
             _ = await Task.Run(() => w.WaitOne());
         }
 
-        private readonly object _lockUpdateNeeded = new();
+        readonly object _lockUpdateNeeded = new();
 
 
-        private volatile bool _updateNeeded;
-        private volatile bool _refresh = false;
-        private Action _postUpdateAction;
-        private Stack<WaitHandle> _wait = new();
+        volatile bool _updateNeeded;
+        volatile bool _refresh = false;
+        Action _postUpdateAction;
+        Stack<WaitHandle> _wait = new();
 
         public void Update()
         {
@@ -544,7 +544,7 @@ namespace HLab.Erp.Data.Observables
             }
         }
 
-        private async Task _timer_TickAsync(object sender, EventArgs e)
+        async Task _timer_TickAsync(object sender, EventArgs e)
         {
             var doUpdate = false;
             Action postupdate = null;
@@ -711,13 +711,13 @@ namespace HLab.Erp.Data.Observables
         }
 
         //take care of modified entity that do not match filters anymore
-        private void Vm_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void Vm_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var vm = sender as T;
             if (!Match(vm)) Remove(vm);
         }
 
-        private bool Match(T vm)
+        bool Match(T vm)
         {
             if (vm != null)
             {

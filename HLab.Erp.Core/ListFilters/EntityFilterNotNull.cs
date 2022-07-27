@@ -15,13 +15,12 @@ namespace HLab.Erp.Core.Wpf.ListFilters
     public class EntityFilter<TClass> : Filter<int>, IEntityFilterNotNull<TClass>
         where TClass : class, IEntity, new()
     {
-
-        private static readonly MethodInfo ContainsMethod = typeof(List<int>).GetMethod("Contains", new[] { typeof(int) });
+        static readonly MethodInfo ContainsMethod = typeof(List<int>).GetMethod("Contains", new[] { typeof(int) });
 
         public IEntityListViewModel<TClass> Target { get; }
 
 
-        private SuspenderToken _token;
+        SuspenderToken _token;
 
         public EntityFilter(IEntityListViewModel<TClass> target)
         {
@@ -32,7 +31,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
 
         }
 
-        private ITrigger _ = H<EntityFilter<TClass>>.Trigger(c => c
+        ITrigger _ = H<EntityFilter<TClass>>.Trigger(c => c
             .On(e => e.Target.SelectedIds)
             .On(e => e.Target.List.Item())
             .Do(e => e.Update?.Invoke())

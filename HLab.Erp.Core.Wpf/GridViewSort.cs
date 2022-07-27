@@ -113,7 +113,7 @@ namespace HLab.Erp.Core
 
         #region Column header click event handler
 
-        private static void ColumnHeader_Click(object sender, RoutedEventArgs e)
+        static void ColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             GridViewColumnHeader headerClicked = e.OriginalSource as GridViewColumnHeader;
             if (headerClicked != null)

@@ -18,7 +18,7 @@ namespace HLab.Erp.Core.Views
             InitializeComponent();
         }
 
-        private void DefaultEntitySelector_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        void DefaultEntitySelector_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var lvm = (e.NewValue as IListEntityViewModel);
             if (lvm?.LineViewModelType == null) return;
@@ -27,7 +27,7 @@ namespace HLab.Erp.Core.Views
             AddBindings(lvm.EntityViewModelType,"ViewModel.");
         }
 
-        private void AddBindings(Type type, string prefix ="")
+        void AddBindings(Type type, string prefix ="")
         {
             foreach (var p in type.GetProperties())
             {
@@ -49,7 +49,7 @@ namespace HLab.Erp.Core.Views
 
         }
 
-        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             //throw new NotImplementedException();
         }

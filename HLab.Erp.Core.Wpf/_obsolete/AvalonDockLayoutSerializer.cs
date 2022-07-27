@@ -40,7 +40,7 @@ namespace HLab.Erp.Core.ApplicationServices
         /// <summary>
         /// Backing store for LoadLayoutCommand dependency property
         /// </summary>
-        private static readonly DependencyProperty LoadLayoutCommandProperty =
+        static readonly DependencyProperty LoadLayoutCommandProperty =
             DependencyProperty.RegisterAttached("LoadLayoutCommand",
                 typeof(ICommand),
                 typeof(AvalonDockLayoutSerializer),
@@ -49,7 +49,7 @@ namespace HLab.Erp.Core.ApplicationServices
         /// <summary>
         /// Backing store for SaveLayoutCommand dependency property
         /// </summary>
-        private static readonly DependencyProperty SaveLayoutCommandProperty =
+        static readonly DependencyProperty SaveLayoutCommandProperty =
             DependencyProperty.RegisterAttached("SaveLayoutCommand",
                 typeof(ICommand),
                 typeof(AvalonDockLayoutSerializer),
@@ -84,7 +84,7 @@ namespace HLab.Erp.Core.ApplicationServices
         /// </summary>
         /// <param name="d"></param>
         /// <param name="e"></param>
-        private static void OnLoadLayoutCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        static void OnLoadLayoutCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             FrameworkElement framworkElement = d as FrameworkElement;     // Remove the handler if it exist to avoid memory leaks
             framworkElement.Loaded -= OnFrameworkElement_Loaded;
@@ -103,7 +103,7 @@ namespace HLab.Erp.Core.ApplicationServices
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void OnFrameworkElement_Loaded(object sender, RoutedEventArgs e)
+        static void OnFrameworkElement_Loaded(object sender, RoutedEventArgs e)
         {
             FrameworkElement frameworkElement = sender as FrameworkElement;
 
@@ -158,7 +158,7 @@ namespace HLab.Erp.Core.ApplicationServices
         /// </summary>
         /// <param name="d"></param>
         /// <param name="e"></param>
-        private static void OnSaveLayoutCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        static void OnSaveLayoutCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             FrameworkElement framworkElement = d as FrameworkElement;     // Remove the handler if it exist to avoid memory leaks
             framworkElement.Unloaded -= OnFrameworkElement_Saveed;
@@ -177,7 +177,7 @@ namespace HLab.Erp.Core.ApplicationServices
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void OnFrameworkElement_Saveed(object sender, RoutedEventArgs e)
+        static void OnFrameworkElement_Saveed(object sender, RoutedEventArgs e)
         {
             DockingManager frameworkElement = sender as DockingManager;
 

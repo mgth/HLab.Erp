@@ -15,9 +15,9 @@ namespace HLab.Erp.Base.Data
 
     public class UnitService : IUnitService
     {
-        private IDataService _db;
+        IDataService _db;
 
-        public void Inject(IDataService db, IObservableQuery<Unit> units)
+        public UnitService(IDataService db, IObservableQuery<Unit> units)
         {
             _db = db;
             Units = units;

@@ -1,24 +1,23 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
 using HLab.Erp.Acl;
+using HLab.Erp.Core.EntitySelectors;
 using HLab.Erp.Data;
-using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 
-
-namespace HLab.Erp.Core.EntitySelectors
+namespace HLab.Erp.Core.Wpf.EntitySelectors
 {
     public class ForeignViewModel<T> : EntityViewModel<T>, IForeignViewModel
         where T : class, IEntity<int>, INotifyPropertyChanged
     {
-        private IDocumentService _doc;
 
-        public void Inject(IDocumentService doc) => _doc = doc;
-
-         public ForeignViewModel() => H<ForeignViewModel<T>>.Initialize(this);
+         public ForeignViewModel(Injector i) : base(i)
+         {
+             H<ForeignViewModel<T>>.Initialize(this);
+         }
 
          public ICommand OpenCommand { get; } = H<ForeignViewModel<T>>.Command(c => c.Action(
-            e => e._doc?.OpenDocumentAsync(e.Model))
+            e => e.Injected.Docs?.OpenDocumentAsync(e.Model))
         );
         public ICommand SelectCommand { get; } = H<ForeignViewModel<T>>.Command(c => c);
     }

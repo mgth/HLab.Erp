@@ -9,8 +9,8 @@ namespace HLab.Erp.Base.Wpf
 {
     public class DbIconModule : IBootloader
     {
-        private readonly IIconService _icons;
-        private readonly IDataService _data;
+        readonly IIconService _icons;
+        readonly IDataService _data;
 
         public DbIconModule(IIconService icons, IDataService data)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Automation.Text;
 using System.Windows.Input;
 using System.Xml;
 using HLab.Erp.Acl;
@@ -15,6 +16,10 @@ namespace HLab.Erp.Base.Wpf.Entities.Units
 
     public class UnitViewModel: ListableEntityViewModel<Unit>
     {
+        public UnitViewModel(Injector i) : base(i)
+        {
+            H.Initialize(this);
+        }
 
         //public string SubTitle => _subTitle.Get();
         //private readonly IProperty<string> _subTitle = H.Property<string>(c => c
@@ -26,26 +31,51 @@ namespace HLab.Erp.Base.Wpf.Entities.Units
 
 
         public override string IconPath => _iconPath.Get();
-        private readonly IProperty<string> _iconPath = H.Property<string>(c => c
+
+        readonly IProperty<string> _iconPath = H.Property<string>(c => c
         .Set(e => e.GetIconPath )
         .On(e => e.Model.IconPath)
         .Update()
         );
 
-        private string GetIconPath => Model?.IconPath??Model?.IconPath??base.IconPath;
+        string GetIconPath => Model?.IconPath??Model?.IconPath??base.IconPath;
 
 
+        public double TestValue
+        {
+            get => _testValue.Get();
+            set => _testValue.Set(value);
+        }
 
-        //public ProductWorkflow Workflow => _workflow.Get();
-        //private readonly IProperty<ProductWorkflow> _workflow = H.Property<ProductWorkflow>(c => c
-        //    .On(e => e.Model)
-        //    .OnNotNull(e => e.Locker)
-        //    .Set(vm => new ProductWorkflow(vm.Model,vm.Locker))
-        //);
+        readonly IProperty<double> _testValue = H.Property<double>(c => c.Default(1.0));
+
+        public Unit TestUnit
+        {
+            get => _testUnit.Get();
+            set => _testUnit.Set(value);
+        }
+
+        readonly IProperty<Unit> _testUnit = H.Property<Unit>(c => c.Set(e => e.Model));
+
+        public double TestResult => _testResult.Get();
+
+        readonly IProperty<double> _testResult = H.Property<double>(c => c
+            .NotNull(e => e.TestUnit)
+            .NotNull(e => e.TestValue)
+            .NotNull(e => e.Model)
+            .Set(e => e.Model.Qty(e.TestUnit.AbsQty(e.TestValue)))
+            .On(e => e.TestUnit)
+            .On(e => e.TestValue)
+            .On(e => e.Model.Abs)
+            .On(e => e.Model.OffsetA)
+            .On(e => e.Model.OffsetB)
+            .Update()
+            );
+
     }
     public class UnitViewModelDesign : UnitViewModel, IViewModelDesign
     {
-        public UnitViewModelDesign()
+        public UnitViewModelDesign():base(null)
         {
         }
 

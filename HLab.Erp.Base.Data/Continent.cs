@@ -14,14 +14,14 @@ namespace HLab.Erp.Base.Data
             set => _name.Set(value);
         }
 
-        private readonly IProperty<string> _name = HD<Continent>.Property<string>(c => c.Default(""));
+        readonly IProperty<string> _name = HD<Continent>.Property<string>(c => c.Default(""));
         public string Code
         {
             get => _code.Get();
             set => _code.Set(value);
         }
 
-        private readonly IProperty<string> _code = HD<Continent>.Property<string>(c => c.Default(""));
+        readonly IProperty<string> _code = HD<Continent>.Property<string>(c => c.Default(""));
         public string ExportId => Code;
         public string Caption => Name;
         public string IconPath => $"icon/continent/{Name}";

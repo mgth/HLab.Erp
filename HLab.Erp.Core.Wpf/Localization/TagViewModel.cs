@@ -3,7 +3,7 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.Wpf.Localization
 {
-    class TagViewModel : ViewModel
+    internal class TagViewModel : ViewModel
     {
         public TagViewModel() => H<TagViewModel>.Initialize(this);
 
@@ -12,7 +12,8 @@ namespace HLab.Erp.Core.Wpf.Localization
             get => _value.Get();
             set => _value.Set(value);
         }
-        private readonly IProperty<string> _value = H<TagViewModel>.Property<string>();
+
+        readonly IProperty<string> _value = H<TagViewModel>.Property<string>();
 
     }
 }

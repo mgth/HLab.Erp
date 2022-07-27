@@ -5,7 +5,7 @@ namespace HLab.Erp.Core
 {
     public class ErpActivity
     {
-        private IMvvmService _mvvm;
+        IMvvmService _mvvm;
 
         public ErpActivity(IMvvmService mvvm)
         {

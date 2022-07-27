@@ -11,9 +11,9 @@ namespace HLab.Erp.Workflows
     using H = H<WorkflowViewModel>;
     public class WorkflowViewModel:ViewModel<IWorkflow>
     {
-        private readonly ObservableCollection<WorkflowAction> _backwardActions = new ObservableCollection<WorkflowAction>();
-        private readonly ObservableCollection<WorkflowAction> _actions = new ObservableCollection<WorkflowAction>();
-        private readonly ObservableCollection<string> _highlights = new ObservableCollection<string>();
+        readonly ObservableCollection<WorkflowAction> _backwardActions = new ObservableCollection<WorkflowAction>();
+        readonly ObservableCollection<WorkflowAction> _actions = new ObservableCollection<WorkflowAction>();
+        readonly ObservableCollection<string> _highlights = new ObservableCollection<string>();
         public ReadOnlyObservableCollection<WorkflowAction> BackwardActions { get; }
         public ReadOnlyObservableCollection<WorkflowAction> Actions { get; }
         public ReadOnlyObservableCollection<string> Highlights { get; }
@@ -35,8 +35,9 @@ namespace HLab.Erp.Workflows
             ((INotifyCollectionChanged)Model.Actions).CollectionChanged += Actions_CollectionChanged;
         }
 
-        private readonly object _lock = new object();
-        private void Actions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        readonly object _lock = new object();
+
+        void Actions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Application.Current.Dispatcher.Invoke(
             () =>

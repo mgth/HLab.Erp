@@ -36,7 +36,8 @@ namespace HLab.Erp.Core.Lists.QueryLists
             get => _viewMode.Get();
             set => _viewMode.Set(value);
         }
-        private IProperty<Type> _viewMode = H<QueryListBase<T>>.Property<Type>(c => c.Default(typeof(ViewModeDefault)));
+
+        IProperty<Type> _viewMode = H<QueryListBase<T>>.Property<Type>(c => c.Default(typeof(ViewModeDefault)));
 
         public abstract Type EntityType { get; }
         public IMvvmContext MvvmContext { get; set; }
@@ -76,14 +77,14 @@ namespace HLab.Erp.Core.Lists.QueryLists
             }
         }
 
-        private class Filter
+        class Filter
         {
             public object Name { get; set; }
             public Func<IQueryable<T>, IQueryable<T>> Func { get; set; }
             public int Order { get; set; }
         }
 
-        private class PostFilter
+        class PostFilter
         {
             public object Name { get; set; }
             public Func<IEnumerable<T>, IEnumerable<T>> Func { get; set; }
@@ -94,9 +95,9 @@ namespace HLab.Erp.Core.Lists.QueryLists
 
         public override Type EntityType => typeof(T);
 
-        private readonly object _lockFilters = new object();
-        private readonly List<Filter> _filters = new List<Filter>();
-        private readonly List<PostFilter> _postFilters = new List<PostFilter>();
+        readonly object _lockFilters = new object();
+        readonly List<Filter> _filters = new List<Filter>();
+        readonly List<PostFilter> _postFilters = new List<PostFilter>();
 
 
         public QueryListBase(INotifyPropertyChanged parentViewModel, Func<IQueryable<T>> sourceFunc, Type viewMode) 
@@ -112,7 +113,7 @@ namespace HLab.Erp.Core.Lists.QueryLists
             set => Selected = this.FirstOrDefault(e => e.Model.Id == value.Id);
         }
 
-        private readonly IProperty<T> _selectedEntity = H<QueryListBase<T, TVm, TThis>>.Property<T>(c => c
+        readonly IProperty<T> _selectedEntity = H<QueryListBase<T, TVm, TThis>>.Property<T>(c => c
             .Set(e => e.Selected.Model)
             .On(e => e.Selected.Model).Update()
         );
@@ -122,7 +123,8 @@ namespace HLab.Erp.Core.Lists.QueryLists
             get => _sourceFunc.Get();
             set => _sourceFunc.Set(value);
         }
-        private readonly IProperty<Func<IQueryable<T>>> _sourceFunc = H<QueryListBase<T, TVm, TThis>>.Property<Func<IQueryable<T>>>();
+
+        readonly IProperty<Func<IQueryable<T>>> _sourceFunc = H<QueryListBase<T, TVm, TThis>>.Property<Func<IQueryable<T>>>();
 
         //public IQueryProvider<T> Source => N.Get(() =>
         //{
@@ -291,7 +293,7 @@ namespace HLab.Erp.Core.Lists.QueryLists
             }
         }
 
-        private TThis AddCreator(Dictionary<string, Action<CreateHelper>> dict, Action<CreateHelper> func,
+        TThis AddCreator(Dictionary<string, Action<CreateHelper>> dict, Action<CreateHelper> func,
             string name = "")
         {
             lock (_lockFilters)
@@ -353,10 +355,7 @@ namespace HLab.Erp.Core.Lists.QueryLists
         //}
 
 
-
-
-
-        private readonly object _lockUpdate = new object();
+        readonly object _lockUpdate = new object();
 
         public TThis Update(bool forceUpdate = false)
         {
@@ -385,11 +384,11 @@ namespace HLab.Erp.Core.Lists.QueryLists
             return (TThis)this;
         }
 
-        private readonly object _lockUpdateNeeded = new object();
-        private volatile bool _updateNeeded = false;
+        readonly object _lockUpdateNeeded = new object();
+        volatile bool _updateNeeded = false;
 
 
-        private volatile bool _updating = false;
+        volatile bool _updating = false;
 
         public void UpdateThread(bool forceUpdate = false)
         {

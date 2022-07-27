@@ -47,11 +47,11 @@ namespace HLab.Erp.Core.DragDrops
         public event DragDropEventHandler Drop;
         public event DragDropEventHandler Move;
 
-        private Point _startPoint;
-        private IDropViewModel _currentTarget = null;
+        Point _startPoint;
+        IDropViewModel _currentTarget = null;
         public Panel Panel { get; }
-        private FrameworkElement Source { get; }
-        private readonly bool _sendMessages = false;
+        FrameworkElement Source { get; }
+        readonly bool _sendMessages = false;
 
 
         //private readonly ErpDragDropEventArg _args;
@@ -105,7 +105,7 @@ namespace HLab.Erp.Core.DragDrops
 
         public bool IsDragging => DraggedElement != null && DraggedElement.IsMouseCaptured;
 
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             _startPoint = e.GetPosition(Source);
             MouseEventArgs = e;
@@ -114,7 +114,7 @@ namespace HLab.Erp.Core.DragDrops
             Source.PreviewMouseMove += OnMouseMove;
         }
 
-        private void OnMouseUp(object sender, MouseButtonEventArgs e)
+        void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             //Debug.Print("OnMouseUp");
             DraggedElement=null;
@@ -151,10 +151,10 @@ namespace HLab.Erp.Core.DragDrops
             }
         }
 
-        private HashSet<IDropViewModel> _currentViewModels = null;
-        private HashSet<IDropViewModel> _allViewModels = null;
+        HashSet<IDropViewModel> _currentViewModels = null;
+        HashSet<IDropViewModel> _allViewModels = null;
 
-        private void DragInvokeViewModels()
+        void DragInvokeViewModels()
         {
             var w = Application.Current.MainWindow;
 
@@ -187,12 +187,12 @@ namespace HLab.Erp.Core.DragDrops
             }
         }
 
-        private VerticalAlignment _bckVerticalAlignment;
-        private HorizontalAlignment _bckHorizontalAlignment;
-        private bool _isHitTestVisible;
-        private Thickness _bckMargin;
-        private Binding _bckMarginBinding;
-        private FrameworkElement _draggedElement;
+        VerticalAlignment _bckVerticalAlignment;
+        HorizontalAlignment _bckHorizontalAlignment;
+        bool _isHitTestVisible;
+        Thickness _bckMargin;
+        Binding _bckMarginBinding;
+        FrameworkElement _draggedElement;
 
         public Vector DragShift { get; set; }
 
@@ -203,7 +203,7 @@ namespace HLab.Erp.Core.DragDrops
         }
 
 
-        private void StartDrag()
+        void StartDrag()
         {
             Canceled = false;
 
@@ -230,7 +230,7 @@ namespace HLab.Erp.Core.DragDrops
             DragMove(MouseEventArgs);
         }
 
-        private void EndDrag(bool cancel=false)
+        void EndDrag(bool cancel=false)
         {
             //Debug.Print("EndDrag");
 
@@ -267,14 +267,14 @@ namespace HLab.Erp.Core.DragDrops
             Source.PreviewMouseMove -= OnMouseMove;
         }
 
-        private void OnLostMouseCapture(object sender, MouseEventArgs e)
+        void OnLostMouseCapture(object sender, MouseEventArgs e)
         {
             DraggedElement.CaptureMouse();
             //Debug.Print("LostCapture");
             return;
         }
 
-        private void SetPosition()
+        void SetPosition()
         {
             Point p = MouseEventArgs.GetPosition(Panel);
 
@@ -283,7 +283,7 @@ namespace HLab.Erp.Core.DragDrops
                 = new Thickness(p.X + DragShift.X, p.Y + DragShift.Y, 0, 0);
         }
 
-        private void DragMove(MouseEventArgs e)
+        void DragMove(MouseEventArgs e)
         {
             if (!IsDragging) return;
 
@@ -327,9 +327,9 @@ namespace HLab.Erp.Core.DragDrops
             //if (_sendMessages) MessageBus.D.Publish(this);
         }
 
-        private IDropViewModel _newTarget;
+        IDropViewModel _newTarget;
 
-        private HitTestResultBehavior HitTest(HitTestResult result)
+        HitTestResultBehavior HitTest(HitTestResult result)
         {
             var fe = result?.VisualHit as FrameworkElement;
             var vm = fe?.DataContext as IDropViewModel;

@@ -11,12 +11,7 @@ namespace HLab.Erp.Core
 
     public abstract class NestedBootloader : NotifierBase, IBootloader
     {
-        protected IErpServices Erp { get; private set;}
-
-        public void Inject(IErpServices erp)
-        {
-            Erp = erp;
-        }
+        public IErpServices Erp { get; set; }
 
         protected NestedBootloader()
         {
@@ -36,12 +31,12 @@ namespace HLab.Erp.Core
             .CanExecute(e => true)
         );
 
-        private string _suffix = "";
-        private string _entityName = "";
+        string _suffix = "";
+        string _entityName = "";
 
-        private Type _parentType;
+        Type _parentType;
 
-        private void GetEntityName()
+        void GetEntityName()
         {
             _parentType = GetType().DeclaringType;
 
@@ -53,20 +48,18 @@ namespace HLab.Erp.Core
             {
                 if (i == typeof(IViewModel)) _suffix = "ViewModel";
 
-                if (i.IsConstructedGenericType)
+                if (!i.IsConstructedGenericType) continue;
+                if (i.GetGenericTypeDefinition() == typeof(IEntityListViewModel<>))
                 {
-                    if (i.GetGenericTypeDefinition() == typeof(IEntityListViewModel<>))
-                    {
-                        _suffix = "ListViewModel";
-                        _entityName = i.GenericTypeArguments[0].Name;
-                        return;
-                    }
-                    if (i.GetGenericTypeDefinition() == typeof(IViewModel<>))
-                    {
-                        _suffix = "ViewModel";
-                        _entityName = i.GenericTypeArguments[0].Name;
-                        return;
-                    }
+                    _suffix = "ListViewModel";
+                    _entityName = i.GenericTypeArguments[0].Name;
+                    return;
+                }
+                if (i.GetGenericTypeDefinition() == typeof(IViewModel<>))
+                {
+                    _suffix = "ViewModel";
+                    _entityName = i.GenericTypeArguments[0].Name;
+                    return;
                 }
             }
         }

@@ -28,7 +28,7 @@ namespace HLab.Erp.Acl
             set => _parentId.Set(value);
         }
 
-        private readonly IProperty<string> _parentId = H.Property<string>(c => c.Default(""));
+        readonly IProperty<string> _parentId = H.Property<string>(c => c.Default(""));
 
         [NotMapped]
         public ObservableQuery<AclGranted> Granted
@@ -38,7 +38,7 @@ namespace HLab.Erp.Acl
                     .FluentUpdate());
         }
 
-        private readonly IProperty<ObservableQuery<AclGranted>> _granted = H.Property<ObservableQuery<AclGranted>>();
+        readonly IProperty<ObservableQuery<AclGranted>> _granted = H.Property<ObservableQuery<AclGranted>>();
 
         //[TriggerOn(nameof(ParentId))]
         //public AclList Parent
@@ -53,7 +53,7 @@ namespace HLab.Erp.Acl
             set => _inherit.Set(value);
         }
 
-        private readonly IProperty<bool> _inherit = H.Property<bool>(c => c.Default(true));
+        readonly IProperty<bool> _inherit = H.Property<bool>(c => c.Default(true));
 
     }
 }

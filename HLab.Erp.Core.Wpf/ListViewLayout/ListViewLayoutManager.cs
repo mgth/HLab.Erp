@@ -66,7 +66,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // Refresh
 
 		// ----------------------------------------------------------------------
-		private void RegisterEvents( DependencyObject start )
+        void RegisterEvents( DependencyObject start )
 		{
 			for ( int i = 0; i < VisualTreeHelper.GetChildrenCount( start ); i++ )
 			{
@@ -111,7 +111,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // RegisterEvents
 
 		// ----------------------------------------------------------------------
-		private void UnregisterEvents( DependencyObject start )
+        void UnregisterEvents( DependencyObject start )
 		{
 			for ( int i = 0; i < VisualTreeHelper.GetChildrenCount( start ); i++ )
 			{
@@ -153,7 +153,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // UnregisterEvents
 
 		// ----------------------------------------------------------------------
-		private GridViewColumn FindParentColumn( DependencyObject element )
+        GridViewColumn FindParentColumn( DependencyObject element )
 		{
 			if ( element == null )
 			{
@@ -174,7 +174,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // FindParentColumn
 
 		// ----------------------------------------------------------------------
-		private GridViewColumnHeader FindColumnHeader( DependencyObject start, GridViewColumn gridViewColumn )
+        GridViewColumnHeader FindColumnHeader( DependencyObject start, GridViewColumn gridViewColumn )
 		{
 			for ( int i = 0; i < VisualTreeHelper.GetChildrenCount( start ); i++ )
 			{
@@ -197,7 +197,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // FindColumnHeader
 
 		// ----------------------------------------------------------------------
-		private void InitColumns()
+        void InitColumns()
 		{
 			GridView view = listView.View as GridView;
 			if ( view == null )
@@ -358,7 +358,7 @@ namespace HLab.Erp.Core.ListViewLayout
 
 		// ----------------------------------------------------------------------
 		// returns the delta
-		private double SetRangeColumnToBounds( GridViewColumn gridViewColumn )
+        double SetRangeColumnToBounds( GridViewColumn gridViewColumn )
 		{
 			double startWidth = gridViewColumn.Width;
 
@@ -383,7 +383,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // SetRangeColumnToBounds
 
 		// ----------------------------------------------------------------------
-		private bool IsFillColumn( GridViewColumn gridViewColumn )
+        bool IsFillColumn( GridViewColumn gridViewColumn )
 		{
 			if ( gridViewColumn == null )
 			{
@@ -401,7 +401,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // IsFillColumn
 
 		// ----------------------------------------------------------------------
-		private void DoResizeColumns()
+        void DoResizeColumns()
 		{
 			if ( resizing )
 			{
@@ -420,7 +420,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // DoResizeColumns
 
 		// ----------------------------------------------------------------------
-		private void ListViewLoaded( object sender, RoutedEventArgs e )
+        void ListViewLoaded( object sender, RoutedEventArgs e )
 		{
 			RegisterEvents( listView );
 			InitColumns();
@@ -429,7 +429,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // ListViewLoaded
 
 		// ----------------------------------------------------------------------
-		private void ListViewUnloaded( object sender, RoutedEventArgs e )
+        void ListViewUnloaded( object sender, RoutedEventArgs e )
 		{
 			if ( !loaded )
 			{
@@ -440,7 +440,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // ListViewUnloaded
 
 		// ----------------------------------------------------------------------
-		private void ThumbPreviewMouseMove( object sender, MouseEventArgs e )
+        void ThumbPreviewMouseMove( object sender, MouseEventArgs e )
 		{
 			Thumb thumb = sender as Thumb;
 			if ( thumb == null )
@@ -494,7 +494,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // ThumbPreviewMouseMove
 
 		// ----------------------------------------------------------------------
-		private void ThumbPreviewMouseLeftButtonDown( object sender, MouseButtonEventArgs e )
+        void ThumbPreviewMouseLeftButtonDown( object sender, MouseButtonEventArgs e )
 		{
 			Thumb thumb = sender as Thumb;
 			GridViewColumn gridViewColumn = FindParentColumn( thumb );
@@ -509,7 +509,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // ThumbPreviewMouseLeftButtonDown
 
 		// ----------------------------------------------------------------------
-		private void GridColumnWidthChanged( object sender, EventArgs e )
+        void GridColumnWidthChanged( object sender, EventArgs e )
 		{
 			if ( !loaded )
 			{
@@ -546,7 +546,7 @@ namespace HLab.Erp.Core.ListViewLayout
 
 		// ----------------------------------------------------------------------
 		// handle autosized column
-		private void GridColumnHeaderSizeChanged( object sender, SizeChangedEventArgs e )
+        void GridColumnHeaderSizeChanged( object sender, SizeChangedEventArgs e )
 		{
 			if ( autoSizedColumn == null )
 			{
@@ -568,7 +568,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // GridColumnHeaderSizeChanged
 
 		// ----------------------------------------------------------------------
-		private void ScrollViewerScrollChanged( object sender, ScrollChangedEventArgs e )
+        void ScrollViewerScrollChanged( object sender, ScrollChangedEventArgs e )
 		{
 			if ( loaded && Math.Abs( e.ViewportWidthChange - 0 ) > zeroWidthRange )
 			{
@@ -577,7 +577,7 @@ namespace HLab.Erp.Core.ListViewLayout
 		} // ScrollViewerScrollChanged
 
 		// ----------------------------------------------------------------------
-		private static void OnLayoutManagerEnabledChanged( DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e )
+        static void OnLayoutManagerEnabledChanged( DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e )
 		{
 			ListView listView = dependencyObject as ListView;
 			if ( listView != null )
@@ -592,15 +592,15 @@ namespace HLab.Erp.Core.ListViewLayout
 
 		// ----------------------------------------------------------------------
 		// members
-		private readonly ListView listView;
-		private ScrollViewer scrollViewer;
-		private bool loaded;
-		private bool resizing;
-		private Cursor resizeCursor;
-		private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.Auto;
-		private GridViewColumn autoSizedColumn;
+        readonly ListView listView;
+        ScrollViewer scrollViewer;
+        bool loaded;
+        bool resizing;
+        Cursor resizeCursor;
+        ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.Auto;
+        GridViewColumn autoSizedColumn;
 
-		private const double zeroWidthRange = 0.1;
+        const double zeroWidthRange = 0.1;
 
 	} // class ListViewLayoutManager
 

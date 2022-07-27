@@ -88,6 +88,7 @@
                     <entitySelectors:ForeignView DockPanel.Dock="Top"
                                     IsReadOnly="False"
                                     ModelClass="{Binding AddArgumentClass}"
+                                    ListClass="{Binding AddListClass}"
                                     Command="{Binding AddCommand}"
                                     >
                         <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>

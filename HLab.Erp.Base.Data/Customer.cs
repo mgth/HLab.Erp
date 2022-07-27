@@ -13,14 +13,16 @@ namespace HLab.Erp.Base.Data
 
 
         public string Caption => _caption.Get();
-        private readonly IProperty<string> _caption = H.Property<string>(c => c
+
+        readonly IProperty<string> _caption = H.Property<string>(c => c
             .On(e => e.Name)
             .On(e => e.Id)
             .Set(e => (e.Id < 0 && string.IsNullOrEmpty(e.Name)) ? "{New customer}" : e.Name)
         );
 
         public string IconPath => _iconPath.Get();
-        private readonly IProperty<string> _iconPath = H.Property<string>(c => c
+
+        readonly IProperty<string> _iconPath = H.Property<string>(c => c
             .On(e => e.Country.IconPath)
             .Set(e => e.Country?.IconPath)
         );

@@ -13,13 +13,15 @@ namespace HLab.Erp.Data
             get => _module.Get();
             set => _module.Set(value);
         }
-        private readonly IProperty<string> _module = H.Property<string>(c => c.Default(""));
+
+        readonly IProperty<string> _module = H.Property<string>(c => c.Default(""));
         public string Version
         {
             get => _version.Get();
             set => _version.Set(value);
         }
-        private readonly IProperty<string> _version = H.Property<string>();
+
+        readonly IProperty<string> _version = H.Property<string>();
 
     }
 }

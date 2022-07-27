@@ -9,8 +9,7 @@ namespace HLab.Erp.Acl.Users
 
     public class ImportUsersModule : NotifierBase, IBootloader
     {
-        
-        private readonly IErpServices _erp;
+        readonly IErpServices _erp;
 
         public ImportUsersModule(IErpServices erp)
         {

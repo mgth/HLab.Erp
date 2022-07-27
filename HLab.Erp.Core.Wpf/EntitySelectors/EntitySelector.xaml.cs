@@ -17,12 +17,12 @@ namespace HLab.Erp.Core.EntitySelectors
             Loaded += OnLoaded;
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             SearchTextBox.Focus();
         }
 
-        private void Control_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        void Control_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             ButtonOk.DoClick();
         }
@@ -70,12 +70,12 @@ namespace HLab.Erp.Core.EntitySelectors
             remove => RemoveHandler(CancelClickEvent, value);
         }
 
-        private void OkOnClick(object sender, RoutedEventArgs e)
+        void OkOnClick(object sender, RoutedEventArgs e)
         {
             RaiseEvent(new RoutedEventArgs(OkClickEvent));
         }
 
-        private void CancelOnClick(object sender, RoutedEventArgs e)
+        void CancelOnClick(object sender, RoutedEventArgs e)
         {
             RaiseEvent(new RoutedEventArgs(CancelClickEvent));
         }

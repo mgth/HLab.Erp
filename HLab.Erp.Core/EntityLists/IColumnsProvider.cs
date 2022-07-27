@@ -1,11 +1,10 @@
-﻿using HLab.Erp.Data;
+﻿using System;
+using System.Collections.Generic;
+using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace HLab.Erp.Core.Wpf.EntityLists
+namespace HLab.Erp.Core.EntityLists
 {
     public interface IListElementViewClass : IViewClass {}
 

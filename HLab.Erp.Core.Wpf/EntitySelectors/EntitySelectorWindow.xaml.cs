@@ -27,13 +27,13 @@ namespace HLab.Erp.Core.EntitySelectors
         }
 
 
-        private void EntitySelector_OnOkClick(object sender, RoutedEventArgs e)
+        void EntitySelector_OnOkClick(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
             Close();
         }
 
-        private void EntitySelector_OnCancelClick(object sender, RoutedEventArgs e)
+        void EntitySelector_OnCancelClick(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
             Close();

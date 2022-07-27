@@ -21,8 +21,8 @@ namespace HLab.Erp.Workflows
 
     public class WorkflowAction
     {
-        private readonly IWorkflow _workflow;
-        private readonly IWorkflowAction _action;
+        readonly IWorkflow _workflow;
+        readonly IWorkflowAction _action;
         public WorkflowAction(IWorkflow workflow, IWorkflowAction action)
         {
             _workflow = workflow;

@@ -5,7 +5,7 @@ namespace HLab.Erp.Acl
 {
     public class AclBootLoader : IBootloader
     {
-        private readonly IDataService _data;
+        readonly IDataService _data;
 
         public AclBootLoader(IDataService data)
         {

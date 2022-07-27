@@ -14,7 +14,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
     public class EntityFilterNullable<TClass> : Filter<int?>, IEntityFilterNullable<TClass>
     where TClass : class, IEntity, new()
     {
-        private static readonly MethodInfo ContainsMethod = typeof(List<int?>).GetMethod("Contains", new[] { typeof(int?) });
+        static readonly MethodInfo ContainsMethod = typeof(List<int?>).GetMethod("Contains", new[] { typeof(int?) });
 
         public IEntityListViewModel<TClass> Target { get; }
 
@@ -26,7 +26,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             H<EntityFilterNullable<TClass>>.Initialize(this);
         }
 
-        private ITrigger _ = H<EntityFilterNullable<TClass>>.Trigger(c => c
+        ITrigger _ = H<EntityFilterNullable<TClass>>.Trigger(c => c
             .On(e => e.Target.SelectedIds)
             .On(e => e.Target.List.Item())
             .Do(e => e.Update?.Invoke())

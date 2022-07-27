@@ -5,7 +5,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
 {
     public class CustomerViewModelDesign : CustomerViewModel, IViewModelDesign
     {
-        public CustomerViewModelDesign()
+        public CustomerViewModelDesign() : base(null)
         {
             Model = Customer.GetDesignModel();
         }

@@ -10,8 +10,8 @@ namespace HLab.Erp.Acl.AuditTrails
 
     public class AuthenticationViewModel : ViewModel
     {
-        protected IAclService Acl;
-        public void Inject(IAclService acl)
+        protected readonly IAclService Acl;
+        public AuthenticationViewModel(IAclService acl)
         {
             Acl = acl;
             H.Initialize(this);
@@ -22,7 +22,8 @@ namespace HLab.Erp.Acl.AuditTrails
             get => _message.Get();
             set => _message.Set(value);
         }
-        private readonly IProperty<string> _message = H.Property<string>();
+
+        readonly IProperty<string> _message = H.Property<string>();
 
 
         public void SetPassword(SecureString password)
@@ -41,7 +42,8 @@ namespace HLab.Erp.Acl.AuditTrails
                 }
             }
         }
-        private readonly IProperty<string> _login = H.Property<string>(c => c
+
+        readonly IProperty<string> _login = H.Property<string>(c => c
 #if DEBUG
                 .Default("administrateur")
 #else
@@ -60,7 +62,8 @@ namespace HLab.Erp.Acl.AuditTrails
                 }
             }
         }
-        private readonly IProperty<User> _user = H.Property<User>();
+
+        readonly IProperty<User> _user = H.Property<User>();
 
 
         public string Password
@@ -68,7 +71,8 @@ namespace HLab.Erp.Acl.AuditTrails
             get => _password.Get();
             set => _password.Set(value);
         }
-        private readonly IProperty<string> _password = H.Property<string>(c => c
+
+        readonly IProperty<string> _password = H.Property<string>(c => c
 #if DEBUG
                 .Default("VEqwosdLL6ZPetwK5aFlIg")
 #else
@@ -82,14 +86,21 @@ namespace HLab.Erp.Acl.AuditTrails
             get => _credential.Get();
             set
             {
-                if(_credential.Set(value))
+                if (!_credential.Set(value)) return;
+                if (value != null)
                 {
-                    Login = value?.UserName;
+                    Login = value.UserName;
                     Password = Acl.Crypt(value.SecurePassword);
+                }
+                else
+                {
+                    Login = null;
+                    Password = null;
                 }
             }
         }
-        private readonly IProperty<NetworkCredential> _credential = H.Property<NetworkCredential>(c => c
+
+        readonly IProperty<NetworkCredential> _credential = H.Property<NetworkCredential>(c => c
 #if DEBUG
         
                 .Default(new NetworkCredential("administrateur", "blagueur"))

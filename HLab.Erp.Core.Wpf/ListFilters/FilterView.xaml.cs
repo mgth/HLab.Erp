@@ -18,7 +18,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             ToggleButton.Checked += ToggleButton_Checked;
         }
 
-        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        void ToggleButton_Checked(object sender, RoutedEventArgs e)
         {
             var content = ContentControl.FindVisualChildren<IFilterContentViewClass>();
             foreach (var control in content)

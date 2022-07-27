@@ -2,18 +2,18 @@
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
+using HLab.Erp.Core.WebService;
 using HLab.Mvvm;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.WebService
+namespace HLab.Erp.Core.Wpf.WebService
 {
     using H = H<BrowserViewModel>;
 
     public class BrowserViewModel : ViewModel, IBrowserService
     {
-       
-        private IErpServices _erp;
+        readonly IErpServices _erp;
 
         public ICommand OpenCommand { get; } = H.Command(c => c
         .Action(e => e._erp.Docs.OpenDocumentAsync(e))
@@ -31,9 +31,10 @@ namespace HLab.Erp.Core.WebService
             get => _url.Get();
             set => _url.Set(value);
         }
-        private IProperty<string> _url = H.Property<string>(c => c.Default(""));
 
-        private IProperty<FrameworkElement> _host = H.Property<FrameworkElement>(c => c
+        IProperty<string> _url = H.Property<string>(c => c.Default(""));
+
+        IProperty<FrameworkElement> _host = H.Property<FrameworkElement>(c => c
             .On(e => e.WebBrowser)
             .Set(e => (FrameworkElement)new WindowsFormsHost
             {
@@ -41,7 +42,8 @@ namespace HLab.Erp.Core.WebService
             }));
 
         public WebBrowser WebBrowser => _webBrowser.Get();
-        private IProperty<WebBrowser> _webBrowser = H.Property<WebBrowser>(c => c
+
+        readonly IProperty<WebBrowser> _webBrowser = H.Property<WebBrowser>(c => c
             //.On(e => e.WebBrowser)
             .Set(e =>
             {
@@ -56,13 +58,13 @@ namespace HLab.Erp.Core.WebService
                 return web;
             }));
 
-        public void Inject(IErpServices erp)
+        public BrowserViewModel(IErpServices erp)
         {
             _erp = erp;
             H.Initialize(this);
         }
 
-        private void Web_Navigating(object sender, WebBrowserNavigatingEventArgs e)
+        void Web_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
             Url = e.Url.OriginalString;
         }

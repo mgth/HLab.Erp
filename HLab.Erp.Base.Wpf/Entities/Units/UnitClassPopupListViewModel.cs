@@ -1,4 +1,5 @@
 ﻿using System;
+using HLab.Erp.Acl;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
 using HLab.Erp.Core.ListFilterConfigurators;
@@ -7,7 +8,7 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf.Entities.Units
 {
-    public class UnitClassPopupListViewModel : EntityListViewModel<UnitClass>, IMvvmContextProvider
+    public class UnitClassPopupListViewModel : Core.EntityLists.EntityListViewModel<UnitClass>, IMvvmContextProvider
     {
         public class Bootloader : NestedBootloader
         { }
@@ -15,10 +16,10 @@ namespace HLab.Erp.Base.Wpf.Entities.Units
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
-        protected override bool CanExecuteAdd(Action<string> errorAction) => Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
-        protected override bool CanExecuteDelete(UnitClass customer, Action<string> errorAction) =>  Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+        protected override bool CanExecuteAdd(Action<string> errorAction) => Injected.Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+        protected override bool CanExecuteDelete(UnitClass customer, Action<string> errorAction) =>  Injected.Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
 
-        public UnitClassPopupListViewModel() : base(c => c
+        public UnitClassPopupListViewModel(Injector i) : base(i, c => c
             .Column("Name")
                 .Header("{Name}") 
 //                .OrderByOrder(0)

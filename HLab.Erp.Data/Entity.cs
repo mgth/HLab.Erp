@@ -49,7 +49,8 @@ namespace HLab.Erp.Data
             get => _id.Get();
             set => _id.Set(value);
         }
-        private readonly IProperty<T> _id = H<Entity<T>>.Property<T>(c => c.Default((T)(object)-1));
+
+        readonly IProperty<T> _id = H<Entity<T>>.Property<T>(c => c.Default((T)(object)-1));
 
         object IEntity.Id => Id;
 
@@ -61,11 +62,7 @@ namespace HLab.Erp.Data
         [Ignore]
         [JsonIgnore]
         public virtual bool IsLoaded { get; set; }
-        protected Entity()
-        {
-            H<Entity<T>>.Initialize(this);
-        }
-
+        protected Entity() => H<Entity<T>>.Initialize(this);
 
         [Ignore]
         [JsonIgnore]
@@ -74,8 +71,8 @@ namespace HLab.Erp.Data
             get => _dataService.Get();
             set => _dataService.Set(value);
         }
-        private readonly IProperty<IDataService> _dataService = H<Entity<T>>.Property<IDataService>();
 
-        public void Inject(IDataService dataService) => DataService = dataService;
+        readonly IProperty<IDataService> _dataService = H<Entity<T>>.Property<IDataService>();
+
     }
 }

@@ -11,13 +11,11 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
     public abstract class CorporationViewModel<T> : ListableEntityViewModel<T>, ICorporationViewModel
     where T : class, IEntity<int>, INotifyPropertyChanged, ICorporation, IListableModel
     {
-        public IErpServices Erp { get; private set; }
-        public void Inject(IErpServices erp)
-        {
-            Erp = erp;
-        }
 
-        protected CorporationViewModel() => H<CorporationViewModel<T>>.Initialize(this);
+        protected CorporationViewModel(Injector i):base(i)
+        {
+            H<CorporationViewModel<T>>.Initialize(this);
+        }
 
         ICorporation ICorporationViewModel.Model => Model;
     }

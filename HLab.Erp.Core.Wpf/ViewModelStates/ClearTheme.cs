@@ -5,7 +5,7 @@ using HLab.ColorTools.Wpf;
 
 namespace HLab.Erp.Core.ViewModelStates
 {
-    class ClearTheme : BrushTheme
+    internal class ClearTheme : BrushTheme
     {
         public override Brush GetBrush(Color color, ViewModelState state, BrushSetUsage usage)
         {

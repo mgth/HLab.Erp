@@ -22,7 +22,8 @@ namespace HLab.Erp.Core._obsolete
     public class AvalonDockLayoutViewModel : ViewModel
     {
         #region fields
-        private const string LayoutFileName = "Layout.config";
+
+        const string LayoutFileName = "Layout.config";
 
         //private RelayCommand mLoadWorkspaceLayoutFromStringCommand = null;
         //private RelayCommand mSaveWorkspaceLayoutToStringCommand = null;
@@ -31,7 +32,7 @@ namespace HLab.Erp.Core._obsolete
         //private RelayCommand<object> mSaveLayoutCommand = null;
 
         // The XML workspace layout string is stored in this field
-        private string _currentLayout;
+        string _currentLayout;
 
         readonly ILayoutViewModelParent _Parent = null;
         #endregion fields
@@ -165,11 +166,12 @@ namespace HLab.Erp.Core._obsolete
 
         #region methods
         #region Workspace Managment Methods
-        private void SaveWorkspaceLayout_Executed()
+
+        void SaveWorkspaceLayout_Executed()
         {
         }
 
-        private void LoadWorkspaceLayout_Executed()
+        void LoadWorkspaceLayout_Executed()
         {
         }
         #endregion Workspace Managment Methods
@@ -180,7 +182,7 @@ namespace HLab.Erp.Core._obsolete
         /// and checks whether a file should really be reloaded (some files may no longer
         /// be available).
         /// </summary>
-        private void LoadDockingManagerLayout()
+        void LoadDockingManagerLayout()
         {
             string layoutFileName;
 
@@ -256,7 +258,8 @@ namespace HLab.Erp.Core._obsolete
         #endregion LoadLayout
 
         #region SaveLayout
-        private void SaveDockingManagerLayout(string xmlLayout)
+
+        void SaveDockingManagerLayout(string xmlLayout)
         {
             // Create XML Layout file on close application (for re-load on application re-start)
             if (xmlLayout == null)

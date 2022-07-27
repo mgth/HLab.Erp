@@ -12,7 +12,7 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf.Entities.Icons
 {
-    public class IconsListViewModel : EntityListViewModel<Icon>, IMvvmContextProvider
+    public class IconsListViewModel : Core.EntityLists.EntityListViewModel<Icon>, IMvvmContextProvider
     {
         public class Bootloader : NestedBootloader
         {
@@ -60,7 +60,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         {
         }
 
-        private static async Task<object> GetSvgIconAsync(string source, int? foreColor)
+        static async Task<object> GetSvgIconAsync(string source, int? foreColor)
         {
             if (string.IsNullOrWhiteSpace(source)) return null;
             var icon = (UIElement)await XamlTools.FromSvgStringAsync(source).ConfigureAwait(true);
@@ -70,7 +70,8 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
                 MaxHeight = 30
             };
         }
-        private static async Task<object> GetXamlIconAsync(string source, int? foreColor)
+
+        static async Task<object> GetXamlIconAsync(string source, int? foreColor)
         {
             var icon = (UIElement)await XamlTools.FromXamlStringAsync(source).ConfigureAwait(true);
             return new Viewbox
@@ -80,7 +81,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             };
         }
 
-        public IconsListViewModel() : base(c => c
+        public IconsListViewModel(Injector i) : base(i, c => c
                .Column("Path")
                    .Header("{Path}")
                    .Link(s => s.Path)

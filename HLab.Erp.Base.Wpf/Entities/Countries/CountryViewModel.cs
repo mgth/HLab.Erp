@@ -11,7 +11,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
 
     public class CountryViewModel : ListableEntityViewModel<Country>
     {
-        public CountryViewModel() => H.Initialize(this);
+        public CountryViewModel(Injector i):base(i) => H.Initialize(this);
 
         public ICommand PastIconCommand { get; } = H.Command(c => c
             .Action(e =>

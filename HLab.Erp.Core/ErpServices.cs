@@ -8,7 +8,7 @@ namespace HLab.Erp.Core
 {
     public class ErpServices : IErpServices
     {
-        public void Inject(
+        public ErpServices(
             ILocalizationService localization, 
             IDataService data, IMvvmService mvvm, 
             IDocumentService docs, 
@@ -27,14 +27,14 @@ namespace HLab.Erp.Core
             Info = info;
         }
 
-        public IApplicationInfoService Info { get; private set;}
-        public IDataService Data { get; private set; }
-        public IMvvmService Mvvm { get ; private set;}
-        public IDocumentService Docs { get; private set;}
-        public IAclService Acl { get; private set;}
-        public IMessageBus Message { get; private set;}
-        public IMenuService Menu { get; private set;}
-        public ILocalizationService Localization {get; private set;}
+        public IApplicationInfoService Info { get; }
+        public IDataService Data { get; }
+        public IMvvmService Mvvm { get ; }
+        public IDocumentService Docs { get; }
+        public IAclService Acl { get; }
+        public IMessageBus Message { get; }
+        public IMenuService Menu { get; }
+        public ILocalizationService Localization {get; }
 
 
         public ServiceState ServiceState

@@ -14,19 +14,20 @@ namespace HLab.Erp.Acl.AuditTrails
     public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrailProvider, IMainViewModel
     {
 
-        public IIconService IconService { get; private set; }
-        public ILocalizationService LocalizationService { get; private set; }
+        public IIconService IconService { get; }
+        public ILocalizationService LocalizationService { get; }
 
         public string Title => EntityCaption;
 
-        private IMvvmService _mvvm;
-        private IDataTransaction _transaction;
+        readonly IMvvmService _mvvm;
+        readonly IDataTransaction _transaction;
 
-        public void  Inject(
+        public AuditTrailMotivationViewModel(
+            IAclService acl,
             IDataTransaction transaction, 
             IMvvmService mvvm, 
             IIconService icon, 
-            ILocalizationService localization)
+            ILocalizationService localization) : base(acl)
         {
             IconService = icon;
             LocalizationService = localization;
@@ -41,10 +42,11 @@ namespace HLab.Erp.Acl.AuditTrails
             get => _motivationMandatory.Get();
             set => _motivationMandatory.Set(value);
         }
-        private readonly IProperty<bool> _motivationMandatory = H.Property<bool>();
+
+        readonly IProperty<bool> _motivationMandatory = H.Property<bool>();
         public bool MotivationNeeded => _motivationNeeded.Get();
 
-        private readonly IProperty<bool> _motivationNeeded = H.Property<bool>(c => c
+        readonly IProperty<bool> _motivationNeeded = H.Property<bool>(c => c
             .Set(e => e.MotivationMandatory && string.IsNullOrWhiteSpace(e.Motivation))
             .On(e => e.MotivationMandatory)
             .On(e => e.Motivation)
@@ -55,40 +57,46 @@ namespace HLab.Erp.Acl.AuditTrails
             get => _signing.Get();
             set => _signing.Set(value);
         }
-        private readonly IProperty<bool> _signing = H.Property<bool>();
+
+        readonly IProperty<bool> _signing = H.Property<bool>();
 
         public string Motivation
         {
             get => _motivation.Get();
             set => _motivation.Set(value);
         }
-        private readonly IProperty<string> _motivation = H.Property<string>();
+
+        readonly IProperty<string> _motivation = H.Property<string>();
         public string IconPath
         {
             get => _iconPath.Get();
             set => _iconPath.Set(value);
         }
-        private readonly IProperty<string> _iconPath = H.Property<string>();
+
+        readonly IProperty<string> _iconPath = H.Property<string>();
         public string EntityCaption
         {
             get => _entityCaption.Get();
             set => _entityCaption.Set(value);
         }
-        private readonly IProperty<string> _entityCaption = H.Property<string>();
+
+        readonly IProperty<string> _entityCaption = H.Property<string>();
 
         public string Log
         {
             get => _log.Get();
             set => _log.Set(value);
         }
-        private readonly IProperty<string> _log = H.Property<string>();
+
+        readonly IProperty<string> _log = H.Property<string>();
 
         public bool? Result
         {
             get => _result.Get();
             set => _result.Set(value);
         }
-        private readonly IProperty<bool?> _result = H.Property<bool?>();
+
+        readonly IProperty<bool?> _result = H.Property<bool?>();
 
         public ICommand OkCommand { get; } = H.Command( c => c
             .CanExecute(e => !e.MotivationMandatory || (e.Motivation?.Length??0)>=5)

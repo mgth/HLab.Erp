@@ -28,12 +28,12 @@ namespace HLab.Erp.Acl
         public async Task<Connection> GetConnectionWithPin(NetworkCredential credential) => await GetConnection(await GetUserWithPin(credential).ConfigureAwait(false)).ConfigureAwait(false);
 
 
-        private const string Cle = "PG8JaR0ix+GP2w0bXse/ReZugKK+Q/g/";
-        private const string Iv = "TuG898IilQA=";
+        const string Cle = "PG8JaR0ix+GP2w0bXse/ReZugKK+Q/g/";
+        const string Iv = "TuG898IilQA=";
 
         protected IDataService Data;
 
-        public void Inject(IDataService db)
+        public AclHelper(IDataService db)
         {
             Data = db;
         }
@@ -58,7 +58,7 @@ namespace HLab.Erp.Acl
             }
         }
 
-        private async Task<Connection> GetConnection(User user)
+        async Task<Connection> GetConnection(User user)
         {
             if (user == null) return null;
 

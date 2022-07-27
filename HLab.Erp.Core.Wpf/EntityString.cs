@@ -5,9 +5,8 @@ namespace HLab.Erp.Core
 {
     public class EntityString : Entity<int>, IEntity
     {
-
-        private static int _cnt = 0;
-        private int _id = -1;
+        static int _cnt = 0;
+        int _id = -1;
         public override bool IsLoaded
         {
             get => true;

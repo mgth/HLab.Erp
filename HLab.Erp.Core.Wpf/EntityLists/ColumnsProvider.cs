@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Localization.Wpf.Lang;
@@ -19,7 +20,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 {
     public class ColumnsProvider<T> : IColumnsProvider<T> where T:class, IEntity
     {
-        private readonly Dictionary<string,IColumn<T>> _dict = new ();
+        readonly Dictionary<string,IColumn<T>> _dict = new ();
         public IObservableQuery<T> List {get;}
 
         public Dictionary<string,IColumn> Columns => _dict.ToDictionary(p=>p.Key,p=>(IColumn)p.Value);
@@ -29,9 +30,9 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             List = list;
         }
 
-        private IColumn<T> _orderByColumn = null;
+        IColumn<T> _orderByColumn = null;
 
-        private void SetOrderBy(IColumn<T> column)
+        void SetOrderBy(IColumn<T> column)
         {
             if (column == _orderByColumn) return;
 

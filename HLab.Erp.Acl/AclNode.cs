@@ -28,14 +28,14 @@ namespace HLab.Erp.Acl
             set => _targetClass.Set(value);
         }
 
-        private readonly IProperty<string> _targetClass = H.Property<string>(c => c.Default(""));
+        readonly IProperty<string> _targetClass = H.Property<string>(c => c.Default(""));
         public int? TargetId
         {
             get => _targetId.Get();
             set => _targetId.Set(value);
         }
 
-        private readonly IProperty<int?> _targetId = H.Property<int?>();
+        readonly IProperty<int?> _targetId = H.Property<int?>();
 
         [Ignore]
         public ObservableQuery<AclLink> Members
@@ -44,7 +44,8 @@ namespace HLab.Erp.Acl
             set => _members.Set(value.AddFilter("", ()=>n => n.GroupId == Id)
                     .FluentUpdate());
         }
-        private readonly IProperty<ObservableQuery<AclLink>> _members = H.Property<ObservableQuery<AclLink>>();
+
+        readonly IProperty<ObservableQuery<AclLink>> _members = H.Property<ObservableQuery<AclLink>>();
 
         [Ignore]
         public ObservableQuery<AclLink> Groups
@@ -54,7 +55,7 @@ namespace HLab.Erp.Acl
                     .FluentUpdate());
         }
 
-        private readonly IProperty<ObservableQuery<AclLink>> _groups = H.Property<ObservableQuery<AclLink>>();
+        readonly IProperty<ObservableQuery<AclLink>> _groups = H.Property<ObservableQuery<AclLink>>();
 
         public bool Grant(AclRight right, AclNode target)
         {

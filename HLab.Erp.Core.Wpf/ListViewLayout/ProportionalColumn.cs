@@ -24,7 +24,7 @@ namespace HLab.Erp.Core.ListViewLayout
 				typeof( ProportionalColumn ) );
 
 		// ----------------------------------------------------------------------
-		private ProportionalColumn()
+        ProportionalColumn()
 		{
 		} // ProportionalColumn
 

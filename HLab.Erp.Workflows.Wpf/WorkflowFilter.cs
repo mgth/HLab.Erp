@@ -15,8 +15,7 @@ namespace HLab.Erp.Workflows
     public class WorkflowFilter<TClass>: Filter<string>, IWorkflowFilter
         where TClass : class, IWorkflow<TClass>
     {
-
-        private static readonly MethodInfo ContainsMethod = typeof(List<string>).GetMethod("Contains", new[] {typeof(string)});
+        static readonly MethodInfo ContainsMethod = typeof(List<string>).GetMethod("Contains", new[] {typeof(string)});
 
         public class StageEntry : NotifierBase
         {
@@ -27,7 +26,8 @@ namespace HLab.Erp.Workflows
                 get => _selected.Get(); 
                 set => _selected.Set(value);
             }
-            private readonly IProperty<bool> _selected = H<StageEntry>.Property<bool>();
+
+            readonly IProperty<bool> _selected = H<StageEntry>.Property<bool>();
 
             public IWorkflowStage Stage { get; set; }
 
@@ -36,7 +36,7 @@ namespace HLab.Erp.Workflows
         }
 
         public ReadOnlyObservableCollection<StageEntry> List { get; }
-        private readonly ObservableCollection<StageEntry> _list = new();
+        readonly ObservableCollection<StageEntry> _list = new();
 
         public WorkflowFilter()
         {
@@ -54,7 +54,7 @@ namespace HLab.Erp.Workflows
             }
         }
 
-        private ITrigger _ = H<WorkflowFilter<TClass>>.Trigger(c => c
+        ITrigger _ = H<WorkflowFilter<TClass>>.Trigger(c => c
             .On(e => e.List.Item().Selected)
             .On(e => e.Enabled)
             .Do(e => e.Update?.Invoke())

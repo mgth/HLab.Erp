@@ -39,7 +39,7 @@ namespace HLab.Erp.Core.ListViewLayout
 				typeof( RangeColumn ) );
 
 		// ----------------------------------------------------------------------
-		private RangeColumn()
+        RangeColumn()
 		{
 		} // RangeColumn
 

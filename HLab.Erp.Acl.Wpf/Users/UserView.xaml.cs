@@ -14,7 +14,7 @@ namespace HLab.Erp.Acl.Users
             InitializeComponent();
         }
 
-        private void TextBox_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        void TextBox_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if(DataContext is UserViewModel vm &&!vm.Locker.IsActive) vm.Locker.ActivateAsync();
         }

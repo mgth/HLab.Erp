@@ -5,21 +5,21 @@ using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Mvvm.Annotations;
 using System;
+using HLab.Erp.Acl;
 
 namespace HLab.Erp.Base.Wpf.Entities.Customers
 {
-    public class CustomersListViewModel : EntityListViewModel<Customer>, IMvvmContextProvider
+    public class CustomersListViewModel : Core.EntityLists.EntityListViewModel<Customer>, IMvvmContextProvider
     {
         public class Bootloader : NestedBootloader
         { }
-
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
-        protected override bool CanExecuteAdd(Action<string> errorAction) => Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
-        protected override bool CanExecuteDelete(Customer customer, Action<string> errorAction) =>  Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+        protected override bool CanExecuteAdd(Action<string> errorAction) => Injected.Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+        protected override bool CanExecuteDelete(Customer customer, Action<string> errorAction) =>  Injected.Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
 
-        public CustomersListViewModel() : base(c => c
+        public CustomersListViewModel(Injector i) : base(i, c => c
             .Column("Name")
                 .Header("{Name}") 
 //                .OrderByOrder(0)

@@ -5,20 +5,20 @@ using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Mvvm.Annotations;
 using System;
+using HLab.Erp.Acl;
 
 namespace HLab.Erp.Base.Wpf.Entities.Countries
 {
-    public class CountriesListViewModel : EntityListViewModel<Country>, IMvvmContextProvider
+    public class CountriesListViewModel : Core.EntityLists.EntityListViewModel<Country>, IMvvmContextProvider
     {
         public class Bootloader : NestedBootloader
         {
             public override string MenuPath => "param";
         }
+        protected override bool CanExecuteExport(Action<string> errorAction) => Injected.Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
+        protected override bool CanExecuteImport(Action<string> errorAction) => Injected.Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
 
-        protected override bool CanExecuteExport(Action<string> errorAction) => Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
-        protected override bool CanExecuteImport(Action<string> errorAction) => Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
-
-        public CountriesListViewModel(ILocalizationService localization) : base(c => c
+        public CountriesListViewModel(Injector i) : base(i, c => c
                 .Header("{Country}")
                 .Column("Name")
                     .Header("{Name}")
@@ -27,7 +27,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
                     
                     // TODO                .OrderByOrder(0)
                     .Filter()
-                    .PostLink(s => localization.Localize(s.Name))
+                    .PostLink(s => i.Localization.Localize(s.Name))
 
                 .Column("A2Code")
                     .Header("{A2 Code}")

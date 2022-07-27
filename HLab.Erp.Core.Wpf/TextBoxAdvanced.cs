@@ -51,7 +51,7 @@ namespace HLab.Erp.Core
             get => (Brush)GetValue(EditForegroundProperty); set => SetValue(EditForegroundProperty, value);
         }
 
-        private void SetBindingEdit()
+        void SetBindingEdit()
         {
             var b = new Binding(nameof(EditBackground)) {Source = this};
             var f = new Binding(nameof(EditForeground)) {Source = this};
@@ -59,7 +59,7 @@ namespace HLab.Erp.Core
             BindingOperations.SetBinding(this, ForegroundProperty, f);    
         }
 
-        private void SetBindingDefault()
+        void SetBindingDefault()
         {
             var b = new Binding(nameof(DefaultBackground)) { Source = this };
             var f = new Binding(nameof(DefaultForeground)) { Source = this };

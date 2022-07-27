@@ -20,12 +20,13 @@ namespace HLab.Erp.Core
             get => _note.Get();
             set => _note.Set(value);
         }
-        private readonly IProperty<string> _note = H<AboutViewModel>.Property<string>();
+
+        readonly IProperty<string> _note = H<AboutViewModel>.Property<string>();
         
         #endregion
         #region Data
 
-        private IErpServices _erp;
+        IErpServices _erp;
 
         #endregion
     }

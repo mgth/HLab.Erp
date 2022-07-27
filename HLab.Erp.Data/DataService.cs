@@ -16,10 +16,10 @@ namespace HLab.Erp.Data
 {
     public class DataService : IDataService, IService
     {
-        private IOptionsService _options;
+        readonly IOptionsService _options;
         public Func<Type, object> Locate { get; private set;}
 
-        public void Inject(Func<Type, object> locate, IOptionsService options)
+        public DataService(Func<Type, object> locate, IOptionsService options)
         {
             Locate = locate;
             _options = options;
@@ -411,7 +411,7 @@ namespace HLab.Erp.Data
             return DbGet<bool>(db => db.Query<T>().Any(expression));
         }
 
-        private IEnumerable<string> _connectionStrings;
+        IEnumerable<string> _connectionStrings;
         public IEnumerable<string> Connections
         {
             get
@@ -424,7 +424,7 @@ namespace HLab.Erp.Data
             }
         }
 
-        private string _connectionString;
+        string _connectionString;
         public string ConnectionString
         {
             get
@@ -443,7 +443,7 @@ namespace HLab.Erp.Data
             }
         }
 
-        private string _source;
+        string _source;
 
         public string Source
         {
@@ -535,18 +535,19 @@ namespace HLab.Erp.Data
             return d.QueryAsync<T>().Where(expression).ToEnumerable().Select(select).Distinct();
         }
 
-        private bool Retry()
+        bool Retry()
         {
             return true;
         }
 
 
-        private void Db(Action<IDatabase> action) => DbGet(db =>
+        void Db(Action<IDatabase> action) => DbGet(db =>
         {
             action(db);
             return true;
         });
-        private T DbGet<T>(Func<IDatabase, T> action)
+
+        T DbGet<T>(Func<IDatabase, T> action)
         {
             while (true)
             {
@@ -563,12 +564,13 @@ namespace HLab.Erp.Data
             }
         }
 
-        private async Task DbAsync(Func<IDatabase, Task> action) => await DbGetAsync(async db =>
+        async Task DbAsync(Func<IDatabase, Task> action) => await DbGetAsync(async db =>
          {
              await action(db);
              return true;
          });
-        private async Task<T> DbGetAsync<T>(Func<IDatabase, Task<T>> action)
+
+        async Task<T> DbGetAsync<T>(Func<IDatabase, Task<T>> action)
         {
             while (true)
             {
@@ -584,7 +586,7 @@ namespace HLab.Erp.Data
             }
         }
 
-        private Func<string> _getConnectionString = null;
+        Func<string> _getConnectionString = null;
 
         public void SetConfigureAction(Func<string> action)
         {            
@@ -592,7 +594,7 @@ namespace HLab.Erp.Data
             ServiceState = ServiceState.Available;
         }
 
-        private bool Configure(Exception exception = null)
+        bool Configure(Exception exception = null)
         {
             return true;
         }

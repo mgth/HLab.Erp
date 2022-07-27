@@ -8,6 +8,8 @@ namespace HLab.Erp.Acl
     public interface IDataLocker : IDisposable
     {
         bool IsActive { get; }
+        bool IsEnabled { get; set; }
+        bool IsReadOnly { get; }
         ICommand ActivateCommand { get; }
         ICommand SaveCommand { get; }
         ICommand CancelCommand { get; }
@@ -19,5 +21,8 @@ namespace HLab.Erp.Acl
         Task DirtyCancelAsync();
         Task CancelAsync();
         Task<bool> ActivateAsync();
+
+        void AddDependencyLocker(params IDataLocker[] lockers);
+
     }
 }

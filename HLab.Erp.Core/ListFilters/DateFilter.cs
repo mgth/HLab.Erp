@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Xml;
 using System.Xml.Linq;
-
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
@@ -51,7 +51,8 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             get => _referenceDate.Get();
             set => _referenceDate.Set(value);
         }
-        private readonly IProperty<DateTime> _referenceDate = H<DateFilter<TDate>>.Property<DateTime>();
+
+        readonly IProperty<DateTime> _referenceDate = H<DateFilter<TDate>>.Property<DateTime>();
 
         /// <summary>
         /// Min Date
@@ -66,7 +67,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             }
         }
 
-        private readonly IProperty<DateTime> _minDate = H<DateFilter<TDate>>.Property<DateTime>(c => c
+        readonly IProperty<DateTime> _minDate = H<DateFilter<TDate>>.Property<DateTime>(c => c
             .On(e => e.MinDateCalculated)
             .On(e => e.MinDateShift)
             .On(e => e.MinDateShiftUnit)
@@ -78,10 +79,12 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             get => _minDateCalculated.Get();
             set => _minDateCalculated.Set(value);
         }
-        private readonly IProperty<bool> _minDateCalculated = H<DateFilter<TDate>>.Property<bool>(c => c.Default(false));
+
+        readonly IProperty<bool> _minDateCalculated = H<DateFilter<TDate>>.Property<bool>(c => c.Default(false));
 
         public bool MinDateEnabled => _minDateEnabled.Get();
-        private readonly IProperty<bool> _minDateEnabled = H<DateFilter<TDate>>.Property<bool>(c => c
+
+        readonly IProperty<bool> _minDateEnabled = H<DateFilter<TDate>>.Property<bool>(c => c
             .Default(true)
             .On(e => e.MinDateCalculated)
             .Set(e => !e.MinDateCalculated));
@@ -91,8 +94,10 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             get => _minDateShift.Get();
             set => _minDateShift.Set(value);
         }
-        private readonly IProperty<int> _minDateShift = H<DateFilter<TDate>>.Property<int>();
-        private readonly ITrigger _triggerMinDateShift = H<DateFilter<TDate>>.Trigger(c => c
+
+        readonly IProperty<int> _minDateShift = H<DateFilter<TDate>>.Property<int>();
+
+        readonly ITrigger _triggerMinDateShift = H<DateFilter<TDate>>.Trigger(c => c
             .On(e => e.MinDateCalculated)
             .On(e => e.MinDate)
             .When(e => !e.MinDateCalculated)
@@ -108,7 +113,8 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             get => _minDateShiftUnit.Get();
             set => _minDateShiftUnit.Set(value);
         }
-        private readonly IProperty<DateShiftUnit> _minDateShiftUnit = H<DateFilter<TDate>>.Property<DateShiftUnit>();
+
+        readonly IProperty<DateShiftUnit> _minDateShiftUnit = H<DateFilter<TDate>>.Property<DateShiftUnit>();
 
         /// <summary>
         /// Max Date
@@ -123,7 +129,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             }
         }
 
-        private readonly IProperty<DateTime> _maxDate = H<DateFilter<TDate>>.Property<DateTime>(c => c
+        readonly IProperty<DateTime> _maxDate = H<DateFilter<TDate>>.Property<DateTime>(c => c
             .On(e => e.MaxDateCalculated)
             .On(e => e.MaxDateShift)
             .On(e => e.MaxDateShiftUnit)
@@ -135,10 +141,12 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             get => _maxDateCalculated.Get();
             set => _maxDateCalculated.Set(value);
         }
-        private readonly IProperty<bool> _maxDateCalculated = H<DateFilter<TDate>>.Property<bool>(c => c.Default(false));
+
+        readonly IProperty<bool> _maxDateCalculated = H<DateFilter<TDate>>.Property<bool>(c => c.Default(false));
 
         public bool MaxDateEnabled => _maxDateEnabled.Get();
-        private readonly IProperty<bool> _maxDateEnabled = H<DateFilter<TDate>>.Property<bool>(c => c
+
+        readonly IProperty<bool> _maxDateEnabled = H<DateFilter<TDate>>.Property<bool>(c => c
             .Default(true)
             .On(e => e.MaxDateCalculated)
             .Set(e => !e.MaxDateCalculated));
@@ -149,8 +157,9 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             set => _maxDateShift.Set(value);
         }
 
-        private readonly IProperty<int> _maxDateShift = H<DateFilter<TDate>>.Property<int>();
-        private readonly ITrigger _triggerMaxDateShift = H<DateFilter<TDate>>.Trigger(c => c
+        readonly IProperty<int> _maxDateShift = H<DateFilter<TDate>>.Property<int>();
+
+        readonly ITrigger _triggerMaxDateShift = H<DateFilter<TDate>>.Trigger(c => c
             .On(e => e.MaxDateCalculated)
             .On(e => e.MaxDate)
             .When(e => !e.MaxDateCalculated)
@@ -166,7 +175,8 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             get => _maxDateShiftUnit.Get();
             set => _maxDateShiftUnit.Set(value);
         }
-        private readonly IProperty<DateShiftUnit> _maxDateShiftUnit = H<DateFilter<TDate>>.Property<DateShiftUnit>();
+
+        readonly IProperty<DateShiftUnit> _maxDateShiftUnit = H<DateFilter<TDate>>.Property<DateShiftUnit>();
 
 
 
@@ -190,7 +200,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             //return t => g(t) <= maxDate && g(t) >= minDate;
         }
 
-        private ITrigger _updateTrigger = H<DateFilter<TDate>>.Trigger(c => c
+        ITrigger _updateTrigger = H<DateFilter<TDate>>.Trigger(c => c
             .On(e => e.MinDate)
             .On(e => e.MaxDate)
             .On(e => e.Update)
@@ -200,7 +210,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
         );
 
 
-        private static DateTime Shift(DateTime referenceDate, int shift, DateShiftUnit unit)
+        static DateTime Shift(DateTime referenceDate, int shift, DateShiftUnit unit)
         {
             switch (unit)
             {
@@ -218,7 +228,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
 
         }
 
-        private static (int, DateShiftUnit) CalculateShift(DateTime referenceDate, DateTime date)
+        static (int, DateShiftUnit) CalculateShift(DateTime referenceDate, DateTime date)
         {
             var unit = DateShiftUnit.Day;
 
@@ -274,9 +284,9 @@ namespace HLab.Erp.Core.Wpf.ListFilters
         {
             GetXmlDate(element,"MinDate",d => MinDate = d);
             GetXmlDate(element,"MaxDate",d => MaxDate = d);
-        }    
+        }
 
-        private static void GetXmlDate(XElement element, string Name, Action<DateTime> setter)
+        static void GetXmlDate(XElement element, string Name, Action<DateTime> setter)
         {
             var attribute = element.Attribute("MinDate");
             if (attribute != null)

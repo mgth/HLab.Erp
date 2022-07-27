@@ -12,7 +12,8 @@ namespace HLab.Erp.Base.Wpf.Entities
         {
             InitializeComponent();
         }
-        private void Populate(Type modelType)
+
+        void Populate(Type modelType)
         {
             foreach (var property in modelType.GetProperties())
             {

@@ -7,7 +7,7 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Acl.AuditTrails
 {
-    public class AuditTrailsListViewModel : EntityListViewModel<AuditTrail>, IMvvmContextProvider
+    public class AuditTrailsListViewModel : Core.EntityLists.EntityListViewModel<AuditTrail>, IMvvmContextProvider
     {
         public class AuditTrailsListBootloader : NestedBootloader
         {
@@ -18,7 +18,7 @@ namespace HLab.Erp.Acl.AuditTrails
         {
         }
 
-        private static string LogAbstract(string log, int size)
+        static string LogAbstract(string log, int size)
         {
             const string suffix = "...";
 
@@ -28,7 +28,7 @@ namespace HLab.Erp.Acl.AuditTrails
             return result;
         }
 
-        public AuditTrailsListViewModel() : base(c => c
+        public AuditTrailsListViewModel(Injector i) : base(i, c => c
             .Column("Date")
             .Header("{Date}").Width(110)
             .Link(at => at.TimeStamp)

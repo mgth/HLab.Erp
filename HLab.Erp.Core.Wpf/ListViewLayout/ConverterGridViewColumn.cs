@@ -61,7 +61,7 @@ namespace HLab.Erp.Core.ListViewLayout
 
 		// ----------------------------------------------------------------------
 		// members
-		private readonly Type bindingType;
+        readonly Type bindingType;
 
 	} // class ConverterGridViewColumn
 

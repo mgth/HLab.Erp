@@ -13,7 +13,7 @@ namespace HLab.Erp.Data
     public class EntityPersister<T> : Persister
     where T : class, IEntity
     {
-        private readonly IDataService _data;
+        readonly IDataService _data;
 
         public EntityPersister(IDataService data, object target) : base(target,false)
         {
@@ -59,7 +59,7 @@ namespace HLab.Erp.Data
             }
         }
 
-        private static string GetColumnName(PropertyInfo info)
+        static string GetColumnName(PropertyInfo info)
         {
             var attr = info.GetCustomAttribute<ColumnAttribute>();
             if(attr?.Name != null) return attr.Name;

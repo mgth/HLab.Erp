@@ -14,7 +14,7 @@ namespace HLab.Erp.Acl.KioskLogin
     /// </summary>
     public partial class KioskLoginView : UserControl, IView<ViewModeKiosk, LoginViewModel>
     {
-        private readonly IMessageBus _messageBus;
+        readonly IMessageBus _messageBus;
         public KioskLoginView(IMessageBus messageBus)
         {
             _messageBus = messageBus;
@@ -23,7 +23,7 @@ namespace HLab.Erp.Acl.KioskLogin
 
         }
 
-        private void LoginView_Loaded(object sender, RoutedEventArgs e)
+        void LoginView_Loaded(object sender, RoutedEventArgs e)
         {
             var win = this.FindVisualParent<Window>();
             if (win != null)
@@ -38,12 +38,12 @@ namespace HLab.Erp.Acl.KioskLogin
             }
         }
 
-        private void LoginView_Closed(object sender, EventArgs e)
+        void LoginView_Closed(object sender, EventArgs e)
         {
             Application.Current.Shutdown();
         }
 
-        private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
+        void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
             if (DataContext is LoginViewModel l)
             {

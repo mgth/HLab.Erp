@@ -16,7 +16,8 @@ namespace HLab.Erp.Acl
             get => _userId.Get();
             set => _userId.Set(value);
         }
-        private readonly IProperty<int?> _userId = H.Property<int?>();
+
+        readonly IProperty<int?> _userId = H.Property<int?>();
 
         [Ignore]
         public User User
@@ -25,7 +26,7 @@ namespace HLab.Erp.Acl
             set => UserId = value.Id;
         }
 
-        private readonly IProperty<User> _user = H.Property<User>(c => c
+        readonly IProperty<User> _user = H.Property<User>(c => c
             .Foreign(e => e.UserId));
 
         public string Account
@@ -34,7 +35,7 @@ namespace HLab.Erp.Acl
             set => _account.Set(value);
         }
 
-        private readonly IProperty<string> _account = H.Property<string>(c => c.Default(""));
+        readonly IProperty<string> _account = H.Property<string>(c => c.Default(""));
 
         public string Domain
         {
@@ -42,7 +43,7 @@ namespace HLab.Erp.Acl
             set => _domain.Set(value);
         }
 
-        private readonly IProperty<string> _domain = H.Property<string>(c => c.Default(""));
+        readonly IProperty<string> _domain = H.Property<string>(c => c.Default(""));
 
         public string Workstation
         {
@@ -50,7 +51,7 @@ namespace HLab.Erp.Acl
             set => _workstation.Set(value);
         }
 
-        private readonly IProperty<string> _workstation = H.Property<string>(c => c.Default(""));
+        readonly IProperty<string> _workstation = H.Property<string>(c => c.Default(""));
 
         public string Os
         {
@@ -88,13 +89,15 @@ namespace HLab.Erp.Acl
             get => _x64.Get();
             set => _x64.Set(value);
         }
-        private readonly IProperty<bool> _x64 = H.Property<bool>(c => c.Default(true));
+
+        readonly IProperty<bool> _x64 = H.Property<bool>(c => c.Default(true));
 
         public int Notify
         {
             get => _notify.Get();
             set => _notify.Set(value);
         }
-        private readonly IProperty<int> _notify = H.Property<int>();
+
+        readonly IProperty<int> _notify = H.Property<int>();
     }
 }

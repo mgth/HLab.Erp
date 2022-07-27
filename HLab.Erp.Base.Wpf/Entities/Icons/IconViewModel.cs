@@ -23,15 +23,16 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
 
     public class IconViewModel : ListableEntityViewModel<Icon>
     {
-        private IIconService _icons;
-        public IconViewModel(IIconService icons)
+        readonly IIconService _icons;
+        public IconViewModel(IIconService icons, Injector i):base(i)
         {
             _icons = icons;
             H.Initialize(this);
         }
 
         public object Icon => _icon.Get();
-        private readonly IProperty<object> _icon = H.Property<object>(c => c
+
+        readonly IProperty<object> _icon = H.Property<object>(c => c
             .Set(async e => (object)XamlTools.SetForeground(
                 (UIElement)await XamlTools.FromXamlStringAsync(e.Model.SourceXaml),
                 e.Model.Foreground.ToColor(),Brushes.White)
@@ -47,12 +48,12 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             .Action(async e => await e.EditSvgAsync().ConfigureAwait(true))
         );
 
-        private async Task ToXamlAsync()
+        async Task ToXamlAsync()
         {
             Model.SourceXaml = await XamlTools.SvgToXamlAsync(Model.SourceSvg).ConfigureAwait(false);
         }
 
-        private async Task EditSvgAsync()
+        async Task EditSvgAsync()
         {
             var fileName = Path.GetTempPath() + Guid.NewGuid() + ".svg";
 
@@ -72,12 +73,12 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             //pEditor.StartInfo.Arguments = ""; 
         }
 
-        private ITrigger _onSave = H.Trigger(c => c
+        ITrigger _onSave = H.Trigger(c => c
             .On(e => e.Locker.IsActive)
             .Do(e => e.UpdateIcon())
         );
 
-        private void UpdateIcon()
+        void UpdateIcon()
         {
             if(Locker.IsActive) return;
 
@@ -93,7 +94,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             }
         }
 
-        private async Task LoadSvgAsync(string path)
+        async Task LoadSvgAsync(string path)
         {
             Model.SourceSvg = await File.ReadAllTextAsync(path).ConfigureAwait(true);
             await ToXamlAsync();

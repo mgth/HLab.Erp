@@ -9,10 +9,10 @@ namespace HLab.Erp.Data
 {
     public class DataTransaction : IDataTransaction
     {
-        private readonly DataService _service;
-        private readonly ITransaction _transaction;
+        readonly DataService _service;
+        readonly ITransaction _transaction;
         internal IDatabase Database;
-        private Action _rollback = default(Action);
+        Action _rollback = default(Action);
 
         public DataTransaction(DataService service, IDatabase database)
         {

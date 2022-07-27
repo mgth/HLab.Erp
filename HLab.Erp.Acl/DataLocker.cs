@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -15,17 +16,17 @@ namespace HLab.Erp.Acl
     public class DataLocker<T> : NotifierBase, IDataLocker<T>
     where T : class, IEntity<int>
     {
-        private const int HeartBeat = 10000;
+        const int HeartBeat = 10000;
 
-        private readonly IDataService _data;
-        private readonly IAclService _acl;
-        private readonly string _entityClass;
-        private readonly int _entityId;
-        private readonly Timer _timer;
-        private readonly T _entity;
+        readonly IDataService _data;
+        readonly IAclService _acl;
+        readonly string _entityClass;
+        readonly int _entityId;
+        readonly Timer _timer;
+        readonly T _entity;
 
-        private DataLock _lock;
-        private List<IDataLocker> _dependencies = new List<IDataLocker>();
+        DataLock _lock;
+        readonly List<IDataLocker> _dependencies = new();
 
         public void AddDependencyLocker(params IDataLocker[] lockers)
         {
@@ -36,16 +37,16 @@ namespace HLab.Erp.Acl
         public EntityPersister<T> Persister
         {
             get => _persister.Get();
-            private set => _persister.Set(value);
+            private init => _persister.Set(value);
         }
 
-        private readonly IProperty<EntityPersister<T>> _persister = H<DataLocker<T>>.Property<EntityPersister<T>>();
+        readonly IProperty<EntityPersister<T>> _persister = H<DataLocker<T>>.Property<EntityPersister<T>>();
 
-        private EntityPersister<DataLock> _lockPersister;
+        EntityPersister<DataLock> _lockPersister;
 
-        private Func<T, EntityPersister<T>> _getPersister;
-        private readonly Func<DataLock, EntityPersister<DataLock>> _getLockPersister;
-        private readonly Func<IDataTransaction, IAuditTrailProvider> _getAudit;
+        readonly Func<T, EntityPersister<T>> _getPersister;
+        readonly Func<DataLock, EntityPersister<DataLock>> _getLockPersister;
+        readonly Func<IDataTransaction, IAuditTrailProvider> _getAudit;
 
         public DataLocker(
             T entity,
@@ -103,7 +104,8 @@ namespace HLab.Erp.Acl
             get => _isActive.Get();
             private set => _isActive.Set(value);
         }
-        private readonly IProperty<bool> _isActive = H<DataLocker<T>>.Property<bool>();
+
+        readonly IProperty<bool> _isActive = H<DataLocker<T>>.Property<bool>();
 
         /// <summary>
         /// True when locking allowed
@@ -113,7 +115,8 @@ namespace HLab.Erp.Acl
             get => _isEnabled.Get();
             set => _isEnabled.Set(value);
         }
-        private readonly IProperty<bool> _isEnabled = H<DataLocker<T>>.Property<bool>(c => c.Default(false));
+
+        readonly IProperty<bool> _isEnabled = H<DataLocker<T>>.Property<bool>(c => c.Default(false));
 
         /// <summary>
         /// True when database is responding
@@ -123,7 +126,8 @@ namespace HLab.Erp.Acl
             get => _isConnected.Get();
             set => _isConnected.Set(value);
         }
-        private readonly IProperty<bool> _isConnected = H<DataLocker<T>>.Property<bool>(c => c.Default(false));
+
+        readonly IProperty<bool> _isConnected = H<DataLocker<T>>.Property<bool>(c => c.Default(false));
 
         /// <summary>
         /// Command to activate locker
@@ -139,8 +143,8 @@ namespace HLab.Erp.Acl
             .CanExecute(e => e.Persister.IsDirty)
             .Action(async e =>
             {
-                string caption = "";
-                string iconPath = "";
+                var caption = "";
+                var iconPath = "";
 
                 if (e._entity is IListableModel lm)
                 {
@@ -162,12 +166,11 @@ namespace HLab.Erp.Acl
         );
 
 
-        private async Task CancelDependenciesAsync()
+        async Task CancelDependenciesAsync()
         {
-            foreach (var locker in _dependencies)
+            foreach (var locker in _dependencies.Where(locker => locker.IsActive))
             {
-                if(locker.IsActive)
-                    await locker.CancelAsync();
+                await locker.CancelAsync();
             }
         }
 
@@ -193,7 +196,7 @@ namespace HLab.Erp.Acl
                     return false;
                 }
 
-                _data.Delete(existing);
+                await _data.DeleteAsync(existing);
             }
 
             if (_entityId >= 0)
@@ -231,7 +234,7 @@ namespace HLab.Erp.Acl
                 catch (Exception e)
                 {
                     Message = e.Message;
-                    if (_lock != null) _data.Delete(_lock);
+                    if (_lock != null) await _data.DeleteAsync(_lock);
                     _lock = null;
 
                     _lockPersister = null;
@@ -312,7 +315,7 @@ namespace HLab.Erp.Acl
             }
         }
 
-        private readonly AsyncReaderWriterLock _cancelLock = new AsyncReaderWriterLock();
+        readonly AsyncReaderWriterLock _cancelLock = new AsyncReaderWriterLock();
 
         // TODO : possible bug if dependency gets canceled
         public async Task DirtyCancelAsync()
@@ -353,7 +356,7 @@ namespace HLab.Erp.Acl
                     if (_lock != null)
                     {
                         _timer.Change(Timeout.Infinite, Timeout.Infinite);
-                        if (_data.Delete(_lock))
+                        if (await _data.DeleteAsync(_lock))
                         {
                             _lock = null;
                             await _data.ReFetchOneAsync(_entity).ConfigureAwait(true);
@@ -385,10 +388,12 @@ namespace HLab.Erp.Acl
             get => _message.Get();
             private set => _message.Set(value);
         }
-        private readonly IProperty<string> _message = H<DataLocker<T>>.Property<string>();
+
+        readonly IProperty<string> _message = H<DataLocker<T>>.Property<string>();
 
         public bool IsReadOnly => _isReadOnly.Get();
-        private readonly IProperty<bool> _isReadOnly = H<DataLocker<T>>.Property<bool>(c => c
+
+        readonly IProperty<bool> _isReadOnly = H<DataLocker<T>>.Property<bool>(c => c
             .On(e => e.IsActive)
             .Set(e => !e.IsActive)
             .Default(true)

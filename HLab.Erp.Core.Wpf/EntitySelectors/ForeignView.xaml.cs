@@ -31,7 +31,7 @@ namespace HLab.Erp.Core.EntitySelectors
             .OnChange((v, a) => v.OnModelChanged(a))
             .Register();
 
-        private void OnModelChanged(DependencyPropertyChangedEventArgs<object> args)
+        void OnModelChanged(DependencyPropertyChangedEventArgs<object> args)
         {
             Locator.SetValue(ViewLocator.ModelProperty,args.NewValue);
             OpenButton.IsEnabled = args.NewValue != null;
@@ -60,7 +60,7 @@ namespace HLab.Erp.Core.EntitySelectors
             .OnChange((s, a) => s.SetMandatoryNotFilled(a.NewValue))
             .Register();
 
-        private void SetCommand(ICommand oldCommand, ICommand command)
+        void SetCommand(ICommand oldCommand, ICommand command)
         {
             if (oldCommand != null) oldCommand.CanExecuteChanged -= Command_CanExecuteChanged;
 
@@ -79,7 +79,7 @@ namespace HLab.Erp.Core.EntitySelectors
             }
         }
 
-        private void Command_CanExecuteChanged(object sender, EventArgs e)
+        void Command_CanExecuteChanged(object sender, EventArgs e)
         {
             Button.IsEnabled = Command?.CanExecute(null) ?? true;
         }
@@ -126,10 +126,11 @@ namespace HLab.Erp.Core.EntitySelectors
             set => SetValue(ButtonContentProperty, value);
         }
 
-        private void SetList()
+        void SetList()
         {
         }
-        private void SetModelClass()
+
+        void SetModelClass()
         {
             if(ModelClass == null)
             {
@@ -140,16 +141,18 @@ namespace HLab.Erp.Core.EntitySelectors
                 Visibility = Visibility.Visible;
             }
         }
-        private void SetMandatoryNotFilled(bool mnf)
+
+        void SetMandatoryNotFilled(bool mnf)
         {
             Mandatory.Visibility = mnf ? Visibility.Visible : Visibility.Collapsed;
         }
-        private void SetReadOnly(bool ro)
+
+        void SetReadOnly(bool ro)
         {
             Button.Visibility = ro ? Visibility.Collapsed : Visibility.Visible;
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             if (!Popup.IsOpen)
             {
@@ -200,7 +203,7 @@ namespace HLab.Erp.Core.EntitySelectors
             }
         }
 
-        private void OpenButton_OnClick(object sender, RoutedEventArgs e)
+        void OpenButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (Model == null) return;
             var ctx = ViewLocator.GetMvvmContext(this);

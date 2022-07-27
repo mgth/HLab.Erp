@@ -27,7 +27,8 @@ namespace HLab.Erp.Acl
 
         [Ignore]
         public string Caption => _caption.Get();
-        private readonly IProperty<string> _caption = H.Property<string>(c => c
+
+        readonly IProperty<string> _caption = H.Property<string>(c => c
             .On(e => e.Name)
             .Set(e => string.IsNullOrWhiteSpace(e.Name)?"{New profile}":e.Name)
         );

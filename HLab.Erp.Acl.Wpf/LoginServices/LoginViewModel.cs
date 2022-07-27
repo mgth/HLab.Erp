@@ -16,16 +16,18 @@ namespace HLab.Erp.Acl.LoginServices
 
     public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainViewModel
     {
-        public void Inject(
+        public LoginViewModel(
+            IAclService acl,
             ILocalizationService localizationService, 
             IIconService iconService, 
             IDataService dataService, 
-            IApplicationInfoService infoService)
+            IApplicationInfoService infoService) : base(acl)
         {
             LocalizationService = localizationService;
             IconService = iconService;
             DataService = dataService;
             InfoService = infoService;
+
             H.Initialize(this);
 
             foreach (var connection in dataService.Connections)
@@ -59,23 +61,25 @@ namespace HLab.Erp.Acl.LoginServices
             }
         }
 
-        private readonly IProperty<string> _database = H.Property<string>();
+        readonly IProperty<string> _database = H.Property<string>();
 
         public bool AllowDatabaseSelection
         {
             get => _allowDatabaseSelection.Get();
             set => _allowDatabaseSelection.Set(value);
         }
-        private readonly IProperty<bool> _allowDatabaseSelection = H.Property<bool>();
+
+        readonly IProperty<bool> _allowDatabaseSelection = H.Property<bool>();
 
         public string PinView
         {
             get => _pinView.Get();
             set => _pinView.Set(value);
         }
-        private readonly IProperty<string> _pinView = H.Property<string>();
 
-        private string _pin = "";
+        readonly IProperty<string> _pinView = H.Property<string>();
+
+        string _pin = "";
         public ICommand NumPadCommand { get; } = H.Command(c => c
             
             .CanExecute((e) => (e.Login?.Length ?? 0) > 0)

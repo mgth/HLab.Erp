@@ -14,8 +14,7 @@ namespace HLab.Erp.Acl.LoginServices
     public partial class LoginView : UserControl,
         IView<ViewModeDefault,LoginViewModel>, IViewClassDefault
     {
-        
-        private readonly IMessageBus _messageBus;
+        readonly IMessageBus _messageBus;
         public LoginView(IMessageBus messageBus)
         {
             _messageBus = messageBus;
@@ -24,7 +23,7 @@ namespace HLab.Erp.Acl.LoginServices
 
         }
 
-        private void LoginView_Loaded(object sender, RoutedEventArgs e)
+        void LoginView_Loaded(object sender, RoutedEventArgs e)
         {
             var win =  Window.GetWindow(this); //this.FindVisualParent<Window>();
             if (win != null)
@@ -46,7 +45,7 @@ namespace HLab.Erp.Acl.LoginServices
             }
         }
 
-        private void LoginView_Closed(object sender, EventArgs e)
+        void LoginView_Closed(object sender, EventArgs e)
         {
             if (DataContext is LoginViewModel l)
             {
@@ -55,7 +54,7 @@ namespace HLab.Erp.Acl.LoginServices
             Application.Current.Shutdown();
         }
 
-        private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
+        void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
             if (DataContext is LoginViewModel l)
             {

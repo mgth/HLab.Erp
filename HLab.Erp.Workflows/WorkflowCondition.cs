@@ -7,10 +7,10 @@ namespace HLab.Erp.Workflows
     public class WorkflowCondition<T> 
         where T : IWorkflow
     {
-        private WorkflowCondition<T> _next = null;
-        private readonly Func<T, WorkflowConditionResult> _condition;
-        private Func<T, IEnumerable<string>> _getMessage;
-        private Func<T, IEnumerable<string>> _getHighlights;
+        WorkflowCondition<T> _next = null;
+        readonly Func<T, WorkflowConditionResult> _condition;
+        Func<T, IEnumerable<string>> _getMessage;
+        Func<T, IEnumerable<string>> _getHighlights;
 
         public WorkflowCondition(Func<T, WorkflowConditionResult> condition)
         {

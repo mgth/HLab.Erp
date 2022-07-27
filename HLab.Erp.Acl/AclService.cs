@@ -25,11 +25,11 @@ namespace HLab.Erp.Acl
 
     public class AclService : IAclService
     {
-        private IMessageBus _msg;
-        private IAclHelper _acl;
-        private IDataService _data;
+        readonly IMessageBus _msg;
+        readonly IAclHelper _acl;
+        readonly IDataService _data;
 
-        public void Inject(IMessageBus msg, IAclHelper acl, IDataService data)
+        public AclService(IMessageBus msg, IAclHelper acl, IDataService data)
         {
             _msg = msg;
             _acl = acl;
@@ -149,7 +149,7 @@ namespace HLab.Erp.Acl
             Cancelled = true;
         }
 
-        private async Task PopulateRightsAsync()
+        async Task PopulateRightsAsync()
         {
             List<AclRight> rights = new List<AclRight>();
 

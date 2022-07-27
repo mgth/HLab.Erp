@@ -1,4 +1,5 @@
-﻿using HLab.Mvvm.Annotations;
+﻿using HLab.Erp.Core.Wpf.WebService;
+using HLab.Mvvm.Annotations;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace HLab.Erp.Core.WebService

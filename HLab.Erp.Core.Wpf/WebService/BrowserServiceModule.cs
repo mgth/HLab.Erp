@@ -7,7 +7,7 @@ namespace HLab.Erp.Core.WebService
 
     public class BrowserServiceModule : NotifierBase, IBootloader
     {
-        private readonly IErpServices _erp;
+        readonly IErpServices _erp;
 
         public BrowserServiceModule(IErpServices erp)
         {

@@ -1,5 +1,5 @@
 ﻿namespace HLab.Erp.Core.EntitySelectors
 {
-    interface IForeignViewModel
+    internal interface IForeignViewModel
     { }
 }

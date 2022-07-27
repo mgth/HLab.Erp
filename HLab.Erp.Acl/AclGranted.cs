@@ -16,7 +16,7 @@ namespace HLab.Erp.Acl
             set => _aclGranted.Set(value);
         }
 
-        private readonly IProperty<bool> _aclGranted = H.Property<bool>();
+        readonly IProperty<bool> _aclGranted = H.Property<bool>();
 
         public int? RightId
         {
@@ -30,7 +30,7 @@ namespace HLab.Erp.Acl
             set => _right.Set(value);
         }
 
-        private readonly IForeign<AclRight> _right = H.Foreign<AclRight>();
+        readonly IForeign<AclRight> _right = H.Foreign<AclRight>();
 
 
         public int? ToNodeId
@@ -45,7 +45,8 @@ namespace HLab.Erp.Acl
             get => _toNode.Get();
             set => _toNode.Set(value);
          }
-         private readonly IForeign<AclNode> _toNode = H.Foreign<AclNode>();
+
+         readonly IForeign<AclNode> _toNode = H.Foreign<AclNode>();
 
         public int? OnNodeId
         {
@@ -59,6 +60,7 @@ namespace HLab.Erp.Acl
             get => _onNode.Get();
             set => _onNode.Set(value);
          }
-         private readonly IForeign<AclNode> _onNode = H.Foreign<AclNode>();
+
+         readonly IForeign<AclNode> _onNode = H.Foreign<AclNode>();
     }
 }

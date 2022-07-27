@@ -74,7 +74,7 @@ namespace HLab.Erp.Base.Data
             }
         }
 
-        private void Upgrade(string version)
+        void Upgrade(string version)
         {
             if (Data is not DataService data) return;
             
@@ -88,7 +88,7 @@ namespace HLab.Erp.Base.Data
         protected virtual ISqlBuilder GetSqlUpdater(string version, ISqlBuilder builder) 
             => builder.SqlResource($"{CurrentModule}.SQL.Update-From-{version}.sql");
 
-        private void CreateDataVersion()
+        void CreateDataVersion()
         {
             if (Data is DataService data)
             {

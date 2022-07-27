@@ -6,7 +6,7 @@ namespace HLab.Erp.Acl
 {
     public class DataLockerEntityDesign : IEntity<int>
     {
-        private int _id;
+        int _id;
         public object Id { get; } = 1;
 
         int IEntity<int>.Id

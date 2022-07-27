@@ -17,7 +17,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             DataContextChanged += TestClassView_DataContextChanged;
         }
 
-        private void TestClassView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        void TestClassView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if(e.OldValue is IconViewModel oldVm)
                 oldVm.Model.PropertyChanged -= Vm_PropertyChanged;
@@ -30,10 +30,10 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             }
         }
 
-        private bool _changingXaml = false;
-        private bool _changingSvg = false;
+        bool _changingXaml = false;
+        bool _changingSvg = false;
 
-        private void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             
 
@@ -50,7 +50,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             }
         }
 
-        private void TextEditor_OnTextChanged(object sender, EventArgs e)
+        void TextEditor_OnTextChanged(object sender, EventArgs e)
         {
             if (ReferenceEquals(sender, XamlEditor))
             {

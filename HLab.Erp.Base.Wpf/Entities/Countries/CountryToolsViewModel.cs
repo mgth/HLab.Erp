@@ -82,7 +82,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
             }
         }
 
-        private async Task LoadIconAsync(string url, string iconPath)
+        async Task LoadIconAsync(string url, string iconPath)
         {
            var icon = await Data.FetchOneAsync<Icon>(i =>
                     i.Path==iconPath);

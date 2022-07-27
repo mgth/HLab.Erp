@@ -37,7 +37,7 @@ namespace HLab.Erp.Acl
             set => SetValue(PropertyProperty, value);
         }
 
-        private void N_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void N_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (sender is IPropertyHolderN<string> p)
             {

@@ -14,9 +14,10 @@ namespace HLab.Erp.Acl.Profiles
     public class ProfileViewModel : ListableEntityViewModel<Profile>
     {
         public ProfileViewModel(
+            Injector i,
             IDataService data,
             Func<Profile, UsersPerProfileListViewModel> getUserProfiles, 
-            Func<Profile, AclRightsProfileListViewModel> getRightProfiles)
+            Func<Profile, AclRightsProfileListViewModel> getRightProfiles) : base(i)
         {
             _getUsersPerProfile = getUserProfiles;
             _getRightProfiles = getRightProfiles;
@@ -24,9 +25,9 @@ namespace HLab.Erp.Acl.Profiles
             H.Initialize(this);
         }
 
-        public class AclRightsProfileListViewModel : EntityListViewModel<AclRightProfile>
+        public class AclRightsProfileListViewModel : Core.EntityLists.EntityListViewModel<AclRightProfile>
         {
-            public AclRightsProfileListViewModel(Profile profile) : base(c => c
+            public AclRightsProfileListViewModel(Injector i, Profile profile) : base(i, c => c
                .StaticFilter(e => e.ProfileId == profile.Id)
                .Column("Name")
                .Header("{Name}")
@@ -39,19 +40,21 @@ namespace HLab.Erp.Acl.Profiles
             protected override bool CanExecuteOpen(AclRightProfile rightProfile, Action<string> errorAction) => false;
         }
 
-        private readonly Func<Profile, UsersPerProfileListViewModel> _getUsersPerProfile;
+        readonly Func<Profile, UsersPerProfileListViewModel> _getUsersPerProfile;
 
         public UsersPerProfileListViewModel UserProfiles => _userProfiles.Get();
-        private readonly IProperty<UsersPerProfileListViewModel> _userProfiles = H.Property<UsersPerProfileListViewModel>(c => c
+
+        readonly IProperty<UsersPerProfileListViewModel> _userProfiles = H.Property<UsersPerProfileListViewModel>(c => c
             .NotNull(e => e.Model)
             .Set(e => e._getUsersPerProfile(e.Model))
             .On(e => e.Model)
             .Update()
         );
 
-        private readonly Func<Profile, AclRightsProfileListViewModel> _getRightProfiles;
+        readonly Func<Profile, AclRightsProfileListViewModel> _getRightProfiles;
         public AclRightsProfileListViewModel ProfileRights => _profileRights.Get();
-        private readonly IProperty<AclRightsProfileListViewModel> _profileRights = H.Property<AclRightsProfileListViewModel>(c => c
+
+        readonly IProperty<AclRightsProfileListViewModel> _profileRights = H.Property<AclRightsProfileListViewModel>(c => c
             .NotNull(e => e.Model)
             .Set(e => e._getRightProfiles(e.Model))            
             .On(e => e.Model)
@@ -71,13 +74,14 @@ namespace HLab.Erp.Acl.Profiles
         );
 
         public ICommand RemoveAclRightCommand { get; } = H.Command(c => c
-            .CanExecute(p => p.ProfileRights.Selected != null && p.Acl.IsGranted(AclRights.ManageProfiles))
+            .CanExecute(p => p.ProfileRights.Selected != null && p.Injected.Acl.IsGranted(AclRights.ManageProfiles))
             .Action((p) => p.RemoveRight(p.ProfileRights.Selected))
             .On(p => p.ProfileRights.Selected).CheckCanExecute()
         );
 
-        private readonly IDataService _data;
-        private void AddUser(User user)
+        readonly IDataService _data;
+
+        void AddUser(User user)
         {
             if (user == null) return;
             if (UserProfiles.List.Any(p => p.UserId == user.Id)) return;
@@ -90,7 +94,8 @@ namespace HLab.Erp.Acl.Profiles
             if (up != null)
                 UserProfiles.List.Update();
         }
-        private void AddRight(AclRight right)
+
+        void AddRight(AclRight right)
         {
             if (right == null) return;
             if (ProfileRights.List.Any(p => p.AclRightId == right.Id)) return;
@@ -104,7 +109,7 @@ namespace HLab.Erp.Acl.Profiles
                 ProfileRights.List.Update();
         }
 
-        private void RemoveUser(UserProfile userProfile)
+        void RemoveUser(UserProfile userProfile)
         {
             if(userProfile==null) return;
             if(!UserProfiles.List.Contains(userProfile)) return;
@@ -114,7 +119,8 @@ namespace HLab.Erp.Acl.Profiles
                 UserProfiles.List.Update();
             }
         }
-        private void RemoveRight(AclRightProfile right)
+
+        void RemoveRight(AclRightProfile right)
         {
             if(right==null) return;
             if(!ProfileRights.List.Contains(right)) return;

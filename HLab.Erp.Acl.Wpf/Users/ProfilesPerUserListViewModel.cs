@@ -3,16 +3,16 @@ using HLab.Erp.Core.ListFilterConfigurators;
 
 namespace HLab.Erp.Acl.Users
 {
-    public class ProfilesPerUserListViewModel : EntityListViewModel<UserProfile>
+    public class ProfilesPerUserListViewModel : Core.EntityLists.EntityListViewModel<UserProfile>
     {
-        public ProfilesPerUserListViewModel(User user) : base(c => c
+        public ProfilesPerUserListViewModel(Injector i, User user) : base(i, c => c
             .StaticFilter(e => e.UserId == user.Id)
             .Column("Name")
             .Header("{Name}")
             .Content(s => s.Profile.Name)
         )
         {
-            OpenAction = target => Erp.Docs.OpenDocumentAsync(target.Profile);
+            OpenAction = target => i.Erp.Docs.OpenDocumentAsync(target.Profile);
         }
 
         //public UserProfileListViewModel(Profile profile) : base(c => c

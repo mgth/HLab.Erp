@@ -2,6 +2,8 @@
 {
     public class AuditTrailViewModel : ListableEntityViewModel<AuditTrail>
     {
-
+        public AuditTrailViewModel(Injector i) : base(i)
+        {
+        }
     }
 }

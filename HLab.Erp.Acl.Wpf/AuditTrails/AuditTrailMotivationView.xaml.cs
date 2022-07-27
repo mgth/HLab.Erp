@@ -16,13 +16,13 @@ namespace HLab.Erp.Acl
             DataContextChanged += AuditTrailMotivationView_DataContextChanged;
         }
 
-        private void AuditTrailMotivationView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        void AuditTrailMotivationView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if(e.OldValue is AuditTrailMotivationViewModel oldvm) oldvm.PropertyChanged -= Vm_PropertyChanged;
             if(e.NewValue is AuditTrailMotivationViewModel vm) vm.PropertyChanged += Vm_PropertyChanged;
         }
 
-        private void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName=="Result")
             {
@@ -38,7 +38,7 @@ namespace HLab.Erp.Acl
             }
         }
 
-        private void PasswordBox_OnTextChanged(object sender, RoutedEventArgs e)
+        void PasswordBox_OnTextChanged(object sender, RoutedEventArgs e)
         {
             if (DataContext is AuditTrailMotivationViewModel l)
             {

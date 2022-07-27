@@ -18,21 +18,24 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             get => _header.Get();
             set => _header.Set(value);
         }
-        private readonly IProperty<object> _header = H<Filter>.Property<object>();
+
+        readonly IProperty<object> _header = H<Filter>.Property<object>();
 
         public string Name
         {
             get => _name.Get();
             set => _name.Set(value);
         }
-        private readonly IProperty<string> _name = H<Filter>.Property<string>();
+
+        readonly IProperty<string> _name = H<Filter>.Property<string>();
 
         public string IconPath
         {
             get => _iconPath.Get();
             set => _iconPath.Set(value);
         }
-        private readonly IProperty<string> _iconPath = H<Filter>.Property<string>();
+
+        readonly IProperty<string> _iconPath = H<Filter>.Property<string>();
 
         public abstract void Link<T, TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter);
 
@@ -51,7 +54,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
 
         public abstract string StringValue { get; set; }
 
-        private readonly IProperty<bool> _enabled = H<Filter>.Property<bool>();
+        readonly IProperty<bool> _enabled = H<Filter>.Property<bool>();
 
         protected Action enabledAction;
         protected Action disabledAction;
@@ -78,7 +81,8 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             get => _value.Get();
             set => _value.Set(value);
         }
-        private readonly IProperty<T> _value = H<Filter<T>>.Property<T>();
+
+        readonly IProperty<T> _value = H<Filter<T>>.Property<T>();
 
         public override string StringValue
         {
@@ -106,9 +110,10 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             get => _update.Get();
             set => _update.Set(value);
         }
-        private readonly IProperty<Action> _update = H<Filter<T>>.Property<Action>();
 
-        private IProperty<bool> _updateTrigger = H<Filter<T>>.Property<bool>(c => c
+        readonly IProperty<Action> _update = H<Filter<T>>.Property<Action>();
+
+        IProperty<bool> _updateTrigger = H<Filter<T>>.Property<bool>(c => c
             .On(e => e.Value)
             .On(e => e.Enabled)
             .On(e => e.Update)
@@ -122,7 +127,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
         public override void Link<T1, TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T1>> getter)
             => Link<TSource>(q, getter as Expression<Func<TSource, T>>);
 
-        private bool _linked = false;
+        bool _linked = false;
 
         public void Link<TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter)
 //            where TSource : class, IEntity, new()

@@ -11,11 +11,13 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
         public CountryListableViewModel() => H.Initialize(this);
 
         public string Caption => _caption.Get();
-        private readonly IProperty<string> _caption = H.Property<string>(c => c
+
+        readonly IProperty<string> _caption = H.Property<string>(c => c
             .Bind(e => e.Model.Name));
 
         public string IconPath => _iconPath.Get();
-        private readonly IProperty<string> _iconPath = H.Property<string>(c => c
+
+        readonly IProperty<string> _iconPath = H.Property<string>(c => c
             .Bind(e => e.Model.IconPath));
     }
 }

@@ -25,9 +25,9 @@ namespace HLab.Erp.Base.Data
 
     public class SqlBuilderPostgres : ISqlBuilder
     {
-        private readonly StringBuilder _builder = new();
-        private readonly string _module;
-        private readonly string _version;
+        readonly StringBuilder _builder = new();
+        readonly string _module;
+        readonly string _version;
 
         public SqlBuilderPostgres(string module, string version)
         {
@@ -72,7 +72,7 @@ namespace HLab.Erp.Base.Data
 
     class SqlTableBuilderPostgres<T> : ISqlTableBuilder<T> where T : class, IEntity
     {
-        private readonly SqlBuilderPostgres _builder;
+        readonly SqlBuilderPostgres _builder;
 
         public SqlTableBuilderPostgres(SqlBuilderPostgres builder)
         {
@@ -257,7 +257,7 @@ namespace HLab.Erp.Base.Data
 
         public ISqlBuilder Version(string version) => _builder.Version(version);
 
-        private static PropertyInfo GetPropertyInfo<TSource>(
+        static PropertyInfo GetPropertyInfo<TSource>(
             Expression<Func<TSource, object>> lambda)
         {
             var type = typeof(TSource);
@@ -282,7 +282,8 @@ namespace HLab.Erp.Base.Data
 
             return propInfo;
         }
-        private static FieldInfo GetBackingField(string name)
+
+        static FieldInfo GetBackingField(string name)
         {
             var backingFieldName = "_";
             if (name.Length > 0) backingFieldName += name.Substring(0, 1).ToLower();
@@ -291,7 +292,7 @@ namespace HLab.Erp.Base.Data
             return typeof(T).GetField(backingFieldName,BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
-        private static string GetSqlType(Type type, PropertyInfo p)
+        static string GetSqlType(Type type, PropertyInfo p)
         {
             if (type == typeof(int)) return "integer DEFAULT 0 NOT NULL";
             if(type == typeof(int?)) return "integer";

@@ -301,10 +301,10 @@ namespace HLab.Erp.Data
         where T : class, INotifierObject//, new()
     {
         public T Entity { get; }
-        private readonly IListEntityViewModel<T> _list;
-        private readonly IDatabase _db;
+        readonly IListEntityViewModel<T> _list;
+        readonly IDatabase _db;
 
-        private readonly SuspenderToken _suspend;
+        readonly SuspenderToken _suspend;
 
         //Todo : Adder there
         public ListAdder(IListEntityViewModel<T> list, IDataService db)

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using HLab.Erp.Core.EntityLists;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
 

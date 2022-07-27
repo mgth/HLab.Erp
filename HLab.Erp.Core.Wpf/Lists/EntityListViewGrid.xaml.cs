@@ -21,7 +21,7 @@ namespace HLab.Erp.Core.Lists
             InitializeComponent();
         }
 
-        private void DefaultEntitySelector_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        void DefaultEntitySelector_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var lvm = (e.NewValue as IQueryList);
             if (lvm?.EntityType == null) return;
@@ -31,7 +31,7 @@ namespace HLab.Erp.Core.Lists
             AddBindings(evm);
         }
 
-        private void AddBindings(Type type, string prefix ="")
+        void AddBindings(Type type, string prefix ="")
         {
             foreach (var p in type.GetProperties())
             {
@@ -52,7 +52,7 @@ namespace HLab.Erp.Core.Lists
             }
         }
 
-        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             //throw new NotImplementedException();
         }

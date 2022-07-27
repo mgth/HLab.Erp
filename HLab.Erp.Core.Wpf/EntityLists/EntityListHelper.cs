@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using Microsoft.Win32;

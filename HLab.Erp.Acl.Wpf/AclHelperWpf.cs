@@ -32,5 +32,9 @@ namespace HLab.Erp.Acl
 
             return await base.GetUser(credential).ConfigureAwait(false);
         }
+
+        public AclHelperWpf(IDataService db) : base(db)
+        {
+        }
     }
 }

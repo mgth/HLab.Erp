@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
 

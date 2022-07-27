@@ -35,7 +35,7 @@ namespace HLab.Erp.Workflows
                 n.PropertyChanged += Target_PropertyChanged;
         }
 
-        private void Target_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void Target_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             Update();
         }
@@ -122,35 +122,38 @@ namespace HLab.Erp.Workflows
         //public User User { get; set; }
         public object Target { get; }
         public IDataLocker Locker => _locker.Get();
-        private readonly IProperty<IDataLocker> _locker = H<Workflow<T>>.Property<IDataLocker>();
+        readonly IProperty<IDataLocker> _locker = H<Workflow<T>>.Property<IDataLocker>();
 
         //private readonly IProperty<object> _locker = H.Property<object>();
 
-        private static List<Stage> _workflowStage;
-        private static List<Action> _workflowAction;
-        private static List<Stage> WorkflowStages => _workflowStage ??= new List<Stage>();
-        private static List<Action> WorkflowActions => _workflowAction ??= new List<Action>();
+        static List<Stage> _workflowStage;
+        static List<Action> _workflowAction;
+        static List<Stage> WorkflowStages => _workflowStage ??= new List<Stage>();
+        static List<Action> WorkflowActions => _workflowAction ??= new List<Action>();
         
         public static Stage StageFromName(string name) => WorkflowStages.Find(e => e.Name == name)??DefaultStage;
         protected void SetStage(Stage stage) => CurrentStage = stage;
 
 
         public string Caption => _caption.Get();
-        private readonly IProperty<string> _caption = H<Workflow<T>>.Property<string>(c => c
+
+        readonly IProperty<string> _caption = H<Workflow<T>>.Property<string>(c => c
             .Set(e => e.CurrentStage?.GetCaption(e))
             .On(e => e.CurrentStage)
             .Update()
         );
 
         public string IconPath => _iconPath.Get();
-        private readonly IProperty<string> _iconPath = H<Workflow<T>>.Property<string>(c => c
+
+        readonly IProperty<string> _iconPath = H<Workflow<T>>.Property<string>(c => c
             .Set(e => e.CurrentStage?.GetIconPath(e))
             .On(e => e.CurrentStage)
             .Update()
         );
 
         public string SubIconPath => _subIconPath.Get();
-        private readonly IProperty<string> _subIconPath = H<Workflow<T>>.Property<string>(c => c
+
+        readonly IProperty<string> _subIconPath = H<Workflow<T>>.Property<string>(c => c
             .Set(e => e.CurrentStage?.GetSubIconPath(e))
             .On(e => e.CurrentStage)
             .Update()
@@ -193,7 +196,8 @@ namespace HLab.Erp.Workflows
                     value?.Action(this as T);
             }
         }
-        private readonly IProperty<Stage> _currentStage = H<Workflow<T>>.Property<Stage>();
+
+        readonly IProperty<Stage> _currentStage = H<Workflow<T>>.Property<Stage>();
 
         public async Task<bool> SetStageAsync(Func<Stage> setStage, string caption, string iconPath, bool sign, bool motivate)
         {
@@ -232,13 +236,13 @@ namespace HLab.Erp.Workflows
         }
 
 
-        private readonly ObservableCollection<WorkflowAction> _actions = new();
-        private readonly ObservableCollection<string> _highlights = new();
+        readonly ObservableCollection<WorkflowAction> _actions = new();
+        readonly ObservableCollection<string> _highlights = new();
         public ReadOnlyObservableCollection<WorkflowAction> Actions { get; }
         public ReadOnlyObservableCollection<string> Highlights { get; }
 
 
-        private readonly ReaderWriterLockSlim _lock = new();
+        readonly ReaderWriterLockSlim _lock = new();
         protected void Update()
         {
             var list = WorkflowActions

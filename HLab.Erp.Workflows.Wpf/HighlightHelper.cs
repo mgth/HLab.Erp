@@ -61,7 +61,7 @@ namespace HLab.Erp.Workflows
         }
 
 
-        private static void Highlight(object e, string name)
+        static void Highlight(object e, string name)
         {
             if (e == null) return;
 
@@ -101,7 +101,7 @@ namespace HLab.Erp.Workflows
             }
         }
 
-        private static void HighlightUI(UIElement ui, string name)
+        static void HighlightUI(UIElement ui, string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -124,7 +124,7 @@ namespace HLab.Erp.Workflows
             al?.Add(c);
         }
 
-        private static void RemoveHighlightUi(UIElement ct)
+        static void RemoveHighlightUi(UIElement ct)
         {
             var al = AdornerLayer.GetAdornerLayer(ct);
             var ads = al?.GetAdorners(ct);
@@ -137,7 +137,7 @@ namespace HLab.Erp.Workflows
         }
 
 
-        private static DependencyProperty BindingProperty(UIElement ui)
+        static DependencyProperty BindingProperty(UIElement ui)
         {
             return ui switch
             {

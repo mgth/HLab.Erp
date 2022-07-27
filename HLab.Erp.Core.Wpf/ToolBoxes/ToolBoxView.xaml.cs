@@ -12,11 +12,11 @@ namespace HLab.Erp.Core.ToolBoxes
     public partial class ToolBoxView : UserControl, IViewClassAnchorable
         , IView<ViewModeDefault, IToolListViewModel>
     {
-        private readonly IMvvmService _mvvm;
-        private readonly IDragDropService _dragDrop;
+        readonly IMvvmService _mvvm;
+        readonly IDragDropService _dragDrop;
 
 
-        private void SetDragDrop()
+        void SetDragDrop()
         {
             var drag = _dragDrop.Get(ListViewTest, true);
 
@@ -31,12 +31,13 @@ namespace HLab.Erp.Core.ToolBoxes
             InitializeComponent();
             // TODO : SetDragDrop();
         }
-        private void drag_Drop(object source)
+
+        void drag_Drop(object source)
         {
 
         }
 
-        private void drag_Start(ErpDragDrop source)
+        void drag_Start(ErpDragDrop source)
         {
             //            var vm = DataContext as 
 

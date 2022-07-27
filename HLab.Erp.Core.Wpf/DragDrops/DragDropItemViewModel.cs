@@ -21,7 +21,8 @@ namespace HLab.Erp.Core.DragDrops
             get => _state.Get();
             set => _state.Set(value.SetColor(() => Model?.Color.ToColor() ?? Colors.Transparent));
         }
-        private readonly IProperty<State> _state = H<DragDropItemViewModel<T>>.Property<State>(c => c
+
+        readonly IProperty<State> _state = H<DragDropItemViewModel<T>>.Property<State>(c => c
             .On(e => e.Model.Color)
             //.Do((a,p) => p.Get().Color = a.Model.Color.ToColor())
             .Do(e=>e.State.OnTriggered())

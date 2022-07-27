@@ -12,9 +12,15 @@
     <None Remove="Icons\Entities\Country.svg" />
     <None Remove="Icons\Entities\Icon.svg" />
     <None Remove="Icons\Entities\Units\Count.svg" />
+    <None Remove="Icons\Entities\Units\Current.svg" />
+    <None Remove="Icons\Entities\Units\Length.svg" />
+    <None Remove="Icons\Entities\Units\Light.svg" />
+    <None Remove="Icons\Entities\Units\Light2.svg" />
     <None Remove="Icons\Entities\Units\Mass.svg" />
     <None Remove="Icons\Entities\Units\Mole.svg" />
-    <None Remove="Icons\Entities\Units\Temp.svg" />
+    <None Remove="Icons\Entities\Units\Mole2.svg" />
+    <None Remove="Icons\Entities\Units\Percent.svg" />
+    <None Remove="Icons\Entities\Units\Temperature.svg" />
     <None Remove="Icons\Entities\Units\Time.svg" />
     <None Remove="Icons\Entities\Units\Volume.svg" />
     <None Remove="SQL.xshd" />
@@ -61,9 +67,15 @@
     </Resource>
     <Resource Include="Icons\Entities\Icon.svg" />
     <Resource Include="Icons\Entities\Units\Count.svg" />
+    <Resource Include="Icons\Entities\Units\Current.svg" />
+    <Resource Include="Icons\Entities\Units\Length.svg" />
+    <Resource Include="Icons\Entities\Units\Light.svg" />
+    <Resource Include="Icons\Entities\Units\Light2.svg" />
     <Resource Include="Icons\Entities\Units\Mass.svg" />
     <Resource Include="Icons\Entities\Units\Mole.svg" />
-    <Resource Include="Icons\Entities\Units\Temp.svg" />
+    <Resource Include="Icons\Entities\Units\Mole2.svg" />
+    <Resource Include="Icons\Entities\Units\Percent.svg" />
+    <Resource Include="Icons\Entities\Units\Temperature.svg" />
     <Resource Include="Icons\Entities\Units\Time.svg" />
     <Resource Include="Icons\Entities\Units\Volume.svg" />
     <Resource Include="Icons\OpenForeign.xaml">

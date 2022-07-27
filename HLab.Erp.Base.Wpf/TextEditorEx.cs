@@ -31,9 +31,9 @@ namespace HLab.Erp.Base.Wpf
             .BindsTwoWayByDefault
             .Register();
 
-        private bool _internalChange = false;
+        bool _internalChange = false;
 
-        private void OnExTextChanged(DependencyPropertyChangedEventArgs<string> args)
+        void OnExTextChanged(DependencyPropertyChangedEventArgs<string> args)
         {
             if (_internalChange) return;
 

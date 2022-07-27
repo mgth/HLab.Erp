@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using HLab.Erp.Core.DragDrops;
 
-namespace HLab.Erp.Core.DragDrops
+namespace HLab.Erp.Core.Wpf.DragDrops
 {
     public class DragDropService : IDragDropService
     {
-        private Func<Panel, FrameworkElement, bool, ErpDragDrop> _dragDropGetter;
-        private readonly Dictionary<string, Panel> _canvas = new Dictionary<string, Panel>();
+        readonly Func<Panel, FrameworkElement, bool, ErpDragDrop> _dragDropGetter;
+        readonly Dictionary<string, Panel> _canvas = new();
 
-        public void Inject(Func<Panel, FrameworkElement, bool, ErpDragDrop> dragDropGetter)
+        public DragDropService(Func<Panel, FrameworkElement, bool, ErpDragDrop> dragDropGetter)
         {
             _dragDropGetter = dragDropGetter;
         }

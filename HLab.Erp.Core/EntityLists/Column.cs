@@ -32,7 +32,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         public IColumn<T> OrderByNext { get; set; }
 
-        private readonly List<TriggerPath> _triggerPaths = new();
+        readonly List<TriggerPath> _triggerPaths = new();
 
         public void AddTrigger(Expression expression)
         {
@@ -47,11 +47,11 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         }
 
         //        ConditionalWeakTable<T,object> _cache = new();
-        private Stopwatch _watch = new Stopwatch();
-        private long _requestCount = 0;
+        Stopwatch _watch = new Stopwatch();
+        long _requestCount = 0;
 
         public long Benchmark => _benchmark.Get();
-        private IProperty<long> _benchmark = H<Column<T>>.Property<long>();
+        IProperty<long> _benchmark = H<Column<T>>.Property<long>();
 
         public object GetValue(T value)
         {

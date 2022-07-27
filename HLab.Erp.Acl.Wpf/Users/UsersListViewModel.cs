@@ -5,7 +5,7 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Acl.Users
 {
-    public class UsersListViewModel : EntityListViewModel<User>, IMvvmContextProvider
+    public class UsersListViewModel : Core.EntityLists.EntityListViewModel<User>, IMvvmContextProvider
     {
         public class Bootloader : NestedBootloader
         {
@@ -16,7 +16,7 @@ namespace HLab.Erp.Acl.Users
         {
         }
 
-        public UsersListViewModel() : base(c => c
+        public UsersListViewModel(Injector i) : base(i, c => c
 // TODO :                .DeleteAllowed()
 //                .AddAllowed()
             .Column("FirstName")

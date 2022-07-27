@@ -10,7 +10,7 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.Wpf.Localization
 {
-    public class LocalizeEntriesListViewModel : EntityListViewModel<LocalizeEntry>, IMvvmContextProvider
+    public class LocalizeEntriesListViewModel : Core.EntityLists.EntityListViewModel<LocalizeEntry>, IMvvmContextProvider
     {
         public class Bootloader : NestedBootloader
         {
@@ -22,7 +22,7 @@ namespace HLab.Erp.Core.Wpf.Localization
 
         protected override bool CanExecuteDelete(LocalizeEntry arg, Action<string> errorAction) => true;
 
-        public LocalizeEntriesListViewModel(IErpServices erp) : base(c => c
+        public LocalizeEntriesListViewModel(Injector i) : base(i, c => c
                 .Header("{Localization}")
                 .Column("Todo")
                     .Header("{Todo}")

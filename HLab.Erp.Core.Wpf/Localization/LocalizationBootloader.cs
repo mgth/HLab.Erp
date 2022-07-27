@@ -7,9 +7,9 @@ namespace HLab.Erp.Core.Wpf.Localization
 {
     public class LocalizeBootloader : IBootloader
     {
-        private readonly Func<LocalizeFromDb> _get;
-       private readonly ILocalizationService _service;
-       private readonly IDataService _data;
+        readonly Func<LocalizeFromDb> _get;
+        readonly ILocalizationService _service;
+        readonly IDataService _data;
 
         public LocalizeBootloader(IDataService data, Func<LocalizeFromDb> get, ILocalizationService service)
         {

@@ -7,7 +7,7 @@ using HLab.Core.Annotations;
 
 namespace HLab.Erp.Data
 {
-    class Test : IEntity<int>
+    internal class Test : IEntity<int>
     {
         object IEntity.Id { get; }
         public int Id { get; set; }
@@ -20,7 +20,7 @@ namespace HLab.Erp.Data
 
     public class AddFluentHelper<TProvider> where TProvider : IDataProvider
     {
-        private TProvider _provider;
+        TProvider _provider;
 
         public AddFluentHelper(TProvider provider)
         {

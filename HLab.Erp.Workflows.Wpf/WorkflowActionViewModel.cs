@@ -5,12 +5,14 @@ using HLab.Notify.PropertyChanged;
 namespace HLab.Erp.Workflows
 {
     using H = H<WorkflowActionViewModel>;
-    class WorkflowActionViewModel : ViewModel<WorkflowAction>
+
+    internal class WorkflowActionViewModel : ViewModel<WorkflowAction>
     {
         public WorkflowActionViewModel() => H.Initialize(this);
 
         public string IconPath => _iconPath.Get();
-        private readonly IProperty<string> _iconPath = H.Property<string>(c => c
+
+        readonly IProperty<string> _iconPath = H.Property<string>(c => c
             .Bind(e => e.Model.IconPath)
         );
 

@@ -6,16 +6,11 @@
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
-             xmlns:annotations="clr-namespace:HLab.Mvvm.Annotations;assembly=HLab.Mvvm.Annotations"
-             xmlns:data="clr-namespace:HLab.Erp.Lims.Analysis.Data;assembly=HLab.Erp.Lims.Analysis.Data"
              xmlns:views="clr-namespace:HLab.Erp.Core.Wpf.Views;assembly=HLab.Erp.Core.Wpf"
-             xmlns:products="clr-namespace:HLab.Erp.Lims.Analysis.Module.Products"
-             xmlns:entities="clr-namespace:HLab.Erp.Lims.Analysis.Data.Entities;assembly=HLab.Erp.Lims.Analysis.Data"
              xmlns:viewModels="clr-namespace:HLab.Erp.Base.Wpf.Entities.Units"
              xmlns:wpf="clr-namespace:HLab.Base.Wpf;assembly=HLab.Base.Wpf"
              xmlns:data1="clr-namespace:HLab.Erp.Base.Data;assembly=HLab.Erp.Base.Data"
              mc:Ignorable="d" 
-             Background="#FF93A03F"
              d:DataContext="{d:DesignInstance {x:Type viewModels:UnitViewModelDesign}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -31,14 +26,13 @@
             <views:DetailView 
                 
                 Text="{}{Unit}" 
-                IconPath="Icons/Sample/Drugs"
+                IconPath="{Binding Model.IconPath}"
                 EditMode="{Binding Locker.IsActive}">
 
-
-                <lang:LocalizedLabel Text="{}{Name} : "/>
+                <lang:LocalizedLabel Text="{}{Name} : " HorizontalContentAlignment="Right"/>
                 <TextBox TextWrapping="Wrap" FontSize="20" Text="{Binding Model.Name}" HorizontalContentAlignment="Center" />
 
-                <lang:LocalizedLabel Text="{}{Class} : "/>
+                <lang:LocalizedLabel Text="{}{Class} : " HorizontalContentAlignment="Right"/>
                 <entitySelectors:ForeignView 
                     HorizontalAlignment="Left"
                     IsReadOnly="{Binding Locker.IsReadOnly}"
@@ -47,26 +41,157 @@
                     ListClass="{x:Type viewModels:UnitClassPopupListViewModel}"
                 />
 
-                <lang:LocalizedLabel Text="{}{Exponent} : "/>
-                <wpf:NumTextBox TextWrapping="Wrap" FontSize="20" Value="{Binding Model.Exponent}" HorizontalContentAlignment="Center" />
-
-                <lang:LocalizedLabel Text="{}{Abs} : "/>
-                <TextBlock TextWrapping="Wrap" FontSize="20" Text="{Binding Model.Abs}" />
-
-                <lang:LocalizedLabel Text="{}{Symbol} : "/>
+                <lang:LocalizedLabel Text="{}{Symbol} : " HorizontalContentAlignment="Right"/>
                 <TextBox TextWrapping="Wrap" FontSize="20" Text="{Binding Model.Symbol}" HorizontalContentAlignment="Center" />
 
-                <lang:LocalizedLabel Text="{}{Coefficient} : "/>
-                <TextBox TextWrapping="Wrap" FontSize="20" Text="{Binding Model.Coefficient}" HorizontalContentAlignment="Center" />
+                <Label FontSize="20" Content="abs =" HorizontalContentAlignment="Right"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label FontSize="20" Content="( x + " HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                    <wpf:DoubleBox MinWidth="50"
+                                   FontSize="20" 
+                                   IsReadOnly="{Binding Locker.IsReadOnly}"
+                                   Double="{Binding Model.OffsetA, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="0"
+                                   Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                   HorizontalContentAlignment="Center" 
+                                   VerticalAlignment="Center"
+                                   />
 
-                <lang:LocalizedLabel Text="{}{Default} : "/>
-                <CheckBox FontSize="20" IsChecked="{Binding Model.Default}" HorizontalContentAlignment="Center" />
+                    <Label FontSize="20" Content=") × " HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                    <wpf:DoubleBox 
+                        MinWidth="50" 
+                        FontSize="20" 
+                        IsReadOnly="{Binding Locker.IsReadOnly}"
+                        Double="{Binding Model.Coefficient}" 
+                        Margin="0"
+                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        HorizontalContentAlignment="Center" 
+                        VerticalAlignment="Center"
+                        />
+                    <wpf:DoubleBox MinWidth="25"
+                                   Decimals="0"
+                                   FontSize="15" 
+                                   IsReadOnly="{Binding Locker.IsReadOnly}"
+                                   Double="{Binding Model.Exponent, UpdateSourceTrigger=PropertyChanged}" 
+                                   Margin="0"
+                                   Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                   HorizontalContentAlignment="Center" 
+                                   VerticalAlignment="Top"
+                                   />
 
-                <lang:LocalizedLabel Text="{}{Default Quantity} : "/>
+                    <Label FontSize="20" Content="+ " HorizontalContentAlignment="Right" VerticalAlignment="Center"/>
+
+                    <wpf:DoubleBox MinWidth="50"
+                                   FontSize="20" 
+                                   IsReadOnly="{Binding Locker.IsReadOnly}"
+                                   Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                   Double="{Binding Model.OffsetB, UpdateSourceTrigger=PropertyChanged}" 
+                                   HorizontalContentAlignment="Center" />
+                </StackPanel>
+
+                <Label FontSize="20" Content="x =" HorizontalContentAlignment="Right"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label Margin="0" FontSize="20" Content="( abs -" HorizontalContentAlignment="Right"/>
+
+                    <wpf:DoubleBox 
+                        MinWidth="50"
+                        FontSize="20" 
+                        IsReadOnly="{Binding Locker.IsReadOnly}"
+                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Margin="0"
+                        Double="{Binding Model.OffsetB, UpdateSourceTrigger=PropertyChanged}" 
+                        HorizontalContentAlignment="Center" 
+                        VerticalAlignment="Center"
+                        />
+
+                    <Label Margin="0" FontSize="20" Content=") / " HorizontalContentAlignment="Right"/>
+                    
+                    <wpf:DoubleBox 
+                        MinWidth="50" 
+                        FontSize="20" 
+                        IsReadOnly="{Binding Locker.IsReadOnly}"
+                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Margin="0"
+                        Double="{Binding Model.Coefficient, UpdateSourceTrigger=PropertyChanged}" 
+                        HorizontalContentAlignment="Center" 
+                        VerticalAlignment="Center"
+                        />
+
+                    <wpf:DoubleBox MinWidth="25"
+                                   FontSize="15" 
+                                   Margin="0"
+                                   IsReadOnly="{Binding Locker.IsReadOnly}"
+                                   Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                   Double="{Binding Model.Exponent, UpdateSourceTrigger=PropertyChanged}" 
+                                   Decimals="0"
+                                   HorizontalContentAlignment="Center" 
+                                   VerticalAlignment="Top"
+                    />
+
+                    <Label Margin="0" FontSize="20" Content=" - " HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                    <wpf:DoubleBox 
+                        MinWidth="50"
+                        FontSize="20" 
+                        IsReadOnly="{Binding Locker.IsReadOnly}"
+                        Double="{Binding Model.OffsetA, UpdateSourceTrigger=PropertyChanged}" 
+                        Margin="0"
+                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        HorizontalContentAlignment="Center" 
+                        VerticalAlignment="Center"
+                        />
+
+                </StackPanel>
+
+                    <!--MinValue="-99"-->
+
+
+                <lang:LocalizedLabel Text="{}{Default Quantity} : " HorizontalContentAlignment="Right"/>
                 <TextBox TextWrapping="Wrap" FontSize="20" Text="{Binding Model.DefaultQty}" HorizontalContentAlignment="Center" />
 
             </views:DetailView>
+            <views:DetailView                
+                Text="{}{Test}" 
+                IconPath="Icons/Sample/Drugs"
+                EditMode="True">
 
+                <lang:LocalizedLabel Text="{}{Quantity} : " HorizontalContentAlignment="Right"/>
+                <StackPanel Orientation="Horizontal">
+                    <wpf:DoubleBox 
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        MinWidth="50" 
+                        FontSize="20" 
+                        Double="{Binding TestValue, UpdateSourceTrigger=PropertyChanged}" 
+                        HorizontalAlignment="Left"
+                        HorizontalContentAlignment="Center"
+                        Padding="0"
+                    />
+
+                    <entitySelectors:ForeignView 
+                        HorizontalAlignment="Left"
+                        IsReadOnly="False"
+                        Model="{Binding TestUnit, UpdateSourceTrigger=PropertyChanged}" 
+                        ModelClass="{x:Type data1:Unit}" 
+                    />
+
+                </StackPanel>
+
+                <lang:LocalizedLabel Text="{}{Result} : " HorizontalContentAlignment="Right"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox 
+                        MinWidth="50" 
+                        TextWrapping="Wrap" 
+                        FontSize="20" 
+                        IsReadOnly="True"
+                        Text="{Binding TestResult, Mode=OneWay}" 
+                        HorizontalAlignment="Left"
+                        HorizontalContentAlignment="Center"
+                        Padding="0"
+                        />
+                    <Label Padding="0" Margin="0" FontSize="20" Content="{Binding Model.Symbol}"/>
+                        <!--ListClass="{x:Type viewModels:UnitClassPopupListViewModel}"-->
+                </StackPanel>
+            </views:DetailView>
         </StackPanel>
 
     </Grid>

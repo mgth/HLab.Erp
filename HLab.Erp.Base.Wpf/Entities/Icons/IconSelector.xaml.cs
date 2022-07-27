@@ -20,7 +20,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             .OnChange( (s,a) => s.OnIconPathChanged(a) )
             .Register();
 
-        private void OnIconPathChanged(DependencyPropertyChangedEventArgs<string> dependencyPropertyChangedEventArgs)
+        void OnIconPathChanged(DependencyPropertyChangedEventArgs<string> dependencyPropertyChangedEventArgs)
         {
 //            throw new NotImplementedException();
         }
@@ -29,7 +29,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
             .OnChange( (s,a) => s.OnIconChanged(a) )
             .Register();
 
-        private void OnIconChanged(DependencyPropertyChangedEventArgs<Icon> a)
+        void OnIconChanged(DependencyPropertyChangedEventArgs<Icon> a)
         {
             IconPath = a.NewValue.Path;
         }

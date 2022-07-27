@@ -6,9 +6,9 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf.Entities.Countries
 {
-    public class CountriesPopupListViewModel : EntityListViewModel<Country>
+    public class CountriesPopupListViewModel : Core.EntityLists.EntityListViewModel<Country>
     {
-        public CountriesPopupListViewModel(ILocalizationService localization) : base(c => c
+        public CountriesPopupListViewModel(Injector i) : base(i, c => c
                 .Header("{Country}")
                 .Column("Name")
                     .Header("{Name}")
@@ -17,7 +17,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
                     
                     // TODO                .OrderByOrder(0)
                     .Filter()
-                    .PostLink(s => localization.Localize(s.Name))
+                    .PostLink(s => i.Localization.Localize(s.Name))
 
             //.Column()
             //.Header("{Continent}")

@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace HLab.Erp.Core.ViewModels
 {
-    class ViewModelConverter : IValueConverter
+    internal class ViewModelConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

@@ -17,38 +17,44 @@ namespace HLab.Erp.Base.Data
             get => _path.Get();
             set => _path.Set(value);
         }
-        private readonly IProperty<string> _path = H.Property<string>(c => c.Default(""));
+
+        readonly IProperty<string> _path = H.Property<string>(c => c.Default(""));
 
         public string SourceSvg
         {
             get => _sourceSvg.Get();
             set => _sourceSvg.Set(value);
         }
-        private readonly IProperty<string> _sourceSvg = H.Property<string>(c => c.Default(""));
+
+        readonly IProperty<string> _sourceSvg = H.Property<string>(c => c.Default(""));
 
         public string SourceXaml
         {
             get => _sourceXaml.Get();
             set => _sourceXaml.Set(value);
         }
-        private readonly IProperty<string> _sourceXaml = H.Property<string>(c => c.Default(""));
+
+        readonly IProperty<string> _sourceXaml = H.Property<string>(c => c.Default(""));
 
         public int? Foreground
         {
             get => _foreground.Get();
             set => _foreground.Set(value);
         }
-        private readonly IProperty<int?> _foreground = H.Property<int?>(c => c.Default((int?)null));
+
+        readonly IProperty<int?> _foreground = H.Property<int?>(c => c.Default((int?)null));
 
         public string Caption => _caption.Get();
-        private readonly IProperty<string> _caption = H.Property<string>(c => c
+
+        readonly IProperty<string> _caption = H.Property<string>(c => c
             .On(e => e.Path)
             .Set(e => string.IsNullOrWhiteSpace(e.Path)?"{New icon}":e.Path.Split('/').Last())
         );
         public string IconPath => _iconPath.Get();
-        private readonly IProperty<string> _iconPath = H.Property<string>(c => c
+
+        readonly IProperty<string> _iconPath = H.Property<string>(c => c
             .On(e => e.Path)
-            .Set(e => string.IsNullOrWhiteSpace(e.Path)?"icons/Entities/icon":e.Path)
+            .Set(e => string.IsNullOrWhiteSpace(e.Path)?"Icons/Entities/Icon":e.Path)
         );
     }
 }

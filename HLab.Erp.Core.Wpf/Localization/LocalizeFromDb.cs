@@ -11,17 +11,15 @@ namespace HLab.Erp.Core.Wpf.Localization
 {
     public class LocalizeFromDb : ILocalizationProvider
     {
-        
-        private IDataService _db;
-        public void Inject(IDataService db)
+        readonly IDataService _db;
+        public LocalizeFromDb(IDataService db)
         {
             _db = db;
         }
 
-        private readonly ConcurrentDictionary<string,AsyncDictionary<string,LocalizeEntry>> _cache 
-            = new ConcurrentDictionary<string,AsyncDictionary<string,LocalizeEntry>>();
+        readonly ConcurrentDictionary<string,AsyncDictionary<string,LocalizeEntry>> _cache = new();
 
-        private async Task<AsyncDictionary<string, LocalizeEntry>> GetDictionaryAsync(string language)
+        async Task<AsyncDictionary<string, LocalizeEntry>> GetDictionaryAsync(string language)
         {
             var created = false;
             var dic = _cache.GetOrAdd(language, t =>
@@ -40,7 +38,8 @@ namespace HLab.Erp.Core.Wpf.Localization
             }
             return dic;
         }
-        private AsyncDictionary<string, LocalizeEntry> GetDictionary(string language)
+
+        AsyncDictionary<string, LocalizeEntry> GetDictionary(string language)
         {
             var created = false;
             var dic = _cache.GetOrAdd(language, t =>

@@ -11,7 +11,7 @@ namespace HLab.Erp.Data.Wpf
 
     public class ConnectionDataViewModel : ViewModel<ConnectionData>
     {
-        private readonly IDataService _data;
+        readonly IDataService _data;
         public ConnectionDataViewModel(IDataService data, IpScanner scanner)
         {
             _data = data;
@@ -46,11 +46,11 @@ namespace HLab.Erp.Data.Wpf
             }
         }
 
-        private readonly IProperty<string> _server = H<ConnectionDataViewModel>.Property<string>(c => c
+        readonly IProperty<string> _server = H<ConnectionDataViewModel>.Property<string>(c => c
             .Set(e => e.Model.Server)
             .On(e => e.Model.Server).Update());
 
-        private IpScanner _scanner { get; }
+        IpScanner _scanner { get; }
 
         public ReadOnlyObservableCollection<string> Servers => _scanner.FoundServers;
 

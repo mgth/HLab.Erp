@@ -19,7 +19,7 @@ namespace HLab.Erp.Core.EntityLists
     public sealed class ObjectMapper<T> : DynamicObject, IObjectMapper
         where T : class, IEntity
     {
-        private readonly IColumnsProvider<T> _columns;
+        readonly IColumnsProvider<T> _columns;
 
         public int Id
         {
@@ -49,7 +49,7 @@ namespace HLab.Erp.Core.EntityLists
             return true;
         }
 
-        private readonly ConcurrentDictionary<string, object> _dict = new();
+        readonly ConcurrentDictionary<string, object> _dict = new();
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
@@ -61,7 +61,7 @@ namespace HLab.Erp.Core.EntityLists
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             _dict.TryRemove(propertyName, out var o);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

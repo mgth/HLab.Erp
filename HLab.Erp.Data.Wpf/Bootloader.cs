@@ -6,8 +6,8 @@ namespace HLab.Erp.Data.Wpf
 {
     public class ErpDataBootloader : IBootloader
     {
-        private readonly IDataService _data;
-        private readonly IMvvmService _mvvm;
+        readonly IDataService _data;
+        readonly IMvvmService _mvvm;
 
         public ErpDataBootloader(IDataService data, IMvvmService mvvm)
         {

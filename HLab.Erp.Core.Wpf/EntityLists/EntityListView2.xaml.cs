@@ -31,18 +31,18 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         }
 
-        private void Sv_LayoutUpdated(object sender, System.EventArgs e)
+        void Sv_LayoutUpdated(object sender, System.EventArgs e)
         {
             //AdjustColumns();
         }
 
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DataContext is IEntityListViewModel vm)
                 vm.SelectedIds = ListView.SelectedItems.OfType<IObjectMapper>().Select(o => o.Id).ToList();
         }
 
-        private void OnSelectIdsChange()
+        void OnSelectIdsChange()
         {
             if (DataContext is IEntityListViewModel vm)
             {
@@ -61,7 +61,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             }
         }
 
-        private void EntityListView2_Loaded(object sender, RoutedEventArgs e)
+        void EntityListView2_Loaded(object sender, RoutedEventArgs e)
         {
             var filter = this.FindVisualAncestor<FilterView>();
             if (filter != null)
@@ -83,7 +83,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         }
 
 
-        private void EntityListView2_Unloaded(object sender, RoutedEventArgs e)
+        void EntityListView2_Unloaded(object sender, RoutedEventArgs e)
         {
             if (DataContext is IEntityListViewModel vm)
             {
@@ -91,7 +91,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             }
         }
 
-        private void EntityListView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        void EntityListView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is IEntityListViewModel vm)
             {
@@ -104,7 +104,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             }
         }
 
-        private void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if(e.PropertyName == "SelectedIds")
                 OnSelectIdsChange();
@@ -116,7 +116,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         public string ContentId => nameof(EntityListView);
 
-        private void DataGridColumnHeader_Click(object sender, RoutedEventArgs e)
+        void DataGridColumnHeader_Click(object sender, RoutedEventArgs e)
         {
                 if (sender is DataGridColumnHeader header)
                 {
@@ -124,7 +124,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
                 }
         }
 
-        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (DataContext is not IEntityListViewModel vm) return;
             if (sender is not ListViewItem item) return;
@@ -138,12 +138,12 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             }
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             MessageTextBlock.SwitchVisibility();
         }
 
-        private void AdjustColumns()
+        void AdjustColumns()
         {
             var widths = new List<double>();
             if (DataContext is IEntityListViewModel vm)
@@ -176,7 +176,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        void Button_Click(object sender, RoutedEventArgs e)
         {
             AdjustColumns();
         }
