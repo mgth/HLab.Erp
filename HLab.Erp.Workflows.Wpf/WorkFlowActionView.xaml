@@ -27,7 +27,7 @@
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <icons:IconView Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Width="20" Height="20" Path="{Binding Model.IconPath}"/>
+                <icons:IconView Foreground="{DynamicResource HLab.Brushes.Foreground}" Width="20" Height="20" Path="{Binding Model.IconPath}"/>
                 <lang:Localize Grid.Column="2" VerticalAlignment="Center" Id="{Binding Model.Caption}"/>
             </Grid>
         </Button>

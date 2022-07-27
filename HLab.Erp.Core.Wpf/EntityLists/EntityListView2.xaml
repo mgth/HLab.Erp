@@ -43,7 +43,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <icons:IconView Path="icons/filters/filter" Foreground="AliceBlue"/>
+                    <icons:IconView Path="icons/filters/filter" Foreground="{DynamicResource HLab.Brushes.Foreground}"/>
                     <ComboBox Grid.Column="1"
                         IsTextSearchEnabled="False"
                         IsEditable="True" 

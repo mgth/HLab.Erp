@@ -57,13 +57,13 @@
                     <Grid Margin="5" Width="40" Height="40">
                         <icons:IconView 
                             HorizontalAlignment="Right" 
-                            Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
+                            Foreground="{DynamicResource HLab.Brushes.Foreground}" 
                             Width="40" Height="40"
                             Path="{Binding Model.IconPath}"/>
                         <icons:IconView 
                             VerticalAlignment="Bottom" 
                             HorizontalAlignment="Right" 
-                            Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" 
+                            Foreground="{DynamicResource HLab.Brushes.Foreground}" 
                             Width="20" Height="20"
                             Path="{Binding Model.SubIconPath}"/>
                     </Grid>
@@ -73,7 +73,7 @@
                         HorizontalAlignment="Left" 
                         FontSize="16"
                         FontWeight="Black" 
-                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Foreground="{DynamicResource HLab.Brushes.Foreground}"
                         >
                         <lang:Localize TextWrapping="Wrap" Id="{Binding Model.Caption}"/>
                     </Label>

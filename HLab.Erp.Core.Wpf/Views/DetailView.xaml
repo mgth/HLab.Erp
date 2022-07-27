@@ -22,19 +22,19 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
             <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                <Setter Property="Foreground" Value="{DynamicResource HLab.Brushes.Foreground}"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
             </Style>
             <Style TargetType="Label">
                 <Setter Property="FontStyle" Value="Italic"/>
-                <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                <Setter Property="Foreground" Value="{DynamicResource HLab.Brushes.Foreground}"/>
                 <Setter Property="VerticalContentAlignment" Value="Bottom"/>
                 <Setter Property="HorizontalContentAlignment" Value="Right"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>
             </Style>
             <Style TargetType="lang:LocalizedLabel">
                 <Setter Property="FontStyle" Value="Italic"/>
-                <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                <Setter Property="Foreground" Value="{DynamicResource HLab.Brushes.Foreground}"/>
                 <Setter Property="VerticalContentAlignment" Value="Bottom"/>
                 <Setter Property="HorizontalContentAlignment" Value="Right"/>
                 <Setter Property="VerticalAlignment" Value="Top"/>

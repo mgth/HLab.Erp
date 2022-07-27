@@ -52,7 +52,7 @@
                                    IsReadOnly="{Binding Locker.IsReadOnly}"
                                    Double="{Binding Model.OffsetA, UpdateSourceTrigger=PropertyChanged}" 
                                    Margin="0"
-                                   Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                   Foreground="{DynamicResource HLab.Brushes.Foreground}"
                                    HorizontalContentAlignment="Center" 
                                    VerticalAlignment="Center"
                                    />
@@ -64,7 +64,7 @@
                         IsReadOnly="{Binding Locker.IsReadOnly}"
                         Double="{Binding Model.Coefficient}" 
                         Margin="0"
-                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Foreground="{DynamicResource HLab.Brushes.Foreground}"
                         HorizontalContentAlignment="Center" 
                         VerticalAlignment="Center"
                         />
@@ -74,7 +74,7 @@
                                    IsReadOnly="{Binding Locker.IsReadOnly}"
                                    Double="{Binding Model.Exponent, UpdateSourceTrigger=PropertyChanged}" 
                                    Margin="0"
-                                   Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                   Foreground="{DynamicResource HLab.Brushes.Foreground}"
                                    HorizontalContentAlignment="Center" 
                                    VerticalAlignment="Top"
                                    />
@@ -84,7 +84,7 @@
                     <wpf:DoubleBox MinWidth="50"
                                    FontSize="20" 
                                    IsReadOnly="{Binding Locker.IsReadOnly}"
-                                   Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                   Foreground="{DynamicResource HLab.Brushes.Foreground}"
                                    Double="{Binding Model.OffsetB, UpdateSourceTrigger=PropertyChanged}" 
                                    HorizontalContentAlignment="Center" />
                 </StackPanel>
@@ -97,7 +97,7 @@
                         MinWidth="50"
                         FontSize="20" 
                         IsReadOnly="{Binding Locker.IsReadOnly}"
-                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Foreground="{DynamicResource HLab.Brushes.Foreground}"
                         Margin="0"
                         Double="{Binding Model.OffsetB, UpdateSourceTrigger=PropertyChanged}" 
                         HorizontalContentAlignment="Center" 
@@ -110,7 +110,7 @@
                         MinWidth="50" 
                         FontSize="20" 
                         IsReadOnly="{Binding Locker.IsReadOnly}"
-                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Foreground="{DynamicResource HLab.Brushes.Foreground}"
                         Margin="0"
                         Double="{Binding Model.Coefficient, UpdateSourceTrigger=PropertyChanged}" 
                         HorizontalContentAlignment="Center" 
@@ -121,7 +121,7 @@
                                    FontSize="15" 
                                    Margin="0"
                                    IsReadOnly="{Binding Locker.IsReadOnly}"
-                                   Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                   Foreground="{DynamicResource HLab.Brushes.Foreground}"
                                    Double="{Binding Model.Exponent, UpdateSourceTrigger=PropertyChanged}" 
                                    Decimals="0"
                                    HorizontalContentAlignment="Center" 
@@ -135,7 +135,7 @@
                         IsReadOnly="{Binding Locker.IsReadOnly}"
                         Double="{Binding Model.OffsetA, UpdateSourceTrigger=PropertyChanged}" 
                         Margin="0"
-                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Foreground="{DynamicResource HLab.Brushes.Foreground}"
                         HorizontalContentAlignment="Center" 
                         VerticalAlignment="Center"
                         />
@@ -158,7 +158,7 @@
                 <StackPanel Orientation="Horizontal">
                     <wpf:DoubleBox 
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Foreground="{DynamicResource HLab.Brushes.Foreground}"
                         MinWidth="50" 
                         FontSize="20" 
                         Double="{Binding TestValue, UpdateSourceTrigger=PropertyChanged}" 

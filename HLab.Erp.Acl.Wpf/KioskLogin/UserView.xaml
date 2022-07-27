@@ -17,10 +17,10 @@
             </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Label Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" FontWeight="Bold" Content="{Binding FirstName,FallbackValue=machin}"/>
-                <Label Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" FontWeight="Bold" Content="{Binding Name,FallbackValue=bidule}"/>
+                <Label Foreground="{DynamicResource HLab.Brushes.Foreground}" FontWeight="Bold" Content="{Binding FirstName,FallbackValue=machin}"/>
+                <Label Foreground="{DynamicResource HLab.Brushes.Foreground}" FontWeight="Bold" Content="{Binding Name,FallbackValue=bidule}"/>
             </StackPanel>
-            <Label Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" FontStyle="Italic" Content="{Binding Function, FallbackValue=responsable}" HorizontalAlignment="Center"/>
+            <Label Foreground="{DynamicResource HLab.Brushes.Foreground}" FontStyle="Italic" Content="{Binding Function, FallbackValue=responsable}" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
 </UserControl>

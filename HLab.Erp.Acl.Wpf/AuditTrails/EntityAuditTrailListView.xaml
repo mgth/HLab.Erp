@@ -23,7 +23,7 @@
                     </Expander.Header>
                     <mvvm:ViewLocator 
                         Grid.Row="1"
-                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Foreground="{DynamicResource HLab.Brushes.Foreground}"
                         ViewClass="{x:Type annotations:IViewClassContent}"
                         Model="{Binding AuditTrail}"
                     />

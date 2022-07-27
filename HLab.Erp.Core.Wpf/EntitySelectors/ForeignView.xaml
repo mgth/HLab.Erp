@@ -50,8 +50,8 @@
                     MaxHeight="500"
                     AllowsTransparency="True">
                     
-                    <Border CornerRadius="10" BorderBrush="White" Background="#F0000000" BorderThickness="0">
-                        <Grid Margin="10">
+                    <Border CornerRadius="5" Background="{StaticResource HLab.Brushes.Background}"  BorderThickness="0">
+                        <Grid Margin="5">
                             <ContentPresenter x:Name="PopupContent"/>
                         </Grid>
                     </Border>
