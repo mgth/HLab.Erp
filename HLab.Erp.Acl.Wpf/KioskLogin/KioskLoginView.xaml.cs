@@ -14,8 +14,8 @@ namespace HLab.Erp.Acl.KioskLogin
     /// </summary>
     public partial class KioskLoginView : UserControl, IView<ViewModeKiosk, LoginViewModel>
     {
-        readonly IMessageBus _messageBus;
-        public KioskLoginView(IMessageBus messageBus)
+        readonly IMessagesService _messageBus;
+        public KioskLoginView(IMessagesService messageBus)
         {
             _messageBus = messageBus;
             InitializeComponent();

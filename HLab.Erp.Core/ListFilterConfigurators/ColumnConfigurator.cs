@@ -5,6 +5,7 @@ using HLab.Base.Extensions;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
+using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.ListFilterConfigurators
 {
@@ -13,27 +14,26 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         where T : class, IEntity, new()
         where TFilter : IFilter<TLink>
     {
-        public IErpServices Erp { get; }
-        public ColumnConfigurator(IEntityListViewModel<T> list, IErpServices erp)
-            : this(new ColumnHelper<T>(new Column<T>(), list, erp), erp)
+        public ColumnConfigurator(IEntityListViewModel<T> list, ILocalizationService localization)
+            : this(new ColumnHelper<T>(new Column<T>(), list), localization)
         {
         }
 
         public IColumnConfigurator<T, TLinkChild, TFilterChild> GetChildConfigurator<TLinkChild, TFilterChild>()
         where TFilterChild : IFilter<TLinkChild>
         {
-            return new ColumnConfigurator<T, TLinkChild, TFilterChild>(Helper, Erp);
+            return new ColumnConfigurator<T, TLinkChild, TFilterChild>(Helper,Localization);
         }
 
         public IColumnConfigurator<T, object, IFilter<object>> GetNewConfigurator()
         {
-            return new ColumnConfigurator<T, object, IFilter<object>>(new ColumnHelper<T>(new Column<T>(), Target, Erp), Erp);
+            return new ColumnConfigurator<T, object, IFilter<object>>(new ColumnHelper<T>(new Column<T>(), Target),Localization);
         }
 
-        protected ColumnConfigurator(IColumn<T>.IHelper helper, IErpServices erp)
+        protected ColumnConfigurator(IColumn<T>.IHelper helper, ILocalizationService localization)
         {
-            Erp = erp;
             Helper = helper;
+            Localization = localization;
 
             var filter = helper.GetFilter<TFilter>();
             if (filter == null) return;
@@ -72,9 +72,10 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         IEntityListViewModel IColumnConfigurator.Target => Helper.Target;
 
         public IColumn<T> Column => Helper.Column;
+        public ILocalizationService Localization { get; }
         IColumn IColumnConfigurator.Column => Helper.Column;
 
-        public Task<string> Localize(string s) => Helper.Erp.Localization.LocalizeAsync(s);
+        public Task<string> Localize(string s) => Localization.LocalizeAsync(s);
 
 
         public void Dispose()

@@ -38,7 +38,7 @@
                     IsReadOnly="{Binding Locker.IsReadOnly}"
                     Model="{Binding Model.UnitClass}" 
                     ModelClass="{x:Type data1:UnitClass}" 
-                    ListClass="{x:Type viewModels:UnitClassPopupListViewModel}"
+                    ListClass="{x:Type viewModels:UnitClassListViewModel}"
                 />
 
                 <lang:LocalizedLabel Text="{}{Symbol} : " HorizontalContentAlignment="Right"/>

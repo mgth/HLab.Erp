@@ -4,11 +4,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Xml.Linq;
-using System.Xml.Serialization;
-
 using HLab.Base.Fluent;
 using HLab.Erp.Core.EntityLists;
-using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 

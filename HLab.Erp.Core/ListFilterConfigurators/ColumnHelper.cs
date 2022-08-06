@@ -6,12 +6,10 @@ namespace HLab.Erp.Core.ListFilterConfigurators
 {
     public class ColumnHelper<T> : IColumn<T>.IHelper
     {
-        public IErpServices Erp { get; }
-        public ColumnHelper(IColumn<T> column, IEntityListViewModel<T> target, IErpServices erp)
+        public ColumnHelper(IColumn<T> column, IEntityListViewModel<T> target)
         {
             Column = column;
             Target = target;
-            Erp = erp;
         }
 
         public IEntityListViewModel<T> Target { get; }

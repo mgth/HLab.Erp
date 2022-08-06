@@ -39,7 +39,7 @@ namespace HLab.Erp.Core.DragDrops
 
     public class ErpDragDrop
     {
-        public IMessageBus MessageBus { get; }
+        public IMessagesService MessageBus { get; }
 
         public delegate void DragDropEventHandler(ErpDragDrop data);
 
@@ -76,7 +76,7 @@ namespace HLab.Erp.Core.DragDrops
         public bool Positioned { get; set; } = false;
 
 
-        public ErpDragDrop(Panel p, FrameworkElement source, IMessageBus messageBus, bool sendMessages = false)
+        public ErpDragDrop(Panel p, FrameworkElement source, IMessagesService messageBus, bool sendMessages = false)
         {
             Panel = p;
             Source = source;

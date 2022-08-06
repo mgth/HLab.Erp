@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
+using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.EntityLists
 {
@@ -9,9 +10,10 @@ namespace HLab.Erp.Core.EntityLists
     {
         IEntityListViewModel Target { get; }
         IColumn Column { get; }
-        IErpServices Erp { get; }
 
-        string Localize(string s) => Erp.Localization.Localize(s);
+        ILocalizationService Localization { get; }
+
+        string Localize(string s) => Localization.Localize(s);
     }
 
     public interface IColumnConfigurator<T> : IColumnConfigurator

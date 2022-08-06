@@ -12,6 +12,8 @@ namespace HLab.Erp.Acl
     public class ListableEntityViewModel<T> : EntityViewModel<T>
         where T : class, IEntity<int>, INotifyPropertyChanged, IListableModel
     {
+        protected ListableEntityViewModel():base(null){}
+
         public ListableEntityViewModel(Injector i) : base(i) 
             => H<ListableEntityViewModel<T>>.Initialize(this);
 

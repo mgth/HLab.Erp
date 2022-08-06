@@ -3,16 +3,16 @@ using System.Windows.Input;
 using HLab.Base.Extensions;
 using HLab.Core.Annotations;
 using HLab.Mvvm.Annotations;
+using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 
 
 namespace HLab.Erp.Core
 {
-
     public abstract class NestedBootloader : NotifierBase, IBootloader
     {
-        public IErpServices Erp { get; set; }
-
+        public IDocumentService Docs { get; set; } 
+        public IMenuService Menu { get; set; } 
         protected NestedBootloader()
         {
             GetEntityName();
@@ -27,7 +27,7 @@ namespace HLab.Erp.Core
 
 
         public ICommand OpenCommand { get; } = H<NestedBootloader>.Command(c => c
-            .Action(e => e.Erp.Docs.OpenDocumentAsync(e.GetType().DeclaringType))
+            .Action(e => e.Docs.OpenDocumentAsync(e.GetType().DeclaringType))
             .CanExecute(e => true)
         );
 
@@ -68,7 +68,7 @@ namespace HLab.Erp.Core
         {
             if (!Allowed) return;
 
-            Erp.Menu.RegisterMenu(MenuPath + "/" + Name, Header,
+            Menu.RegisterMenu(MenuPath + "/" + Name, Header,
                 OpenCommand,
                 IconPath);
         }

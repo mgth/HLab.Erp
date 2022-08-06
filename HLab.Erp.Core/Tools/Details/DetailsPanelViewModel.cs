@@ -7,7 +7,7 @@ namespace HLab.Erp.Core.Tools.Details
     public class DetailsPanelViewModel : ViewModel
     {
 
-        public DetailsPanelViewModel(IMessageBus messageBus)
+        public DetailsPanelViewModel(IMessagesService messageBus)
         {
             messageBus.Subscribe<DetailMessage>(a=> Item = a.Item);
             H<DetailsPanelViewModel>.Initialize(this);

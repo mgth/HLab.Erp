@@ -14,8 +14,8 @@ namespace HLab.Erp.Acl.LoginServices
     public partial class LoginView : UserControl,
         IView<ViewModeDefault,LoginViewModel>, IViewClassDefault
     {
-        readonly IMessageBus _messageBus;
-        public LoginView(IMessageBus messageBus)
+        readonly IMessagesService _messageBus;
+        public LoginView(IMessagesService messageBus)
         {
             _messageBus = messageBus;
             InitializeComponent();
@@ -26,23 +26,21 @@ namespace HLab.Erp.Acl.LoginServices
         void LoginView_Loaded(object sender, RoutedEventArgs e)
         {
             var win =  Window.GetWindow(this); //this.FindVisualParent<Window>();
-            if (win != null)
+            if (win == null) return;
+
+            _messageBus.Subscribe<UserLoggedInMessage>(m =>
             {
-                _messageBus.Subscribe<UserLoggedInMessage>(m =>
-                {
-                    win.Closed -= LoginView_Closed;
-                    Application.Current.Dispatcher.InvokeAsync(win.Close) ;
-                });
+                win.Closed -= LoginView_Closed;
+                Application.Current.Dispatcher.InvokeAsync(win.Close) ;
+            });
 
-                win.Closed += LoginView_Closed;
+            win.Closed += LoginView_Closed;
 
 
-                win.Width = 400;
-                win.Height = 300;
-                win.Left = (SystemParameters.PrimaryScreenWidth - win.Width) / 2;
-                win.Top = (SystemParameters.PrimaryScreenHeight - win.Height) / 2;
-
-            }
+            win.Width = 400;
+            win.Height = 300;
+            win.Left = (SystemParameters.PrimaryScreenWidth - win.Width) / 2;
+            win.Top = (SystemParameters.PrimaryScreenHeight - win.Height) / 2;
         }
 
         void LoginView_Closed(object sender, EventArgs e)

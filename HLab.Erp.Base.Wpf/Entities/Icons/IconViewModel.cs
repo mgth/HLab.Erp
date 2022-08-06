@@ -16,6 +16,7 @@ using HLab.Icons.Annotations.Icons;
 using HLab.Icons.Wpf.Icons;
 using HLab.Icons.Wpf.Icons.Providers;
 using HLab.Notify.PropertyChanged;
+using Microsoft.Win32;
 
 namespace HLab.Erp.Base.Wpf.Entities.Icons
 {
@@ -46,6 +47,28 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
         );
         public ICommand EditSvgCommand { get; } = H.Command(c => c
             .Action(async e => await e.EditSvgAsync().ConfigureAwait(true))
+        );
+        public ICommand OpenCommand { get; } = H.Command(c => c
+            .Action(async e =>
+            {
+                await Task.Run(() =>
+                {
+                    var openFileDialog = new OpenFileDialog(){Filter="SVG|*.svg|XAML|*.xaml"};
+                    if (openFileDialog.ShowDialog() != true) return;
+
+                    var ext = Path.GetExtension(openFileDialog.FileName);
+                    switch (ext.ToLower())
+                    {
+                        case ".xaml":
+                            e.Model.SourceXaml = File.ReadAllText(openFileDialog.FileName);
+                            break;
+                        case ".svg":
+                            e.Model.SourceSvg = File.ReadAllText(openFileDialog.FileName);
+                            break;
+                    }
+
+                });
+           })
         );
 
         async Task ToXamlAsync()

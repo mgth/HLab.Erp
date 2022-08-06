@@ -1,14 +1,13 @@
 ﻿using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core
+namespace HLab.Erp.Core.Wpf
 {
     public class AboutViewModel : NotifierBase
     {
         #region Constructors
 
-        public AboutViewModel(IErpServices erp)
+        public AboutViewModel()
         {
-            _erp = erp;
             H<AboutViewModel>.Initialize(this);
         }
 
@@ -26,7 +25,6 @@ namespace HLab.Erp.Core
         #endregion
         #region Data
 
-        IErpServices _erp;
 
         #endregion
     }

@@ -15,10 +15,12 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
         {
             public override string MenuPath => "param";
         }
-        protected override bool CanExecuteExport(Action<string> errorAction) => Injected.Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
-        protected override bool CanExecuteImport(Action<string> errorAction) => Injected.Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
 
-        public CountriesListViewModel(Injector i) : base(i, c => c
+        readonly IAclService _acl;
+        protected override bool CanExecuteExport(Action<string> errorAction) => _acl.IsGranted(ErpRights.ErpManageCountries);
+        protected override bool CanExecuteImport(Action<string> errorAction) => _acl.IsGranted(ErpRights.ErpManageCountries);
+
+        public CountriesListViewModel(IAclService acl, Injector i) : base(i, c => c
                 .Header("{Country}")
                 .Column("Name")
                     .Header("{Name}")
@@ -55,6 +57,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
             // TODO                .OrderBy(s => s.Name)
             )
         {
+            _acl = acl;
         }
     }
 }

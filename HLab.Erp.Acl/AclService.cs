@@ -25,11 +25,11 @@ namespace HLab.Erp.Acl
 
     public class AclService : IAclService
     {
-        readonly IMessageBus _msg;
+        readonly IMessagesService _msg;
         readonly IAclHelper _acl;
         readonly IDataService _data;
 
-        public AclService(IMessageBus msg, IAclHelper acl, IDataService data)
+        public AclService(IMessagesService msg, IAclHelper acl, IDataService data)
         {
             _msg = msg;
             _acl = acl;
@@ -151,7 +151,7 @@ namespace HLab.Erp.Acl
 
         async Task PopulateRightsAsync()
         {
-            List<AclRight> rights = new List<AclRight>();
+            List<AclRight> rights = new();
 
             var userProfiles = _data.FetchWhereAsync<UserProfile>(e => e.UserId == Connection.UserId, e => e.Id);
             await foreach (var userProfile in userProfiles)

@@ -16,10 +16,12 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
-        protected override bool CanExecuteAdd(Action<string> errorAction) => Injected.Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
-        protected override bool CanExecuteDelete(Customer customer, Action<string> errorAction) =>  Injected.Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
 
-        public CustomersListViewModel(Injector i) : base(i, c => c
+        readonly IAclService _acl;
+        protected override bool CanExecuteAdd(Action<string> errorAction) => _acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+        protected override bool CanExecuteDelete(Customer customer, Action<string> errorAction) =>  _acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+
+        public CustomersListViewModel(IAclService acl, Injector i) : base( i, c => c
             .Column("Name")
                 .Header("{Name}") 
 //                .OrderByOrder(0)
@@ -43,6 +45,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
                 .Filter()
         )
         {
+            _acl = acl;
         }
     }
 }

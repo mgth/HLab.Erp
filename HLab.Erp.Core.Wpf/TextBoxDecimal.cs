@@ -3,7 +3,7 @@ using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace HLab.Erp.Core
+namespace HLab.Erp.Core.Wpf
 {
     public class TextBoxDecimal : TextBox
     {

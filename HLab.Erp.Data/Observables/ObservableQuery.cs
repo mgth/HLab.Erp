@@ -485,8 +485,6 @@ namespace HLab.Erp.Data.Observables
             return this;
         }
 
-        Thread _updateThread = null;
-
         public async Task UpdateAsync()
         {
             Mutex w = new();

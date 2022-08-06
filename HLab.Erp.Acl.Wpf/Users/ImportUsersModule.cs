@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using HLab.Core.Annotations;
 using HLab.Erp.Core;
+using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl.Users
@@ -9,16 +10,19 @@ namespace HLab.Erp.Acl.Users
 
     public class ImportUsersModule : NotifierBase, IBootloader
     {
-        readonly IErpServices _erp;
-
-        public ImportUsersModule(IErpServices erp)
+        readonly IDocumentService _docs;
+        readonly IAclService _acl;
+        readonly IMenuService _menu;
+        public ImportUsersModule(IDocumentService docs, IAclService acl, IMenuService menu)
         {
-            _erp = erp; 
+            _docs = docs;
+            _acl = acl;
+            _menu = menu;
             H.Initialize(this);
         }
 
         public ICommand OpenCommand { get; } = H.Command(c => c.Action(
-            e => e._erp.Docs.OpenDocumentAsync(typeof(ImportUsersViewModel))
+            e => e._docs.OpenDocumentAsync(typeof(ImportUsersViewModel))
         ).CanExecute(e => true));
 
         protected virtual string IconPath => "Icons/Entities/";
@@ -27,15 +31,15 @@ namespace HLab.Erp.Acl.Users
         {
             if (b.WaitDependency("BootLoaderErpWpf")) return;
 
-            if (_erp.Acl.Connection == null)
+            if (_acl.Connection == null)
             {
-                if(!_erp.Acl.Cancelled) b.Requeue();
+                if(!_acl.Cancelled) b.Requeue();
                 return;
             }
 
-            if(!_erp.Acl.IsGranted(AclRights.ManageUser)) return;
+            if(!_acl.IsGranted(AclRights.ManageUser)) return;
 
-            _erp.Menu.RegisterMenu("tools/ImportUsers", "{Import Users}",
+            _menu.RegisterMenu("tools/ImportUsers", "{Import Users}",
                 OpenCommand,
                 "icons/tools/ImportUsers");
         }

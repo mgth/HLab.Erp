@@ -43,8 +43,6 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             Delegate PostLink { get; set; }
 
             Expression<Func<T, TLink>> GetLinkExpression<TLink>() => (Expression<Func<T, TLink>>)Link;
-
-            IErpServices Erp { get; }
         }
 
         void RegisterTriggers(T model, Action<string> handler);

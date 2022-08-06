@@ -8,7 +8,7 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf.Entities.Units
 {
-    public class UnitClassPopupListViewModel : Core.EntityLists.EntityListViewModel<UnitClass>, IMvvmContextProvider
+    public class UnitClassListViewModel : Core.EntityLists.EntityListViewModel<UnitClass>, IMvvmContextProvider
     {
         public class Bootloader : NestedBootloader
         { }
@@ -16,10 +16,13 @@ namespace HLab.Erp.Base.Wpf.Entities.Units
         public void ConfigureMvvmContext(IMvvmContext ctx)
         {
         }
-        protected override bool CanExecuteAdd(Action<string> errorAction) => Injected.Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
-        protected override bool CanExecuteDelete(UnitClass customer, Action<string> errorAction) =>  Injected.Erp.Acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
 
-        public UnitClassPopupListViewModel(Injector i) : base(i, c => c
+        IAclService _acl;
+
+        protected override bool CanExecuteAdd(Action<string> errorAction) => _acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+        protected override bool CanExecuteDelete(UnitClass unitClass, Action<string> errorAction) =>  _acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+
+        public UnitClassListViewModel(IAclService acl, Injector i) : base(i, c => c
             .Column("Name")
                 .Header("{Name}") 
 //                .OrderByOrder(0)
@@ -34,6 +37,41 @@ namespace HLab.Erp.Base.Wpf.Entities.Units
                 .Icon(s => s.IconPath)
         )
         {
+            _acl = acl;
         }
     }
+
+    public class UnitListViewModel : Core.EntityLists.EntityListViewModel<Unit>, IMvvmContextProvider
+    {
+        public class Bootloader : NestedBootloader
+        { }
+
+        public void ConfigureMvvmContext(IMvvmContext ctx)
+        {
+        }
+
+        IAclService _acl;
+
+        protected override bool CanExecuteAdd(Action<string> errorAction) => _acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+        protected override bool CanExecuteDelete(Unit unit, Action<string> errorAction) =>  _acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+
+        public UnitListViewModel(IAclService acl, Injector i) : base(i, c => c
+            .Column("Name")
+            .Header("{Name}") 
+//                .OrderByOrder(0)
+            .Link(s => s.Name)
+            .Filter()
+
+            .Column("Symbol")
+            .Header("{Symbol}") 
+//                .OrderByOrder(0)
+            .Link(s => s.Symbol)
+            .Filter()
+            .Icon(s => s.IconPath)
+        )
+        {
+            _acl = acl;
+        }
+    }
+
 }

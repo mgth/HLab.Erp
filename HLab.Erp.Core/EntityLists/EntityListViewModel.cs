@@ -1,64 +1,53 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Formats.Asn1;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using HLab.Base.Extensions;
+using HLab.Core.Annotations;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Erp.Core.Tools.Details;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
+using HLab.Mvvm.Application;
+using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 using HLab.Options;
 using Newtonsoft.Json.Serialization;
 
 namespace HLab.Erp.Core.EntityLists
 {
-    public interface IEntityListHelper
-    {
-        object GetListView(IList list);
-        void DoOnDispatcher(object grid, Action action);
-    }
-
-    public interface IEntityListHelper<T> : IEntityListHelper where T : class, IEntity, new()
-    {
-        void Populate(object grid, IColumnsProvider<T> provider);
-
-        Task ExportAsync(IObservableQuery<T> list, IContractResolver resolver);
-        public Task<IEnumerable<T>> ImportAsync();
-    }
-
     public abstract class EntityListViewModel : ViewModel
     {
         public virtual Injector Injected { get; }
 
         public class Injector
         {
-            public IErpServices Erp { get; }
             public IOptionsService Options { get; }
             internal Func<Type, object> Get;
-            public Injector(IOptionsService options, IErpServices erp, Func<Type, object> get)
+
+            protected Injector(Injector injector) : this(injector.Options, injector.Get){}
+
+            public Injector(IOptionsService options, Func<Type, object> get)
             {
                 Options = options;
-                Erp = erp;
                 Get = get;
             }
         }
 
-
         protected EntityListViewModel(Injector injector)
         {
             Injected = injector;
-            Filters = new(filters);
+            Filters = new ReadOnlyObservableCollection<IFilter>(_filters);
 
             H<EntityListViewModel>.Initialize(this);
 
@@ -78,11 +67,11 @@ namespace HLab.Erp.Core.EntityLists
 
         public abstract void SetOpenAction(Action<object> action);
         public abstract void SetSelectAction(Action<object> action);
-        protected readonly ObservableCollection<IFilter> filters = new();
-        public ReadOnlyObservableCollection<IFilter> Filters { get; private set; }
+        protected readonly ObservableCollection<IFilter> _filters = new();
+        public ReadOnlyObservableCollection<IFilter> Filters { get; }
 
 
-        public void AddFilter(IFilter filter) => filters.Add(filter);
+        public void AddFilter(IFilter filter) => _filters.Add(filter);
         public T GetFilter<T>() where T : IFilter
         {
             var locate = (Func<IEntityListViewModel,T>)Injected.Get(typeof(Func<IEntityListViewModel,T>));
@@ -144,18 +133,16 @@ namespace HLab.Erp.Core.EntityLists
             get => _filtersPresetSelected.Get();
             set
             {
-                if(_filtersPresetSelected.Set(value) && value!=null)
-                {
-                    var xml = Injected.Options.GetValue($"Filters\\{GetType().Name}",FiltersPresetSelected,null, ()=>"");
+                if (!_filtersPresetSelected.Set(value) || value == null) return;
 
-                    if(!string.IsNullOrWhiteSpace(xml))
-                    {
-                        var doc = XDocument.Parse(xml);
+                var xml = Injected.Options.GetValue($"Filters\\{GetType().Name}",FiltersPresetSelected,null, ()=>"");
 
-                        foreach(var item in doc.Elements())
-                            FiltersFromXml(item);
-                    }
-                }
+                if (string.IsNullOrWhiteSpace(xml)) return;
+                
+                var doc = XDocument.Parse(xml);
+
+                foreach(var item in doc.Elements())
+                    FiltersFromXml(item);
             }
         }
 
@@ -171,11 +158,11 @@ namespace HLab.Erp.Core.EntityLists
         public string ErrorMessage => string.Join(Environment.NewLine,_errors.OrderBy(e => e.Item1).Select(e => e.Item2));
 
 
-        readonly ObservableCollection<string> _filterPresets = new ObservableCollection<string>();
+        readonly ObservableCollection<string> _filterPresets = new();
         public ReadOnlyObservableCollection<string> FilterPresets {get;}
 
 
-        List<Tuple<string,string>> _errors = new List<Tuple<string, string>>();
+        readonly List<Tuple<string,string>> _errors = new();
 
 
         public void AddErrorMessage(string key,string message)
@@ -201,15 +188,14 @@ namespace HLab.Erp.Core.EntityLists
 
             if(element.Name=="Filters")
             {
-                foreach(XElement child in element.Elements())
+                foreach(var child in element.Elements())
                 {
-                        var filter = filters.Where(f => f.Name==child.Name).FirstOrDefault();
-                        if(filter!= null)
-                        {
-                            filters.Remove(filter);
-                            filter.FromXml(child);
-                            filter.Enabled = true;
-                        }
+                        var filter = filters.FirstOrDefault(f => f.Name==child.Name);
+                        if (filter == null) continue;
+
+                        filters.Remove(filter);
+                        filter.FromXml(child);
+                        filter.Enabled = true;
                 }
             }
 
@@ -223,11 +209,10 @@ namespace HLab.Erp.Core.EntityLists
 
             foreach(var filter in Filters)
             {
-                if(filter.Enabled)
-                {
-                    var xFilter = filter.ToXml();
-                    xFilters.Add(xFilter);
-                }
+                if (!filter.Enabled) continue;
+
+                var xFilter = filter.ToXml();
+                xFilters.Add(xFilter);
             }
 
             return xFilters;
@@ -258,8 +243,8 @@ namespace HLab.Erp.Core.EntityLists
         string GetName() => GetType().Name.BeforeSuffix("ListViewModel");
 
 
-        public IObservableQuery<T> List { get => _list.Get(); private set => _list.Set(value); }
-        IProperty<IObservableQuery<T>> _list = H<EntityListViewModel<T>>.Property<IObservableQuery<T>>();
+        public IObservableQuery<T> List { get => _list.Get(); }
+        readonly IProperty<IObservableQuery<T>> _list = H<EntityListViewModel<T>>.Property<IObservableQuery<T>>();
 
 
         public override void RefreshColumn(string column)
@@ -288,17 +273,30 @@ namespace HLab.Erp.Core.EntityLists
             protected internal Func<T> CreateInstance { get; }
             protected internal IColumnsProvider<T> Columns { get; set; }
             public ILocalizationService Localization { get; }
+            public IDocumentService Docs { get; }
+            public IDataService Data { get; }
+            public IMessagesService Message { get; }
+
             public Injector(
-                IOptionsService options, IErpServices erp, Func<Type, object> get,
+                EntityListViewModel.Injector innerInjector,
                 IEntityListHelper<T> helper,
                 Func<T> createInstance,
                 IColumnsProvider<T> columnsProvider,
-                ILocalizationService localization) : base(options,erp,get)
+
+                ILocalizationService localization,
+                IDocumentService docs, 
+                IMessagesService message, 
+                IDataService data
+
+                ) : base(innerInjector)
             {
                 Helper = helper;
                 CreateInstance = createInstance;
                 Columns = columnsProvider;
                 Localization = localization;
+                Docs = docs;
+                Message = message;
+                Data = data;
             }
         }
 
@@ -312,15 +310,15 @@ namespace HLab.Erp.Core.EntityLists
 
             H<EntityListViewModel<T>>.Initialize(this);
 
-            List = injector.Columns.List;
+            _list.Set(injector.Columns.List);
 
             List_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, List, 0));
             List.CollectionChanged += List_CollectionChanged;
 
-            configurator.Invoke(new ColumnConfigurator<T,object,IFilter<object>>(this,injector.Erp))?.Dispose();
+            configurator.Invoke(new ColumnConfigurator<T,object,IFilter<object>>(this,injector.Localization))?.Dispose();
 
             Header ??= GetTitle();
-            OpenAction ??= target => injector.Erp.Docs.OpenDocumentAsync(target);
+            OpenAction ??= target => injector.Docs.OpenDocumentAsync(target);
             IconPath ??= "Icons/Entities/" + typeof(T).Name;
         }
 
@@ -410,6 +408,7 @@ namespace HLab.Erp.Core.EntityLists
             return false;
         }
 
+
         protected virtual bool CanExecuteImport(Action<string> errorAction)
         {
             errorAction("{Import} : {Not implemented}");
@@ -425,7 +424,7 @@ namespace HLab.Erp.Core.EntityLists
 
 
 
-        protected Action<T> OpenAction;
+        protected Action<T>? OpenAction;
         public override void SetOpenAction(Action<object> action) => OpenAction = action;
         public void SetOpenAction(Action<T> action) => OpenAction = action;
 
@@ -441,12 +440,12 @@ namespace HLab.Erp.Core.EntityLists
             //TODO : this is temporary fix data service not injected
             if (entity is IDataServiceProvider {DataService: null} p)
             {
-                p.DataService = Injected.Erp.Data;
+                p.DataService = Injected.Data;
             }
 
             ConfigureEntity(entity);
 
-            return Injected.Erp.Docs.OpenDocumentAsync(entity);
+            return Injected.Docs.OpenDocumentAsync(entity);
         }
 
         protected virtual void ConfigureEntity(T entity) { }
@@ -519,7 +518,7 @@ namespace HLab.Erp.Core.EntityLists
                     if (SelectAction != null)
                         SelectAction(value);
                     else
-                        Injected.Erp.Message.Publish(new DetailMessage(value));
+                        Injected.Message.Publish(new DetailMessage(value));
                 }
             }
         }
@@ -576,7 +575,7 @@ namespace HLab.Erp.Core.EntityLists
             var list = await Injected.Helper.ImportAsync();
             foreach (var entity in list)
             {
-                await ImportAsync(Injected.Erp.Data, entity);
+                await ImportAsync(Injected.Data, entity);
             }
         }
 
@@ -584,10 +583,10 @@ namespace HLab.Erp.Core.EntityLists
 
         protected async Task DeleteEntityAsync(T entity)
         {
-            await Injected.Erp.Docs.CloseDocumentAsync(entity);
+            await Injected.Docs.CloseDocumentAsync(entity);
             try
             {
-                if (await Injected.Erp.Data.DeleteAsync(entity))
+                if (await Injected.Data.DeleteAsync(entity))
                 {
                     List.Update();
                 }

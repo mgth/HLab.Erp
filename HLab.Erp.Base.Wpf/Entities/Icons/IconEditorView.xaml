@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HLab.Erp.Base.Wpf.Entities.Icons"
              xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=local:IconViewModel}"
@@ -47,7 +48,8 @@
         />
 
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0" Orientation="Horizontal">
-            <Button Command="{Binding EditSvgCommand}">Edit</Button>
+            <Button Command="{Binding OpenCommand}"><lang:Localize>{Open}</lang:Localize></Button>
+            <Button Command="{Binding EditSvgCommand}"><lang:Localize>{Edit}</lang:Localize></Button>
             <Button Command="{Binding ToXamlCommand}" >>></Button>
         </StackPanel>
         

@@ -35,17 +35,31 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
 
         void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            
-
             switch (e.PropertyName)
             {
                 case "SourceXaml":
                     if (_changingXaml) return;
-                    XamlEditor.Text = ((IconViewModel)DataContext).Model.SourceXaml;
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        if (DataContext is IconViewModel vm)
+                        {
+                            XamlEditor.Text = vm.Model.SourceXaml;
+                        }
+                    });
                     break;
+
                 case "SourceSvg":
                     if (_changingSvg) return;
-                    SvgEditor.Text = ((IconViewModel)DataContext).Model.SourceSvg;
+                    
+                    Dispatcher.Invoke(() =>
+                    {
+                        if (DataContext is IconViewModel vm)
+                        {
+                            SvgEditor.Text = vm.Model.SourceSvg;
+                        }
+                    });
+                    
                     break;
             }
         }

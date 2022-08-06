@@ -4,6 +4,7 @@ using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using HLab.Erp.Core.WebService;
 using HLab.Mvvm;
+using HLab.Mvvm.Application;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 
@@ -13,16 +14,16 @@ namespace HLab.Erp.Core.Wpf.WebService
 
     public class BrowserViewModel : ViewModel, IBrowserService
     {
-        readonly IErpServices _erp;
+        readonly IDocumentService _docs;
 
         public ICommand OpenCommand { get; } = H.Command(c => c
-        .Action(e => e._erp.Docs.OpenDocumentAsync(e))
+        .Action(e => e._docs.OpenDocumentAsync(e))
         );
 
         public string Title => "Internet";
         public void Navigate(string url)
         {
-            _erp.Docs.OpenDocumentAsync(this);
+            _docs.OpenDocumentAsync(this);
             WebBrowser.Navigate(url);
         }
 
@@ -32,7 +33,7 @@ namespace HLab.Erp.Core.Wpf.WebService
             set => _url.Set(value);
         }
 
-        IProperty<string> _url = H.Property<string>(c => c.Default(""));
+        readonly IProperty<string> _url = H.Property<string>(c => c.Default(""));
 
         IProperty<FrameworkElement> _host = H.Property<FrameworkElement>(c => c
             .On(e => e.WebBrowser)
@@ -58,9 +59,9 @@ namespace HLab.Erp.Core.Wpf.WebService
                 return web;
             }));
 
-        public BrowserViewModel(IErpServices erp)
+        public BrowserViewModel(IDocumentService docs)
         {
-            _erp = erp;
+            _docs = docs;
             H.Initialize(this);
         }
 

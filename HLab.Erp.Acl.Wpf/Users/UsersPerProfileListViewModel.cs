@@ -7,17 +7,20 @@ namespace HLab.Erp.Acl.Users
 {
     public class UsersPerProfileListViewModel : Core.EntityLists.EntityListViewModel<UserProfile>
     {
-        public UsersPerProfileListViewModel(Injector i, Profile profile) : base(i, c => c
+        public UsersPerProfileListViewModel(IAclService acl, IDocumentService docs, Injector i, Profile profile) : base(i, c => c
             .StaticFilter(e => e.ProfileId == profile.Id)
             .Column("Name")
             .Header("{Name}")
             .Content(s => s.User.Caption)
         )
         {
-            OpenAction = target => i.Erp.Docs.OpenDocumentAsync(target.User);
+            _acl = acl;
+            OpenAction = target => docs.OpenDocumentAsync(target.User);
         }
 
-        protected override bool CanExecuteAdd(Action<string> errorAction) => Injected.Erp.Acl.IsGranted(errorAction, AclRights.ManageProfiles);
-        protected override bool CanExecuteDelete(UserProfile profile, Action<string> errorAction) => Injected.Erp.Acl.IsGranted(errorAction, AclRights.ManageProfiles);
+        readonly IAclService _acl;
+
+        protected override bool CanExecuteAdd(Action<string> errorAction) => _acl.IsGranted(errorAction, AclRights.ManageProfiles);
+        protected override bool CanExecuteDelete(UserProfile profile, Action<string> errorAction) => _acl.IsGranted(errorAction, AclRights.ManageProfiles);
     }
 }

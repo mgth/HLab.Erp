@@ -3,7 +3,7 @@ using System;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-
+using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 
 using NPoco;
@@ -14,9 +14,15 @@ namespace HLab.Erp.Data
     public abstract class Entity : Entity<int>
     {
     }
+    public interface INotifyDataHelper<TClass> where TClass : NotifierBase, IEntity, IDataServiceProvider
+    {
+        public H<TClass> H => HD<TClass>.Helper;
+    }
 
     public class HD<TClass> : H<TClass> where TClass : NotifierBase, IEntity, IDataServiceProvider
     {
+        public new static HD<TClass> Helper => new();
+
         public static IForeign<TF> Foreign<TF>([CallerMemberName] string name = null) where TF : Entity, IEntity<int>
         {
             var propertyName = GetNameFromCallerName(name);
