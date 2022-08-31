@@ -11,6 +11,7 @@
              xmlns:countries="clr-namespace:HLab.Erp.Base.Wpf.Entities.Countries"
              xmlns:views="clr-namespace:HLab.Erp.Core.Wpf.Views;assembly=HLab.Erp.Core.Wpf"
              xmlns:workflows="clr-namespace:HLab.Erp.Workflows;assembly=HLab.Erp.Workflows.Wpf"
+             xmlns:entitySelectors1="clr-namespace:HLab.Erp.Core.Wpf.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
              d:DataContext="{d:DesignInstance {x:Type customers:CustomerViewModelDesign}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -40,7 +41,7 @@
                 HorizontalContentAlignment="Left" />
 
             <lang:LocalizedLabel Text="{}{Country} : "/>
-            <entitySelectors:ForeignView 
+            <entitySelectors1:ForeignView 
                 HorizontalAlignment="Left"
                 IsReadOnly="{Binding Locker.IsReadOnly}"
                 Model="{Binding Model.Country}" 

@@ -40,10 +40,6 @@ namespace HLab.Erp.Acl
 
         public bool Cancelled { get; private set; } = false;
 
-        public string PinLogin(string pin)
-        {
-            throw new NotImplementedException();
-        }
         public async Task<User> Check(NetworkCredential credential, bool pin = false)
         {
             try

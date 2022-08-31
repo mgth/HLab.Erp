@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Linq.Expressions;
-using HLab.Erp.Core.Wpf.EntityLists;
+using HLab.Base;
+using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.ListFilters;
 
 namespace HLab.Erp.Core.ListFilterConfigurators
 {
-    public class ColumnHelper<T> : IColumn<T>.IHelper
+    public class ColumnBuilder<T> : IColumn<T>.IBuilder
     {
-        public ColumnHelper(IColumn<T> column, IEntityListViewModel<T> target)
+        public ColumnBuilder(IEntityListViewModel<T> listViewModel, IColumn<T> column)
         {
             Column = column;
-            Target = target;
+            ListViewModel = listViewModel;
         }
 
-        public IEntityListViewModel<T> Target { get; }
+        public IEntityListViewModel<T> ListViewModel { get; }
+        public string DataTemplateSource { get; set; } = XamlTool.ContentPlaceHolder;
         public IColumn<T> Column { get; }
-
         IFilter _filter;
 
         public TFilter GetFilter<TFilter>() where TFilter : IFilter
@@ -24,11 +26,11 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             var t = typeof(TFilter);
             if (!t.IsClass || t.IsAbstract) return default;
 
-            var filter = Target.GetFilter<TFilter>();
+            var filter = ListViewModel.GetFilter<TFilter>();
             
             filter.Header = Column.Header;
             filter.IconPath = Column.IconPath;
-            filter.Name = Column.Id;
+            filter.Name = Column.Name;
 
             _filter = filter;
             return filter;
@@ -36,8 +38,21 @@ namespace HLab.Erp.Core.ListFilterConfigurators
 
         public Expression Link { get; set; }
         public Delegate PostLink { get; set; }
+        public int OrderByRank { get; set; }
 
-        IColumn IColumn.IHelper.Column => Column;
-        IEntityListViewModel IColumn.IHelper.Target => Target;
+        public void Build()
+        {
+            Column.DataTemplate = ListViewModel.Columns.BuildTemplate(DataTemplateSource);
+            ListViewModel.Columns.AddColumn(Column);
+
+            if (_filter != null)
+                ListViewModel.AddFilter(_filter);
+
+        }
+
+
+
+        IColumn IColumn.IBuilder.Column => Column;
+        IEntityListViewModel IColumn.IBuilder.ListViewModel => ListViewModel;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using HLab.Erp.Core.Wpf.EntityLists;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm.Annotations;
 
@@ -11,17 +12,22 @@ namespace HLab.Erp.Core.EntityLists
     public interface IColumnsProvider
     {
         void Populate(object grid);
-
+        object BuildTemplate(string template);
         Dictionary<string, IColumn> Columns {get;} 
     }
 
     public interface IColumnsProvider<T> : IColumnsProvider
     {
-        object GetValue(T obj, string name);
+        void SetDefaultOrderBy();
+        bool GetValue(T obj, string name, out object result);
 
         //object GetView();
 
         void AddColumn(IColumn<T> column);
+        string AddProperty<TOut>(Expression<Func<T, TOut>> getter);
+        string AddProperty(Func<T,bool> canEvaluate, Func<T, object> getter);
+        string AddProperty(string name, Func<T,bool> canEvaluate, Func<T, object> getter);
+
 
         IObservableQuery<T> List {get;}
 

@@ -1,11 +1,15 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
+using HLab.Base;
+using HLab.Base.Extensions;
 using HLab.Erp.Core.EntityLists;
-using HLab.Erp.Core.Wpf.EntityLists;
-using HLab.Erp.Core.Wpf.ListFilters;
+using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
+using Microsoft.VisualBasic;
 
 namespace HLab.Erp.Core.ListFilterConfigurators
 {
@@ -15,64 +19,63 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         /// Start un new column
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TLink"></typeparam>
-        /// <typeparam name="TFilter"></typeparam>
-        /// <param name="c"></param>
+        /// <param name="@this"></param>
+        /// <param name="this"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public static IColumnConfigurator<T,object,IFilter<object>> Column<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, string id=null)
+        public static IColumnConfigurator<T,object,IFilter<object>> Column<T>(this IColumnConfigurator<T> @this, string? id=null)
             where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
-        {
-            var result = c.GetNewConfigurator();
-            if(id!=null) result.Id(id);
-            c.Dispose();
-            return result;
-        }
+            =>
+            @this.GetColumnConfigurator().Name(id);
+        public static IColumnConfigurator<T> HideMenu<T>(this IColumnConfigurator<T> @this)
+            where T : class, IEntity, new()
+            =>
+            @this.ShowMenu(false);
+        public static IColumnConfigurator<T> HideFilters<T>(this IColumnConfigurator<T> @this)
+            where T : class, IEntity, new()
+            =>
+            @this.ShowFilters(false);
+        public static IColumnConfigurator<T> ShowMenu<T>(this IColumnConfigurator<T> @this, bool value=true)
+            where T : class, IEntity, new()
+            =>
+            @this.BuildList(l => l.ShowMenu = value);
+        public static IColumnConfigurator<T> ShowFilters<T>(this IColumnConfigurator<T> @this, bool value=true)
+            where T : class, IEntity, new()
+            =>
+            @this.BuildList(l => l.ShowFilters = value);
 
         /// <summary>
         /// Define a static filter that will not be editable
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TLink"></typeparam>
-        /// <typeparam name="TFilter"></typeparam>
-        /// <param name="c"></param>
+        /// <param name="this"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        public static IColumnConfigurator<T, TLink, TFilter> StaticFilter<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, bool>> filter)
+        public static IColumnConfigurator<T> StaticFilter<T>(this IColumnConfigurator<T> @this, Expression<Func<T, bool>> filter)
             where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
-        {
-            c.Target.List.AddFilter(filter);
-            return c;
-        }
-        //public static IColumnConfigurator<T, TLinkOut, IFilter<TLinkOut>> Link<T, TLink, TLinkOut, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, TLinkOut>> getter)
-        //    where T : class, IEntity, new()
-        //{
-        //    var result = new ColumnConfigurator<T, TLinkOut, IFilter<TLinkOut>>(c.Helper, getter)
-        //    {
-        //        //CurrentFilter = new TextFilter()
-        //    };
-        //    result.CurrentFilter.Link(c.Helper.Target.List, result.Getter);
-
-        //    return result;
-        //}
+            =>
+            @this.BuildList(l => l.List.AddFilter(filter));
 
         public static IColumnConfigurator<T, string, IFilter<string>> Link<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, string>> getter)
             where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
+            where TFilter : class, IFilter<TLink>
         {
-            var result = c.GetChildConfigurator<string, IFilter<string>>();
-            result.Column.AddTrigger(getter);
+            var result = c
+                .GetFilterConfigurator<string, IFilter<string>>()
+                .AddProperty(getter,out var content)
+                .ContentTemplate($@"<TextBlock Text=""{{Binding {content}}}""/>")
+                .OrderByDefault(getter.Compile());
+
             result.LinkExpression = getter;
 
-            return result;
+            return result.UpdateOn(getter);
         }
+
         public static IColumnConfigurator<T, bool?, IFilter<bool?>> Link<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, bool?>> getter)
             where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
+            where TFilter : class, IFilter<TLink>
         {
-            var result = c.GetChildConfigurator<bool?, IFilter<bool?>>();
-            result.Column.AddTrigger(getter);
+            var result = c.GetFilterConfigurator<bool?, IFilter<bool?>>();
             result.LinkExpression = getter;
 
             return result;
@@ -80,32 +83,36 @@ namespace HLab.Erp.Core.ListFilterConfigurators
 
         public static IColumnConfigurator<T, DateTime?, IFilter<DateTime?>> Link<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, DateTime?>> getter)
             where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
+            where TFilter : class, IFilter<TLink>
         {
-            var result = c.GetChildConfigurator<DateTime?, IFilter<DateTime?>>();
+            var result = c
+                .GetFilterConfigurator<DateTime?, IFilter<DateTime?>>()
+                .AddProperty(getter,out var content)
+                .ContentTemplate($@"<TextBlock Text=""{{Binding {content}, StringFormat='dd/MM/yyyy'}}""/>");
+                ;
             result.LinkExpression = getter;
 
-            return result.UpdateOn(getter);
+            return result;
         }
 
         //1
         public static IColumnConfigurator<T, TLinkOut, IFilter<TLinkOut>> LinkGeneric<T, TLink, TFilter, TLinkOut>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, TLinkOut>> getter)
             where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
+            where TFilter : class, IFilter<TLink>
         {
-            var result = c.GetChildConfigurator<TLinkOut, IFilter<TLinkOut>>();
+            var result = c.GetFilterConfigurator<TLinkOut, IFilter<TLinkOut>>();
             result.LinkExpression = getter;
 
-            return result.UpdateOn(getter);
+            return result;
         }
 
         //2
         public static IColumnConfigurator<T, int, EntityFilter<TE>> Link<T, TE, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, TE>> getter)
             where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
+            where TFilter : class, IFilter<TLink>
         where TE : class, IEntity<int>, new()
         {
-            var result = c.GetChildConfigurator<int, EntityFilter<TE>>();
+            var result = c.GetFilterConfigurator<int, EntityFilter<TE>>();
             result.LinkExpression = GetterIdFromGetter(getter);
 
             return result.UpdateOn(getter);
@@ -113,11 +120,11 @@ namespace HLab.Erp.Core.ListFilterConfigurators
 
         public static IColumnConfigurator<T, int?, EntityFilterNullable<TE>> LinkNullable<T, TE, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, TE>> getter)
             where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
+            where TFilter : class, IFilter<TLink>
         where TE : class, IEntity<int>, new()
         {
             var result =
-                c.GetChildConfigurator<int?, EntityFilterNullable<TE>>();
+                c.GetFilterConfigurator<int?, EntityFilterNullable<TE>>();
 
             result.LinkExpression = GetterIdNullableFromGetter(getter);
 
@@ -125,88 +132,57 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         }
         public static IColumnConfigurator<T, int?, EntityFilterNullable<TE>> LinkNullable<T, TE, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T, TE>> getter, Expression<Func<T,int?>> idGetter)
             where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
+            where TFilter : class, IFilter<TLink>
         where TE : class, IEntity<int>, new()
         {
             var result =
-                c.GetChildConfigurator<int?, EntityFilterNullable<TE>>();
+                c.GetFilterConfigurator<int?, EntityFilterNullable<TE>>();
 
             result.LinkExpression = GetterIdNullableFromGetter(getter);
 
             return result.UpdateOn(getter);
         }
-        public static IColumnConfigurator<T,TLink,TFilter> Content<T, TLink, TFilter>(this IColumnConfigurator<T,TLink,TFilter> c, Func<T, object> getter)
+
+        public static IColumnConfigurator<T, TLink, TFilterOut> Filter<T, TLink, TFilterIn, TFilterOut>(this IColumnConfigurator<T, TLink, TFilterIn> @this, TFilterOut filter)
             where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
+            where TFilterOut : class, IFilter<TLink>
+            where TFilterIn : class, IFilter<TLink>
         {
-            c.Column.Getter = getter;
-            if (c.Column.OrderBy == null)
-            {
-                c.Column.OrderBy = getter;
-            }
-            return c;
+            return @this.LinkExpression!=null 
+                ? @this.GetFilterConfigurator<TLink, TFilterOut>().FilterLink(@this.LinkExpression) 
+
+                : @this.GetFilterConfigurator<TLink, TFilterOut>().FilterPostLink(@this.LinkLambda);
         }
 
-        public static IColumnConfigurator<T, TLink, TFilterOut> Filter<T, TLink, TFilterIn, TFilterOut>(this IColumnConfigurator<T, TLink, TFilterIn> c, TFilterOut filter)
+        public static IColumnConfigurator<T, string, TextFilter> Filter<T, TFilter>(this IColumnConfigurator<T, string, TFilter> @this)
             where T : class, IEntity, new()
-            where TFilterOut : IFilter<TLink>
-            where TFilterIn : IFilter<TLink>
+            where TFilter : class, IFilter<string>
         {
-            var result = c.GetChildConfigurator<TLink, TFilterOut>();
-            
-            if(c.LinkExpression!=null)
-                result.Filter
-                    ?.Link(c.Target.List, c.LinkExpression);
-            else
-            {
-                result.Filter
-                    ?.PostLink(c.Target.List, c.LinkLambda);
-            }
-            return result;
+            return @this.GetFilterConfigurator<string, TextFilter>().Link(@this.LinkExpression);
         }
 
-        public static IColumnConfigurator<T, string, TextFilter> Filter<T, TFilter>(this IColumnConfigurator<T, string, TFilter> c)
+        public static IColumnConfigurator<T, bool?, BoolFilter> Filter<T, TFilter>(this IColumnConfigurator<T, bool?, TFilter> @this)
             where T : class, IEntity, new()
-            where TFilter : IFilter<string>
+            where TFilter : class, IFilter<bool?>
         {
-            var result = c.GetChildConfigurator<string, TextFilter>();
-
-            result.Filter
-                ?.Link(c.Target.List, c.LinkExpression);
-
-            return result;
-        }
-        public static IColumnConfigurator<T, bool?, BoolFilter> Filter<T, TFilter>(this IColumnConfigurator<T, bool?, TFilter> c)
-            where T : class, IEntity, new()
-            where TFilter : IFilter<bool?>
-        {
-            var result = c.GetChildConfigurator<bool?, BoolFilter>();
-
-            result.Filter
-                ?.Link(c.Target.List, c.LinkExpression);
-
-            return result;
+            return @this.GetFilterConfigurator<bool?, BoolFilter>().FilterLink(@this.LinkExpression);
         }
 
-        public static IColumnConfigurator<T, DateTime?, DateFilterNullable> Filter<T, TFilter>(this IColumnConfigurator<T, DateTime?, TFilter> c)
+        public static IColumnConfigurator<T, DateTime?, DateFilterNullable> Filter<T, TFilter>(this IColumnConfigurator<T, DateTime?, TFilter> @this)
             where T : class, IEntity, new()
-            where TFilter : IFilter<DateTime?>
+            where TFilter : class, IFilter<DateTime?>
         {
-            var result = c.GetChildConfigurator<DateTime?, DateFilterNullable>();
-
-            result.Filter
-                .Link(c.Target.List, c.LinkExpression);
-
-            return result;
-        }
-        public static IColumnConfigurator<T, DateTime, DateFilter> Filter<T, TFilter>(this IColumnConfigurator<T, DateTime, TFilter> c)
-            where T : class, IEntity, new()
-            where TFilter : IFilter<DateTime>
-        {
-            return c.GetChildConfigurator<DateTime, DateFilter>();
+            return @this.GetFilterConfigurator<DateTime?, DateFilterNullable>().FilterLink(@this.LinkExpression);
         }
 
-        static readonly MethodInfo GetIdMethod = typeof(IEntity<int>).GetProperty("Id").GetMethod;
+        public static IColumnConfigurator<T, DateTime, DateFilter> Filter<T, TFilter>(this IColumnConfigurator<T, DateTime, TFilter> @this)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<DateTime>
+        {
+            return @this.GetFilterConfigurator<DateTime, DateFilter>().FilterLink(@this.LinkExpression);
+        }
+
+        static readonly MethodInfo GetIdMethod = typeof(IEntity<int>).GetProperty("Id")?.GetMethod ?? throw new InvalidOperationException();
 
         static Expression<Func<T, int>> GetIdExpression<T, TE>(Expression<Func<T, TE>> getter)
             where T : class, IEntity, new()
@@ -217,8 +193,8 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             return Expression.Lambda<Func<T, int>>(ex, entity);
         }
 
-        static PropertyInfo PropertyHasValue => typeof(int?).GetProperty("HasValue");
-        static PropertyInfo PropertyValue => typeof(int?).GetProperty("Value");
+        static readonly MethodInfo PropertyHasValue = typeof(int?).GetProperty("HasValue")?.GetMethod ?? throw new InvalidOperationException();
+        static readonly MethodInfo PropertyValue = typeof(int?).GetProperty("Value")?.GetMethod ?? throw new InvalidOperationException();
 
         // TODO : may return int?
         static Expression<Func<T, int>> GetterIdFromGetter<T, TE>(Expression<Func<T, TE>> getter)
@@ -240,8 +216,8 @@ namespace HLab.Erp.Core.ListFilterConfigurators
                     {
                         return Expression.Lambda<Func<T, int>>(
                         Expression.Condition(
-                            Expression.Call(property, PropertyHasValue.GetMethod),
-                            Expression.Call(property, PropertyValue.GetMethod),
+                            Expression.Call(property, PropertyHasValue),
+                            Expression.Call(property, PropertyValue),
                             Expression.Constant(-1,typeof(int))), entity);
                     }
 
@@ -256,19 +232,17 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             where T : class, IEntity, new()
             where TE : class, IEntity<int>, new()
         {
-            if (getter.Body is MemberExpression member)
-            {
-                var name = member.Member.Name;
-                var method = member.Member.DeclaringType.GetProperty($"{name}Id")?.GetMethod;
+            if (getter.Body is not MemberExpression member) return t => -1;
 
-                if (method?.ReturnType != typeof(int?)) throw new InvalidOperationException("Entity should have been nullable");
+            var name = member.Member.Name;
+            var method = member.Member.DeclaringType?.GetProperty($"{name}Id")?.GetMethod;
 
-                var entity = getter.Parameters[0];
-                var property = Expression.Property(member.Expression, method);
-                return Expression.Lambda<Func<T, int?>>(property, entity);
-            }
+            if (method?.ReturnType != typeof(int?)) throw new InvalidOperationException("Entity should have been nullable");
 
-            return t => -1;
+            var entity = getter.Parameters[0];
+            var property = Expression.Property(member.Expression, method);
+            return Expression.Lambda<Func<T, int?>>(property, entity);
+
         }
 
 
@@ -279,7 +253,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         {
             //var getter = GetterIdFromGetter(c.Getter);
 
-            return  c.GetChildConfigurator<int, EntityFilter<TE>>();
+            return  c.GetFilterConfigurator<int, EntityFilter<TE>>();
         }
 
         public static IColumnConfigurator<T, int?, EntityFilterNullable<TE>> Filter<T, TE>(this IColumnConfigurator<T, int?, EntityFilterNullable<TE>> c)
@@ -289,16 +263,16 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         {
             //var getter = GetterIdFromGetter(c.Getter);
 
-            return c.GetChildConfigurator<int?, EntityFilterNullable<TE>>();
+            return c.GetFilterConfigurator<int?, EntityFilterNullable<TE>>();
         }
-        public static IColumnConfigurator<T, int?, EntityFilterNullable<TE>> Column<T, TLink, TFilter, TE>(this IColumnConfigurator<T, TLink, TFilter> c,
+        public static IColumnConfigurator<T, int?, EntityFilterNullable<TE>> Column<T, TLink, TFilter, TE>(this IColumnConfigurator<T> c,
             Expression<Func<T, TE>> getter,
-            string id = null,
+            string? id = null,
 //            Expression<Func<T, int?>> getterId = null,
             double width = double.NaN
         )
             where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
+            where TFilter : class, IFilter<TLink>
             where TE : class, IListableModel, IEntity<int>, new()
         {
             var lambda = getter.Compile();
@@ -308,95 +282,160 @@ namespace HLab.Erp.Core.ListFilterConfigurators
                 .Header($"{{{typeof(TE).Name}}}")
                 .Width(width)
                 .LinkNullable(getter)
-                .Content(e => lambda(e))
+                .Content( e => lambda(e))
                 .OrderBy(e => c.Localize(lambda(e)?.Caption))
                 // TODO                .Icon(e => lambda(e)?.IconPath)
                 .Filter().IconPath($"Icons/Entities/{typeof(TE).Name}")
                 ;
         }
 
-
-        public static IColumnConfigurator<T, TLink, TFilter> Header<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, object caption)
-            where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
-        {
-            if(caption is string s) caption = c.Localize(s);
-            c.Column.Header = caption;
-            return c;
-        }
-        public static IColumnConfigurator<T, TLink, TFilter> UpdateOn<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression trigger)
-            where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
-        {
-            c.Column.AddTrigger(trigger);
-            return c;
-        }
-        public static IColumnConfigurator<T, TLink, TFilter> UpdateOn<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Expression<Func<T,object>> trigger)
-            where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
-        {
-            c.Column.AddTrigger(trigger);
-            return c;
-        }
-
-        public static IColumnConfigurator<T, TLink, TFilter> Width<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, double width)
-            where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
-        {
-            c.Column.Width = width;
-            return c;
-        }
-        public static IColumnConfigurator<T, TLink, TFilter> OrderBy<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, Func<T, object> orderBy)
-            where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
-        {
-            c.Column.OrderBy = orderBy;
-            return c;
-        }
-
-        public static IColumnConfigurator<T, string, TextFilter> PostLink<T>(this IColumnConfigurator<T, string, TextFilter> tf, Func<T, string> getter)
+        public static IColumnConfigurator<T> Header<T>(this IColumnConfigurator<T> @this, object caption)
             where T : class, IEntity, new()
         {
-            tf.LinkLambda = getter;
-            tf.Filter.PostLink(tf.Target.List, getter);
-            return tf;
+            if(caption is string s) caption = @this.Localize(s);
+
+            return @this.BuildList(l =>
+            {
+                //TODO :
+            });
         }
 
-        public static IColumnConfigurator<T, string, TextFilter> Link<T>(this IColumnConfigurator<T, string, TextFilter> tf, Expression<Func<T, string>> getter)
+        public static IColumnConfigurator<T, TLink, TFilter> Header<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> @this, object caption)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink>
+        {
+            if(caption is string s) caption = @this.Localize(s);
+
+            return @this.Build(b =>
+            {
+                b.Column.Header = caption;
+                if (b.Filter != null) b.Filter.Header = caption;
+            });
+        }
+        public static IColumnConfigurator<T, TLink, TFilter> UpdateOn<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> @this, Expression trigger)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink>
+        {
+            return @this.Build(b => b.Column.AddTrigger(trigger));
+        }
+        public static IColumnConfigurator<T, TLink, TFilter> UpdateOn<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> @this, Expression<Func<T,object>> trigger)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink>
+        {
+            return @this.Build(b => b.Column.AddTrigger(trigger));
+        }
+
+        public static IColumnConfigurator<T, TLink, TFilter> Width<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> @this, double width)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink>
+        {
+            return @this.Build(b => b.Column.Width = width);
+        }
+        public static IColumnConfigurator<T, TLink, TFilter> Hidden<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> @this)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink>
+        {
+            return @this.Build(b => b.Column.Hidden = true);
+        }
+        public static IColumnConfigurator<T, TLink, TFilter> Height<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> @this, double height)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink>
+        {
+            return @this.DecorateTemplate($"<Grid Height=\"{height}\">{XamlTool.ContentPlaceHolder}</Grid>");
+        }
+        public static IColumnConfigurator<T, TLink, TFilter> OrderBy<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> @this, Func<T, object?> orderBy)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink>
+        {
+            return @this.Build(b => b.Column.OrderBy = orderBy);
+        }
+        public static IColumnConfigurator<T, TLink, TFilter> OrderByAsc<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> @this, int orderByRank = -1)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink>
+        {
+            if (orderByRank < 0) orderByRank = @this.OrderByRank++;
+            else @this.OrderByRank = orderByRank;
+
+            return @this.Build(b =>
+            {
+                b.Column.OrderByRank = orderByRank;
+                b.Column.SortDirection = SortDirection.Ascending;
+            });
+        }
+        public static IColumnConfigurator<T, TLink, TFilter> OrderByDesc<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> @this, int orderByRank = -1)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink>
+        {
+            if (orderByRank < 0) orderByRank = @this.OrderByRank++;
+            else @this.OrderByRank = orderByRank;
+
+            return @this.Build(b =>
+            {
+                b.Column.OrderByRank = orderByRank;
+                b.Column.SortDirection = SortDirection.Descending;
+            });
+        }
+        public static IColumnConfigurator<T, TLink, TFilter> OrderByDefault<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> @this, Func<T, object?> orderBy)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink>
+        {
+            return @this.Build(b => b.Column.OrderBy ??= orderBy);
+        }
+
+        public static IColumnConfigurator<T, string, TextFilter> PostLink<T>(this IColumnConfigurator<T, string, TextFilter> @this, Func<T, string> getter)
             where T : class, IEntity, new()
         {
-            tf.LinkExpression = getter;
-            tf.LinkLambda = getter.Compile();
-            tf.Filter.Link(tf.Target.List, getter);
-            return tf;
+            @this.LinkLambda = getter;
+            return @this.FilterPostLink(getter);
         }
 
-        public static T Id<T>(this T c, string id)
-            where T : IColumnConfigurator
-        {
-            c.Column.Id = id;
-            return c;
-        }
-
-        public static T Hidden<T>(this T c)
-            where T : IColumnConfigurator
-        {
-            c.Column.Hidden = true;
-            return c;
-        }
-        public static IColumnConfigurator<T, TLink, TFilter> IconPath<T,TLink,TFilter>(this IColumnConfigurator<T, TLink, TFilter> c, string path)
+        public static IColumnConfigurator<T, string, TextFilter> Link<T>(this IColumnConfigurator<T, string, TextFilter> @this, Expression<Func<T, string>> getter)
             where T : class, IEntity, new()
-            where TFilter : IFilter<TLink>
         {
-            if (string.IsNullOrWhiteSpace(c.Column.IconPath)) c.Column.IconPath = path;
+            @this.LinkExpression = getter;
+            //@this.LinkLambda = getter.Compile();
+            return @this.FilterLink(getter);
+        }
 
-            var filter = c.Filter;
+        public static IColumnConfigurator<T,TLink,TFilter> Name<T,TLink,TFilter>(this IColumnConfigurator<T,TLink,TFilter> @this, string? name)
+            where T : class, IEntity, new() where TFilter : class, IFilter<TLink>
+        {
+            return string.IsNullOrWhiteSpace(name)?@this:@this.Build(b => b.Column.Name = name);
+        }
 
-            if (filter != null) 
-                filter.IconPath = path;
+        public static IColumnConfigurator<T, TLink, TFilter> IconPath<T,TLink,TFilter>(this IColumnConfigurator<T, TLink, TFilter> @this, string path)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink>
+        {
+            return @this
+                .Build(b => b.Column.IconPath ??= path)
+                .Build(b =>
+                {
+                    if(b.Filter != null) b.Filter.IconPath ??= path;
+                }) ;
+        }
 
-            return c;
+        public static IColumnConfigurator<T,TLink,TFilter> Content<T, TLink, TFilter>(this IColumnConfigurator<T,TLink,TFilter> @this, Expression<Func<T, string>> getter)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink> 
+        {
+             return @this
+                 .OrderByDefault(getter.Compile())
+                 .AddProperty(getter,out var content)
+                 .ContentTemplate($@"<TextBlock Text=""{{Binding {content}}}""/>");
+        }
 
+
+        public static IColumnConfigurator<T,TLink,TFilter> Content<T, TLink, TFilter>(this IColumnConfigurator<T,TLink,TFilter> @this, Expression<Func<T, object>> getter)
+            where T : class, IEntity, new()
+            where TFilter : class, IFilter<TLink> 
+        {
+             var result = @this
+                 .OrderByDefault(getter.Compile())
+                 .AddProperty(getter,out var content)
+                 .ContentTemplate(@$"<ContentPresenter Content=""{{Binding {content}}}""/>");
+
+             return result;
         }
 
     }

@@ -11,8 +11,10 @@
              xmlns:profiles="clr-namespace:HLab.Erp.Acl.Profiles"
              xmlns:controlsEx="clr-namespace:HLab.Base.Wpf.ControlsEx;assembly=HLab.Base.Wpf"
              xmlns:views="clr-namespace:HLab.Erp.Core.Wpf.Views;assembly=HLab.Erp.Core.Wpf"
+             xmlns:entitySelectors1="clr-namespace:HLab.Erp.Core.Wpf.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
+             xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance {x:Type users:UserViewModelDesign}, IsDesignTimeCreatable=True}"             
+             d:DataContext="{d:DesignInstance {x:Type users:UserViewModel+Design}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800"
              >
         <UserControl.Resources>
@@ -32,7 +34,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
-        <mvvm:ViewLocator Model="{Binding Locker}"/>
+        <wpf:ViewLocator Model="{Binding Locker}"/>
         
         <controlsEx:ScrollViewerEx Grid.Row="1">
             <Grid>
@@ -86,7 +88,7 @@
                         
                         <lang:LocalizedLabel Text="{}{Add Profile}"/>
                     
-                        <entitySelectors:ForeignView 
+                        <entitySelectors1:ForeignView 
                             HorizontalAlignment="Left"
                             ModelClass="{x:Type data:Profile}"
                             ListClass="{x:Type profiles:ProfilesListViewModel}"
@@ -100,7 +102,7 @@
                     </Button>
 
                     <Label/>
-                    <mvvm:ViewLocator Model="{Binding UserProfiles}"/>
+                    <wpf:ViewLocator Model="{Binding UserProfiles}"/>
 
                 </views:DetailView>
             </Grid>

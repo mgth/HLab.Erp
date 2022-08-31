@@ -7,6 +7,7 @@
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:toolBoxes="clr-namespace:HLab.Erp.Core.ToolBoxes"
              xmlns:controlsEx="clr-namespace:HLab.Base.Wpf.ControlsEx;assembly=HLab.Base.Wpf"
+             xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
@@ -15,8 +16,8 @@
             <Button Command="{Binding CreateCommand}" >Créer</Button>
             <controlsEx:ScrollViewerEx>
                     <ListView   
-                        mvvm:ViewLocator.ViewClass="toolBoxes:IViewClassToolItem"
-                        mvvm:ViewLocator.ViewMode="annotations:ViewModeDefault"
+                        wpf:ViewLocator.ViewClass="toolBoxes:IViewClassToolItem"
+                        wpf:ViewLocator.ViewMode="annotations:ViewModeDefault"
                 
                         Name ="ListViewTest"
                         AllowDrop="True"

@@ -1,38 +1,25 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Xml;
 using System.Xml.Linq;
 using HLab.Erp.Core.EntityLists;
-using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.Wpf.ListFilters
+namespace HLab.Erp.Core.ListFilters
 {
     public static class DateFilterViewModelExtension
     {
-        public static IColumnConfigurator<T, DateTime?, DateFilterNullable> MaxDate<T>(this IColumnConfigurator<T, DateTime?,DateFilterNullable> tc, DateTime date) where T : class, IEntity, new()
-        {
-            tc.Filter.MaxDate = date;
-            return tc;
-        }
+        public static IColumnConfigurator<T, DateTime?, DateFilterNullable> MaxDate<T>(this IColumnConfigurator<T, DateTime?,DateFilterNullable> @this, DateTime date) where T : class, IEntity, new() 
+            => @this.Build(b => b.Filter.MaxDate = date);
 
-        public static IColumnConfigurator<T, DateTime?, DateFilterNullable> MinDate<T>(this IColumnConfigurator<T, DateTime?, DateFilterNullable> tc, DateTime date) where T : class, IEntity, new()
-        {
-            tc.Filter.MinDate = date;
-            return tc;
-        }
-        public static IColumnConfigurator<T, DateTime, DateFilter> MaxDate<T>(this IColumnConfigurator<T, DateTime,DateFilter> tc, DateTime date) where T : class, IEntity, new()
-        {
-            tc.Filter.MaxDate = date;
-            return tc;
-        }
+        public static IColumnConfigurator<T, DateTime?, DateFilterNullable> MinDate<T>(this IColumnConfigurator<T, DateTime?, DateFilterNullable> @this, DateTime date) where T : class, IEntity, new() 
+            => @this.Build(b => b.Filter.MinDate = date);
 
-        public static IColumnConfigurator<T, DateTime, DateFilter> MinDate<T>(this IColumnConfigurator<T, DateTime, DateFilter> tc, DateTime date) where T : class, IEntity, new()
-        {
-            tc.Filter.MinDate = date;
-            return tc;
-        }
+        public static IColumnConfigurator<T, DateTime, DateFilter> MaxDate<T>(this IColumnConfigurator<T, DateTime,DateFilter> @this, DateTime date) where T : class, IEntity, new() 
+            => @this.Build(b => b.Filter.MaxDate = date);
+
+        public static IColumnConfigurator<T, DateTime, DateFilter> MinDate<T>(this IColumnConfigurator<T, DateTime, DateFilter> @this, DateTime date) where T : class, IEntity, new()
+            => @this.Build(b => b.Filter.MinDate = date);
     }
     public class DateFilter : DateFilter<DateTime>
     {

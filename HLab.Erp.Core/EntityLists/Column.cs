@@ -1,95 +1,65 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Dynamic;
 using System.Linq.Expressions;
+using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
 using HLab.Notify.Annotations;
 using HLab.Notify.PropertyChanged;
 using HLab.Notify.PropertyChanged.NotifyHelpers;
 
-namespace HLab.Erp.Core.Wpf.EntityLists
+namespace HLab.Erp.Core.EntityLists;
+
+public class Column<T> : ListElement, IColumn<T> where T : class
 {
-    public class Column<T> : NotifierBase, IColumn<T> where T : class
+    internal Column()
     {
-        internal Column()
+        H<Column<T>>.Initialize(this);
+        Name = "C" + Guid.NewGuid().ToString().Replace('-', '_');
+    }
+
+    public double Width { get; set; } = double.NaN;
+    public bool Hidden { get; set; } = false;
+
+    public Func<T, object>? OrderBy { get;  set; }
+    public int OrderByRank { get; set; } = -1;
+
+    public SortDirection SortDirection { get;  set; }
+
+    public IColumn<T>? OrderByNext { get; set; }
+
+    readonly List<TriggerPath> _triggerPaths = new();
+
+    public void AddTrigger(Expression expression)
+    {
+        try
         {
-            Id = "C" + Guid.NewGuid().ToString().Replace('-', '_');
-            H<Column<T>>.Initialize(this);
+            _triggerPaths.Add(TriggerPath.Factory(expression));
         }
-
-        public bool Hidden { get; set; } = false;
-
-        public object Header { get; set; } = "";
-        public string IconPath { get; set; } = "";
-
-        public double Width { get; set; } = double.NaN;
-
-        public Func<T, object> OrderBy { get;  set; }
-
-        public SortDirection SortDirection { get;  set; }
-
-        public Func<T, object> Getter { get; set; }
-
-        public IColumn<T> OrderByNext { get; set; }
-
-        readonly List<TriggerPath> _triggerPaths = new();
-
-        public void AddTrigger(Expression expression)
+        catch (Exception e)
         {
-            try
-            {
-                _triggerPaths.Add(TriggerPath.Factory(expression));
-            }
-            catch (Exception e)
-            {
 
-            }
-        }
-
-        //        ConditionalWeakTable<T,object> _cache = new();
-        Stopwatch _watch = new Stopwatch();
-        long _requestCount = 0;
-
-        public long Benchmark => _benchmark.Get();
-        IProperty<long> _benchmark = H<Column<T>>.Property<long>();
-
-        public object GetValue(T value)
-        {
-            #if DEBUG
-            if (Getter is null) return "<Null>";
-            #endif
-
-            try
-            {
-//                return _cache.GetValue(value, v => Getter(v));
-                _requestCount++;
-                _watch.Start();
-                return Getter(value);
-            }
-            catch(NullReferenceException)
-            {
-                return null;
-            }
-            finally
-            {
-                _watch.Stop();
-                _benchmark.Set(_watch.ElapsedTicks / _requestCount);
-            }
-        }
-
-        public string Id { get; set; }
-
-        public override string ToString()
-        {
-            return Header.ToString();
-        }
-
-        public void RegisterTriggers(T model, Action<string> handler)
-        {
-            foreach(var path in _triggerPaths)
-            {
-                path.GetTrigger(NotifyClassHelper.GetHelper(model),(s,e)=>handler(Id));
-            }
         }
     }
+
+    //readonly ConditionalWeakTable<T,object> _cache = new();
+
+    public object? DataTemplate { get ; set ; }
+
+    public override string ToString()
+    {
+        return Header?.ToString()??"";
+    }
+
+    public void RegisterTriggers(T model, Action<string> handler)
+    {
+        foreach(var path in _triggerPaths)
+        {
+            path.GetTrigger(NotifyClassHelper.GetHelper(model),(s,e)=>handler(Name));
+        }
+    }
+
+
 }

@@ -12,10 +12,7 @@ namespace HLab.Erp.Core.Wpf.Localization
 {
     public class LocalizeEntriesListViewModel : Core.EntityLists.EntityListViewModel<LocalizeEntry>, IMvvmContextProvider
     {
-        public class Bootloader : NestedBootloader
-        {
-            public override string MenuPath => "param";
-        }
+        public class Bootloader : ParamBootloader { }
 
         protected override bool CanExecuteExport(Action<string> errorAction) => true; // Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
         protected override bool CanExecuteImport(Action<string> errorAction) => true; // Erp.Acl.IsGranted(ErpRights.ErpManageCountries);

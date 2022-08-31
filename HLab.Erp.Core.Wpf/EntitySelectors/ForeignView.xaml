@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="HLab.Erp.Core.EntitySelectors.ForeignView"
+﻿<UserControl x:Class="HLab.Erp.Core.Wpf.EntitySelectors.ForeignView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,6 +6,7 @@
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:annotations="clr-namespace:HLab.Mvvm.Annotations;assembly=HLab.Mvvm.Annotations"
              xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
+             xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="UserControl"
@@ -24,7 +25,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <mvvm:ViewLocator 
+        <wpf:ViewLocator 
             x:Name="Locator" 
             DataContext="{Binding Model, ElementName=UserControl}"
             ViewClass="{x:Type annotations:IViewClassListItem}"/>
@@ -50,7 +51,7 @@
                     MaxHeight="500"
                     AllowsTransparency="True">
                     
-                    <Border CornerRadius="5" Background="{StaticResource HLab.Brushes.Background}"  BorderThickness="0">
+                    <Border CornerRadius="5" Background="{DynamicResource HLab.Brushes.Background}"  BorderThickness="0">
                         <Grid Margin="5">
                             <ContentPresenter x:Name="PopupContent"/>
                         </Grid>

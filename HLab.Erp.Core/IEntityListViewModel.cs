@@ -1,11 +1,14 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Linq;
 using HLab.Base.Fluent;
 using HLab.Erp.Core.EntityLists;
+using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 
@@ -41,8 +44,15 @@ namespace HLab.Erp.Core
     {
         void Populate(object grid);
 
+        void Drop(object source, object target, bool after);
+
         void SetOpenAction(Action<object> action);
-        void SetSelectAction(Action<object> action);
+        void SetSelectAction(Action<object?> action);
+
+        bool ShowFilters { get; set; }
+        bool ShowMenu { get; set; }
+        bool AllowManualOrder { get; set; }
+
         ReadOnlyObservableCollection<IFilter> Filters { get; }
         string FiltersPresetName {get; set;}
         string FiltersPresetSelected {get; set;}
@@ -54,6 +64,8 @@ namespace HLab.Erp.Core
 
         ICommand ImportCommand { get; }
         ICommand ExportCommand { get; }
+        ICommand ShowMenuCommand { get; }
+        ICommand HideMenuCommand { get; }
 
         ICommand SaveFiltersPresetCommand { get; }
 

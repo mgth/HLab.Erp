@@ -7,10 +7,11 @@
                      xmlns:annotations="clr-namespace:HLab.Mvvm.Annotations;assembly=HLab.Mvvm.Annotations"
                      xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:application="clr-namespace:HLab.Mvvm.Application;assembly=HLab.Mvvm.Application"
-                     mc:Ignorable="d" 
+             xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
+             mc:Ignorable="d" 
              >
 
-    <mvvm:ViewLocator 
+    <wpf:ViewLocator 
         ViewClass="{x:Type application:IViewClassDocument}"
         ViewMode="{x:Type annotations:ViewModeDefault}" 
         DataContext="{Binding}"/>

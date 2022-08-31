@@ -1,9 +1,10 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Dynamic;
 using System.Runtime.CompilerServices;
-using HLab.Erp.Core.Wpf.EntityLists;
+using System.Threading.Tasks;
 using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.EntityLists
@@ -15,6 +16,7 @@ namespace HLab.Erp.Core.EntityLists
         public bool IsSelected { get; set; }
         void Refresh(string column);
     }
+
 
     public sealed class ObjectMapper<T> : DynamicObject, IObjectMapper
         where T : class, IEntity
@@ -49,13 +51,10 @@ namespace HLab.Erp.Core.EntityLists
             return true;
         }
 
+
         readonly ConcurrentDictionary<string, object> _dict = new();
 
-        public override bool TryGetMember(GetMemberBinder binder, out object result)
-        {
-            result = _dict.GetOrAdd(binder.Name, n => _columns.GetValue(Model, n));
-            return true;
-        }
+        public override bool TryGetMember(GetMemberBinder binder, out object result) => _columns.GetValue(Model, binder.Name, out result);
 
         public void Refresh(string column) => OnPropertyChanged(column);
 

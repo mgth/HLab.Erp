@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 
-namespace HLab.Erp.Core
+namespace HLab.Erp.Core.Wpf
 {
     public class RichTextBoxHelper : DependencyObject
     {

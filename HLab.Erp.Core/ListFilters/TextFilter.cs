@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Xml;
 using System.Xml.Linq;
-
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.Wpf.ListFilters
+namespace HLab.Erp.Core.ListFilters
 {
     using H = H<TextFilter>;
 

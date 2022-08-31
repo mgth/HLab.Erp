@@ -1,6 +1,0 @@
-﻿Notifier :
-Pouvoir enregistrer des getter/setters par type
-- IEntity
-- IViewModel -> pour implementer SetParent
-
-interface ITriggerable definissant le comportement d'un type sur TriggerOn /OK

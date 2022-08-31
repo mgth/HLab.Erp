@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,7 +18,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
     /// <summary>
     /// Logique d'interaction pour EntityListView2.xaml
     /// </summary>
-    public partial class EntityListView2 : UserControl, 
+    public partial class EntityListView2 : UserControl,
         IView<ViewModeDefault, IEntityListViewModel>,
         IViewClassDocument, IViewClassDefault
     {
@@ -51,12 +52,12 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
                 foreach (var id in vmIds)
                 {
-                    if(!ids.Contains(id)) ListView.SelectedItems.Add(ListView.Items.OfType<IObjectMapper>().FirstOrDefault(i => i.Id == id));
+                    if (!ids.Contains(id)) ListView.SelectedItems.Add(ListView.Items.OfType<IObjectMapper>().FirstOrDefault(i => i.Id == id));
                 }
 
                 foreach (var id in ids)
                 {
-                    if(!vmIds.Contains(id)) ListView.SelectedItems.Remove(ListView.Items.OfType<IObjectMapper>().FirstOrDefault(i => i.Id == id));
+                    if (!vmIds.Contains(id)) ListView.SelectedItems.Remove(ListView.Items.OfType<IObjectMapper>().FirstOrDefault(i => i.Id == id));
                 }
             }
         }
@@ -98,7 +99,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
                 vm.Populate(ListView);
                 vm.PropertyChanged += Vm_PropertyChanged;
             }
-            if(e.OldValue is IEntityListViewModel oldVm)
+            if (e.OldValue is IEntityListViewModel oldVm)
             {
                 oldVm.PropertyChanged -= Vm_PropertyChanged;
             }
@@ -106,7 +107,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == "SelectedIds")
+            if (e.PropertyName == "SelectedIds")
                 OnSelectIdsChange();
         }
 
@@ -116,19 +117,10 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         public string ContentId => nameof(EntityListView);
 
-        void DataGridColumnHeader_Click(object sender, RoutedEventArgs e)
-        {
-                if (sender is DataGridColumnHeader header)
-                {
-//                    header.Tag
-                }
-        }
-
         void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (DataContext is not IEntityListViewModel vm) return;
-            if (sender is not ListViewItem item) return;
-            if (item.Content is not IObjectMapper mapper) return;
+            if (sender is not ListViewItem { Content: IObjectMapper mapper }) return;
             var entity = mapper.Model;
             if (entity == null) return;
 
@@ -148,16 +140,16 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             var widths = new List<double>();
             if (DataContext is IEntityListViewModel vm)
             {
-                foreach(var g in vm.Columns.Columns.Values)
+                foreach (var g in vm.Columns.Columns.Values)
                 {
-                    if(g.Hidden) continue;
                     widths.Add(g.Width);
                 }
-            } else return;
+            }
+            else return;
 
 
             var width = ListView.ActualWidth;
-            if(ListView.View is GridView gridView)
+            if (ListView.View is GridView gridView)
             {
                 var sv = ListView.FindVisualChildren<ScrollViewer>().FirstOrDefault();
 
@@ -168,7 +160,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
                 var diff = total - width;
 
-                for(int i = 0; i <  gridView.Columns.Count; i++)
+                for (int i = 0; i < gridView.Columns.Count; i++)
                 {
                     var column = gridView.Columns[i];
                     column.Width = width * widths[i] / total;
@@ -180,5 +172,78 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         {
             AdjustColumns();
         }
+
+        void ListView_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (DataContext is not IEntityListViewModel { AllowManualOrder: true }) return;
+
+            if (e.LeftButton != MouseButtonState.Pressed) return;
+
+            if (sender is not ListViewItem draggedItem) return;
+
+            DragDrop.DoDragDrop(draggedItem, draggedItem.DataContext, DragDropEffects.Move);
+
+            draggedItem.IsSelected = true;
+        }
+
+        void SetDragTag(FrameworkElement fe, string tag)
+        {
+            foreach (var e in ListView.FindVisualChildren<ListViewItem>())
+            {
+                e.Tag = (e == fe) ? tag : null;
+            }
+        }
+
+        void ListView_Drop(object sender, DragEventArgs e)
+        {
+            Debug.WriteLine("Drop");
+
+            if (sender is not FrameworkElement fe) return;
+            
+            SetDragTag(fe,null);
+
+            if (DataContext is not IEntityListViewModel vm) return;
+
+            if (e.Source is not FrameworkElement { DataContext: IObjectMapper to }) return;
+
+            var formats = e.Data.GetFormats();
+            if (formats.Length < 1) return;
+
+            var data = e.Data.GetData(formats[0]);
+            if (data is not IObjectMapper from) return;
+
+            var after = false;
+            if (sender is IInputElement ie)
+            {
+                var pos = e.GetPosition(ie);
+                if (pos.Y > fe.ActualHeight / 2) after = true;
+            }
+
+            vm.Drop(from.Model, to.Model, after);
+
+            ListView.SelectedItem = to;
+        }
+
+        void ListView_DragOver(object sender, DragEventArgs e)
+        {
+
+            if (sender is not ListViewItem fe)
+            {
+                Debug.WriteLine(sender.GetType());
+                return;
+            }
+
+            var pos = e.GetPosition(fe);
+            var after = (pos.Y > fe.ActualHeight / 2);
+
+            SetDragTag(fe,after?"InsertDown":"InsertUp");
+        }
+
+        void ListView_DragLeave(object sender, DragEventArgs e)
+        {
+            if (sender is not FrameworkElement fe) return;
+            //fe.Tag = null;
+        }
+
     }
 }

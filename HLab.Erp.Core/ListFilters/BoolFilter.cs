@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Xml.Linq;
-
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.Wpf.ListFilters
+namespace HLab.Erp.Core.ListFilters
 {
     public class BoolFilter : Filter<bool?>
     {

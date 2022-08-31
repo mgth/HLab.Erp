@@ -82,7 +82,7 @@ namespace HLab.Erp.Data
             {
                 tr = transaction ?? _data.GetTransaction();
 
-                if (Target is IEntity<int> ei && ei.Id < 0)
+                if (Target is IEntity<int> { Id: < 0 } ei)
                 {
                     var t = await tr.AddAsync<T>(e => Target.CopyPrimitivesTo(e));
                     if (transaction == null) tr.Done();
@@ -90,15 +90,11 @@ namespace HLab.Erp.Data
                     return true;
                 }
 
-                if (await tr.UpdateAsync(Target, columns.Select(GetColumnName)))
-                {
-                    if (transaction == null) tr.Done();
+                if (!await tr.UpdateAsync(Target, columns.Select(GetColumnName))) return false;
+                if (transaction == null) tr.Done();
 
-                    IsDirty = false;
-                    return true;
-                }
-
-                return false;
+                IsDirty = false;
+                return true;
             }
             catch(Exception ex)
             {

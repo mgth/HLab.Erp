@@ -4,13 +4,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using HLab.Base.Wpf;
+using HLab.Erp.Core.EntitySelectors;
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
+using HLab.Mvvm.Wpf;
 
-
-namespace HLab.Erp.Core.EntitySelectors
+namespace HLab.Erp.Core.Wpf.EntitySelectors
 {
 
     using H = DependencyHelper<ForeignView>;
@@ -43,6 +44,19 @@ namespace HLab.Erp.Core.EntitySelectors
 
         public static readonly DependencyProperty ListClassProperty = H.Property<Type>()
             .OnChange(s => s.SetList())
+            .Register();
+
+        public static readonly DependencyProperty SecondaryModelProperty = H.Property<object>()
+            .BindsTwoWayByDefault
+            .OnChange((v, a) => v.OnSecondaryModelChanged(a))
+            .Register();
+        void OnSecondaryModelChanged(DependencyPropertyChangedEventArgs<object> args)
+        {
+            //Locator.SetValue(ViewLocator.ModelProperty,args.NewValue);
+            //OpenButton.IsEnabled = args.NewValue != null;
+        }
+        public static readonly DependencyProperty SecondaryModelClassProperty = H.Property<Type>()
+            .OnChange(s => s.SetModelClass())
             .Register();
 
         public static readonly DependencyProperty IsReadOnlyProperty = H.Property<bool>()
@@ -90,7 +104,6 @@ namespace HLab.Erp.Core.EntitySelectors
             get => GetValue(ModelProperty);
             set => SetValue(ModelProperty, value);
         }
-
         public Type ModelClass
         {
             get => (Type)GetValue(ModelClassProperty);
@@ -101,6 +114,18 @@ namespace HLab.Erp.Core.EntitySelectors
             get => (Type)GetValue(ListClassProperty);
             set => SetValue(ListClassProperty, value);
         }
+
+        public object SecondaryModel
+        {
+            get => GetValue(SecondaryModelProperty);
+            set => SetValue(SecondaryModelProperty, value);
+        }
+        public Type SecondaryModelClass
+        {
+            get => (Type)GetValue(SecondaryModelClassProperty);
+            set => SetValue(SecondaryModelClassProperty, value);
+        }
+
 
         public bool IsReadOnly
         {
@@ -132,14 +157,7 @@ namespace HLab.Erp.Core.EntitySelectors
 
         void SetModelClass()
         {
-            if(ModelClass == null)
-            {
-                Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                Visibility = Visibility.Visible;
-            }
+            Visibility = ModelClass == null ? Visibility.Collapsed : Visibility.Visible;
         }
 
         void SetMandatoryNotFilled(bool mnf)
@@ -152,55 +170,71 @@ namespace HLab.Erp.Core.EntitySelectors
             Button.Visibility = ro ? Visibility.Collapsed : Visibility.Visible;
         }
 
+
         void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            if (!Popup.IsOpen)
+            if (Popup.IsOpen) return;
+
+            Popup.IsOpen = true;
+
+            var type = ListClass;
+            if (type == null)
             {
-                Popup.IsOpen = true;
-                var type = ListClass;
-                if (type == null)
-                {
-                    if (typeof(IListableModel).IsAssignableFrom(ModelClass))
-                        type = typeof(ListableEntityListViewModel<>).MakeGenericType(ModelClass);
-                    //type = typeof(IEntityListViewModel<>).MakeGenericType(ModelClass);
-                }
-                if (type == null)
-                {
-                    PopupContent.Content = null;
-                    return;
-                }
-
-                var ctx = ViewLocator.GetMvvmContext(this);
-
-                var vm = ctx.Locate(type);
-
-
-                if (vm is IEntityListViewModel lvm)
-                {
-                    if (Command != null)
-                    {
-
-                        lvm.SetSelectAction(t =>
-                        {
-                            Popup.IsOpen = false;
-                            Command.Execute(t);
-                        });
-                    }
-                    else
-                    {
-                        lvm.SetSelectAction(t =>
-                        {
-                            Popup.IsOpen = false;
-                            SetCurrentValue(ModelProperty,t);
-                            Locator.DataContext = t;
-                        });
-                    }
-                }
-
-
-                var view = ctx.GetView(vm, typeof(ViewModeDefault), typeof(IViewClassDefault));
-                PopupContent.Content = view;
+                if (typeof(IListableModel).IsAssignableFrom(ModelClass))
+                    type = typeof(ListableEntityListViewModel<>).MakeGenericType(ModelClass);
+                //type = typeof(IEntityListViewModel<>).MakeGenericType(ModelClass);
             }
+            if (type == null)
+            {
+                PopupContent.Content = null;
+                return;
+            }
+
+            var ctx = ViewLocator.GetMvvmContext(this);
+
+            object vm = null;
+
+            if (SecondaryModel != null)
+            {
+                var secondaryType = SecondaryModel.GetType();
+                type = typeof(Func<,>).MakeGenericType(secondaryType, type);
+                var func = ctx.Locate(type);
+
+                var m =type.GetMethod("Invoke");
+
+                vm = m.Invoke(func, new []{SecondaryModel});
+            }
+            else
+            {
+                vm = ctx.Locate(type);
+            }
+
+
+            if (vm is IEntityListViewModel lvm)
+            {
+                if (Command != null)
+                {
+
+                    lvm.SetSelectAction(t =>
+                    {
+                        Popup.IsOpen = false;
+                        Command.Execute(t);
+                    });
+                }
+                else
+                {
+                    lvm.SetSelectAction(t =>
+                    {
+                        Popup.IsOpen = false;
+                        SetCurrentValue(ModelProperty,t);
+                        Locator.DataContext = t;
+                    });
+                }
+            }
+
+
+            var view = ctx.GetView(vm, typeof(ViewModeDefault), typeof(IViewClassDefault));
+            PopupContent.Content = view;
         }
 
         void OpenButton_OnClick(object sender, RoutedEventArgs e)

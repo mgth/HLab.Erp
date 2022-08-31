@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="HLab.Erp.Core.Wpf.EntityLists.ColumnsProvider&lt;T&gt;">
+    <Position X="13" Y="8.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>KAAAQAQBIAACEAAAAAAAAAQAIAAAAAAIAAAAAAgAAgI=</HashCode>
+      <FileName>EntityLists\ColumnsProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HLab.Erp.Core.Wpf.EntityLists.EntityListHelper&lt;T&gt;">
+    <Position X="16.5" Y="7.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>CAAAAIAAAAAEAAAAAAAAAAAAAAgAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>EntityLists\EntityListHelper.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HLab.Erp.Core.Wpf.EntityLists.ColumnHeaderView">
+    <Position X="20.25" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAgAQAAAAAAQAAgAAAAACAAAIgAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>EntityLists\ColumnHeaderView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HLab.Erp.Core.EntityLists.EntityListViewModel">
+    <Position X="0.5" Y="0.5" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="HLab.Erp.Core.EntityLists.EntityListViewModel.Injector" Collapsed="true">
+        <TypeIdentifier />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="HLab.Erp.Core.EntityLists.EntityListViewModel&lt;T&gt;">
+    <Position X="3.75" Y="1" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="HLab.Erp.Core.EntityLists.EntityListViewModel&lt;T&gt;.Injector" Collapsed="true">
+        <TypeIdentifier />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HLab.Erp.Core.EntityLists.Column&lt;T&gt;">
+    <Position X="9.5" Y="0.75" Width="1.75" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="HLab.Erp.Core.EntityLists.ColumnConfigurationException" Collapsed="true">
+    <Position X="13.25" Y="13.75" Width="4" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="HLab.Erp.Core.ListFilterConfigurators.ColumnHelper&lt;T&gt;">
+    <Position X="14" Y="3" Width="2" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="HLab.Erp.Core.Wpf.EntityLists.IColumn">
+    <Position X="7.25" Y="0.5" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Interface Name="HLab.Erp.Core.Wpf.EntityLists.IColumn.IHelper" Collapsed="true">
+        <TypeIdentifier />
+      </Interface>
+    </NestedTypes>
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="HLab.Erp.Core.Wpf.EntityLists.IColumn&lt;T&gt;">
+    <Position X="7" Y="3.75" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Interface Name="HLab.Erp.Core.Wpf.EntityLists.IColumn&lt;T&gt;.IHelper" Collapsed="true">
+        <TypeIdentifier />
+      </Interface>
+    </NestedTypes>
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="HLab.Erp.Core.EntityLists.IColumnConfigurator" Collapsed="true">
+    <Position X="6.75" Y="9" Width="4" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="HLab.Erp.Core.EntityLists.IColumnConfigurator&lt;T&gt;" Collapsed="true">
+    <Position X="6.75" Y="9.75" Width="4" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="HLab.Erp.Core.EntityLists.IColumnConfigurator&lt;T, TLink&gt;" Collapsed="true">
+    <Position X="6.75" Y="10.75" Width="4" />
+    <InheritanceLine Type="HLab.Erp.Core.EntityLists.IColumnConfigurator" ManuallyRouted="true">
+      <Path>
+        <Point X="8.75" Y="9.562" />
+        <Point X="8.75" Y="9.546" />
+        <Point X="7.252" Y="9.546" Type="JumpStart" />
+        <Point X="7.081" Y="9.546" Type="JumpEnd" />
+        <Point X="5.664" Y="9.546" />
+        <Point X="5.664" Y="10.979" />
+        <Point X="8.75" Y="10.979" />
+        <Point X="8.75" Y="10.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="HLab.Erp.Core.EntityLists.IColumnConfigurator&lt;T, TLink, TFilter&gt;" Collapsed="true">
+    <Position X="6.75" Y="11.75" Width="4" />
+    <InheritanceLine Type="HLab.Erp.Core.EntityLists.IColumnConfigurator&lt;T&gt;" ManuallyRouted="true">
+      <Path>
+        <Point X="8.75" Y="10.441" />
+        <Point X="8.75" Y="8.958" />
+        <Point X="7.164" Y="8.958" />
+        <Point X="7.164" Y="10.7" />
+        <Point X="8.75" Y="10.7" />
+        <Point X="8.75" Y="11.75" />
+      </Path>
+    </InheritanceLine>
+    <InheritanceLine Type="HLab.Erp.Core.EntityLists.IColumnConfigurator" ManuallyRouted="true">
+      <Path>
+        <Point X="8.75" Y="9.562" />
+        <Point X="8.75" Y="7.537" />
+        <Point X="7.168" Y="7.537" />
+        <Point X="7.168" Y="10.7" />
+        <Point X="8.75" Y="10.7" />
+        <Point X="8.75" Y="11.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

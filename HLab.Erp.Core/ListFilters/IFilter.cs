@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace HLab.Erp.Core
+namespace HLab.Erp.Core.ListFilters
 {
     public interface IFilter
     {

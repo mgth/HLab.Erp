@@ -6,10 +6,11 @@
              xmlns:annotations="clr-namespace:HLab.Mvvm.Annotations;assembly=HLab.Mvvm.Annotations"
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:controlsEx="clr-namespace:HLab.Base.Wpf.ControlsEx;assembly=HLab.Base.Wpf"
+             xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" 
              d:DesignWidth="800"
-             mvvm:ViewLocator.ViewMode ="{x:Type annotations:ViewModeDefault}"
+             wpf:ViewLocator.ViewMode ="{x:Type annotations:ViewModeDefault}"
             FontSize="24"
              >
     <Grid>
@@ -64,7 +65,7 @@
                     ItemsSource="{Binding UserList}"
                     SelectedItem="{Binding User}"
                     Background="#20FFFFFF"
-                    mvvm:ViewLocator.ViewClass ="{x:Type annotations:IViewClassListItem}" />
+                    wpf:ViewLocator.ViewClass ="{x:Type annotations:IViewClassListItem}" />
         </controlsEx:ScrollViewerEx>
 
         <Label Grid.Row="1" FontWeight="Bold" Grid.Column="0">Nom</Label>

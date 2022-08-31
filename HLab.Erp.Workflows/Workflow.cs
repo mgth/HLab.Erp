@@ -86,7 +86,7 @@ namespace HLab.Erp.Workflows
                 if (stages.Contains(this)) return true;
                 foreach (var stage in stages)
                 {
-                    errorAction($"{{Stage needed}} : {{{stage.Name}}}");
+                    errorAction($"{{Stage needed}} : {stage.GetCaption(null)}");
                 }
 
                 return false;

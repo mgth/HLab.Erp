@@ -1,4 +1,5 @@
 ﻿using System;
+using HLab.Erp.Core.ListFilters;
 
 namespace HLab.Erp.Core.Wpf.ListFilters
 {

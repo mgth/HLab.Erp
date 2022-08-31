@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
-using System.Windows.Media;
-using System.Xml;
+using HLab.Base;
+using HLab.Base.Extensions;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
-using HLab.Localization.Wpf.Lang;
-using HLab.Mvvm;
-using Binding = System.Windows.Data.Binding;
+using HLab.Notify.Annotations;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using ListView = System.Windows.Controls.ListView;
 
@@ -32,7 +31,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         IColumn<T> _orderByColumn = null;
 
-        void SetOrderBy(IColumn<T> column)
+        void SetOrderBy(IColumn<T> column, int rank = 0)
         {
             if (column == _orderByColumn) return;
 
@@ -52,7 +51,71 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             }
         }
 
-        public object GetValue(T obj, string name) => _dict.ContainsKey(name) ? _dict[name].GetValue(obj) : null;
+        public bool GetValue(T obj, string name, out object? result)
+        {
+            if (!_properties.TryGetValue(name, out var property))
+            {
+                result = null;
+                return false;
+            }
+
+            try
+            {
+                result = property.CanEvaluate(obj) ? property.Getter?.Invoke(obj) : null;
+                return true;
+            }
+            catch (NullReferenceException)
+            {
+                result = null;
+                return true;
+            }
+        }
+
+        IColumn<T> GetColumnAtOrderRank(int rank, ref int nextRank)
+        {
+            var maxRank = -1;
+
+            foreach (var c in _dict.Values)
+            {
+                var r = c.OrderByRank;
+
+                if (r > maxRank) maxRank = c.OrderByRank;
+
+                if (c.OrderByRank != rank) continue;
+
+                nextRank--;
+
+                return c;
+            }
+
+            nextRank = maxRank;
+            return null;
+        }
+
+        public void SetDefaultOrderBy()
+        {
+            var rank = int.MaxValue;
+            while (rank>=0)
+            {
+                var c = GetColumnAtOrderRank(rank, ref rank);
+                if (c == null) continue;
+                SetOrderBy(c);
+            }
+
+            ApplyOrderBy();
+        }
+
+        void ApplyOrderBy()
+        {
+            List.ResetOrderBy();
+            var c = _orderByColumn;
+            while (c != null)
+            {
+                List.AddOrderBy(c.OrderBy,c.SortDirection);
+                c = c.OrderByNext;
+            }
+        }
+
 
         public void Populate(object grid)
         {
@@ -60,8 +123,6 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
             foreach (var column in _dict.Values)
             {
-                if (column.Hidden) continue;
-
                 var header = new ColumnHeaderView {
                     DataContext = column,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -77,14 +138,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
                     }
 
                     SetOrderBy(column);
-                    List.ResetOrderBy();
-                    var c = _orderByColumn;
-                    while (c != null)
-                    {
-                        List.AddOrderBy(c.OrderBy,c.SortDirection);
-                        c = c.OrderByNext;
-                    }
-
+                    ApplyOrderBy();
                     List.Update();
                 };
 
@@ -96,23 +150,25 @@ namespace HLab.Erp.Core.Wpf.EntityLists
                         var c = new DataGridTemplateColumn
                         {
                             Header = header,
-                            //DisplayMemberBinding = new Binding(column.Id),
-                            CellTemplate = CreateColumnTemplate(column.Id),
+                            CellTemplate = column.DataTemplate as DataTemplate,
                             Width = column.Width,
                         };
                     
                         dataGrid.Columns.Add(c);
                         break;
                     }
+                    
                     case ListView {View : GridView gridView} :
                     {
                         var c = new GridViewColumn
                         {
+                            //HeaderTemplate = ,
                             Header = header,
                             Width = column.Width,
                             
-                            //DisplayMemberBinding = new Binding(column.Id),
-                            CellTemplate = CreateColumnTemplate(column.Id,column.Width),
+                            CellTemplate = column.DataTemplate as DataTemplate,
+
+                            
                         };
                         gridView.Columns.Add(c);
                         c.Width = column.Width;
@@ -123,90 +179,70 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         }
 
-
-        //public object GetView()
-        //{
-        //    var gv = new GridView();
-
-        //    foreach (var column in _dict.Values)
-        //    {
-        //        if (column.Hidden) continue;
-
-        //        object content;
-        //        if (column.Header is string s)
-        //            content = new Localize {Id = s};
-        //        else
-        //        {
-        //            content = column.Header;
-        //        }
-
-        //        var header = new GridViewColumnHeader 
-        //        {
-        //            Width = column.Width,
-        //            Content = content
-        //        };
-
-        //        header.Click += (a, b) =>
-        //        {
-        //            SetOrderBy(column);
-        //            List.ResetOrderBy();
-        //            var c = _orderByColumn;
-        //            while (c != null)
-        //            {
-        //                List.AddOrderBy(c.OrderBy,c.SortDirection);
-        //            }
-
-        //            List.Update();
-        //        };
- 
-        //        var c = new GridViewColumn
-        //        {
-        //            Header = header,
-        //            DisplayMemberBinding = new Binding(column.Id),
-        //            //CellTemplate = CreateColumnTemplate(column.Id)
-        //        };
-
-        //        gv.Columns.Add(c);
-        //    }
-
-        //    return gv;
-        //}
-
-        public DataTemplate CreateColumnTemplate(string property,double width = 100.0)
+        public object BuildTemplate(string template)
         {
-            var template = new DataTemplate();
+            if (string.IsNullOrWhiteSpace(template)) template = XamlTool.ContentPlaceHolder;
 
-            FrameworkElementFactory contentFactory = new FrameworkElementFactory(typeof(ContentControl));
-            Binding binding = new(property)
+            var source = @$"<DataTemplate 
+                        xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+                        xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
+                        {template}
+                </DataTemplate>";
+
+            Debug.WriteLine(source);
+
+            return XamlReader.Parse(source);
+        }
+
+        class Property
+        {
+            public Property(Func<T, bool> canEvaluate, Func<T, object> getter)
             {
-                Mode = System.Windows.Data.BindingMode.OneWay
-            };
+                CanEvaluate = canEvaluate;
+                Getter = getter;
+            }
 
-            //contentFactory.SetValue(ContentControl.WidthProperty, width); 
-            //contentFactory.SetValue(ContentControl.ForegroundProperty, Brushes.White); //TODO : replace with themed color
+            public Func<T, bool> CanEvaluate { get; }
+            public Func<T, object> Getter { get; }
+        }
 
-            contentFactory.SetBinding(ContentControl.ContentProperty, binding);
+        readonly Dictionary<string, Property> _properties = new();
+        string? PathFromExpression<TOut>(Expression<Func<T, TOut>> getter)
+        {
+            try 
+            {
+                var path = TriggerPath.Factory(getter);
+                return $"Model.{path}";
+            }
+            catch 
+            {
+                return null;
+            }
+        }
 
-            template.VisualTree = contentFactory;
+        int id = 0;
+        public string AddProperty<TOut>(Expression<Func<T, TOut>> getter)
+        {
+            var path = PathFromExpression(getter);
 
-            return template;
+            if (path != null) return path;
 
+            return AddProperty($"_{id++}",e=>true, getter.CastReturn(default(object)).Compile());
+        }
+        public string AddProperty(Func<T,bool> condition, Func<T, object> getter)
+        {
+            return AddProperty($"_{id++}",condition, getter);
+        }
 
-        //    StringReader stringReader = new StringReader(
-        //        @$"<DataTemplate 
-        //xmlns:mvvm=""clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm""
-        //xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""> 
-        //    <ContentControl Content=""{{Binding {property}}}""/> 
-        //</DataTemplate>");
-
-
-        //    XmlReader xmlReader = XmlReader.Create(stringReader);
-        //    return XamlReader.Load(xmlReader) as DataTemplate;
+        public string AddProperty(string name, Func<T,bool> condition, Func<T, object> getter)
+        {
+            _properties.Add(name,new (condition, getter));
+            return name;
         }
 
         public void AddColumn(IColumn<T> column)
         {
-            _dict.Add(column.Id,column);
+            _dict.Add(column.Name,column);
         }
 
         void RegisterTriggers(T model, Action<string> handler)

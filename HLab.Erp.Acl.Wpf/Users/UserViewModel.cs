@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Input;
 using HLab.Erp.Acl.Profiles;
 using HLab.Erp.Data;
+using HLab.Mvvm.Annotations;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl.Users
@@ -11,6 +12,17 @@ namespace HLab.Erp.Acl.Users
 
     public class UserViewModel: ListableEntityViewModel<User>
     {
+        public class Design : UserViewModel, IViewModelDesign
+        {
+            public Design()
+            {
+                Model = User.DesignModel;
+            }
+        }
+
+        UserViewModel() {}
+
+
         readonly Func<User, ProfilesPerUserListViewModel> _getProfilesPerUser;
         readonly Func<ProfilesListViewModel> _getProfiles;
 

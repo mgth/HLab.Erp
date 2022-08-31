@@ -8,33 +8,33 @@
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:views="clr-namespace:HLab.Erp.Core.Wpf.Views;assembly=HLab.Erp.Core.Wpf"
              xmlns:icons1="clr-namespace:HLab.Erp.Base.Wpf.Entities.Icons"
+             xmlns:icons="clr-namespace:HLab.Mvvm.Application.Wpf.Icons;assembly=HLab.Mvvm.Application.Wpf"
+             xmlns:icons2="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
+             xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance local:CountryViewModel}"
              >
     <Grid>
         <views:DetailView EditMode="{Binding Locker.IsActive}">
-            <mvvm:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
+            <wpf:ViewLocator Height="50"  Model="{Binding Locker}" Grid.ColumnSpan="2"/>
 
             <lang:LocalizedLabel Text="{}{Name} : "/>
             <lang:LocalizeTextBox 
-                Text="{Binding Model.Name}" 
+                Text="{Binding Model.Name, UpdateSourceTrigger=PropertyChanged}" 
                 IsReadOnly="{Binding Locker.IsReadOnly}"/>
 
             <lang:LocalizedLabel Text="{}ISO A2 : "/>
-            <TextBox Text="{Binding Model.IsoA2}"/>
+            <TextBox Text="{Binding Model.IsoA2, UpdateSourceTrigger=PropertyChanged}"/>
 
             <lang:LocalizedLabel Text="{}ISO A3 : "/>
             <TextBox Text="{Binding Model.IsoA3}"/>
 
             <lang:LocalizedLabel Text="{}ISO : "/>
-            <TextBox Text="{Binding Model.Iso}"/>
-
-            <lang:LocalizedLabel Text="{}{Icon path} : "/>
-            <TextBox Text="{Binding Model.IconPath}" />
+            <TextBox Text="{Binding Model.Iso, UpdateSourceTrigger=PropertyChanged}"/>
 
             <lang:LocalizedLabel Text="{}{Icon} : "/>
-            <icons1:IconSelector IconPath="{Binding Model.IconPath}"/>
+            <icons:IconSelectorView Path="{Binding Model.IconPath}"/>
 
-        </views:DetailView>
+       </views:DetailView>
     </Grid>
 </UserControl>

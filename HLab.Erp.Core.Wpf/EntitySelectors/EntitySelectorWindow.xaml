@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
         xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors"
+        xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         x:Name="EntitySelector"
@@ -41,7 +42,7 @@
             SearchEnabled="True"
             />
 
-        <mvvm:ViewLocator Grid.Row="3" DataContext="{Binding Selected}" ViewMode="{Binding SelectedViewMode}"/>
+        <wpf:ViewLocator Grid.Row="3" DataContext="{Binding Selected}" ViewMode="{Binding SelectedViewMode}"/>
             </Grid>
     <!--</Popup>
     </Grid>-->

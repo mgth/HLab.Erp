@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +13,9 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using HLab.Base.Extensions;
 using HLab.Core.Annotations;
+using HLab.Erp.Acl;
 using HLab.Erp.Core.ListFilterConfigurators;
+using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Core.Tools.Details;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
@@ -28,6 +31,69 @@ namespace HLab.Erp.Core.EntityLists
 {
     public abstract class EntityListViewModel : ViewModel
     {
+        protected class EntityConfigurationException : Exception
+        {
+            public EntityConfigurationException(string message):base(message) { }
+        }
+
+        public bool ShowFilters
+        {
+            get => _showFilters.Get();
+            set => _showFilters.Set(value);
+        }
+        readonly IProperty<bool> _showFilters = H<EntityListViewModel>.Property<bool>(c => c.Default(true));
+
+        public bool ShowMenu
+        {
+            get => _showMenu.Get();
+            set => _showMenu.Set(value);
+        }
+        readonly IProperty<bool> _showMenu = H<EntityListViewModel>.Property<bool>(c => c.Default(true));
+
+        public bool AllowManualOrder
+        {
+            get => _allowManualOrder.Get();
+            set => _allowManualOrder.Set(value);
+        }
+        readonly IProperty<bool> _allowManualOrder = H<EntityListViewModel>.Property<bool>(c => c.Default(false));
+
+        public object Header
+        {
+            get => _header.Get();
+            set => _header.Set(value);
+        }
+        readonly IProperty<object> _header = H<EntityListViewModel>.Property<object>();
+
+        public string IconPath
+        {
+            get => _iconPath.Get();
+            set => _iconPath.Set(value);
+        }
+        readonly IProperty<string> _iconPath = H<EntityListViewModel>.Property<string>();
+
+        protected string GetTitle() => $"{{{GetName().FromCamelCase()}}}";
+        string GetName() => GetType().Name.BeforeSuffix("ListViewModel");
+
+        public ObservableCollection<IObjectMapper> ListViewModel { get; } = new();
+
+        public void RefreshColumn(string column)
+        {
+            foreach (var vm in ListViewModel)
+            {
+                vm.Refresh(column);
+            }
+        }
+
+        public void RefreshColumn(string column, int id)
+        {
+            foreach (var vm in ListViewModel.Where(e => e.Id == id))
+            {
+                vm.Refresh(column);
+            }
+        }
+
+
+
         public virtual Injector Injected { get; }
 
         public class Injector
@@ -66,7 +132,9 @@ namespace HLab.Erp.Core.EntityLists
         public abstract void Populate(object grid);
 
         public abstract void SetOpenAction(Action<object> action);
-        public abstract void SetSelectAction(Action<object> action);
+        public abstract void SetSelectAction(Action<object?> action);
+
+
         protected readonly ObservableCollection<IFilter> _filters = new();
         public ReadOnlyObservableCollection<IFilter> Filters { get; }
 
@@ -84,12 +152,14 @@ namespace HLab.Erp.Core.EntityLists
 
 
         public abstract dynamic SelectedViewModel { get; set; }
-        public abstract IEnumerable<int> SelectedIds { get; set; }
-        public abstract void RefreshColumn(string column);
-        public abstract void RefreshColumn(string column, int id);
 
-        protected abstract Task AddEntityAsync(object arg);
-        protected abstract Task AddEntityAsync();
+        public IEnumerable<int> SelectedIds
+        {
+            get => _selectedIds.Get();
+            set => _selectedIds.Set(value);
+        }
+        readonly IProperty<IEnumerable<int>> _selectedIds = H<EntityListViewModel>.Property<IEnumerable<int>>();
+
 
         public abstract ICommand AddCommand { get; }
         public abstract ICommand DeleteCommand { get; }
@@ -125,7 +195,6 @@ namespace HLab.Erp.Core.EntityLists
             get => _filtersPresetName.Get();
             set => _filtersPresetName.Set(value);
         }
-
         readonly IProperty<string> _filtersPresetName = H<EntityListViewModel>.Property<string>();
 
         public string FiltersPresetSelected
@@ -145,7 +214,6 @@ namespace HLab.Erp.Core.EntityLists
                     FiltersFromXml(item);
             }
         }
-
         readonly IProperty<string> _filtersPresetSelected = H<EntityListViewModel>.Property<string>();
 
         /// <summary>
@@ -160,6 +228,8 @@ namespace HLab.Erp.Core.EntityLists
 
         readonly ObservableCollection<string> _filterPresets = new();
         public ReadOnlyObservableCollection<string> FilterPresets {get;}
+        public abstract ICommand ShowMenuCommand { get; }
+        public abstract ICommand HideMenuCommand { get; }
 
 
         readonly List<Tuple<string,string>> _errors = new();
@@ -219,59 +289,24 @@ namespace HLab.Erp.Core.EntityLists
         }
     }
 
+    
+
     public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEntityListViewModel<T>, IEntityListViewModel
         where T : class, IEntity, new()
     {
-
-        public object Header
-        {
-            get => _header.Get();
-            set => _header.Set(value);
-        }
-
-        readonly IProperty<object> _header = H<EntityListViewModel<T>>.Property<object>();
-
-        public string IconPath
-        {
-            get => _iconPath.Get();
-            set => _iconPath.Set(value);
-        }
-
-        readonly IProperty<string> _iconPath = H<EntityListViewModel<T>>.Property<string>();
-
-        string GetTitle() => $"{{{GetName().FromCamelCase()}}}";
-        string GetName() => GetType().Name.BeforeSuffix("ListViewModel");
-
-
-        public IObservableQuery<T> List { get => _list.Get(); }
+        public IObservableQuery<T> List => _list.Get();
         readonly IProperty<IObservableQuery<T>> _list = H<EntityListViewModel<T>>.Property<IObservableQuery<T>>();
 
 
-        public override void RefreshColumn(string column)
-        {
-            foreach (var vm in ListViewModel)
-            {
-                vm.Refresh(column);
-            }
-        }
-
-        public override void RefreshColumn(string column, int id)
-        {
-            foreach (var vm in ListViewModel.Where(e => e.Id == id))
-            {
-                vm.Refresh(column);
-            }
-        }
-
-        public ObservableCollection<IObjectMapper> ListViewModel { get; } = new();
         readonly ConcurrentDictionary<T, dynamic> _cache = new();
-
 
         public new class Injector : EntityListViewModel.Injector
         {
             protected internal IEntityListHelper<T> Helper;
             protected internal Func<T> CreateInstance { get; }
-            protected internal IColumnsProvider<T> Columns { get; set; }
+            protected internal IColumnsProvider<T> ColumnsProvider { get; set; }
+
+            public IAclService Acl { get; }
             public ILocalizationService Localization { get; }
             public IDocumentService Docs { get; }
             public IDataService Data { get; }
@@ -284,6 +319,7 @@ namespace HLab.Erp.Core.EntityLists
                 IColumnsProvider<T> columnsProvider,
 
                 ILocalizationService localization,
+                IAclService acl,
                 IDocumentService docs, 
                 IMessagesService message, 
                 IDataService data
@@ -292,7 +328,8 @@ namespace HLab.Erp.Core.EntityLists
             {
                 Helper = helper;
                 CreateInstance = createInstance;
-                Columns = columnsProvider;
+                ColumnsProvider = columnsProvider;
+                Acl = acl;
                 Localization = localization;
                 Docs = docs;
                 Message = message;
@@ -304,23 +341,26 @@ namespace HLab.Erp.Core.EntityLists
 
         protected EntityListViewModel(
             Injector injector,
-            Func<IColumnConfigurator<T,object,IFilter<object>>, IDisposable> configurator
+            Func<IColumnConfigurator<T>, IDisposable> configurator
            ) : base(injector)
         {
 
             H<EntityListViewModel<T>>.Initialize(this);
 
-            _list.Set(injector.Columns.List);
+            _list.Set(injector.ColumnsProvider.List);
 
             List_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, List, 0));
             List.CollectionChanged += List_CollectionChanged;
 
-            configurator.Invoke(new ColumnConfigurator<T,object,IFilter<object>>(this,injector.Localization))?.Dispose();
+            configurator.Invoke(new ColumnConfigurator<T>(this,injector.Localization, injector.Acl))?.Dispose();
 
             Header ??= GetTitle();
             OpenAction ??= target => injector.Docs.OpenDocumentAsync(target);
             IconPath ??= "Icons/Entities/" + typeof(T).Name;
+
+            injector.ColumnsProvider.SetDefaultOrderBy();
         }
+
 
 
         #region COMMANDS
@@ -339,8 +379,6 @@ namespace HLab.Erp.Core.EntityLists
             })
             .On(e => e.Selected).CheckCanExecute(e => e.Selected)
         );
-
-
 
         public ICommand RefreshCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
             .Action(e => e.List.Refresh())
@@ -393,6 +431,13 @@ namespace HLab.Erp.Core.EntityLists
             .On(e => e.Selected)
             .CheckCanExecute()
         );
+        public override ICommand ShowMenuCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
+            .Action(e => e.ShowMenu = true)
+        );
+
+        public override ICommand HideMenuCommand { get; } = H<EntityListViewModel<T>>.Command(c => c
+            .Action(e => e.ShowMenu = false)
+        );
 
         protected virtual bool CanExecuteOpen(T arg,Action<string> errorAction) => true;
 
@@ -408,7 +453,6 @@ namespace HLab.Erp.Core.EntityLists
             return false;
         }
 
-
         protected virtual bool CanExecuteImport(Action<string> errorAction)
         {
             errorAction("{Import} : {Not implemented}");
@@ -422,41 +466,46 @@ namespace HLab.Erp.Core.EntityLists
         }
         #endregion
 
-
-
+        // Open Action
         protected Action<T>? OpenAction;
         public override void SetOpenAction(Action<object> action) => OpenAction = action;
         public void SetOpenAction(Action<T> action) => OpenAction = action;
 
-        protected Action<T> SelectAction;
-        public override void SetSelectAction(Action<object> action) => SelectAction = action;
-        public void SetSelectAction(Action<T> action) => SelectAction = action;
+        // Select Action
+        protected Action<T?> SelectAction;
+        public override void SetSelectAction(Action<object?> action) => SelectAction = action;
 
-        protected override Task AddEntityAsync(object arg) => AddEntityAsync();
-        protected override Task AddEntityAsync()
+        public void SetSelectAction(Action<T?> action) => SelectAction = action;
+
+
+        public void Drop(object source, object target, bool after)
         {
-            var entity = Injected.CreateInstance();
+            if (source is not T fromTest) return;
+            if (target is not T toTest) return;
+            if (fromTest.Id.Equals(toTest.Id)) return;
 
-            //TODO : this is temporary fix data service not injected
-            if (entity is IDataServiceProvider {DataService: null} p)
-            {
-                p.DataService = Injected.Data;
-            }
+            Task.Run(() => ReSortAsync(fromTest, toTest, after));
+        }
 
-            ConfigureEntity(entity);
+        protected virtual Task ConfigureNewEntityAsync(T entity, object arg) => ConfigureNewEntityAsync(entity);
+        protected virtual Task ConfigureNewEntityAsync(T entity) => Task.CompletedTask;
 
+        Task AddEntityAsync(object arg)
+        {
+            var entity = Injected.Data.AddAsync<T>(e => ConfigureNewEntityAsync(e,arg));
+            if (entity == null) return Task.CompletedTask;
+
+            List.UpdateAsync();
             return Injected.Docs.OpenDocumentAsync(entity);
         }
 
-        protected virtual void ConfigureEntity(T entity) { }
-        public string Message
+        public string? Message
         {
             get => _message.Get();
             set => _message.Set(value);
         }
 
-        readonly IProperty<string> _message = H<EntityListViewModel<T>>.Property<string>();
-
+        readonly IProperty<string?> _message = H<EntityListViewModel<T>>.Property<string?>();
 
         void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -466,7 +515,7 @@ namespace HLab.Erp.Core.EntityLists
                     var newIndex = e.NewStartingIndex;
                     foreach (var n in e.NewItems!.OfType<T>())
                     {
-                        ObjectMapper<T> om = _cache.GetOrAdd(n, o => new ObjectMapper<T>(o, Injected.Columns));
+                        ObjectMapper<T> om = _cache.GetOrAdd(n, o => new ObjectMapper<T>(o, Injected.ColumnsProvider));
                         ListViewModel.Insert(newIndex++, om);
                     }
                     break;
@@ -501,50 +550,34 @@ namespace HLab.Erp.Core.EntityLists
         }
 
         public object ListCollectionView => _listCollectionView.Get();
-
-
         readonly IProperty<object> _listCollectionView = H<EntityListViewModel<T>>.Property<object>(c => c
             .Set(setter: e => e.Injected.Helper.GetListView(e.ListViewModel)));
 
-        public override void Populate(object grid) => Injected.Helper.Populate(grid, Injected.Columns);
+        public override void Populate(object grid) => Injected.Helper.Populate(grid, Injected.ColumnsProvider);
 
-        public T Selected
+        public T? Selected
         {
             get => _selected.Get();
             set
             {
-                if (_selected.Set(value))
-                {
-                    if (SelectAction != null)
-                        SelectAction(value);
-                    else
-                        Injected.Message.Publish(new DetailMessage(value));
-                }
+                if (!_selected.Set(value)) return;
+
+                SelectAction?.Invoke(value);
+                Injected.Message.Publish(new DetailMessage(value));
             }
         }
+        readonly IProperty<T?> _selected = H<EntityListViewModel<T>>.Property<T?>();
 
-        readonly IProperty<T> _selected = H<EntityListViewModel<T>>.Property<T>();
-
-        public override dynamic SelectedViewModel
+        public override dynamic? SelectedViewModel
         {
             get => _selectedViewModel.Get();
             set => Selected = value?.Model;
         }
-
         readonly IProperty<dynamic> _selectedViewModel = H<EntityListViewModel<T>>.Property<dynamic>(c => c
-            .Set(e => e.Selected == null ? null : e._cache.GetOrAdd(e.Selected, o => new ObjectMapper<T>(o, e.Injected.Columns)))
+            .Set(e => e.Selected == null ? null : e._cache.GetOrAdd(e.Selected, o => new ObjectMapper<T>(o, e.Injected.ColumnsProvider)))
             .On(e => e.Selected)
             .Update()
         );
-
-        public override IEnumerable<int> SelectedIds
-        {
-            get => _selectedIds.Get();
-            set => _selectedIds.Set(value);
-        }
-
-        readonly IProperty<IEnumerable<int>> _selectedIds = H<EntityListViewModel<T>>.Property<IEnumerable<int>>();
-
 
         class ExportIdValueProvider : IValueProvider
         {
@@ -617,6 +650,64 @@ namespace HLab.Erp.Core.EntityLists
 
         void IEntityListViewModel<T>.AddFilter(IFilter filter) => AddFilter(filter);
         IObservableQuery<T> IEntityListViewModel<T>.List => List;
-        IColumnsProvider<T> IEntityListViewModel<T>.Columns => Injected.Columns;
+        IColumnsProvider<T> IEntityListViewModel<T>.Columns => Injected.ColumnsProvider;
+
+        async Task<bool> MoveTo(T entity,int pos)
+        {
+            if (((IOrderedEntity)entity).Order == pos) return false;
+
+            return await Injected.Data.UpdateAsync(entity, t =>
+            {
+                ((IOrderedEntity)t).Order = pos;
+            });
+        }
+
+        async Task ReSortAsync(T move, T to, bool after)
+        {
+            // Do not move if was dropped on itself
+            if (move.Id.Equals(to.Id)) return;
+
+            var update = false;
+            var pos = 1;
+            // iterate all lines but dropped one
+            foreach (var test in List.OrderBy(t => ((IOrderedEntity)t).Order).Where(t => !t.Id.Equals(move.Id)).ToList())
+            {
+                //did we reach the place to insert
+                var insert = test.Id.Equals(to.Id);
+
+                // put dropped if reached location
+                if (insert)
+                {
+                    if (after)
+                    {
+                        //if dropped after, put current line before
+                        update |= await MoveTo(test,pos);
+                        pos++;
+                        update |= await MoveTo(move,pos); 
+                        pos++;
+                    }
+                    else
+                    {
+                        //if dropped before, put current line after
+                        update |= await MoveTo(move,pos); 
+                        pos++;
+                        update |= await MoveTo(test,pos);
+                        pos++;
+                    }
+                }
+                else
+                {
+                    update |= await MoveTo(test, pos);
+                    pos++;
+                }
+            }
+
+            if (update)
+            {
+                await List.UpdateAsync();
+                Selected = move;
+            }
+        }
+
     }
 }

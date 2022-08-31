@@ -20,9 +20,11 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         where T : class, IEntity, IListableModel, new()
     {
         public ListableEntityListViewModel(Injector i) : base(i, c => c
+                .HideFilters()
+                .HideMenu()
                 .Column("Name")
                 .Header("{Name}")
-                .Width(150).Content(e => e.Caption).Localize()
+                .Width(150).Localize(e => e.Caption)
                 .Link(e => e.Caption)
                 .Icon(e => e.IconPath)
                     .Filter()
@@ -37,8 +39,5 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         {
         }
 
-        public override ICommand AddCommand { get; } = H<ListableEntityListViewModel<T>>.Command(c => c
-            .Action(async e => await e.AddEntityAsync())
-        );
     }
 }

@@ -9,20 +9,41 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core
 {
+    public abstract class ParamBootloader : NestedBootloader
+    {
+        public override string MenuPath => "param";
+    }
+
     public abstract class NestedBootloader : NotifierBase, IBootloader
     {
         public IDocumentService Docs { get; set; } 
         public IMenuService Menu { get; set; } 
-        protected NestedBootloader()
+        protected NestedBootloader(string menuPath = "data")
         {
+            MenuPath = menuPath;
             GetEntityName();
             H<NestedBootloader>.Initialize(this);
         }
         public virtual string Caption => Name.FromCamelCase();
         public virtual string Name => _parentType.Name.BeforeSuffix(_suffix);
         public virtual string Header => $"{{{Caption}}}";
-        public virtual string IconPath => $"Icons/Entities/{_entityName}";
-        public virtual string MenuPath => "data";
+        public virtual string IconPath
+        {
+            get
+            {
+                var name = _entityName;
+
+                if (name.EndsWith("Class"))
+                {
+                    name = name[..^5];
+                    return $"Icons/Entities/{name}|Icons/Class";
+                }
+
+                return $"Icons/Entities/{name}";
+            }
+        }
+
+        public virtual string MenuPath { get; }
         public virtual bool Allowed => true;
 
 
@@ -49,13 +70,16 @@ namespace HLab.Erp.Core
                 if (i == typeof(IViewModel)) _suffix = "ViewModel";
 
                 if (!i.IsConstructedGenericType) continue;
-                if (i.GetGenericTypeDefinition() == typeof(IEntityListViewModel<>))
+
+                var t = i.GetGenericTypeDefinition();
+
+                if (t == typeof(IEntityListViewModel<>))
                 {
                     _suffix = "ListViewModel";
                     _entityName = i.GenericTypeArguments[0].Name;
                     return;
                 }
-                if (i.GetGenericTypeDefinition() == typeof(IViewModel<>))
+                else if (t == typeof(IViewModel<>))
                 {
                     _suffix = "ViewModel";
                     _entityName = i.GenericTypeArguments[0].Name;
@@ -68,7 +92,7 @@ namespace HLab.Erp.Core
         {
             if (!Allowed) return;
 
-            Menu.RegisterMenu(MenuPath + "/" + Name, Header,
+            Menu.RegisterMenu($"{MenuPath}/{Name.ToLower()}" , Header,
                 OpenCommand,
                 IconPath);
         }

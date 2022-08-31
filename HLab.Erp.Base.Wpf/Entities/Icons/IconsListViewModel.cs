@@ -14,10 +14,7 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
 {
     public class IconsListViewModel : Core.EntityLists.EntityListViewModel<Icon>, IMvvmContextProvider
     {
-        public class Bootloader : NestedBootloader
-        {
-            public override string MenuPath => "param";
-        }
+        public class Bootloader : ParamBootloader { }
 
         protected override bool CanExecuteExport(Action<string> errorAction) => true;
 
@@ -89,11 +86,11 @@ namespace HLab.Erp.Base.Wpf.Entities.Icons
 
                .Column("Xaml")
                     .Header("{Xaml}")
-                    .Content(async s => await GetXamlIconAsync(s.SourceXaml, s.Foreground))
+                    .Content( s => GetXamlIconAsync(s.SourceXaml, s.Foreground))
 
                .Column("Svg")
                     .Header("{Svg}")
-                    .Content(async s => await GetSvgIconAsync(s.SourceSvg, s.Foreground))
+                    .Content(s => GetSvgIconAsync(s.SourceSvg, s.Foreground))
         )
         {
         }

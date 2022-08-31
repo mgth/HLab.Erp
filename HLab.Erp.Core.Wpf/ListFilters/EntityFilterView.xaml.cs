@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Windows.Controls;
 using HLab.Base.Wpf;
+using HLab.Erp.Core.ListFilters;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.Wpf.ListFilters

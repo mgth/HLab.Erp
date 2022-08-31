@@ -1,103 +1,193 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using HLab.Base;
 using HLab.Base.Extensions;
+using HLab.Erp.Acl;
 using HLab.Erp.Core.EntityLists;
-using HLab.Erp.Core.Wpf.EntityLists;
+using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.ListFilterConfigurators
 {
-    public class ColumnConfigurator<T, TLink, TFilter> : IColumnConfigurator<T, TLink, TFilter>
+    public class ColumnConfigurator<T> : IColumnConfigurator<T> where T : class, IEntity, new()
+    {
+        public ILocalizationService Localization { get; }
+        public IAclService Acl { get; }
+        readonly IEntityListViewModel<T> _list;
+        public ColumnConfigurator(IEntityListViewModel<T> list, ILocalizationService localization, IAclService acl)
+        {
+            _list = list;
+            Localization = localization;
+            Acl = acl;
+        }
+
+        public virtual IColumnConfigurator<T, object, IFilter<object>> GetColumnConfigurator()
+        {
+            return new ColumnConfigurator<T, object, IFilter<object>>(
+                new ColumnBuilder<T>(_list, new Column<T>())
+                ,Localization,Acl
+            );
+        }
+
+        public IColumnConfigurator<T> BuildList(Action<IEntityListViewModel<T>> build)
+        {
+            build(_list);
+            return this;
+        }
+        public IColumnConfigurator<T> List<TT>(out TT list) where TT : IEntityListViewModel<T>
+        {
+            list = (TT)_list;
+            return this;
+        }
+
+        public virtual void Dispose()
+        {
+        }
+
+
+    }
+
+    public class ColumnConfigurator<T, TLink, TFilter> : ColumnConfigurator<T>, IColumnConfigurator<T, TLink, TFilter>
 
         where T : class, IEntity, new()
-        where TFilter : IFilter<TLink>
+        where TFilter : class, IFilter<TLink>
     {
-        public ColumnConfigurator(IEntityListViewModel<T> list, ILocalizationService localization)
-            : this(new ColumnHelper<T>(new Column<T>(), list), localization)
+        public IColumnConfigurator<T, TLinkChild, TFilterChild> GetFilterConfigurator<TLinkChild, TFilterChild>()
+        where TFilterChild : class, IFilter<TLinkChild>
         {
+            return new ColumnConfigurator<T, TLinkChild, TFilterChild>(_builder,Localization,Acl);
         }
 
-        public IColumnConfigurator<T, TLinkChild, TFilterChild> GetChildConfigurator<TLinkChild, TFilterChild>()
-        where TFilterChild : IFilter<TLinkChild>
+
+        public override IColumnConfigurator<T, object, IFilter<object>> GetColumnConfigurator()
         {
-            return new ColumnConfigurator<T, TLinkChild, TFilterChild>(Helper,Localization);
+            Dispose();
+            return base.GetColumnConfigurator();
         }
 
-        public IColumnConfigurator<T, object, IFilter<object>> GetNewConfigurator()
-        {
-            return new ColumnConfigurator<T, object, IFilter<object>>(new ColumnHelper<T>(new Column<T>(), Target),Localization);
-        }
+        public int OrderByRank { get => _builder.OrderByRank ; set => _builder.OrderByRank = value; }
 
-        protected ColumnConfigurator(IColumn<T>.IHelper helper, ILocalizationService localization)
+        public ColumnConfigurator(IColumn<T>.IBuilder builder, ILocalizationService localization, IAclService acl):base(builder.ListViewModel,localization,acl)
         {
-            Helper = helper;
-            Localization = localization;
+            _builder = builder;
 
-            var filter = helper.GetFilter<TFilter>();
+            var filter = builder.GetFilter<TFilter>();
             if (filter == null) return;
 
-            var link = helper.GetLinkExpression<TLink>();
+            var link = builder.GetLinkExpression<TLink>();
             if (link == null) return;
 
-            filter?.Link(helper.Target.List, link);
+            filter?.Link(builder.ListViewModel.List, link);
         }
 
-        public TFilter Filter => Helper.GetFilter<TFilter>();
+        class ColumnBuilder : IColumnBuilder<T, TLink, TFilter>
+        {
+            readonly IColumn<T>.IBuilder _builder;
+            public ColumnBuilder(IColumn<T>.IBuilder builder)
+            {
+                _builder = builder;
+            }
+
+            public IEntityListViewModel<T> ListViewModel => _builder.ListViewModel;
+            public IColumn<T> Column => _builder.Column;
+            public TFilter Filter => _builder.GetFilter<TFilter>();
+
+            public int OrderByRank
+            {
+                get => _builder.OrderByRank;
+                set => _builder.OrderByRank = value;
+            }
+        }
+
+        public IColumnConfigurator<T, TLink, TFilter> Build(Action<IColumnBuilder<T, TLink, TFilter>> builder)
+        {
+
+            if(_builder is IColumnBuilder<T, TLink, TFilter> b)
+                builder(b);
+            else
+            {
+                builder(new ColumnBuilder(_builder));
+            }
+            return this;
+        }
+
+        public IColumnConfigurator<T, TLink, TFilter> FilterLink(Expression<Func<T, TLink>> getter)
+        {
+            var filter = _builder.GetFilter<TFilter>();
+            filter?.Link(_builder.ListViewModel.List,getter);
+            return this;
+        }
+
+        public IColumnConfigurator<T, TLink, TFilter> FilterPostLink(Func<T, TLink> getter)
+        {
+            var filter = _builder.GetFilter<TFilter>();
+            filter?.PostLink(_builder.ListViewModel.List,getter);
+            return this;
+        }
+
+        public IColumnConfigurator<T, TLink, TFilter> AddProperty<TOut>(Expression<Func<T, TOut>> getter, out string name)
+        {
+            name = _builder.ListViewModel.Columns.AddProperty(getter);
+            return this;
+        }
+
+        public IColumnConfigurator<T, TLink, TFilter> AddProperty(Func<T, bool> condition, Func<T, object> getter, out string name)
+        {
+            name = _builder.ListViewModel.Columns.AddProperty( condition, getter);
+            return this;
+        }
+
+        public IColumnConfigurator<T, TLink, TFilter> AddProperty(string name, Func<T, bool> condition, Func<T, object> getter)
+        {
+            _builder.ListViewModel.Columns.AddProperty( name, condition, getter);
+            return this;
+        }
+
+        public IColumnConfigurator<T, TLink, TFilter> DecorateTemplate(string template)
+        {
+            Debug.Assert(template.Contains(XamlTool.ContentPlaceHolder));
+            _builder.DataTemplateSource = template.Replace(XamlTool.ContentPlaceHolder, _builder.DataTemplateSource);
+            return this;
+        }
+        public IColumnConfigurator<T, TLink, TFilter> ContentTemplate(string template)
+        {
+            _builder.DataTemplateSource = _builder.DataTemplateSource.Replace(XamlTool.ContentPlaceHolder, template);
+            return this;
+        }
+
+
+        public TFilter Filter => _builder.GetFilter<TFilter>();
         public Expression<Func<T, TLink>> LinkExpression
         {
-            get => Helper.Link as Expression<Func<T, TLink>>;
+            get => _builder.Link as Expression<Func<T, TLink>>;
             set
             {
-                var lambda = value.CastReturn(default(object)).Compile();
-                Helper.Column.OrderBy ??= lambda;
-                Helper.Link = value;
+                _builder.Column.OrderBy ??= value.CastReturn(default(object)).Compile();
+                _builder.Link = value;
             }
         }
 
         public Func<T, TLink> LinkLambda
         {
-            get => Helper.PostLink as Func<T, TLink>;
+            get => _builder.PostLink as Func<T, TLink>;
             set
             {
-                Helper.Column.OrderBy ??= t => value(t);
-                Helper.PostLink = value;
+                _builder.Column.OrderBy ??= t => value(t);
+                _builder.PostLink = value;
             }
         }
 
-        protected IColumn<T>.IHelper Helper { get; }
-
-        public IEntityListViewModel<T> Target => Helper.Target;
-        IEntityListViewModel IColumnConfigurator.Target => Helper.Target;
-
-        public IColumn<T> Column => Helper.Column;
-        public ILocalizationService Localization { get; }
-        IColumn IColumnConfigurator.Column => Helper.Column;
+        readonly IColumn<T>.IBuilder _builder;
 
         public Task<string> Localize(string s) => Localization.LocalizeAsync(s);
 
-
-        public void Dispose()
+        public override void Dispose()
         {
-            if (Column.Getter == null)
-            {
-                var link = LinkExpression;
-                if (link != null)
-                {
-                    var lambda = link.Compile();
-                    Column.Getter = t => lambda(t); //TODO manipulate expression before
-
-                    Target.Columns.AddColumn(Column);
-                }
-            }
-            else
-                Target.Columns.AddColumn(Column);
-
-            if (Filter != null)
-                Target.AddFilter(Filter);
-
+            _builder.Build();
+            base.Dispose();
         }
-
     }
 }

@@ -276,7 +276,6 @@ namespace HLab.Erp.Acl
 
                 var action = _entityId < 0 ? "Create" : "Update";
 
-                //TODO : add AclRight needed to do the action
                 if (_getAudit(transaction).Audit(action, null, log, _entity, caption, iconPath, sign, motivate))
                 {
                     await SaveAsync(transaction);

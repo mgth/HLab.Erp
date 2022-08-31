@@ -24,10 +24,9 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
                 .Header("{Country}")
                 .Column("Name")
                     .Header("{Name}")
-                    .Content(s => s.Name).Localize()
+                    .Localize(s => s.Name)
                     .Link(s => s.Name)
-                    
-                    // TODO                .OrderByOrder(0)
+                    .OrderByAsc(0)
                     .Filter()
                     .PostLink(s => i.Localization.Localize(s.Name))
 
@@ -44,12 +43,11 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
                 .Column("Code")
                     .Header("{Code}")
                     .Content(s => s.Iso)
-                    //.Filter()
+                    //.Filter() TODO : int filter
 
                 .Column("Continent")
                     .Header("{Continent}")
-                    .Content(s => s.Continent.Name)
-                    .Localize()
+                    .Localize(s => s.Continent.Name)
 
                 .Column("Flag")
                     .Header("{Flag}")

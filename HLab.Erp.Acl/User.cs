@@ -121,7 +121,7 @@ namespace HLab.Erp.Acl
         [Ignore]
         public string IconPath => "Icon/User";
 
-        public static User DesignModel => new User
+        public static User DesignModel => new User()
         {
             Name = "Ouedraogo",
             FirstName = "Michel",

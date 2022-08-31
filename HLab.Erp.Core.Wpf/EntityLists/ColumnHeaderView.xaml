@@ -10,13 +10,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="UserControl"
+             HorizontalAlignment="Stretch"
              >
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <converters:ToVisibilityConverter x:Key="ToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed"/>
-        </ResourceDictionary>
-    </UserControl.Resources>
     <Button 
+        HorizontalAlignment="Stretch"
         BorderThickness="0"
         Click="ButtonBase_OnClick" HorizontalContentAlignment="Stretch">
             <Grid HorizontalAlignment="Stretch">
@@ -46,7 +43,7 @@
                     </ContentControl.ToolTip>--><!--
                 </ContentControl>-->
 
-                <StackPanel 
+                <!--<StackPanel 
                     Grid.Row="0" 
                     Grid.Column="1" 
                     Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource ToVisibilityConverter}}">
@@ -58,7 +55,7 @@
                         />
                     <TextBlock Text="{Binding Benchmark}"/>
 
-                </StackPanel>
+                </StackPanel>-->
                 
 
                 <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">

@@ -14,6 +14,11 @@ using HLab.Options;
 
 namespace HLab.Erp.Data
 {
+    public class DataSetterException : Exception
+    {
+        public DataSetterException(string message) : base(message) { }
+    }
+
     public class DataService : IDataService, IService
     {
         readonly IOptionsService _options;
@@ -33,10 +38,17 @@ namespace HLab.Erp.Data
             var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
             if (t is IEntity<int> tt) tt.Id = -1;
 
-            setter?.Invoke(t);
+            try
+            {
+                setter?.Invoke(t);
+            }
+            catch (DataSetterException)
+            {
+                return null;
+            }
 
             object e = null;
-            if (typeof(T).GetCustomAttributes<SoftIncrementAttribut>().FirstOrDefault() is SoftIncrementAttribut a)
+            if (typeof(T).GetCustomAttributes<SoftIncrementAttribut>().FirstOrDefault() is { } a)
             {
                 if (t is IEntity<int> ti)
                 {

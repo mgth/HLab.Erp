@@ -28,7 +28,5 @@ namespace HLab.Erp.Conformity.Annotations
         string Conformity { get; set; }
         string Result { get; set; }
         ConformityState ConformityId { get; set; }
-
-        void Reset();
     }
 }

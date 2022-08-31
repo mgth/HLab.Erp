@@ -1,6 +1,7 @@
 ﻿using System;
 using HLab.Erp.Core;
 using HLab.Erp.Core.ListFilterConfigurators;
+using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.Wpf.ListFilters;
 using HLab.Mvvm.Annotations;
@@ -31,6 +32,7 @@ namespace HLab.Erp.Acl.AuditTrails
         public AuditTrailsListViewModel(Injector i) : base(i, c => c
             .Column("Date")
             .Header("{Date}").Width(110)
+            .Date(at => at.TimeStamp)
             .Link(at => at.TimeStamp)
             .Filter()
             .MaxDate(DateTime.Now)
@@ -68,7 +70,9 @@ namespace HLab.Erp.Acl.AuditTrails
             .Link(at => at.UserCaption)
             .Filter()
         )
-        { }
+        {
+            ShowFilters = true;
+        }
 
     }
 }

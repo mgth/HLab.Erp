@@ -186,7 +186,7 @@ namespace HLab.Erp.Data
         public static void Unplace<T>(this T entity, IEnumerable<T> db) where T : class, IOrderedEntity
         {
             if (entity.Order == null) return;
-            int old = entity.Order.Value;
+            var old = entity.Order.Value;
             entity.Order = null;
             foreach (var others in db.Where(x => x.Order > old))
             {

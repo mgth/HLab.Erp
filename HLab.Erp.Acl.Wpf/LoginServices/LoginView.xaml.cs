@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using HLab.Core.Annotations;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Extensions;
 
 namespace HLab.Erp.Acl.LoginServices
 {

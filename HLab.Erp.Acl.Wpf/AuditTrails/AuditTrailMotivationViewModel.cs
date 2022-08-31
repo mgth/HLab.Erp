@@ -5,6 +5,7 @@ using HLab.Icons.Annotations.Icons;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Views;
+using HLab.Mvvm.Wpf.Views;
 using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Acl.AuditTrails

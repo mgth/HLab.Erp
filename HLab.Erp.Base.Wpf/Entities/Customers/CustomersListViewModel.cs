@@ -24,21 +24,17 @@ namespace HLab.Erp.Base.Wpf.Entities.Customers
         public CustomersListViewModel(IAclService acl, Injector i) : base( i, c => c
             .Column("Name")
                 .Header("{Name}") 
-//                .OrderByOrder(0)
+                .OrderByAsc()
                 .Link(s => s.Name)
                 .Filter()
 
-            .Column("Country")
-                .Header("{Country}")
-                .Content(s => s.Country).Mvvm()
-                .Link(s => s.Country)
-                .Filter()
-                //.Icon(s => s.IconPath)
-// TODO                
+            .ColumnListable(s => s.Country)
+
             .Column("Email")
                 .Header("{eMail}")
                 .Link(s => s.Email)
                 .Filter()
+
             .Column("Address")
                 .Header("{Address}")
                 .Link(s => s.Address)

@@ -7,6 +7,8 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf" 
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf" xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors"
+             xmlns:entitySelectors1="clr-namespace:HLab.Erp.Core.Wpf.EntitySelectors"
+             xmlns:entityLists="clr-namespace:HLab.Erp.Core.Wpf.EntityLists"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=core:IEntityListViewModel, IsDesignTimeCreatable=false}"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -31,7 +33,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <ScrollViewer Grid.Column="0" Grid.Row="3" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Visibility="{Binding ShowFilters, Converter={StaticResource ToVisibilityConverter}}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/><!--  -->
@@ -75,7 +77,15 @@
             </Grid.RowDefinitions>
             
             <StackPanel Grid.Row="0" Orientation="Vertical">
-                <StackPanel Orientation="Horizontal">
+
+                <StackPanel Orientation="Horizontal" Visibility="{Binding ShowMenu, Converter={StaticResource ToVisibilityConverter}}">
+                    <ToggleButton IsChecked="{Binding ShowFilters}" >
+                    
+                        <ToggleButton.ToolTip>
+                            <lang:Localize Id="{}{Filters}"/>
+                        </ToggleButton.ToolTip>
+                        <icons:IconView Path="icons/filters/filter" MaxHeight="15" MaxWidth="15"/>
+                    </ToggleButton>
 
                     <Button Command ="{Binding AddCommand}" IsEnabled="{Binding IsEnabledSimpleAddButton}">
                     
@@ -85,14 +95,14 @@
                         <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
                     </Button>
 
-                    <entitySelectors:ForeignView DockPanel.Dock="Top"
+                    <entitySelectors1:ForeignView DockPanel.Dock="Top"
                                     IsReadOnly="False"
                                     ModelClass="{Binding AddArgumentClass}"
                                     ListClass="{Binding AddListClass}"
                                     Command="{Binding AddCommand}"
                                     >
                         <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
-                    </entitySelectors:ForeignView>
+                    </entitySelectors1:ForeignView>
 
 
                     <Button Command="{Binding DeleteCommand}">
@@ -144,46 +154,67 @@
                         ...
                         <!--<icons:IconView Path="Icons/Import" MaxHeight="15"/>-->
                     </Button>
+
+                    <Button Command="{Binding HideMenuCommand}" Content="&lt;">
+                        <Button.ToolTip>
+                            <lang:Localize Id="{}{Resize}"/>
+                        </Button.ToolTip>
+                        
+                    </Button>
+
                 </StackPanel>
             </StackPanel>
             <TextBlock Visibility="Collapsed" x:Name="MessageTextBlock" Grid.Row="1" Text="{Binding ErrorMessage}" Foreground="{DynamicResource MahApps.Brushes.SystemControlErrorTextForeground}"/>
 
-            <ListView Grid.Row="2"
-                      
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ListView
+                      Grid.Column="1"
                        VerticalAlignment="Top"
                        ItemsSource="{Binding ListCollectionView}" 
                        SelectedItem="{Binding SelectedViewModel}"
                        x:Name="ListView"
                        Background="{DynamicResource MahApps.Brushes.DataGrid.Background}"
 
+                       ScrollViewer.CanContentScroll ="True"
+
                        VirtualizingPanel.IsVirtualizing="True"    
                        VirtualizingPanel.IsContainerVirtualizable="True"
-
-                       VirtualizingPanel.ScrollUnit="Pixel"     
-                       VirtualizingPanel.CacheLengthUnit="Pixel"
                        VirtualizingPanel.VirtualizationMode="Recycling"
 
-                       ScrollViewer.CanContentScroll ="True"
-                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                       ScrollViewer.IsDeferredScrollingEnabled="False"
-                      
-             >
+                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                       ScrollViewer.VerticalScrollBarVisibility="Auto"
+            >
+<!-- 
+                       VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                       VirtualizingPanel.CacheLengthUnit="Pixel"
+                       VirtualizingPanel.ScrollUnit="Pixel"     
+                       ScrollViewer.IsDeferredScrollingEnabled="True"
+-->
                 <ListView.Resources>
-                    <Style TargetType="DataGridColumnHeader">
-                        <EventSetter Event="Click" Handler="DataGridColumnHeader_Click" />
+                    <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                        <Setter Property="AllowDrop" Value="True"/>
+                        <EventSetter Event="PreviewMouseMove" Handler="ListView_PreviewMouseMove"/>
+                        <EventSetter Event="Drop" Handler="ListView_Drop"/>
+                        <EventSetter Event="DragOver" Handler="ListView_DragOver"></EventSetter>
+                        <EventSetter Event="DragLeave" Handler="ListView_DragLeave"></EventSetter>
                     </Style>
-                    <Style TargetType="{x:Type GridViewColumnHeader}">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+                    <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
                         <Setter Property="Margin" Value="0" />
                         <Setter Property="FontWeight" Value="Black" />
                         <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="BorderThickness" Value="10" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
                     </Style>
                 </ListView.Resources>
             
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
-                        <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
 
                         <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
                         <Style.Triggers>
@@ -208,6 +239,21 @@
                                          Value="2" />
                              </Trigger>
 
+                            <Trigger Property="Tag"
+                                      Value="InsertUp">
+                                 <Setter Property="BorderBrush"
+                                         Value="{DynamicResource MahApps.Brushes.Badged.Background}" />
+                                 <Setter Property="BorderThickness"
+                                         Value="0,5,0,0" />
+                             </Trigger>
+                            <Trigger Property="Tag"
+                                      Value="InsertDown">
+                                 <Setter Property="BorderBrush"
+                                         Value="{DynamicResource MahApps.Brushes.Badged.Background}" />
+                                 <Setter Property="BorderThickness"
+                                         Value="0,0,0,5" />
+                             </Trigger>
+
                         </Style.Triggers>
                     </Style>
 
@@ -216,13 +262,25 @@
                 <!--<ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel
-                            IsItemsHost = "True"> 
-                            </VirtualizingStackPanel>
+                            IsItemsHost = "True"
+                            />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>-->
 
             </ListView>
-            
+            <Button
+                Grid.Column="0" 
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Width="15"
+                Padding="0"
+                Height="35" 
+                Visibility="{Binding ShowMenu, Converter={StaticResource ToCollapsedConverter}}" 
+                Command="{Binding ShowMenuCommand}"   
+                Content="&gt;"
+                />
+
+            </Grid>
         </Grid>
         
     </Grid>

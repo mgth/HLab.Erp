@@ -7,12 +7,13 @@
              xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:details1="clr-namespace:HLab.Erp.Core.Tools.Details"
              xmlns:details="clr-namespace:HLab.Erp.Core.Tools.Details;assembly=HLab.Erp.Core"
+             xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <ContentControl 
-            mvvm:ViewLocator.ViewMode="{x:Type annotations:ViewModeDefault}" 
-            mvvm:ViewLocator.ViewClass="{x:Type details:IViewClassDetail}" 
+            wpf:ViewLocator.ViewMode="{x:Type annotations:ViewModeDefault}" 
+            wpf:ViewLocator.ViewClass="{x:Type details:IViewClassDetail}" 
             Content="{Binding Item}"/>
     </Grid>
 </UserControl>

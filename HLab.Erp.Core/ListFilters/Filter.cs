@@ -1,41 +1,41 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Schema;
-
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Core.Wpf.ListFilters
+namespace HLab.Erp.Core.ListFilters
 {
-    public abstract class Filter : ViewModel, IFilter
+    public abstract class ListElement : ViewModel
     {
-        protected Filter() => H<Filter>.Initialize(this);
+        protected ListElement() => H<ListElement>.Initialize(this);
         public object Header
         {
             get => _header.Get();
             set => _header.Set(value);
         }
-
-        readonly IProperty<object> _header = H<Filter>.Property<object>();
+        readonly IProperty<object> _header = H<ListElement>.Property<object>();
 
         public string Name
         {
             get => _name.Get();
             set => _name.Set(value);
         }
-
-        readonly IProperty<string> _name = H<Filter>.Property<string>();
+        readonly IProperty<string> _name = H<ListElement>.Property<string>();
 
         public string IconPath
         {
             get => _iconPath.Get();
             set => _iconPath.Set(value);
         }
+        readonly IProperty<string> _iconPath = H<ListElement>.Property<string>();
 
-        readonly IProperty<string> _iconPath = H<Filter>.Property<string>();
+    }
+
+    public abstract class Filter : ListElement, IFilter
+    {
+        protected Filter() => H<Filter>.Initialize(this);
 
         public abstract void Link<T, TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter);
 
@@ -44,32 +44,26 @@ namespace HLab.Erp.Core.Wpf.ListFilters
             get => _enabled.Get();
             set
             {
-                if(_enabled.Set(value))
-                {
-                    if(value) Enable();
-                    else Disable();
-                }
+                if (!_enabled.Set(value)) return;
+                if(value) Enable();
+                else Disable();
             }
         }
+        readonly IProperty<bool> _enabled = H<Filter>.Property<bool>();
 
         public abstract string StringValue { get; set; }
 
-        readonly IProperty<bool> _enabled = H<Filter>.Property<bool>();
+        protected Action EnabledAction;
+        protected Action DisabledAction;
+        protected virtual void Enable() => EnabledAction?.Invoke();
 
-        protected Action enabledAction;
-        protected Action disabledAction;
-        protected virtual void Enable() => enabledAction?.Invoke();
-
-        protected virtual void Disable() => disabledAction?.Invoke();
+        protected virtual void Disable() => DisabledAction?.Invoke();
 
         public abstract void FromXml(XElement child);
 
         public virtual XElement ToXml()
         {
-            var filter = new XElement(Name);
-//            filter.SetAttributeValue("Name",Name);
-
-            return filter;
+            return new XElement(Name);
         }
     }
 
@@ -134,25 +128,18 @@ namespace HLab.Erp.Core.Wpf.ListFilters
         {
             if(_linked) {}
             _linked = true;
-            Func<Expression<Func<TSource, bool>>> match = ()=>Match(getter);
-            void EnableFunc()
-            {
-                q.AddFilter(match, 0, Header);
-            }
-            void DisableFunc()
-            {
-                q.RemoveFilter(Header);
-            }
-            enabledAction = EnableFunc;
-            disabledAction = DisableFunc;
+
+            EnabledAction = () => q.AddFilter(() => Match(getter), 0, Header);
+            DisabledAction = () => q.RemoveFilter(Header);
+
             Update = q.Update;
         }
 
         public void PostLink<TSource>(IObservableQuery<TSource> q, Func<TSource, T> getter)
 //            where TSource : class, IEntity, new()
         {
-            enabledAction = () => q.AddPostFilter(Header,PostMatch(getter));
-            disabledAction = () => q.RemoveFilter(Header);
+            EnabledAction = () => q.AddPostFilter(Header,PostMatch(getter));
+            DisabledAction = () => q.RemoveFilter(Header);
             Update = q.Update;
         }
 

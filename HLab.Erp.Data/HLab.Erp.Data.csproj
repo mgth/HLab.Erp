@@ -11,8 +11,8 @@
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.30" />
     <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
-    <PackageReference Include="Npgsql" Version="7.0.0-preview.6" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="Npgsql" Version="6.0.6" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="6.0.0-preview.4.21253.7" />
   </ItemGroup>
 
   <ItemGroup>

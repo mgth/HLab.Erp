@@ -21,7 +21,7 @@ namespace HLab.Erp.Base.Data
         {
             if(bootstrapper.WaitService(Data)) return;
 
-            string oldVersion = "";
+            var oldVersion = "";
             while (true)
             {
                 DataVersion version = null;
@@ -55,16 +55,16 @@ namespace HLab.Erp.Base.Data
                 if (version.Version == CurrentVersion)
                 {
 #if DEBUG
-                    try
-                    {
-                        Upgrade(version.Version);
+                    //try
+                    //{
+                    //    Upgrade(version.Version);
 
-                    }
-                    catch(Exception ex)
-                    {
+                    //}
+                    //catch(Exception ex)
+                    //{
 
-                    }
-                    #endif
+                    //}
+#endif
                     return;
                 }
 

@@ -1,4 +1,6 @@
-﻿using HLab.Erp.Core;
+﻿using System;
+using HLab.Erp.Base.Data;
+using HLab.Erp.Core;
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Mvvm.Annotations;
@@ -16,9 +18,11 @@ namespace HLab.Erp.Acl.Users
         {
         }
 
-        public UsersListViewModel(Injector i) : base(i, c => c
-// TODO :                .DeleteAllowed()
-//                .AddAllowed()
+        readonly IAclService _acl;
+        protected override bool CanExecuteAdd(Action<string> errorAction) => _acl.IsGranted(AclRights.ManageUser);
+        protected override bool CanExecuteDelete(User inn, Action<string> errorAction) => _acl.IsGranted(AclRights.ManageUser);
+
+        public UsersListViewModel(Injector i, IAclService acl) : base(i, c => c
             .Column("FirstName")
             .Header("{First Name}").Width(150)
             .Link(u => u.FirstName)
@@ -45,6 +49,7 @@ namespace HLab.Erp.Acl.Users
             .Filter()
         )
         {
+            _acl = acl;
         }
 
     }

@@ -9,10 +9,11 @@ namespace HLab.Erp.Base.Wpf.Entities.Countries
     public class CountriesPopupListViewModel : Core.EntityLists.EntityListViewModel<Country>
     {
         public CountriesPopupListViewModel(Injector i) : base(i, c => c
+            .HideMenu()
                 .Header("{Country}")
                 .Column("Name")
                     .Header("{Name}")
-                    .Content(s => s.Name).Localize()
+                    .Localize(s => s.Name)
                     .Link(s => s.Name)
                     
                     // TODO                .OrderByOrder(0)

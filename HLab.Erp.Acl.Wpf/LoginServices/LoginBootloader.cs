@@ -4,6 +4,7 @@ using HLab.Core.Annotations;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Views;
+using HLab.Mvvm.Wpf.Views;
 
 namespace HLab.Erp.Acl.LoginServices
 {
@@ -26,14 +27,17 @@ namespace HLab.Erp.Acl.LoginServices
             //if we can have localization and picture lets do it
             if (bootstrapper.WaitDependency("LocalizeBootloader", "IconBootloader")) return;
 
-            //retrieve login window
-            var loginWindow = _mvvm.MainContext.GetView(_getViewModel(),typeof(ViewModeDefault)).AsWindow();
-            //loginWindow.SizeToContent = SizeToContent.WidthAndHeight;
-            loginWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            loginWindow.ShowDialog();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                //retrieve login window
+                var loginWindow = _mvvm.MainContext.GetView(_getViewModel(),typeof(ViewModeDefault)).AsWindow();
+                //loginWindow.SizeToContent = SizeToContent.WidthAndHeight;
+                loginWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                loginWindow.ShowDialog();
 
-            //if connection failed
-            if (_acl.Connection is null) Application.Current.Shutdown();
+                //if connection failed
+                if (_acl.Connection is null) Application.Current.Shutdown();
+            });
         }
     }
 }

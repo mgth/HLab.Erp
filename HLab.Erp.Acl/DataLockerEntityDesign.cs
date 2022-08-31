@@ -12,13 +12,13 @@ namespace HLab.Erp.Acl
         int IEntity<int>.Id
         {
             get => 1;
-            set => throw new NotImplementedException();
+            set => throw new InvalidOperationException();
         }
 
         public bool IsLoaded { get; set; } = true;
         public void OnLoaded()
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>net5.0-windows;net6.0-windows</TargetFrameworks>
+	  <TargetFrameworks>net6.0-windows;net7.0-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <Configurations>Debug;Release;DebugRelease</Configurations>
@@ -9,8 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Icons\Class.svg" />
     <None Remove="Icons\Entities\Country.svg" />
     <None Remove="Icons\Entities\Icon.svg" />
+    <None Remove="Icons\Entities\Unit.svg" />
     <None Remove="Icons\Entities\Units\Count.svg" />
     <None Remove="Icons\Entities\Units\Current.svg" />
     <None Remove="Icons\Entities\Units\Length.svg" />
@@ -41,6 +43,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\HLab.Erp.Lims.Analysis\Hlab.Erp.Lims.Analysis.Data\HLab.Erp.Lims.Analysis.Data.csproj" />
+    <ProjectReference Include="..\..\HLab\HLab.Application.Wpf\HLab.Mvvm.Application.Wpf.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Base.Wpf\HLab.Base.Wpf.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
     <ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj" />
@@ -58,6 +61,7 @@
     <Resource Include="Icons\Cancel.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Resource>
+    <Resource Include="Icons\Class.svg" />
     <Resource Include="Icons\Entities\Country.svg" />
     <Resource Include="Icons\Entities\Customers.xaml">
       <SubType>Designer</SubType>
@@ -67,6 +71,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Resource>
     <Resource Include="Icons\Entities\Icon.svg" />
+    <Resource Include="Icons\Entities\Unit.svg" />
     <Resource Include="Icons\Entities\Units\Count.svg" />
     <Resource Include="Icons\Entities\Units\Current.svg" />
     <Resource Include="Icons\Entities\Units\Length.svg" />

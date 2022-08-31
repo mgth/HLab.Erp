@@ -54,29 +54,14 @@ namespace HLab.Erp.Acl.LoginServices
             get => _database.Get();
             set
             {
-                if (_database.Set(value))
-                {
-                    DataService.Source = value;
-                    InfoService.DataSource = value;
-                }
+                if (!_database.Set(value)) return;
+
+                DataService.Source = value;
+                InfoService.DataSource = value;
             }
         }
         readonly IProperty<string> _database = H.Property<string>();
         
-        public string Theme
-        {
-            get => _theme.Get();
-            set
-            {
-                if (_theme.Set(value))
-                {
-//                    DataService.Source = value;
-                    InfoService.Theme = value;
-                }
-            }
-        }
-        readonly IProperty<string> _theme = H.Property<string>();
-
 
         public bool AllowDatabaseSelection
         {

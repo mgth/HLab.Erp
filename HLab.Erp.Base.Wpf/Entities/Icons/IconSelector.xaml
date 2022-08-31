@@ -6,10 +6,11 @@
              xmlns:local="clr-namespace:HLab.Erp.Base.Wpf.Entities.Icons"
              xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
              xmlns:data="clr-namespace:HLab.Erp.Base.Data;assembly=HLab.Erp.Base.Data"
+             xmlns:entitySelectors1="clr-namespace:HLab.Erp.Core.Wpf.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            <entitySelectors:ForeignView 
+            <entitySelectors1:ForeignView 
                 Model ="{Binding Icon, RelativeSource={RelativeSource AncestorType={x:Type local:IconSelector}}, Mode=TwoWay}"
                 ModelClass="{x:Type data:Icon}"
                 ListClass="{x:Type local:IconsListViewModel}"
