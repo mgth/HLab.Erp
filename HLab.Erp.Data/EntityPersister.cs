@@ -82,6 +82,7 @@ namespace HLab.Erp.Data
             {
                 tr = transaction ?? _data.GetTransaction();
 
+                // when id<0 this is new not saved entity
                 if (Target is IEntity<int> { Id: < 0 } ei)
                 {
                     var t = await tr.AddAsync<T>(e => Target.CopyPrimitivesTo(e));

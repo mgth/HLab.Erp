@@ -16,13 +16,13 @@ using HLab.Mvvm.Application;
 namespace HLab.Erp.Core.Wpf.EntityLists
 {
     /// <summary>
-    /// Logique d'interaction pour EntityListView2.xaml
+    /// Logique d'interaction pour EntityListView3.xaml
     /// </summary>
-    public partial class EntityListView2 : UserControl
-        //,IView<ViewModeDefault, IEntityListViewModel>,
-        //IViewClassDocument, IViewClassDefault
+    public partial class EntityListView3 : UserControl,
+        IView<ViewModeDefault, IEntityListViewModel>,
+        IViewClassDocument, IViewClassDefault
     {
-        public EntityListView2()
+        public EntityListView3()
         {
             InitializeComponent();
             DataContextChanged += EntityListView_DataContextChanged;
@@ -117,10 +117,10 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
         public string ContentId => nameof(EntityListView);
 
-        void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (DataContext is not IEntityListViewModel vm) return;
-            if (sender is not ListViewItem { Content: IObjectMapper mapper }) return;
+            if (sender is not DataGridRow { DataContext: IObjectMapper mapper }) return;
             var entity = mapper.Model;
             if (entity == null) return;
 
@@ -149,7 +149,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
 
             var width = ListView.ActualWidth;
-            if (ListView.View is GridView gridView)
+            if (ListView is DataGrid gridView)
             {
                 var sv = ListView.FindVisualChildren<ScrollViewer>().FirstOrDefault();
 

@@ -368,14 +368,20 @@ namespace HLab.Erp.Core.EntityLists
             .CanExecute((e, a) =>
             {
                 e.RemoveErrorMessage("Open");
-                if(a is T target)
-                    return e.CanExecuteOpen(target,m=>e.AddErrorMessage("Open",m));
+                if (a is T target)
+                    return e.CanExecuteOpen(target, m => e.AddErrorMessage("Open", m));
+                
+                if (e.Selected is { } selected)
+                    return e.CanExecuteOpen(selected, m => e.AddErrorMessage("Open", m));
+                
                 return false;
             })
             .Action((e,a) =>
             {
                 if(a is T entity)
                     e.OpenAction?.Invoke(entity);
+                else if(e.Selected is {} selected)
+                    e.OpenAction?.Invoke(selected);
             })
             .On(e => e.Selected).CheckCanExecute(e => e.Selected)
         );
@@ -389,12 +395,16 @@ namespace HLab.Erp.Core.EntityLists
             {
                 e.RemoveErrorMessage("Delete");
                 if(a is T target)
-                {
                     return e.CanExecuteDelete(target,m=>e.AddErrorMessage("Delete",m));
-                }
-                return e.CanExecuteDelete(e.Selected,m=>e.AddErrorMessage("Delete",m));
+                if (e.Selected is { } selected)
+                    return e.CanExecuteDelete(e.Selected,m=>e.AddErrorMessage("Delete",m));
+                return false;
             })
-            .Action(async e => await e.DeleteEntityAsync(e.Selected))
+            .Action(async e =>
+            {
+                if(e.Selected is {} selected)
+                    await e.DeleteEntityAsync(selected);
+            })
             .On(e => e.Selected)
             .CheckCanExecute(e => e.Selected)
         );
@@ -439,7 +449,7 @@ namespace HLab.Erp.Core.EntityLists
             .Action(e => e.ShowMenu = false)
         );
 
-        protected virtual bool CanExecuteOpen(T arg,Action<string> errorAction) => true;
+        protected virtual bool CanExecuteOpen(T? arg,Action<string> errorAction) => true;
 
         protected virtual bool CanExecuteDelete(T arg, Action<string> errorAction)
         {
@@ -490,13 +500,23 @@ namespace HLab.Erp.Core.EntityLists
         protected virtual Task ConfigureNewEntityAsync(T entity, object arg) => ConfigureNewEntityAsync(entity);
         protected virtual Task ConfigureNewEntityAsync(T entity) => Task.CompletedTask;
 
-        Task AddEntityAsync(object arg)
+        async Task AddEntityAsync(object arg)
         {
-            var entity = Injected.Data.AddAsync<T>(e => ConfigureNewEntityAsync(e,arg));
-            if (entity == null) return Task.CompletedTask;
-
-            List.UpdateAsync();
-            return Injected.Docs.OpenDocumentAsync(entity);
+            try
+            {
+                var entity = await Injected.Data.AddAsync<T>(e => ConfigureNewEntityAsync(e, arg));
+                if (entity == null) return;
+                await List.UpdateAsync();
+                await Injected.Docs.OpenDocumentAsync(entity);
+            }
+            catch (DataSetterException e)
+            {
+                Message = e.Message;
+            }
+            catch (DataException e)
+            {
+                Message = e.Message;
+            }
         }
 
         public string? Message

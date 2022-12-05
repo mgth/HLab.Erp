@@ -123,6 +123,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
 
             foreach (var column in _dict.Values)
             {
+                if(column.Hidden) continue;
+
                 var header = new ColumnHeaderView {
                     DataContext = column,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -147,14 +149,21 @@ namespace HLab.Erp.Core.Wpf.EntityLists
                 {
                     case DataGrid dataGrid:
                     {
-                        var c = new DataGridTemplateColumn
+                        if (column.Name == "Expander")
                         {
-                            Header = header,
-                            CellTemplate = column.DataTemplate as DataTemplate,
-                            Width = column.Width,
-                        };
-                    
-                        dataGrid.Columns.Add(c);
+                            dataGrid.RowDetailsTemplate = column.DataTemplate as DataTemplate;
+                        }
+                        else
+                        {
+                            var c = new DataGridTemplateColumn
+                            {
+                                Header = header,
+                                CellTemplate = column.DataTemplate as DataTemplate,
+                                Width = double.IsFinite(column.Width)?column.Width:DataGridLength.Auto,
+                            };
+                        
+                            dataGrid.Columns.Add(c);
+                        }
                         break;
                     }
                     

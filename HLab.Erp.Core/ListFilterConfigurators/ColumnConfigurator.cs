@@ -179,7 +179,6 @@ namespace HLab.Erp.Core.ListFilterConfigurators
                 _builder.PostLink = value;
             }
         }
-
         readonly IColumn<T>.IBuilder _builder;
 
         public Task<string> Localize(string s) => Localization.LocalizeAsync(s);

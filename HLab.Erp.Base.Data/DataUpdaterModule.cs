@@ -41,29 +41,26 @@ namespace HLab.Erp.Base.Data
                     }
                 }
 
-                if (version == null)
+                version ??= Data.Add<DataVersion>(v =>
                 {
-                    version = Data.Add<DataVersion>(v =>
-                    {
-                        v.Module = CurrentModule;
-                        v.Version = "0.0.0.0";
-                    });
-                }
+                    v.Module = CurrentModule;
+                    v.Version = "0.0.0.0";
+                });
 
                 if (version.Version == oldVersion) throw new DataException($"Wrong database version {version.Version} but need {CurrentVersion}",null);
 
                 if (version.Version == CurrentVersion)
                 {
 #if DEBUG
-                    //try
-                    //{
-                    //    Upgrade(version.Version);
+                    try
+                    {
+                        Upgrade(version.Version);
 
-                    //}
-                    //catch(Exception ex)
-                    //{
+                    }
+                    catch (Exception ex)
+                    {
 
-                    //}
+                    }
 #endif
                     return;
                 }

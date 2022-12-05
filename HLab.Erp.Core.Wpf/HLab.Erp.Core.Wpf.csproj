@@ -654,6 +654,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Page Update="EntityLists\EntityListView3.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		  <SubType>Designer</SubType>
+		</Page>
 		<Page Update="EntityLists\EntityListView2.xaml">
 		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		  <SubType>Designer</SubType>
