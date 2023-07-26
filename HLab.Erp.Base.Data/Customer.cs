@@ -1,40 +1,36 @@
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
-using HLab.Notify.Annotations;
-using HLab.Notify.PropertyChanged;
+using ReactiveUI;
+using System.Reactive.Linq;
 
-namespace HLab.Erp.Base.Data
+namespace HLab.Erp.Base.Data;
+
+public class Customer : Corporation, ILocalCache, IListableModel
 {
-    using H = H<Customer>;
-
-    public class Customer : Corporation, ILocalCache, IListableModel
+    public Customer()
     {
-        public Customer() => H.Initialize(this); 
+        _caption = this
+            .WhenAnyValue(e => e.Name,e => e.Id, selector: (name,id) => (id < 0 && string.IsNullOrEmpty(name)) ? "{New customer}" : name)
+            .ToProperty(this, nameof(Caption));
 
+        _iconPath = this
+            .WhenAnyValue(e => e.Country.IconPath)
+            .ToProperty(this, nameof(IconPath));
+    }
 
-        public string Caption => _caption.Get();
+    public string Caption => _caption.Value;
+    readonly ObservableAsPropertyHelper<string> _caption;
 
-        readonly IProperty<string> _caption = H.Property<string>(c => c
-            .On(e => e.Name)
-            .On(e => e.Id)
-            .Set(e => (e.Id < 0 && string.IsNullOrEmpty(e.Name)) ? "{New customer}" : e.Name)
-        );
+    public string IconPath => _iconPath.Value;
+    readonly ObservableAsPropertyHelper<string> _iconPath;
 
-        public string IconPath => _iconPath.Get();
-
-        readonly IProperty<string> _iconPath = H.Property<string>(c => c
-            .On(e => e.Country.IconPath)
-            .Set(e => e.Country?.IconPath)
-        );
-
-        public static Customer GetDesignModel()
+    public static Customer GetDesignModel()
+    {
+        return new Customer
         {
-            return new Customer
-            {
-                Name = "Dummy Customer",
-                Address = "Somewhere in the world\n10000 NOWHERE",
-                Phone = "+33 6 123 123"
-            };
-        }
+            Name = "Dummy Customer",
+            Address = "Somewhere in the world\n10000 NOWHERE",
+            Phone = "+33 6 123 123"
+        };
     }
 }

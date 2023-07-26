@@ -6,9 +6,6 @@ using System.Dynamic;
 using System.Linq.Expressions;
 using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Data;
-using HLab.Notify.Annotations;
-using HLab.Notify.PropertyChanged;
-using HLab.Notify.PropertyChanged.NotifyHelpers;
 
 namespace HLab.Erp.Core.EntityLists;
 
@@ -16,7 +13,6 @@ public class Column<T> : ListElement, IColumn<T> where T : class
 {
     internal Column()
     {
-        H<Column<T>>.Initialize(this);
         Name = "C" + Guid.NewGuid().ToString().Replace('-', '_');
     }
 
@@ -30,13 +26,15 @@ public class Column<T> : ListElement, IColumn<T> where T : class
 
     public IColumn<T>? OrderByNext { get; set; }
 
-    readonly List<TriggerPath> _triggerPaths = new();
+    // TODO
+    //readonly List<TriggerPath> _triggerPaths = new();
 
     public void AddTrigger(Expression expression)
     {
         try
         {
-            _triggerPaths.Add(TriggerPath.Factory(expression));
+            //TODO
+            //_triggerPaths.Add(TriggerPath.Factory(expression));
         }
         catch (Exception e)
         {
@@ -55,10 +53,11 @@ public class Column<T> : ListElement, IColumn<T> where T : class
 
     public void RegisterTriggers(T model, Action<string> handler)
     {
-        foreach(var path in _triggerPaths)
-        {
-            path.GetTrigger(NotifyClassHelper.GetHelper(model),(s,e)=>handler(Name));
-        }
+        //TODO
+        //foreach(var path in _triggerPaths)
+        //{
+        //    path.GetTrigger(NotifyClassHelper.GetHelper(model),(s,e)=>handler(Name));
+        //}
     }
 
 

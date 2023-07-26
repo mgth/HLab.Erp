@@ -258,7 +258,7 @@ namespace HLab.Erp.Data
                 using var db = Get();
                 return db.Execute(sql);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return -1;
             }
@@ -571,7 +571,7 @@ namespace HLab.Erp.Data
                 catch (NpgsqlException exception)
                 {
                     throw new DataException("Data connection failed", exception);
-                    Thread.Sleep(5000);
+                    //Thread.Sleep(5000);
                 }
             }
         }

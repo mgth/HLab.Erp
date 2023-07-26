@@ -2,23 +2,22 @@
 using HLab.Erp.Data;
 
 
-namespace HLab.Erp.Acl
+namespace HLab.Erp.Acl;
+
+public class DataLockerEntityDesign : IEntity<int>
 {
-    public class DataLockerEntityDesign : IEntity<int>
+    int _id;
+    public object Id { get; } = 1;
+
+    int IEntity<int>.Id
     {
-        int _id;
-        public object Id { get; } = 1;
+        get => 1;
+        set => throw new InvalidOperationException();
+    }
 
-        int IEntity<int>.Id
-        {
-            get => 1;
-            set => throw new InvalidOperationException();
-        }
-
-        public bool IsLoaded { get; set; } = true;
-        public void OnLoaded()
-        {
-            throw new InvalidOperationException();
-        }
+    public bool IsLoaded { get; set; } = true;
+    public void OnLoaded()
+    {
+        throw new InvalidOperationException();
     }
 }

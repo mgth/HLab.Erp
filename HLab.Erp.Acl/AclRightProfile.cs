@@ -1,40 +1,44 @@
 ﻿using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 using NPoco;
+using ReactiveUI;
 
-namespace HLab.Erp.Acl
+namespace HLab.Erp.Acl;
+
+public class AclRightProfile : Entity
 {
-    using H = HD<AclRightProfile>;
-    public class AclRightProfile : Entity
+    public AclRightProfile()
     {
-        public AclRightProfile() => H.Initialize(this);
 
-        public int? ProfileId
-        {
-            get => _profile.Id.Get();
-            set => _profile.Id.Set(value);
-        }
-
-        [Ignore]
-        public Profile Profile
-        {
-            get => _profile.Get();
-            set => _profile.Set(value);
-        }
-        readonly IForeign<Profile> _profile = H.Foreign<Profile>();
-
-        public int? AclRightId
-        {
-            get => _aclRight.Id.Get();
-            set => _aclRight.Id.Set(value);
-        }
-
-        [Ignore]
-        public AclRight AclRight
-        {
-            get => _aclRight.Get();
-            set => _aclRight.Set(value);
-        }
-        readonly IForeign<AclRight> _aclRight = H.Foreign<AclRight>();
     }
+
+    public int? ProfileId
+    {
+        get => _profileId;
+        set => this.RaiseAndSetIfChanged(ref _profileId, value);
+    }
+    int? _profileId;
+
+    [Ignore]
+    public Profile Profile
+    {
+        get => _profile.Value;
+        set => ProfileId = value.Id;
+    }
+    readonly ObservableAsPropertyHelper<Profile> _profile;
+
+    public int? AclRightId
+    {
+        get => _aclRightId;
+        set => this.RaiseAndSetIfChanged(ref _aclRightId, value);
+    }
+    int? _aclRightId;
+
+    [Ignore]
+    public AclRight AclRight
+    {
+        get => _aclRight.Value;
+        set => AclRightId = value.Id;
+    }
+    readonly ObservableAsPropertyHelper<AclRight> _aclRight;
 }

@@ -32,12 +32,9 @@ namespace HLab.Erp.Data
 
         public T Add<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity
         {
-            var t = (T)Activator.CreateInstance(typeof(T));
-            if (t == null) throw new NullReferenceException();
-
+            var t = (T)Activator.CreateInstance(typeof(T)) ?? throw new NullReferenceException();
             setter?.Invoke(t);
 
-            object e = null;
             if (typeof(T).GetCustomAttributes<SoftIncrementAttribut>().Any())
             {
                 if (t is IEntity<int> ti)

@@ -1,67 +1,70 @@
 using HLab.Erp.Data;
-using HLab.Notify.PropertyChanged;
+using ReactiveUI;
 
-namespace HLab.Erp.Base.Data
+namespace HLab.Erp.Base.Data;
+
+public abstract class Corporation : Entity, ICorporation 
 {
-    public abstract class Corporation : Entity, ICorporation 
+    protected Corporation() 
     {
-        protected Corporation() => HD<Corporation>.Initialize(this);
-        
-
-        public string Name
-        {
-            get => _name.Get();
-            set => _name.Set(value);
-        }
-
-        readonly IProperty<string> _name = HD<Corporation>.Property<string>(c => c.Default(""));
-        public string Address
-        {
-            get => _address.Get();
-            set => _address.Set(value);
-        }
-
-        readonly IProperty<string> _address = HD<Corporation>.Property<string>(c => c.Default(""));
-        public string Phone
-        {
-            get => _phone.Get();
-            set => _phone.Set(value);
-        }
-
-        readonly IProperty<string> _phone = HD<Corporation>.Property<string>(c => c.Default(""));
-        public string Fax
-        {
-            get => _fax.Get();
-            set => _fax.Set(value);
-        }
-
-        readonly IProperty<string> _fax = HD<Corporation>.Property<string>(c => c.Default(""));
-        public string Email
-        {
-            get => _email.Get();
-            set => _email.Set(value);
-        }
-
-        readonly IProperty<string> _email = HD<Corporation>.Property<string>(c => c.Default(""));
-        public string Note
-        {
-            get => _note.Get();
-            set => _note.Set(value);
-        }
-
-        readonly IProperty<string> _note = HD<Corporation>.Property<string>(c => c.Default(""));
-        public int? CountryId
-        {
-            get => _country.Id.Get();
-            set => _country.Id.Set(value);
-        }
-
-        public Country Country
-        {
-            get => _country.Get();
-            set => _country.Set(value);
-        }
-
-        readonly IForeign<Country> _country = HD<Corporation>.Foreign<Country>();
+        Foreign(this, e => e.CountryId, e => e.Country);
     }
+
+    public string Name
+    {
+        get => _name;
+        set => this.RaiseAndSetIfChanged(ref _name,value);
+    }
+
+    string _name = "";
+    public string Address
+    {
+        get => _address;
+        set => this.RaiseAndSetIfChanged(ref _address,value);
+    }
+
+    string _address = "";
+    public string Phone
+    {
+        get => _phone;
+        set => this.RaiseAndSetIfChanged(ref _phone,value);
+    }
+
+    string _phone = "";
+    public string Fax
+    {
+        get => _fax;
+        set => this.RaiseAndSetIfChanged(ref _fax,value);
+    }
+
+    string _fax = "";
+    public string Email
+    {
+        get => _email;
+        set => this.RaiseAndSetIfChanged(ref _email,value);
+    }
+
+    string _email = "";
+    public string Note
+    {
+        get => _note;
+        set => this.RaiseAndSetIfChanged(ref _note,value);
+    }
+
+    string _note = "";
+
+    public int? CountryId
+    {
+        get => _countryId;
+        set => this.RaiseAndSetIfChanged(ref _countryId,value);
+    }
+    int? _countryId;
+
+    public Country Country
+    {
+        get => _country.Value;
+        set => CountryId = value.Id;
+    }
+
+    readonly ObservableAsPropertyHelper<Country>_country;
 }

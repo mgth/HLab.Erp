@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Reactive.Linq;
 using System.Xml.Linq;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
+using ReactiveUI;
 
 namespace HLab.Erp.Core.ListFilters
 {
@@ -31,139 +33,172 @@ namespace HLab.Erp.Core.ListFilters
 
     public abstract class DateFilter<TDate> : Filter<TDate>
     {
-        protected DateFilter() => H<DateFilter<TDate>>.Initialize(this);
+        protected DateFilter()
+        {
+            _minDateEnabled = this.WhenAnyValue(
+                e => e.MinDateCalculated, 
+                selector:e => !e)
+            .ToProperty(this, nameof(MinDateEnabled));
+
+            this.WhenAnyValue(
+                    e => e.MinDateCalculated,
+                    e => e.ReferenceDate,
+                    e => e.MinDateShift,
+                    e => e.MinDateShiftUnit
+                )
+                .Subscribe((e) =>
+                {
+                    if (e.Item1) MinDate = Shift(e.Item2, e.Item3, e.Item4);
+                });
+
+            this.WhenAnyValue(
+                    e => e.MaxDateCalculated,
+                    e => e.ReferenceDate,
+                    e => e.MaxDateShift,
+                    e => e.MaxDateShiftUnit
+                )
+                .Subscribe((e) =>
+                {
+                    if (e.Item1) MinDate = Shift(e.Item2, e.Item3, e.Item4);
+                });
+
+
+            this.WhenAnyValue(
+                    e => e.MinDateCalculated,
+                    e => e.ReferenceDate,
+                    e => e.MinDate
+                )
+                .Where(e => !e.Item1)
+                .Subscribe(e =>
+                {
+                    (MinDateShift, MinDateShiftUnit) = CalculateShift(e.Item2, e.Item3);
+                });
+
+            this.WhenAnyValue(
+                    e => e.MaxDateCalculated,
+                    e => e.ReferenceDate,
+                    e => e.MaxDate
+                )
+                .Where(e => !e.Item1)
+                .Subscribe(e =>
+                {
+                    (MaxDateShift, MaxDateShiftUnit) = CalculateShift(e.Item2, e.Item3);
+                });
+
+            _maxDateEnabled = this
+                .WhenAnyValue(
+                    e => e.MaxDateCalculated, 
+                    selector: e => !e)
+                .ToProperty(this, nameof(MaxDateEnabled));
+
+            //ITrigger _updateTrigger = H<DateFilter<TDate>>.Trigger(c => c
+            //    .On(e => e.MinDate)
+            //    .On(e => e.MaxDate)
+            //    .On(e => e.Update)
+            //    .On(e => e.Enabled)
+            //    .NotNull(e => e.Update)
+            //    .Do((e,p) => e.Update.Invoke())
+
+            this.WhenAnyValue(
+                e => e.MinDate,
+                e => e.MaxDate,
+                e => e.Update,
+                e => e.Enabled)
+            .Subscribe(e => Update?.Invoke());
+
+
+        }
 
         
         public DateTime ReferenceDate {
-            get => _referenceDate.Get();
-            set => _referenceDate.Set(value);
+            get => _referenceDate;
+            set => this.RaiseAndSetIfChanged(ref _referenceDate,value);
         }
 
-        readonly IProperty<DateTime> _referenceDate = H<DateFilter<TDate>>.Property<DateTime>();
+        DateTime _referenceDate;
 
         /// <summary>
         /// Min Date
         /// </summary>
         public DateTime MinDate
         {
-            get => _minDate.Get();
+            get => _minDate;
             set
             {
                 MinDateCalculated = false;
-                _minDate.Set(value);
+                this.RaiseAndSetIfChanged(ref _minDate, value);
             }
         }
-
-        readonly IProperty<DateTime> _minDate = H<DateFilter<TDate>>.Property<DateTime>(c => c
-            .On(e => e.MinDateCalculated)
-            .On(e => e.MinDateShift)
-            .On(e => e.MinDateShiftUnit)
-            .When(e => e.MinDateCalculated)
-            .Set(e => Shift(e.ReferenceDate, e.MinDateShift, e.MinDateShiftUnit))
-        );
+        DateTime _minDate;
 
         public bool MinDateCalculated {
-            get => _minDateCalculated.Get();
-            set => _minDateCalculated.Set(value);
+            get => _minDateCalculated;
+            set => this.RaiseAndSetIfChanged(ref _minDateCalculated,value);
         }
 
-        readonly IProperty<bool> _minDateCalculated = H<DateFilter<TDate>>.Property<bool>(c => c.Default(false));
+        bool _minDateCalculated = false;
 
-        public bool MinDateEnabled => _minDateEnabled.Get();
+        public bool MinDateEnabled => _minDateEnabled.Value;
 
-        readonly IProperty<bool> _minDateEnabled = H<DateFilter<TDate>>.Property<bool>(c => c
-            .Default(true)
-            .On(e => e.MinDateCalculated)
-            .Set(e => !e.MinDateCalculated));
+        readonly ObservableAsPropertyHelper<bool> _minDateEnabled;
 
         public int MinDateShift
         {
-            get => _minDateShift.Get();
-            set => _minDateShift.Set(value);
+            get => _minDateShift;
+            set => this.RaiseAndSetIfChanged(ref _minDateShift,value);
         }
 
-        readonly IProperty<int> _minDateShift = H<DateFilter<TDate>>.Property<int>();
+        int _minDateShift;
 
-        readonly ITrigger _triggerMinDateShift = H<DateFilter<TDate>>.Trigger(c => c
-            .On(e => e.MinDateCalculated)
-            .On(e => e.MinDate)
-            .When(e => !e.MinDateCalculated)
-            .Do((e, f) =>
-                {
-                    (e.MinDateShift, e.MinDateShiftUnit) = CalculateShift(e.ReferenceDate, e.MinDate);
-                }
-                )
-        );
 
         public DateShiftUnit MinDateShiftUnit
         {
-            get => _minDateShiftUnit.Get();
-            set => _minDateShiftUnit.Set(value);
+            get => _minDateShiftUnit;
+            set => this.RaiseAndSetIfChanged(ref _minDateShiftUnit,value);
         }
 
-        readonly IProperty<DateShiftUnit> _minDateShiftUnit = H<DateFilter<TDate>>.Property<DateShiftUnit>();
+        DateShiftUnit _minDateShiftUnit;
 
         /// <summary>
         /// Max Date
         /// </summary>
         public DateTime MaxDate
         {
-            get => _maxDate.Get();
+            get => _maxDate;
             set
             {
                 MaxDateCalculated = false;
-                _maxDate.Set(value);
+                this.RaiseAndSetIfChanged(ref _maxDate,value);
             }
         }
-
-        readonly IProperty<DateTime> _maxDate = H<DateFilter<TDate>>.Property<DateTime>(c => c
-            .On(e => e.MaxDateCalculated)
-            .On(e => e.MaxDateShift)
-            .On(e => e.MaxDateShiftUnit)
-            .When(e => e.MaxDateCalculated)
-            .Set(e => Shift(e.ReferenceDate, e.MaxDateShift, e.MaxDateShiftUnit))
-        );
+        DateTime _maxDate;
 
         public bool MaxDateCalculated {
-            get => _maxDateCalculated.Get();
-            set => _maxDateCalculated.Set(value);
+            get => _maxDateCalculated;
+            set => this.RaiseAndSetIfChanged(ref _maxDateCalculated,value);
         }
 
-        readonly IProperty<bool> _maxDateCalculated = H<DateFilter<TDate>>.Property<bool>(c => c.Default(false));
+        bool _maxDateCalculated = false;
 
-        public bool MaxDateEnabled => _maxDateEnabled.Get();
-
-        readonly IProperty<bool> _maxDateEnabled = H<DateFilter<TDate>>.Property<bool>(c => c
-            .Default(true)
-            .On(e => e.MaxDateCalculated)
-            .Set(e => !e.MaxDateCalculated));
+        public bool MaxDateEnabled => _maxDateEnabled.Value;
+        readonly ObservableAsPropertyHelper<bool> _maxDateEnabled;
 
         public int MaxDateShift
         {
-            get => _maxDateShift.Get();
-            set => _maxDateShift.Set(value);
+            get => _maxDateShift;
+            set => this.RaiseAndSetIfChanged(ref _maxDateShift,value);
         }
 
-        readonly IProperty<int> _maxDateShift = H<DateFilter<TDate>>.Property<int>();
+        int _maxDateShift;
 
-        readonly ITrigger _triggerMaxDateShift = H<DateFilter<TDate>>.Trigger(c => c
-            .On(e => e.MaxDateCalculated)
-            .On(e => e.MaxDate)
-            .When(e => !e.MaxDateCalculated)
-            .Do((e, f) =>
-                {
-                    (e.MaxDateShift, e.MaxDateShiftUnit) = CalculateShift(e.ReferenceDate, e.MaxDate);
-                }
-            )
-        );
 
         public DateShiftUnit MaxDateShiftUnit
         {
-            get => _maxDateShiftUnit.Get();
-            set => _maxDateShiftUnit.Set(value);
+            get => _maxDateShiftUnit;
+            set => this.RaiseAndSetIfChanged(ref _maxDateShiftUnit,value);
         }
 
-        readonly IProperty<DateShiftUnit> _maxDateShiftUnit = H<DateFilter<TDate>>.Property<DateShiftUnit>();
+        DateShiftUnit _maxDateShiftUnit;
 
 
 
@@ -187,14 +222,6 @@ namespace HLab.Erp.Core.ListFilters
             //return t => g(t) <= maxDate && g(t) >= minDate;
         }
 
-        ITrigger _updateTrigger = H<DateFilter<TDate>>.Trigger(c => c
-            .On(e => e.MinDate)
-            .On(e => e.MaxDate)
-            .On(e => e.Update)
-            .On(e => e.Enabled)
-            .NotNull(e => e.Update)
-            .Do((e,p) => e.Update.Invoke())
-        );
 
 
         static DateTime Shift(DateTime referenceDate, int shift, DateShiftUnit unit)

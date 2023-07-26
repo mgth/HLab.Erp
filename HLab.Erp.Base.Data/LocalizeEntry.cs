@@ -1,71 +1,67 @@
 ﻿using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
-using HLab.Notify.PropertyChanged;
+using ReactiveUI;
 
-namespace HLab.Erp.Base.Data
+namespace HLab.Erp.Base.Data;
+
+public class LocalizeEntry : Entity, ILocalizeEntry, IListableModel
 {
-    using H = HD<LocalizeEntry>;
-
-    public class LocalizeEntry : Entity, ILocalizeEntry, IListableModel
+    public LocalizeEntry()
     {
-        public LocalizeEntry() => H.Initialize(this);
-
-        public string Tag
-        {
-            get => _tag.Get();
-            set => _tag.Set(value);
-        }
-
-        readonly IProperty<string> _tag = H.Property<string>(c => c.Default("en-us"));
-
-        public string Code
-        {
-            get => _code.Get();
-            set => _code.Set(value);
-        }
-
-        readonly IProperty<string> _code = H.Property<string>(c => c.Default(""));
-
-        public string Value
-        {
-            get => _value.Get();
-            set => _value.Set(value);
-        }
-
-        readonly IProperty<string> _value = H.Property<string>(c => c.Default(""));
-
-        public bool Todo
-        {
-            get => _todo.Get();
-            set => _todo.Set(value);
-        }
-
-        readonly IProperty<bool> _todo = H.Property<bool>(c => c.Default(true));
-
-        public bool BadCode
-        {
-            get => _badCode.Get();
-            set => _badCode.Set(value);
-        }
-
-        readonly IProperty<bool> _badCode = H.Property<bool>(c => c.Default(false));
-        public bool Custom
-        {
-            get => _custom.Get();
-            set => _custom.Set(value);
-        }
-
-        readonly IProperty<bool> _custom = H.Property<bool>(c => c.Default(false));
-
-        public string Caption => _caption.Get();
-
-        readonly IProperty<string> _caption = H.Property<string>(c => c
-            .Set(e => string.IsNullOrWhiteSpace(e.Code)?"{New localize entry}":$"{e.Tag} - {e.Code}")
-            .On(e => e.Code)
-            .On(e => e.Tag)
-            .Update()
-        );
-
+        _caption = this.WhenAnyValue(
+            e => e.Code, 
+            e => e.Tag, 
+            selector: (code,tag) => string.IsNullOrWhiteSpace(code)?"{New localize entry}":$"{tag} - {code}")
+        .ToProperty(this, nameof(BadCode));
     }
+
+    public string Tag
+    {
+        get => _tag;
+        set => this.RaiseAndSetIfChanged(ref _tag,value);
+    }
+
+    string _tag = "en-us";
+
+    public string Code
+    {
+        get => _code;
+        set => this.RaiseAndSetIfChanged(ref _code,value);
+    }
+
+    string _code = "";
+
+    public string Value
+    {
+        get => _value;
+        set => this.RaiseAndSetIfChanged(ref _value,value);
+    }
+
+    string _value = "";
+
+    public bool Todo
+    {
+        get => _todo;
+        set => this.RaiseAndSetIfChanged(ref _todo,value);
+    }
+
+    bool _todo = true;
+
+    public bool BadCode
+    {
+        get => _badCode;
+        set => this.RaiseAndSetIfChanged(ref _badCode,value);
+    }
+    bool _badCode = false;
+
+    public bool Custom
+    {
+        get => _custom;
+        set => this.RaiseAndSetIfChanged(ref _custom,value);
+    }
+    bool _custom = false;
+
+    public string Caption => _caption.Value;
+    readonly ObservableAsPropertyHelper<string> _caption;
 }

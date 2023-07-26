@@ -11,8 +11,8 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using HLab.Base;
-using HLab.Notify.Annotations;
-using HLab.Notify.PropertyChanged;
+using HLab.Core.Annotations;
+using ReactiveUI;
 
 ////using System.Data.Entity;
 
@@ -39,17 +39,16 @@ namespace HLab.Erp.Data.Observables
         Task UpdateAsync();
     }
 
-    public class ObservableQuery<T> : ObservableCollectionNotifier<T>, IObservableQuery<T>, ITriggerable//, IObservableQuery<T>
+    public class ObservableQuery<T> : ReactiveCollection<T>, IObservableQuery<T>//, ITriggerable
         where T : class, IEntity
     {
         readonly IGuiTimer _timer;
 
-        public ObservableQuery(IDataService db)
+        public ObservableQuery(IDataService db, IGuiTimer timer)
         {
             _db = db;
-            H<ObservableQuery<T>>.Initialize(this);
 
-            _timer = NotifyHelper.EventHandlerService.GetTimer();
+            _timer = timer;
             _timer.Tick += async (a, b) => await _timer_TickAsync(a, b);
             _timer.Interval = TimeSpan.FromMilliseconds(300);
 
@@ -141,21 +140,17 @@ namespace HLab.Erp.Data.Observables
 
         public Func<IQueryable<T>, IQueryable<T>> SourceQuery
         {
-            get => _sourceQuery.Get();
-            set => _sourceQuery.Set(value);
+            get => _sourceQuery;
+            set => this.RaiseAndSetIfChanged(ref _sourceQuery, value);
         }
-
-        readonly IProperty<Func<IQueryable<T>, IQueryable<T>>> _sourceQuery = H<ObservableQuery<T>>.Property<Func<IQueryable<T>, IQueryable<T>>>(c => c
-           .Set(e => (Func<IQueryable<T>, IQueryable<T>>)(q => q))
-        );
+        Func<IQueryable<T>, IQueryable<T>> _sourceQuery = q => q;
 
         public Func<IAsyncEnumerable<T>> SourceEnumerable
         {
-            get => _sourceEnumerable.Get();
-            set => _sourceEnumerable.Set(value);
+            get => _sourceEnumerable;
+            set => this.RaiseAndSetIfChanged(ref _sourceEnumerable, value);
         }
-
-        readonly IProperty<Func<IAsyncEnumerable<T>>> _sourceEnumerable = H<ObservableQuery<T>>.Property<Func<IAsyncEnumerable<T>>>();
+        Func<IAsyncEnumerable<T>> _sourceEnumerable;
 
         Expression<Func<T, bool>> Where()
         {

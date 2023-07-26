@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Xml.Linq;
-using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.ListFilters
 {
     public class BoolFilter : Filter<bool?>
     {
-        public BoolFilter() => H<BoolFilter>.Initialize(this);
+        public BoolFilter()
+        {
+
+        }
 
 
         public override Expression<Func<T, bool>> Match<T>(Expression<Func<T, bool?>> getter)

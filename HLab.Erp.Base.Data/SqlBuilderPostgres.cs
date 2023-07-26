@@ -8,104 +8,106 @@ using System.Text;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Base.Data
+namespace HLab.Erp.Base.Data;
+
+public interface ISqlTableBuilder<T> : ISqlBuilder  where T : class, IEntity
 {
-    public interface ISqlTableBuilder<T> : ISqlBuilder  where T : class, IEntity
+    ISqlTableBuilder<T> Create();
+    ISqlTableBuilder<T> RenamedFrom(string oldName);
+    ISqlTableBuilder<T> AddColumn(Expression<Func<T, object>> property);
+    ISqlTableBuilder<T> AlterColumn(Expression<Func<T, object>> property);
+    ISqlTableBuilder<T> RenameColumn(string oldName, Expression<Func<T, object>> property);
+
+    ISqlTableBuilder<T> Insert(Action<T> factory);
+
+}
+
+
+public class SqlBuilderPostgres : ISqlBuilder
+{
+    readonly StringBuilder _builder = new();
+    readonly string _module;
+    readonly string _version;
+
+    public SqlBuilderPostgres(string module, string version)
     {
-        ISqlTableBuilder<T> Create();
-        ISqlTableBuilder<T> RenamedFrom(string oldName);
-        ISqlTableBuilder<T> AddColumn(Expression<Func<T, object>> property);
-        ISqlTableBuilder<T> AlterColumn(Expression<Func<T, object>> property);
-        ISqlTableBuilder<T> RenameColumn(string oldName, Expression<Func<T, object>> property);
+        _module = module;
+        _version = version;
+    }
 
-        ISqlTableBuilder<T> Insert(Action<T> factory);
-
+    public override string ToString()
+    {
+        return _builder.ToString();
     }
 
 
-    public class SqlBuilderPostgres : ISqlBuilder
+
+
+    public ISqlBuilder Include(Func<string, ISqlBuilder, ISqlBuilder> callFunc)
     {
-        readonly StringBuilder _builder = new();
-        readonly string _module;
-        readonly string _version;
+        return callFunc(_version, this);
+    }
 
-        public SqlBuilderPostgres(string module, string version)
-        {
-            _module = module;
-            _version = version;
-        }
+    public ISqlTableBuilder<T> Table<T>() where T : class, IEntity => new SqlTableBuilderPostgres<T>(this);
 
-        public override string ToString()
-        {
-            return _builder.ToString();
-        }
-
-
-
-
-        public ISqlBuilder Include(Func<string, ISqlBuilder, ISqlBuilder> callFunc)
-        {
-            return callFunc(_version, this);
-        }
-
-        public ISqlTableBuilder<T> Table<T>() where T : class, IEntity => new SqlTableBuilderPostgres<T>(this);
-
-        public ISqlBuilder Version(string version)
-        {
-            var result = @$"UPDATE public.""DataVersion"" SET ""Version"" = '{version}' WHERE ""Module"" = '{_module}';";
-            _builder.Append(result);
-            return this;
-        }
-
-
-
-        public ISqlBuilder SqlResource(string path)
-        {
-            var thisAssembly = this.GetType().Assembly;// Assembly.GetExecutingAssembly();
-            using var s = thisAssembly.GetManifestResourceStream(path);
-            if (s == null) return this;
-
-            using var sr = new StreamReader(s);
-            _builder.Append(sr.ReadToEnd());
-            return this;
-        }
-
-    class SqlTableBuilderPostgres<T> : ISqlTableBuilder<T> where T : class, IEntity
+    public ISqlBuilder Version(string version)
     {
-        readonly SqlBuilderPostgres _builder;
+        var result = @$"UPDATE public.""DataVersion"" SET ""Version"" = '{version}' WHERE ""Module"" = '{_module}';";
+        _builder.Append(result);
+        return this;
+    }
 
-        public SqlTableBuilderPostgres(SqlBuilderPostgres builder)
-        {
-            _builder = builder;
-        }
 
-        public override string ToString()
-        {
-            return _builder.ToString();
-        }
 
-            public ISqlTableBuilder<T> AddColumn(Expression<Func<T, object>> property)
-        {
-                var p = GetPropertyInfo(property);
+    public ISqlBuilder SqlResource(string path)
+    {
+        var thisAssembly = this.GetType().Assembly;// Assembly.GetExecutingAssembly();
+        using var s = thisAssembly.GetManifestResourceStream(path);
+        if (s == null) return this;
 
-                var type = p.PropertyType;
-                var name = p.Name;
+        using var sr = new StreamReader(s);
+        _builder.Append(sr.ReadToEnd());
+        return this;
+    }
 
-                var result = "";
+class SqlTableBuilderPostgres<T> : ISqlTableBuilder<T> where T : class, IEntity
+{
+    readonly SqlBuilderPostgres _builder;
 
-                if (p.PropertyType.IsClass && !(p.PropertyType == typeof(string)))
+    public SqlTableBuilderPostgres(SqlBuilderPostgres builder)
+    {
+        _builder = builder;
+    }
+
+    public override string ToString()
+    {
+        return _builder.ToString();
+    }
+
+        public ISqlTableBuilder<T> AddColumn(Expression<Func<T, object>> property)
+    {
+            var p = GetPropertyInfo(property);
+
+            var type = p.PropertyType;
+            var name = p.Name;
+
+            var result = "";
+
+            if (p.PropertyType.IsClass && !(p.PropertyType == typeof(string)))
+            {
+                var backingField = GetBackingField(name);
+
+                // TODO
+                //if (backingField.FieldType.IsConstructedGenericType &&
+                //    backingField.FieldType.GetGenericTypeDefinition() == typeof(IForeign<>))
+                if(false)
                 {
-                    var backingField = GetBackingField(name);
+                    name = $"{name}Id";
+                    type = typeof(int?);
 
-                    if (backingField.FieldType.IsConstructedGenericType &&
-                        backingField.FieldType.GetGenericTypeDefinition() == typeof(IForeign<>))
-                    {
-                        name = $"{name}Id";
-                        type = typeof(int?);
+                    var foreignType  = backingField.FieldType.GetGenericArguments()[0];
 
-                        var foreignType  = backingField.FieldType.GetGenericArguments()[0];
-
-                        result = @$"
+                    result = @$"
                         ALTER TABLE public.""{typeof(T).Name}""
                         ADD FOREIGN KEY (""{name}"")
                         REFERENCES public.""{foreignType.Name}"" (""Id"")
@@ -113,75 +115,77 @@ namespace HLab.Erp.Base.Data
                         ON DELETE CASCADE
                         NOT VALID;	
                     ";
-                    }
                 }
+            }
 
 
-                result = @$"
+            result = @$"
                 ALTER TABLE public.""{typeof(T).Name}""
                 ADD COLUMN IF NOT EXISTS ""{name}"" {GetSqlType(type,p)};
             " + result;
 
-                _builder._builder.Append(result);
+            _builder._builder.Append(result);
 
-                return this;
-        }
+            return this;
+    }
 
-        public ISqlTableBuilder<T> AlterColumn(Expression<Func<T, object>> property)
-        {
-                var p = GetPropertyInfo(property);
+    public ISqlTableBuilder<T> AlterColumn(Expression<Func<T, object>> property)
+    {
+            var p = GetPropertyInfo(property);
 
-                var type = p.PropertyType;
-                var name = p.Name;
+            var type = p.PropertyType;
+            var name = p.Name;
 
-                var result = @$"
+            var result = @$"
                 ALTER TABLE public.""{typeof(T).Name}""
                 ALTER COLUMN ""{name}"" TYPE {GetSqlType(type,p)};";
 
-                _builder._builder.Append(result);
-                return this;
-        }
+            _builder._builder.Append(result);
+            return this;
+    }
 
-        public ISqlTableBuilder<T> RenamedFrom(string oldName)
-        {
-                _builder._builder.Append($@"
+    public ISqlTableBuilder<T> RenamedFrom(string oldName)
+    {
+            _builder._builder.Append($@"
                     ALTER TABLE IF EXISTS ""{oldName}""
                     RENAME TO ""{typeof(T).Name}"";
                 ");
-                return this;
-        }
+            return this;
+    }
 
-        public ISqlTableBuilder<T> Create()
+    public ISqlTableBuilder<T> Create()
+    {
+        var columns = "";
+        var foreign = "";
+        foreach (var property in typeof(T).GetProperties())
         {
-            var columns = "";
-            var foreign = "";
-            foreach (var property in typeof(T).GetProperties())
+            if (property.GetCustomAttributes().Where(e => e.GetType().Name.Contains("Ignore")).Any()) continue;
+            if (!property.CanWrite) continue;
+            var type = property.PropertyType;
+            if(type != typeof(string) && type.IsClass && !type.IsArray) continue;
+
+            columns += $"\"{property.Name}\" ";
+            if(property.Name=="Id") columns += @" serial NOT NULL,";
+            else
             {
-                if (property.GetCustomAttributes().Where(e => e.GetType().Name.Contains("Ignore")).Any()) continue;
-                if (!property.CanWrite) continue;
-                var type = property.PropertyType;
-                if(type != typeof(string) && type.IsClass && !type.IsArray) continue;
 
-                columns += $"\"{property.Name}\" ";
-                if(property.Name=="Id") columns += @" serial NOT NULL,";
-                else
-                {
-
-                    columns += $" {GetSqlType(type,property)},\n";
+                columns += $" {GetSqlType(type,property)},\n";
 
 
 
-                    if (type != typeof(int) || type != typeof(int?)) continue;
+                if (type != typeof(int) || type != typeof(int?)) continue;
 
-                    var backingField = GetBackingField(property.Name);
+                var backingField = GetBackingField(property.Name);
 
-                    if (!backingField.FieldType.IsConstructedGenericType ||
-                        backingField.FieldType.GetGenericTypeDefinition() != typeof(IForeign<>)) continue;
+                //TODO : Detect foreign fields
+                //if (!backingField.FieldType.IsConstructedGenericType ||
+                //    backingField.FieldType.GetGenericTypeDefinition() != typeof(IForeign<>)) continue;
+                continue;
 
-                    var t = backingField.FieldType.GetGenericArguments()[0];
-                    //ALTER TABLE public.""{property.Name}""
-                    //ADD CONSTRAINT ""{t.Name}_{property.Name}_fkey"" 
-                    foreign += $@"
+                var t = backingField.FieldType.GetGenericArguments()[0];
+                //ALTER TABLE public.""{property.Name}""
+                //ADD CONSTRAINT ""{t.Name}_{property.Name}_fkey"" 
+                foreign += $@"
                                     FOREIGN KEY (""{property.Name}"")
                                     REFERENCES public.""{t.Name}"" (""Id"")
                                         ON UPDATE NO ACTION
@@ -191,11 +195,11 @@ namespace HLab.Erp.Base.Data
 
 
 
-                }
             }
+        }
 
-            var name = typeof(T).Name;
-            _builder._builder.Append(@$"
+        var name = typeof(T).Name;
+        _builder._builder.Append(@$"
                 CREATE TABLE IF NOT EXISTS public.""{name}""
                 (
                     {columns}
@@ -211,27 +215,27 @@ namespace HLab.Erp.Base.Data
                 GRANT ALL ON TABLE public.""{name}"" TO postgres;
             ");
 
-            return this;
-        }
+        return this;
+    }
 
-        public ISqlBuilder Include(Func<string, ISqlBuilder, ISqlBuilder> callFunc)
-        {
-            return callFunc(_builder._version, this);
-        }
+    public ISqlBuilder Include(Func<string, ISqlBuilder, ISqlBuilder> callFunc)
+    {
+        return callFunc(_builder._version, this);
+    }
 
-        public ISqlTableBuilder<T> RenameColumn(string oldName, Expression<Func<T, object>> property)
-        {
-                var p = GetPropertyInfo(property);
+    public ISqlTableBuilder<T> RenameColumn(string oldName, Expression<Func<T, object>> property)
+    {
+            var p = GetPropertyInfo(property);
 
-                var type = p.PropertyType;
-                var name = p.Name;
-                var table = typeof(T).Name;
+            var type = p.PropertyType;
+            var name = p.Name;
+            var table = typeof(T).Name;
 
-                //var result = @$"
-                //    ALTER TABLE public.""{table}""
-                //    RENAME ""{oldName}"" TO ""{name}"";";
+            //var result = @$"
+            //    ALTER TABLE public.""{table}""
+            //    RENAME ""{oldName}"" TO ""{name}"";";
 
-                var result = @$"
+            var result = @$"
             DO $$
             BEGIN
                 IF EXISTS(SELECT * FROM information_schema.columns WHERE table_name='{table}' and column_name='{oldName}')
@@ -242,98 +246,97 @@ namespace HLab.Erp.Base.Data
             END $$;
             ";
 
-                _builder._builder.Append(result);
-                return this;
-        }
-
-        public ISqlTableBuilder<T> Insert(Action<T> factory)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISqlBuilder SqlResource(string filePath) => _builder.SqlResource(filePath);
-
-        public ISqlTableBuilder<T1> Table<T1>() where T1 : class, IEntity => _builder.Table<T1>();
-
-        public ISqlBuilder Version(string version) => _builder.Version(version);
-
-        static PropertyInfo GetPropertyInfo<TSource>(
-            Expression<Func<TSource, object>> lambda)
-        {
-            var type = typeof(TSource);
-
-            var body = lambda?.Body;
-            while (body?.NodeType == ExpressionType.Convert)
-                body = (body as UnaryExpression)?.Operand;
-
-            if (body is not MemberExpression member)
-                throw new ArgumentException(
-                    $"Expression '{lambda}' refers to a method, not a property.");
-
-            var propInfo = member.Member as PropertyInfo;
-            if (propInfo == null)
-                throw new ArgumentException(
-                    $"Expression '{lambda}' refers to a field, not a property.");
-
-            if (type != propInfo.ReflectedType &&
-                !type.IsSubclassOf(propInfo.ReflectedType))
-                throw new ArgumentException(
-                    $"Expression '{lambda}' refers to a property that is not from type {type}.");
-
-            return propInfo;
-        }
-
-        static FieldInfo GetBackingField(string name)
-        {
-            var backingFieldName = "_";
-            if (name.Length > 0) backingFieldName += name.Substring(0, 1).ToLower();
-            if (name.Length > 1) backingFieldName += name.Substring(1);
-
-            return typeof(T).GetField(backingFieldName,BindingFlags.NonPublic | BindingFlags.Instance);
-        }
-
-        static string GetSqlType(Type type, PropertyInfo p)
-        {
-            if (type == typeof(int)) return "integer DEFAULT 0 NOT NULL";
-            if(type == typeof(int?)) return "integer";
-
-            if(type == typeof(string)) return "text";
-
-            if(type == typeof(double)) return "double precision DEFAULT 0 NOT NULL";
-            if(type == typeof(double?)) return "double precision";
-
-            if(type == typeof(float)) return "real DEFAULT 0 NOT NULL";
-            if(type == typeof(float?)) return "real";
-
-            if(type == typeof(decimal)) return "numeric DEFAULT 0 NOT NULL";
-            if(type == typeof(decimal?)) return "numeric";
-
-
-            if(type == typeof(bool)) return "boolean DEFAULT False NOT NULL";
-            if(type == typeof(bool?)) return "boolean";
-
-            if(type == typeof(byte[])) return "bytea";
-            if (type.IsEnum) return "integer";
-
-            if (type == typeof(DateTime?))
-            {
-                if (p.GetCustomAttributes<TimestampAttribute>().Any())
-                    return "timestamp";
-                return "date";
-            }
-            if (type == typeof(DateTime))
-            {
-                if (p.GetCustomAttributes<TimestampAttribute>().Any())
-                    return "timestamp NOT NULL";
-                return "date NOT NULL";
-            }
-
-            throw new ArgumentException($"Type : {type} not supported");
-        }
-
+            _builder._builder.Append(result);
+            return this;
     }
 
-
-
+    public ISqlTableBuilder<T> Insert(Action<T> factory)
+    {
+        throw new NotImplementedException();
     }
+
+    public ISqlBuilder SqlResource(string filePath) => _builder.SqlResource(filePath);
+
+    public ISqlTableBuilder<T1> Table<T1>() where T1 : class, IEntity => _builder.Table<T1>();
+
+    public ISqlBuilder Version(string version) => _builder.Version(version);
+
+    static PropertyInfo GetPropertyInfo<TSource>(
+        Expression<Func<TSource, object>> lambda)
+    {
+        var type = typeof(TSource);
+
+        var body = lambda?.Body;
+        while (body?.NodeType == ExpressionType.Convert)
+            body = (body as UnaryExpression)?.Operand;
+
+        if (body is not MemberExpression member)
+            throw new ArgumentException(
+                $"Expression '{lambda}' refers to a method, not a property.");
+
+        var propInfo = member.Member as PropertyInfo;
+        if (propInfo == null)
+            throw new ArgumentException(
+                $"Expression '{lambda}' refers to a field, not a property.");
+
+        if (type != propInfo.ReflectedType &&
+            !type.IsSubclassOf(propInfo.ReflectedType))
+            throw new ArgumentException(
+                $"Expression '{lambda}' refers to a property that is not from type {type}.");
+
+        return propInfo;
+    }
+
+    static FieldInfo GetBackingField(string name)
+    {
+        var backingFieldName = "_";
+        if (name.Length > 0) backingFieldName += name.Substring(0, 1).ToLower();
+        if (name.Length > 1) backingFieldName += name.Substring(1);
+
+        return typeof(T).GetField(backingFieldName,BindingFlags.NonPublic | BindingFlags.Instance);
+    }
+
+    static string GetSqlType(Type type, PropertyInfo p)
+    {
+        if (type == typeof(int)) return "integer DEFAULT 0 NOT NULL";
+        if(type == typeof(int?)) return "integer";
+
+        if(type == typeof(string)) return "text";
+
+        if(type == typeof(double)) return "double precision DEFAULT 0 NOT NULL";
+        if(type == typeof(double?)) return "double precision";
+
+        if(type == typeof(float)) return "real DEFAULT 0 NOT NULL";
+        if(type == typeof(float?)) return "real";
+
+        if(type == typeof(decimal)) return "numeric DEFAULT 0 NOT NULL";
+        if(type == typeof(decimal?)) return "numeric";
+
+
+        if(type == typeof(bool)) return "boolean DEFAULT False NOT NULL";
+        if(type == typeof(bool?)) return "boolean";
+
+        if(type == typeof(byte[])) return "bytea";
+        if (type.IsEnum) return "integer";
+
+        if (type == typeof(DateTime?))
+        {
+            if (p.GetCustomAttributes<TimestampAttribute>().Any())
+                return "timestamp";
+            return "date";
+        }
+        if (type == typeof(DateTime))
+        {
+            if (p.GetCustomAttributes<TimestampAttribute>().Any())
+                return "timestamp NOT NULL";
+            return "date NOT NULL";
+        }
+
+        throw new ArgumentException($"Type : {type} not supported");
+    }
+
+}
+
+
+
 }

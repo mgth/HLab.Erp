@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using HLab.Base;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
+using ReactiveUI;
 
 namespace HLab.Erp.Core.ListFilters
 {
@@ -25,16 +26,12 @@ namespace HLab.Erp.Core.ListFilters
             _token = target.List.Suspender.Get();
             Target = target;
 
-            H<EntityFilter<TClass>>.Initialize(this);
+            this.WhenAnyValue(
+                e => e.Target.SelectedIds
+                // TODO : , e => e.Target.List.Item()
+            ).Subscribe(e => Update?.Invoke());
 
         }
-
-        ITrigger _ = H<EntityFilter<TClass>>.Trigger(c => c
-            .On(e => e.Target.SelectedIds)
-            .On(e => e.Target.List.Item())
-            .Do(e => e.Update?.Invoke())
-        );
-
 
         public Type ListClass => Target.GetType();
 
