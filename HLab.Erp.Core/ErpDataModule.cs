@@ -80,7 +80,8 @@ namespace HLab.Erp.Core
                     _entityName = i.GenericTypeArguments[0].Name;
                     return;
                 }
-                else if (t == typeof(IViewModel<>))
+
+                if (t == typeof(IViewModel<>))
                 {
                     _suffix = "ViewModel";
                     _entityName = i.GenericTypeArguments[0].Name;
