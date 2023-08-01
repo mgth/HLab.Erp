@@ -39,7 +39,7 @@ namespace HLab.Erp.Data.Observables
         Task UpdateAsync();
     }
 
-    public class ObservableQuery<T> : ReactiveCollection<T>, IObservableQuery<T>//, ITriggerable
+    public class ObservableQuery<T> : ReactiveCollection<T>, IObservableQuery<T>, INotifyCollectionChanged, IEnumerable<T>
         where T : class, IEntity
     {
         readonly IGuiTimer _timer;
