@@ -3,7 +3,7 @@ using System;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-
+using HLab.Base.Avalonia;
 using NPoco;
 using ReactiveUI;
 
@@ -44,14 +44,14 @@ public interface INotifyDataHelper<TClass> where TClass : ReactiveObject, IEntit
 
 
 [PrimaryKey("Id")]
-public abstract class Entity<T> : ReactiveObject, IEntity<T>, IDataServiceProvider//, IOnLoaded
+public abstract class Entity<T> : ReactiveModel, IEntity<T>, IDataServiceProvider//, IOnLoaded
 where T : struct
 {
 
     public virtual T Id
     {
         get => _id;
-        set => this.RaiseAndSetIfChanged(ref _id, value);
+        set => SetAndRaise(ref _id, value);
     }
 
     T _id = (T)(object)-1;
@@ -74,8 +74,7 @@ where T : struct
     {
             return source.WhenAnyValue(idGetter, id =>
             {
-                if (id == null) return (TRet)null;
-                return DataService.FetchOne<TRet>(e => e.Id == id);
+                return id == null ? default : DataService.FetchOne<TRet>(e => e.Id == id);
             }).ToProperty(source, getter, deferSubscription: true);
 
     }

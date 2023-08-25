@@ -21,7 +21,7 @@ using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Application;
+using HLab.Mvvm.Application.Documents;
 using HLab.Mvvm.ReactiveUI;
 using HLab.Options;
 using Newtonsoft.Json.Serialization;

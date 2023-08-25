@@ -2,7 +2,7 @@
 
 namespace HLab.Erp.Base.Data;
 
-public class ErpBaseDataModule : DataUpdaterModule
+public class ErpBaseDataModule(IDataService data) : DataUpdaterBootloader(data)
 {
     protected override ISqlBuilder GetSqlUpdater(string version, ISqlBuilder builder)
     {
@@ -14,6 +14,7 @@ public class ErpBaseDataModule : DataUpdaterModule
                         .AddColumn(i => i.Foreground)
                     .Include(base.GetSqlUpdater)
                     .Version("2.0.0.0");
+
             case "2.0.0.0":
                 return builder
                     .Table<Continent>()
@@ -21,6 +22,7 @@ public class ErpBaseDataModule : DataUpdaterModule
                         .AlterColumn(c => c.Name)
                     .Include(base.GetSqlUpdater)
                     .Version("2.1.0.0");
+
             case "2.1.0.0":
                 return builder
                     .Table<UnitClass>().Create()
@@ -28,12 +30,11 @@ public class ErpBaseDataModule : DataUpdaterModule
                     .Include(base.GetSqlUpdater)
                     //.Version("2.1.0.0")
                     ;
+
+            default:
+                break;
         }
 
         return builder.Include(base.GetSqlUpdater);
-    }
-
-    public ErpBaseDataModule(IDataService data) : base(data)
-    {
     }
 }

@@ -19,7 +19,7 @@ public class LocalizeEntry : Entity, ILocalizeEntry, IListableModel
     public string Tag
     {
         get => _tag;
-        set => this.RaiseAndSetIfChanged(ref _tag,value);
+        set => SetAndRaise(ref _tag,value);
     }
 
     string _tag = "en-us";

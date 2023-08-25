@@ -4,7 +4,8 @@ using System.Windows.Input;
 using HLab.Base.Extensions;
 using HLab.Core.Annotations;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Application;
+using HLab.Mvvm.Application.Documents;
+using HLab.Mvvm.Application.Menus;
 using ReactiveUI;
 
 namespace HLab.Erp.Core

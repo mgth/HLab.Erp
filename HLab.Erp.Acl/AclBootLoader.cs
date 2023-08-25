@@ -3,17 +3,10 @@ using HLab.Erp.Data;
 
 namespace HLab.Erp.Acl;
 
-public class AclBootLoader : IBootloader
+public class AclBootLoader(IDataService data) : IBootloader
 {
-    readonly IDataService _data;
-
-    public AclBootLoader(IDataService data)
-    {
-        _data = data;
-    }
-
     public void Load(IBootContext bootstrapper)
     {
-        AclRight.Data = _data;
+        AclRight.Data = data;
     }
 }
