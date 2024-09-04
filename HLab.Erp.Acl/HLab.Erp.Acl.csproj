@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\HLab.Erp.Lims.Analysis\Lib\NPoco\NPoco.csproj" />
     <ProjectReference Include="..\..\HLab.Core\HLab.Mvvm.Application\HLab.Mvvm.Application.csproj" />
     <ProjectReference Include="..\HLab.Erp.Core.Annotations\HLab.Erp.Core.Annotations.csproj" />
     <ProjectReference Include="..\HLab.Erp.Data.Annotations\HLab.Erp.Data.Annotations.csproj" />
