@@ -10,9 +10,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using DynamicData.Binding;
 using HLab.Base;
-using HLab.Notify.Annotations;
-using HLab.Notify.PropertyChanged;
+using HLab.Core.Annotations;
+using ReactiveUI;
 
 ////using System.Data.Entity;
 
@@ -39,7 +40,7 @@ namespace HLab.Erp.Data.Observables
         Task UpdateAsync();
     }
 
-    public class ObservableQuery<T> : ObservableCollectionNotifier<T>, IObservableQuery<T>, ITriggerable//, IObservableQuery<T>
+    public class ObservableQuery<T> : ObservableCollectionExtended<T>, IReactiveObject, IObservableQuery<T>, ITriggerable//, IObservableQuery<T>
         where T : class, IEntity
     {
         readonly IGuiTimer _timer;
@@ -47,7 +48,6 @@ namespace HLab.Erp.Data.Observables
         public ObservableQuery(IDataService db)
         {
             _db = db;
-            H<ObservableQuery<T>>.Initialize(this);
 
             _timer = NotifyHelper.EventHandlerService.GetTimer();
             _timer.Tick += async (a, b) => await _timer_TickAsync(a, b);
@@ -141,21 +141,21 @@ namespace HLab.Erp.Data.Observables
 
         public Func<IQueryable<T>, IQueryable<T>> SourceQuery
         {
-            get => _sourceQuery.Get();
-            set => _sourceQuery.Set(value);
+            get => _sourceQuery;
+            set => this.RaiseAndSetIfChanged(ref _sourceQuery, value);
         }
+        Func<IQueryable<T>, IQueryable<T>> _sourceQuery = q => q;
 
-        readonly IProperty<Func<IQueryable<T>, IQueryable<T>>> _sourceQuery = H<ObservableQuery<T>>.Property<Func<IQueryable<T>, IQueryable<T>>>(c => c
-           .Set(e => (Func<IQueryable<T>, IQueryable<T>>)(q => q))
-        );
+        //Func<IQueryable<T, IQueryable<T>>> _sourceQuery = H<ObservableQuery<T>>.Property<Func<IQueryable<T>, IQueryable<T>>>(c => c
+        //   .Set(e => (Func<IQueryable<T>, IQueryable<T>>)(q => q))
+        //);
 
         public Func<IAsyncEnumerable<T>> SourceEnumerable
         {
-            get => _sourceEnumerable.Get();
-            set => _sourceEnumerable.Set(value);
+            get => _sourceEnumerable;
+            set => this.RaiseAndSetIfChanged(ref _sourceEnumerable, value);
         }
-
-        readonly IProperty<Func<IAsyncEnumerable<T>>> _sourceEnumerable = H<ObservableQuery<T>>.Property<Func<IAsyncEnumerable<T>>>();
+        Func<IAsyncEnumerable<T>> _sourceEnumerable;
 
         Expression<Func<T, bool>> Where()
         {
@@ -415,6 +415,13 @@ namespace HLab.Erp.Data.Observables
             }
         }
 
+        public T Selected
+        {
+            get => _selected;
+            set => this.RaiseAndSetIfChanged(ref _selected, value);
+        }
+        T _selected;
+
         ObservableQuery<T> AddCreator(IDictionary<string, Action<CreateHelper>> dict, Action<CreateHelper> func,
             string name = "")
         {
@@ -515,6 +522,8 @@ namespace HLab.Erp.Data.Observables
         Action _postUpdateAction;
         Stack<WaitHandle> _wait = new();
 
+        public event PropertyChangingEventHandler? PropertyChanging;
+
         public void Update()
         {
             lock (_lockUpdateNeeded)
@@ -579,6 +588,7 @@ namespace HLab.Erp.Data.Observables
             }
         }
 
+        Lock Lock = new();
 
         public async Task UpdateAsync(Action postUpdate, bool force, bool refresh)
         {
@@ -732,19 +742,20 @@ namespace HLab.Erp.Data.Observables
             Update();
         }
 
-        public override void Add(T item)
-        {
-            throw new NotImplementedException("Observable Query is readOnly");
-        }
-        public override void Insert(int index, T item)
-        {
-            throw new NotImplementedException("Observable Query is readOnly");
-        }
-
         void IObservableQuery<T>.AddOrderBy(Func<T, object> orderBy, SortDirection sortDirection)
         => AddOrderBy(orderBy,sortDirection);
 
         void IObservableQuery<T>.ResetOrderBy()
         => ResetOrderBy();
+
+        public void RaisePropertyChanging(PropertyChangingEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RaisePropertyChanged(PropertyChangedEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

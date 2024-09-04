@@ -9,58 +9,58 @@ namespace HLab.Erp.Base.Data
 
     public class LocalizeEntry : Entity, ILocalizeEntry, IListableModel
     {
-        public LocalizeEntry() => H.Initialize(this);
+        public LocalizeEntry() { }
 
         public string Tag
         {
-            get => _tag.Get();
-            set => _tag.Set(value);
+            get => _tag;
+            set => this.RaiseAndSetIfChanged(ref _tag,value);
         }
 
-        readonly IProperty<string> _tag = H.Property<string>(c => c.Default("en-us"));
+        string _tag = "en-us";
 
         public string Code
         {
-            get => _code.Get();
-            set => _code.Set(value);
+            get => _code;
+            set => this.RaiseAndSetIfChanged(ref _code,value);
         }
 
-        readonly IProperty<string> _code = H.Property<string>(c => c.Default(""));
+        string _code = "";
 
         public string Value
         {
-            get => _value.Get();
-            set => _value.Set(value);
+            get => _value;
+            set => this.RaiseAndSetIfChanged(ref _value,value);
         }
 
-        readonly IProperty<string> _value = H.Property<string>(c => c.Default(""));
+        string _value = "";
 
         public bool Todo
         {
-            get => _todo.Get();
-            set => _todo.Set(value);
+            get => _todo;
+            set => this.RaiseAndSetIfChanged(ref _todo,value);
         }
 
-        readonly IProperty<bool> _todo = H.Property<bool>(c => c.Default(true));
+        bool _todo = true;
 
         public bool BadCode
         {
-            get => _badCode.Get();
-            set => _badCode.Set(value);
+            get => _badCode;
+            set => this.RaiseAndSetIfChanged(ref _badCode,value);
         }
 
-        readonly IProperty<bool> _badCode = H.Property<bool>(c => c.Default(false));
+        bool _badCode = false;
         public bool Custom
         {
-            get => _custom.Get();
-            set => _custom.Set(value);
+            get => _custom;
+            set => this.RaiseAndSetIfChanged(ref _custom,value);
         }
 
-        readonly IProperty<bool> _custom = H.Property<bool>(c => c.Default(false));
+        bool _custom = false;
 
         public string Caption => _caption.Get();
 
-        readonly IProperty<string> _caption = H.Property<string>(c => c
+        string _caption = H.Property<string>(c => c
             .Set(e => string.IsNullOrWhiteSpace(e.Code)?"{New localize entry}":$"{e.Tag} - {e.Code}")
             .On(e => e.Code)
             .On(e => e.Tag)

@@ -10,43 +10,43 @@ namespace HLab.Erp.Base.Data
     using H = HD<UnitClass>;
     public class UnitClass : Entity, IListableModel
     {
-        public UnitClass() => H.Initialize(this);
+        public UnitClass() { }
 
         public string Name
         {
-            get => _name.Get(); set => _name.Set(value);
+            get => _name; set => this.RaiseAndSetIfChanged(ref _name,value);
         }
 
-        readonly IProperty<string> _name = H.Property<string>(c => c.Default(""));
+        string _name = "";
 
         public string Symbol
         {
-            get => _symbol.Get(); set => _symbol.Set(value);
+            get => _symbol; set => this.RaiseAndSetIfChanged(ref _symbol,value);
         }
 
-        readonly IProperty<string> _symbol = H.Property<string>(c => c.Default(""));
+        string _symbol = "";
 
         public string IconPath
         {
-            get => _iconPath.Get();
-            set => _iconPath.Set(value);
+            get => _iconPath;
+            set => this.RaiseAndSetIfChanged(ref _iconPath,value);
         }
 
-        readonly IProperty<string> _iconPath = H.Property<string>(c => c.Default(""));
+        string _iconPath = "";
 
 
         public bool IsRatio
         {
-            get => _isRatio.Get(); 
-            set => _isRatio.Set(value);
+            get => _isRatio; 
+            set => this.RaiseAndSetIfChanged(ref _isRatio,value);
         }
 
-        readonly IProperty<bool> _isRatio = H.Property<bool>(c => c.Default(false));
+        bool _isRatio = false;
 
         [Ignore]
         public string Caption => _caption.Get();
 
-        readonly IProperty<string> _caption = H.Property<string>(c => c
+        string _caption = H.Property<string>(c => c
             .On(e => e.Name)
             .Set(e => string.IsNullOrWhiteSpace(e.Name) ? "{New Unit}" : $"{e.Name}")
         );

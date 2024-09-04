@@ -1,29 +1,29 @@
 using HLab.Erp.Data;
-using HLab.Mvvm.Application;
-using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Base.Data
+namespace HLab.Erp.Base.Data;
+
+public class Continent : Entity, IEntityWithExportId, IListableModel
 {
-    public class Continent : Entity, IEntityWithExportId, IListableModel
+    public Continent()
     {
-        public Continent() => HD<Continent>.Initialize(this);
 
-        public string Name
-        {
-            get => _name.Get();
-            set => _name.Set(value);
-        }
-
-        readonly IProperty<string> _name = HD<Continent>.Property<string>(c => c.Default(""));
-        public string Code
-        {
-            get => _code.Get();
-            set => _code.Set(value);
-        }
-
-        readonly IProperty<string> _code = HD<Continent>.Property<string>(c => c.Default(""));
-        public string ExportId => Code;
-        public string Caption => Name;
-        public string IconPath => $"icon/continent/{Name}";
     }
+
+    public string Name
+    {
+        get => _name;
+        set => SetAndRaise(ref _name,value);
+    }
+
+    string _name = "";
+    public string Code
+    {
+        get => _code;
+        set => SetAndRaise(ref _code,value);
+    }
+
+    string _code = "";
+    public string ExportId => Code;
+    public string Caption => Name;
+    public string IconPath => $"icon/continent/{Name}";
 }

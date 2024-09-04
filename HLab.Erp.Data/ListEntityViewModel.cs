@@ -1,7 +1,7 @@
 ﻿using System;
 using HLab.Base;
-using HLab.Notify.Annotations;
 using NPoco;
+using ReactiveUI;
 
 ////using System.Data.Model;
 
@@ -298,7 +298,7 @@ namespace HLab.Erp.Data
     //}
 
     public class ListAdder<T> : IDisposable
-        where T : class, INotifierObject//, new()
+        where T : ReactiveObject//, new()
     {
         public T Entity { get; }
         readonly IListEntityViewModel<T> _list;
@@ -317,7 +317,6 @@ namespace HLab.Erp.Data
             _db.Insert(Entity);//_set.Create();
             //_db.SaveChanges();
 
-            _suspend = Entity.GetNotifier().Suspend.Get();
         }
 
         public void Dispose()

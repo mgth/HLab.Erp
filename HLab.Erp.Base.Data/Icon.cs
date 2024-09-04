@@ -10,49 +10,49 @@ namespace HLab.Erp.Base.Data
 
     public class Icon : Entity, IListableModel
     {
-        public Icon() => H.Initialize(this);
+        public Icon() { }
 
         public string Path
         {
-            get => _path.Get();
-            set => _path.Set(value);
+            get => _path;
+            set => this.RaiseAndSetIfChanged(ref _path,value);
         }
 
-        readonly IProperty<string> _path = H.Property<string>(c => c.Default(""));
+        string _path = "";
 
         public string SourceSvg
         {
-            get => _sourceSvg.Get();
-            set => _sourceSvg.Set(value);
+            get => _sourceSvg;
+            set => this.RaiseAndSetIfChanged(ref _sourceSvg,value);
         }
 
-        readonly IProperty<string> _sourceSvg = H.Property<string>(c => c.Default(""));
+        string _sourceSvg = "";
 
         public string SourceXaml
         {
-            get => _sourceXaml.Get();
-            set => _sourceXaml.Set(value);
+            get => _sourceXaml;
+            set => this.RaiseAndSetIfChanged(ref _sourceXaml,value);
         }
 
-        readonly IProperty<string> _sourceXaml = H.Property<string>(c => c.Default(""));
+        string _sourceXaml = "";
 
         public int? Foreground
         {
-            get => _foreground.Get();
-            set => _foreground.Set(value);
+            get => _foreground;
+            set => this.RaiseAndSetIfChanged(ref _foreground,value);
         }
 
-        readonly IProperty<int?> _foreground = H.Property<int?>(c => c.Default((int?)null));
+        int? _foreground = (int?)null;
 
         public string Caption => _caption.Get();
 
-        readonly IProperty<string> _caption = H.Property<string>(c => c
+        string _caption = H.Property<string>(c => c
             .On(e => e.Path)
             .Set(e => string.IsNullOrWhiteSpace(e.Path)?"{New icon}":e.Path.Split('/').Last())
         );
         public string IconPath => _iconPath.Get();
 
-        readonly IProperty<string> _iconPath = H.Property<string>(c => c
+        string _iconPath = H.Property<string>(c => c
             .On(e => e.Path)
             .Set(e => string.IsNullOrWhiteSpace(e.Path)?"Icons/Entities/Icon":e.Path)
         );

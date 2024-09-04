@@ -11,63 +11,63 @@ namespace HLab.Erp.Base.Data
     using H = HD<Unit>;
     public class Unit : Entity, IListableModel
     {
-        public Unit() => H.Initialize(this);
+        public Unit() { }
 
         public string Name
         {
-            get => _name.Get(); set => _name.Set(value);
+            get => _name; set => this.RaiseAndSetIfChanged(ref _name,value);
         }
 
-        readonly IProperty<string> _name = H.Property<string>(c => c.Default(""));
+        string _name = "";
 
         public string Symbol
         {
-            get => _symbol.Get(); set => _symbol.Set(value);
+            get => _symbol; set => this.RaiseAndSetIfChanged(ref _symbol,value);
         }
 
-        readonly IProperty<string> _symbol = H.Property<string>(c => c.Default(""));
+        string _symbol = "";
 
         public double Coefficient
         {
-            get => _coefficient.Get();
-            set => _coefficient.Set(value);
+            get => _coefficient;
+            set => this.RaiseAndSetIfChanged(ref _coefficient,value);
         }
 
-        readonly IProperty<double> _coefficient = H.Property<double>(c => c.Default(1.0));
+        double _coefficient = 1.0;
         public double OffsetA
         {
-            get => _offsetA.Get();
-            set => _offsetA.Set(value);
+            get => _offsetA;
+            set => this.RaiseAndSetIfChanged(ref _offsetA,value);
         }
 
-        readonly IProperty<double> _offsetA = H.Property<double>(c => c.Default(0.0));
+        double _offsetA = 0.0;
         public double OffsetB
         {
-            get => _offsetB.Get();
-            set => _offsetB.Set(value);
+            get => _offsetB;
+            set => this.RaiseAndSetIfChanged(ref _offsetB,value);
         }
 
-        readonly IProperty<double> _offsetB = H.Property<double>(c => c.Default(0.0));
+        double _offsetB = 0.0;
 
         public int Exponent
         {
-            get => _exponent.Get();
-            set => _exponent.Set(value);
+            get => _exponent;
+            set => this.RaiseAndSetIfChanged(ref _exponent,value);
         }
 
-        readonly IProperty<int> _exponent = H.Property<int>(c => c.Default(0));
+        int _exponent = 0;
 
         public int? UnitClassId
         {
-            get => _unitClass.Id.Get();
-            set => _unitClass.Id.Set(value);
+            get => _unitClass.Id;
+            set => this.RaiseAndSetIfChanged(ref _unitClass.Id,value);
         }
 
         [Ignore]
         public UnitClass UnitClass
         {
-            get => _unitClass.Get();
-            set => _unitClass.Set(value);
+            get => _unitClass;
+            set => this.RaiseAndSetIfChanged(ref _unitClass,value);
         }
 
         readonly IForeign<UnitClass> _unitClass = H.Foreign<UnitClass>();
@@ -75,32 +75,32 @@ namespace HLab.Erp.Base.Data
 
         public bool Default
         {
-            get => _default.Get(); 
-            set => _default.Set(value);
+            get => _default; 
+            set => this.RaiseAndSetIfChanged(ref _default,value);
         }
 
-        readonly IProperty<bool> _default = H.Property<bool>(c => c.Default(false));
+        bool _default = false;
 
         public double DefaultQty
         {
-            get => _defaultQty.Get(); 
-            set => _defaultQty.Set(value);
+            get => _defaultQty; 
+            set => this.RaiseAndSetIfChanged(ref _defaultQty,value);
         }
 
-        readonly IProperty<double> _defaultQty = H.Property<double>(c => c.Default(1.0));
+        double _defaultQty = 1.0;
 
         public bool IsRatio
         {
-            get => _isRatio.Get(); 
-            set => _isRatio.Set(value);
+            get => _isRatio; 
+            set => this.RaiseAndSetIfChanged(ref _isRatio,value);
         }
 
-        readonly IProperty<bool> _isRatio = H.Property<bool>(c => c.Default(false));
+        bool _isRatio = false;
 
         [Ignore]
         public string Caption => _caption.Get();
 
-        readonly IProperty<string> _caption = H.Property<string>(c => c
+        string _caption = H.Property<string>(c => c
             .On(e => e.Name)
             .Set(e => string.IsNullOrWhiteSpace(e.Name) ? "{New Unit}" : $"{e.Name}")
         );
@@ -111,7 +111,7 @@ namespace HLab.Erp.Base.Data
         [Ignore]
         public double Abs => _abs.Get();
 
-        readonly IProperty<double> _abs = H.Property<double>(c => c
+        double _abs = H.Property<double>(c => c
             .Set(e => Math.Pow(e.Coefficient, e.Exponent))
             .On(e => e.Coefficient)
             .On(e => e.Exponent)

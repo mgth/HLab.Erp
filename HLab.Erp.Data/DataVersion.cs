@@ -1,27 +1,18 @@
-﻿using HLab.Notify.PropertyChanged;
+﻿namespace HLab.Erp.Data;
 
-namespace HLab.Erp.Data
+public class DataVersion : Entity
 {
-    using H = H<DataVersion>;
-
-    public class DataVersion : Entity
+    public string Module
     {
-        public DataVersion() => H.Initialize(this);
-
-        public string Module
-        {
-            get => _module.Get();
-            set => _module.Set(value);
-        }
-
-        readonly IProperty<string> _module = H.Property<string>(c => c.Default(""));
-        public string Version
-        {
-            get => _version.Get();
-            set => _version.Set(value);
-        }
-
-        readonly IProperty<string> _version = H.Property<string>();
-
+        get => _module;
+        set => SetAndRaise(ref _module, value);
     }
+    string _module = "";
+
+    public string Version
+    {
+        get => _version;
+        set => SetAndRaise(ref _version, value);
+    }
+    string _version = "";
 }

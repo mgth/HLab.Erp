@@ -9,12 +9,12 @@ namespace HLab.Erp.Base.Data
 
     public class Customer : Corporation, ILocalCache, IListableModel
     {
-        public Customer() => H.Initialize(this); 
+        public Customer() { } 
 
 
         public string Caption => _caption.Get();
 
-        readonly IProperty<string> _caption = H.Property<string>(c => c
+        string _caption = H.Property<string>(c => c
             .On(e => e.Name)
             .On(e => e.Id)
             .Set(e => (e.Id < 0 && string.IsNullOrEmpty(e.Name)) ? "{New customer}" : e.Name)
@@ -22,7 +22,7 @@ namespace HLab.Erp.Base.Data
 
         public string IconPath => _iconPath.Get();
 
-        readonly IProperty<string> _iconPath = H.Property<string>(c => c
+        string _iconPath = H.Property<string>(c => c
             .On(e => e.Country.IconPath)
             .Set(e => e.Country?.IconPath)
         );
