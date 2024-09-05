@@ -81,7 +81,7 @@ public class Unit : Entity, IListableModel
         get => _unitClass.Value;
         set => UnitClassId = value.Id;
     }
-    readonly ObservableAsPropertyHelper<UnitClass> _unitClass;
+    readonly ForeignPropertyHelper<Unit,UnitClass> _unitClass;
 
 
     public bool Default

@@ -1,6 +1,5 @@
 ﻿using HLab.Erp.Data;
 using HLab.Mvvm.Application;
-using HLab.Notify.PropertyChanged;
 using ReactiveUI;
 using System.Linq;
 

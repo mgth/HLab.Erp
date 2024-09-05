@@ -6,11 +6,10 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using HLab.Erp.Data;
-using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Data;
 
-public interface ISqlTableBuilder<T> : ISqlBuilder  where T : class, IEntity
+public interface ISqlTableBuilder<T> : ISqlBuilder where T : class, IEntity
 {
     ISqlTableBuilder<T> Create();
     ISqlTableBuilder<T> RenamedFrom(string oldName);

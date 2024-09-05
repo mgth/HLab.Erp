@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
-using HLab.Notify.PropertyChanged;
 using ReactiveUI;
 
 namespace HLab.Erp.Acl;

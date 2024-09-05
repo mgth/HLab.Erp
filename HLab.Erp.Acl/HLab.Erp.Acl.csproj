@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\HLab.Core\HLab.Mvvm.Application\HLab.Mvvm.Application.csproj" />
+    <ProjectReference Include="..\..\HLab.Core\HLab.Mvvm.ReactiveUI\HLab.Mvvm.ReactiveUI.csproj" />
     <ProjectReference Include="..\HLab.Erp.Core.Annotations\HLab.Erp.Core.Annotations.csproj" />
     <ProjectReference Include="..\HLab.Erp.Data.Annotations\HLab.Erp.Data.Annotations.csproj" />
     <ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj" />

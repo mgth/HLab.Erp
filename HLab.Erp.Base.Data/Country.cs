@@ -1,4 +1,5 @@
 using HLab.Erp.Data;
+using HLab.Mvvm.Application;
 using ReactiveUI;
 using System.Reactive.Linq;
 
@@ -7,8 +8,6 @@ namespace HLab.Erp.Base.Data;
 public class Country : Entity, IListableModel
 {
     public Country() {
-
-
         _continent = Foreign(this, e => e.ContinentId, e => e.Continent);
 
         _caption = this.WhenAnyValue(e => e.Name)
@@ -21,22 +20,21 @@ public class Country : Entity, IListableModel
         get => _name;
         set => SetAndRaise(ref _name,value);
     }
-
     string _name = "";
+
     public string IsoA2
     {
         get => _isoA2;
         set => SetAndRaise(ref _isoA2,value);
     }
+    string _isoA2 = "";
 
-    string _isoA2 ;
     public string IsoA3
     {
         get => _isoA3;
         set => SetAndRaise(ref _isoA3,value);
     }
-
-    string _isoA3 ;
+    string _isoA3 = "";
 
     public int Iso
    {
@@ -44,7 +42,7 @@ public class Country : Entity, IListableModel
        set => SetAndRaise(ref _iso,value);
    }
 
-    int _iso ;
+    int _iso = 0;
 
 
     public string IconPath
@@ -53,29 +51,20 @@ public class Country : Entity, IListableModel
         set => SetAndRaise(ref _iconPath,value);
     }
 
-    string _iconPath ;
-
+    string _iconPath = "";
 
     public int? ContinentId
     {
         get => _continent.Id;
-        set => _continent.SetId(this,value);
+        set => _continent.SetId(value);
     }
-
     public Continent Continent
     {
         get => _continent.Value;
         set => ContinentId = value?.Id;
     }
-    readonly ForeignPropertyHelper<Continent> _continent;
-
+    readonly ForeignPropertyHelper<Country,Continent> _continent;
 
     public string Caption => _caption.Value;
     ObservableAsPropertyHelper<string> _caption;
-
-    //string _caption = H.Property<string>(c => c
-    //    .On(e => e.Name)
-    //    .Set(e => string.IsNullOrWhiteSpace(e.Name)?"{New country}":e.Name)
-    //);
-
 }

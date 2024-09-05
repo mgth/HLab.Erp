@@ -1,7 +1,6 @@
 ﻿using System;
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
-using HLab.Notify.PropertyChanged;
 using ReactiveUI;
 
 namespace HLab.Erp.Acl;

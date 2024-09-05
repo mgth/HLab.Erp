@@ -1,5 +1,4 @@
 ﻿using HLab.Erp.Data;
-using HLab.Notify.PropertyChanged;
 using NPoco;
 using ReactiveUI;
 

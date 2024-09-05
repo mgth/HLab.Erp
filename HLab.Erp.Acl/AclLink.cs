@@ -1,7 +1,4 @@
-﻿
-using HLab.Core.ReactiveUI;
-using HLab.Erp.Data;
-using HLab.Notify.PropertyChanged;
+﻿using HLab.Erp.Data;
 using NPoco;
 using ReactiveUI;
 
@@ -17,10 +14,9 @@ public class AclLink : Entity
 
     public int? GroupId
     {
-        get => _groupId;
-        set => this.RaiseAndSetIfChanged(ref _groupId,value);
+        get => _group.Id;
+        set => _group.SetId(value);
     }
-    int? _groupId;
 
     [Ignore]
     public AclNode Group
@@ -28,20 +24,19 @@ public class AclLink : Entity
         get => _group.Value;
         set => GroupId = value.Id;
     }
-    readonly ObservableAsPropertyHelper<AclNode> _group;
+    readonly ForeignPropertyHelper<AclLink,AclNode> _group;
 
     public int? MemberId
     {
-        get => _memberId;
-        set => this.RaiseAndSetIfChanged(ref _memberId, value);
+        get => _member.Id;
+        set => _group.SetId(value);
     }
-    int? _memberId;
 
     [Ignore]
     public AclNode Member
     {
         get => _member.Value;
-        set => _memberId = value.Id;
+        set => MemberId = value.Id;
     }
-    readonly ObservableAsPropertyHelper<AclNode>_member;
+    readonly ForeignPropertyHelper<AclLink,AclNode>_member;
 }

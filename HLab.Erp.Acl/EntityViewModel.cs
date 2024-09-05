@@ -3,12 +3,9 @@ using System.ComponentModel;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using HLab.Erp.Data;
-using HLab.Mvvm;
 using HLab.Mvvm.Application;
 using HLab.Mvvm.Application.Documents;
 using HLab.Mvvm.ReactiveUI;
-using HLab.Notify.PropertyChanged;
-using MySql.Data.MySqlClient;
 using ReactiveUI;
 
 namespace HLab.Erp.Acl;

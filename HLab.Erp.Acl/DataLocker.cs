@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
-using HLab.Notify.PropertyChanged;
 using Nito.AsyncEx;
 using ReactiveUI;
 
