@@ -3,104 +3,101 @@ using System.Linq;
 using System.Threading.Tasks;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
-using HLab.Notify.PropertyChanged;
 using NPoco;
+using ReactiveUI;
 
+namespace HLab.Erp.Acl;
 
-namespace HLab.Erp.Acl
+public class AclNode : Entity
 {
-    using H = HD<AclNode>;
-
-    public class AclNode : Entity
+    public AclNode()
     {
-        public AclNode() => H.Initialize(this);
 
-        public string Name
-        {
-            get => _name.Get();
-            set => _name.Set(value);
-        }
+    }
 
-        readonly IProperty<string> _name = H.Property<string>(c => c.Default(""));
-        public string TargetClass
-        {
-            get => _targetClass.Get();
-            set => _targetClass.Set(value);
-        }
+    public string Name
+    {
+        get => _name;
+        set => this.RaiseAndSetIfChanged(ref _name, value);
+    }
+    string _name = "";
 
-        readonly IProperty<string> _targetClass = H.Property<string>(c => c.Default(""));
-        public int? TargetId
-        {
-            get => _targetId.Get();
-            set => _targetId.Set(value);
-        }
+    public string TargetClass
+    {
+        get => _targetClass;
+        set => this.RaiseAndSetIfChanged(ref _targetClass, value);
+    }
+    string _targetClass = "";
 
-        readonly IProperty<int?> _targetId = H.Property<int?>();
+    public int? TargetId
+    {
+        get => _targetId;
+        set => this.RaiseAndSetIfChanged(ref _targetId, value);
+    }
+    int? _targetId;
 
-        [Ignore]
-        public ObservableQuery<AclLink> Members
-        {
-            get => _members.Get();
-            set => _members.Set(value.AddFilter("", ()=>n => n.GroupId == Id)
-                    .FluentUpdate());
-        }
+    [Ignore]
+    public ObservableQuery<AclLink> Members
+    {
+        get => _members;
+        set => this.RaiseAndSetIfChanged(ref _members, value.AddFilter("", ()=>n => n.GroupId == Id)
+                .FluentUpdate());
+    }
 
-        readonly IProperty<ObservableQuery<AclLink>> _members = H.Property<ObservableQuery<AclLink>>();
+    ObservableQuery<AclLink> _members;
 
-        [Ignore]
-        public ObservableQuery<AclLink> Groups
-        {
-            get => _groups.Get();
-            set => _groups.Set(value.AddFilter("", ()=>n => n.MemberId == Id)
-                    .FluentUpdate());
-        }
+    [Ignore]
+    public ObservableQuery<AclLink> Groups
+    {
+        get => _groups;
+        set => this.RaiseAndSetIfChanged(ref _groups, value.AddFilter("", ()=>n => n.MemberId == Id)
+                .FluentUpdate());
+    }
+    ObservableQuery<AclLink> _groups;
 
-        readonly IProperty<ObservableQuery<AclLink>> _groups = H.Property<ObservableQuery<AclLink>>();
-
-        public bool Grant(AclRight right, AclNode target)
-        {
-            DataService.Add<AclGranted>(
-                t =>
-                {
-                    t.ToNodeId = Id;
-                    t.Right = right;
-                    t.OnNodeId = target.Id;
-                }
-            );
-
-            return true;
-        }
-
-        public IEnumerable<int?> GetGroups()
-        {
-            foreach (var g in Groups)
+    public bool Grant(AclRight right, AclNode target)
+    {
+        DataService.Add<AclGranted>(
+            t =>
             {
-                yield return g.Group.Id;
-                foreach (var gg in g.Group.GetGroups())
-                {
-                    yield return gg;
-                }
+                t.ToNodeId = Id;
+                t.Right = right;
+                t.OnNodeId = target.Id;
+            }
+        );
+
+        return true;
+    }
+
+    public IEnumerable<int?> GetGroups()
+    {
+        foreach (var g in Groups)
+        {
+            yield return g.Group.Id;
+            foreach (var gg in g.Group.GetGroups())
+            {
+                yield return gg;
             }
         }
+    }
 
-        public async Task<bool> IsGrantedAsync(AclRight right, AclNode target)
+    public async Task<bool> IsGrantedAsync(AclRight right, AclNode target)
+    {
+        var groups = GetGroups().ToList();
+        var targets = target.GetGroups().ToList();
+
+        var grants = DataService.FetchWhereAsync<AclGranted>(e => 
+                groups.Contains(e.ToNodeId) && 
+                targets.Contains(e.OnNodeId)
+            ,null);
+
+        var granted = false;
+        await foreach (var grant in grants)
         {
-            var groups = GetGroups().ToList();
-            var targets = target.GetGroups().ToList();
-
-            var grants = DataService.FetchWhereAsync<AclGranted>(e => 
-                    groups.Contains(e.ToNodeId) && 
-                    targets.Contains(e.OnNodeId)
-                ,null);
-
-            var granted = false;
-            await foreach (var grant in grants)
-            {
-                if (grant.Deny) return false;
-                granted = true;
-            }
-
-            return granted;
+            if (grant.Deny) return false;
+            granted = true;
         }
+
+        return granted;
     }
 }

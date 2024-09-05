@@ -1,20 +1,17 @@
 ﻿using HLab.Core.Annotations;
 using HLab.Erp.Data;
+using System.Threading.Tasks;
 
 namespace HLab.Erp.Acl
 {
-    public class AclBootLoader : IBootloader
+    public class AclBootLoader(IDataService data) : IBootloader
     {
-        readonly IDataService _data;
+        readonly IDataService _data = data;
 
-        public AclBootLoader(IDataService data)
-        {
-            _data = data;
-        }
-
-        public void Load(IBootContext bootstrapper)
+        public Task LoadAsync(IBootContext bootstrapper)
         {
             AclRight.Data = _data;
+            return Task.CompletedTask;
         }
     }
 }

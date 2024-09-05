@@ -1,87 +1,77 @@
 ﻿using System;
 using HLab.Erp.Data;
-using HLab.Notify.PropertyChanged;
 using NPoco;
+using ReactiveUI;
 
-namespace HLab.Erp.Acl
+namespace HLab.Erp.Acl;
+
+public class DataLock : Entity
 {
-    using H = HD<DataLock>;
-
-    public class DataLock : Entity
+    public DataLock()
     {
-        public DataLock() => H.Initialize(this);
+        _user = Foreign(this, e => e.UserId, e => e.User);
+    }
 
-        public string EntityClass        {
-            get => _entityClass.Get();
-            set => _entityClass.Set(value);
-        }
+    public string EntityClass        {
+        get => _entityClass;
+        set => this.RaiseAndSetIfChanged(ref _entityClass, value);
+    }
+    string _entityClass = "";
 
-        readonly IProperty<string> _entityClass = H.Property<string>(e => e.Default(""));
-        public int? EntityId
-        {
-            get => _entityId.Get();
-            set => _entityId.Set(value);
-        }
+    public int? EntityId
+    {
+        get => _entityId;
+        set => this.RaiseAndSetIfChanged(ref _entityId, value);
+    }
+    int? _entityId;
 
-        readonly IProperty<int?> _entityId = H.Property<int?>();
+    public int? UserId
+    {
+        get => _userId;
+        set => this.RaiseAndSetIfChanged(ref _userId, value);
+    }
+    int? _userId;
 
-        public int? UserId
-        {
-            get => _userId.Get();
-            set => _userId.Set(value);
-        }
+    [Ignore]
+    public User User
+    {
+        get => _user.Value;
+        set => UserId = value.Id;
+    }
+    readonly ObservableAsPropertyHelper<User> _user;
 
-        readonly IProperty<int?> _userId = H.Property<int?>();
+    public string Code
+    {
+        get => _code;
+        set => this.RaiseAndSetIfChanged(ref _code, value);
+    }
+    string _code = GetNewCode();
 
-        [Ignore]
-        public User User
-        {
-            //get => E.GetForeign<User>(() => UserId);
-            get => _user.Get();
-            set => UserId = value.Id;
-            //set => _user.Set(value);
-        }
+    public DateTime StartTime
+    {
+        get => _startTime;
+        set => this.RaiseAndSetIfChanged(ref _startTime, value);
+    }
+    DateTime _startTime = DateTime.Now.ToUniversalTime();
 
-        readonly IProperty<User> _user = H.Property<User>(c => c.Foreign(e => e.UserId));
+    public DateTime HeartbeatTime
+    {
+        get => _heartbeatTime; 
+        set => this.RaiseAndSetIfChanged(ref _heartbeatTime, value);
+    }
+    DateTime _heartbeatTime = DateTime.Now.ToUniversalTime();
 
-        public string Code
-        {
-            get => _code.Get();
-            set => _code.Set(value);
-        }
+    public void Heartbeat(int heartBeat)
+    {
+        HeartbeatTime = DateTime.Now.AddMilliseconds(heartBeat).ToUniversalTime();
+    }
 
-        readonly IProperty<string> _code = H.Property<string>(c => c.Set(e => e.GetNewCode()));
-
-        public DateTime StartTime
-        {
-            get => _startTime.Get();
-            set => _startTime.Set(value);
-        }
-
-        readonly IProperty<DateTime> _startTime = H.Property<DateTime>(c => c.Set(e => DateTime.Now.ToUniversalTime()));
-
-        public DateTime HeartbeatTime
-        {
-            get => _heartbeatTime.Get();
-            set => _heartbeatTime.Set(value);
-        }
-
-        readonly IProperty<DateTime> _heartbeatTime = H.Property<DateTime>(c => c.Set(e => DateTime.Now.ToUniversalTime()));
-
-        public void Heartbeat(int heartBeat)
-        {
-            HeartbeatTime = DateTime.Now.AddMilliseconds(heartBeat).ToUniversalTime();
-        }
-
-        const string Charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        readonly Random _rnd = new Random();
-
-        string GetNewCode()
-        {
-            var result = "";
-            for (int i = 0; i < 10; i++)
-                result += Charset[_rnd.Next(Charset.Length)];
-            return result;
-        }
+    const string Charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    static string GetNewCode()
+    {
+        var result = "";
+        for (int i = 0; i < 10; i++)
+            result += Charset[new Random().Next(Charset.Length)];
+        return result;
     }
 }

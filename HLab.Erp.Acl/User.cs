@@ -1,137 +1,130 @@
 ﻿using System;
+using System.Reactive.Linq;
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
-using HLab.Notify.PropertyChanged;
 using NPoco;
+using ReactiveUI;
 
-namespace HLab.Erp.Acl
+namespace HLab.Erp.Acl;
+
+public class User : Entity, IListableModel
 {
-    using H = HD<User>;
-
-    public class User : Entity, IListableModel
+    public User()
     {
-        public User() => H.Initialize(this);
-
-        public string Name
-        {
-            get => _name.Get();
-            set => _name.Set(value);
-        }
-
-        readonly IProperty<string> _name = H.Property<string>(c => c.Default(""));
-
-        public string FirstName
-        {
-            get => _firstName.Get();
-            set => _firstName.Set(value);
-        }
-
-        readonly IProperty<string> _firstName = H.Property<string>(c => c.Default(""));
-
-        public string Initials
-        {
-            get => _initials.Get();
-            set => _initials.Set(value);
-        }
-
-        readonly IProperty<string> _initials = H.Property<string>(c => c.Default(""));
-
-        public string Login
-        {
-            get => _login.Get();
-            set => _login.Set(value);
-        }
-
-        readonly IProperty<string> _login = H.Property<string>(c => c.Default(""));
-        public string Domain
-        {
-            get => _domain.Get();
-            set => _domain.Set(value);
-        }
-
-        readonly IProperty<string> _domain = H.Property<string>(c => c.Default(""));
-
-        public string HashedPassword
-        {
-            get => _hashedPassword.Get();
-            set => _hashedPassword.Set(value);
-        }
-
-        readonly IProperty<string> _hashedPassword = H.Property<string>(c => c.Default(""));
-
-
-        public string Function
-        {
-            get => _function.Get();
-            set => _function.Set(value);
-        }
-
-        readonly IProperty<string> _function = H.Property<string>(c => c.Default(""));
-
-        public string Phone
-        {
-            get => _phone.Get();
-            set => _phone.Set(value);
-        }
-
-        readonly IProperty<string> _phone = H.Property<string>(c => c.Default(""));
-
-        public string Email
-        {
-            get => _email.Get();
-            set => _email.Set(value);
-        }
-
-        readonly IProperty<string> _email = H.Property<string>(c => c.Default(""));
-
-        public String Note
-        {
-            get => _note.Get();
-            set => _note.Set(value);
-        }
-
-        readonly IProperty<string> _note = H.Property<string>(c => c.Default(""));
-
-        public string Pin
-        {
-            get => _pin.Get();
-            set => _pin.Set(value);
-        }
-
-        readonly IProperty<string> _pin = H.Property<string>(c => c.Default(""));
-
-        public DateTime? Expiry
-        {
-            get => _expiry.Get();
-            set => _expiry.Set(value);
-        }
-
-        readonly IProperty<DateTime?> _expiry = H.Property<DateTime?>();
-
-        [Ignore]
-        public string Caption => _caption.Get();
-
-        readonly IProperty<string> _caption = H.Property<string>(c => c
-            .On(e => e.Name)
-            .Set(e => string.IsNullOrWhiteSpace(e.Name)?"{New user}":e.FirstName + " " + e.Name + " (" + e.Initials + ")")
-        );
-
-
-
-        [Ignore]
-        public string IconPath => "Icon/User";
-
-        public static User DesignModel => new User()
-        {
-            Name = "Ouedraogo",
-            FirstName = "Michel",
-            Initials = "MO",
-            Login="o.ouedraogo",
-            Domain="hlab.org",
-            Function = "Technician",
-            Phone = "+200 547 684",
-            Email = "o.ouedraogo@hlab.org",
-
-        };
+        _caption = this
+            .WhenAnyValue(e => e.Name)
+            .Select(e => string.IsNullOrWhiteSpace(e)?"{New user}":e)
+        .ToProperty(this,nameof(Caption));
     }
+
+    public string Name
+    {
+        get => _name;
+        set => this.RaiseAndSetIfChanged(ref _name, value);
+    }
+    string _name = string.Empty;
+
+    public string FirstName
+    {
+        get => _firstName;
+        set => this.RaiseAndSetIfChanged(ref _firstName, value);
+    }
+    string _firstName = string.Empty;
+
+    public string Initials
+    {
+        get => _initials;
+        set => this.RaiseAndSetIfChanged(ref _initials, value);
+    }
+    string _initials = string.Empty;
+
+    public string Login
+    {
+        get => _login;
+        set => this.RaiseAndSetIfChanged(ref _login, value);
+    }
+    string _login = string.Empty; 
+
+    public string Domain
+    {
+        get => _domain;
+        set => this.RaiseAndSetIfChanged(ref _domain, value);
+    }
+    string _domain = "";
+
+    public string HashedPassword
+    {
+        get => _hashedPassword;
+        set => this.RaiseAndSetIfChanged(ref _hashedPassword, value);
+    }
+    string _hashedPassword = "";
+
+
+    public string Function
+    {
+        get => _function;
+        set => this.RaiseAndSetIfChanged(ref _function, value);
+    }
+
+    string _function = string.Empty;
+
+    public string Phone
+    {
+        get => _phone;
+        set => this.RaiseAndSetIfChanged(ref _phone, value);
+    }
+
+    string _phone = string.Empty;
+
+    public string Email
+    {
+        get => _email;
+        set => this.RaiseAndSetIfChanged(ref _email, value);
+    }
+
+    string _email = string.Empty;
+
+    public string Note
+    {
+        get => _note;
+        set => this.RaiseAndSetIfChanged(ref _note, value);
+    }
+
+    string _note = string.Empty;
+
+    public string Pin
+    {
+        get => _pin;
+        set => this.RaiseAndSetIfChanged(ref _pin, value);
+    }
+
+    string _pin = string.Empty;
+
+    public DateTime? Expiry
+    {
+        get => _expiry;
+        set => this.RaiseAndSetIfChanged(ref _expiry, value);
+    }
+
+    DateTime? _expiry;
+
+    [Ignore]
+    public string Caption => _caption.Value;
+    ObservableAsPropertyHelper<string> _caption;
+
+    [Ignore]
+    public string IconPath => "Icon/User";
+
+    public static User DesignModel => new User()
+    {
+        Name = "Ouedraogo",
+        FirstName = "Michel",
+        Initials = "MO",
+        Login="o.ouedraogo",
+        Domain="hlab.org",
+        Function = "Technician",
+        Phone = "+200 547 684",
+        Email = "o.ouedraogo@hlab.org",
+
+    };
 }

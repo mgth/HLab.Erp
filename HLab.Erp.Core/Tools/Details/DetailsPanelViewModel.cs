@@ -1,6 +1,8 @@
 ﻿using HLab.Core.Annotations;
 using HLab.Mvvm;
+using HLab.Mvvm.ReactiveUI;
 using HLab.Notify.PropertyChanged;
+using ReactiveUI;
 
 namespace HLab.Erp.Core.Tools.Details
 {
@@ -10,7 +12,6 @@ namespace HLab.Erp.Core.Tools.Details
         public DetailsPanelViewModel(IMessagesService messageBus)
         {
             messageBus.Subscribe<DetailMessage>(a=> Item = a.Item);
-            H<DetailsPanelViewModel>.Initialize(this);
         }
 
         public string Title => "{Detail}";
@@ -18,10 +19,9 @@ namespace HLab.Erp.Core.Tools.Details
 
         public object Item
         {
-            get => _item.Get();
-            set => _item.Set(value);
+            get => _item;
+            set => this.RaiseAndSetIfChanged(ref _item, value);
         }
-
-        readonly IProperty<object> _item = H<DetailsPanelViewModel>.Property<object>();
+        object _item;
     }
 }
