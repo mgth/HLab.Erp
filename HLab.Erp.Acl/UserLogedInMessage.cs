@@ -1,12 +1,11 @@
-﻿namespace HLab.Erp.Acl
-{
-    public class UserLoggedInMessage
-    {
-        public UserLoggedInMessage(Connection connection)
-        {
-            Connection = connection;
-        }
+﻿namespace HLab.Erp.Acl;
 
-        public Connection Connection { get; }
+public class UserLoggedInMessage
+{
+    public UserLoggedInMessage(Connection connection)
+    {
+        Connection = connection;
     }
+
+    public Connection Connection { get; }
 }

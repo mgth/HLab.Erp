@@ -7,7 +7,7 @@
     <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <FileVersion>2.1.0.0</FileVersion>
     <Version>2.1.0</Version>
-    <LangVersion>default</LangVersion>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\HLab.Core\HLab.Mvvm.Annotations\HLab.Mvvm.Annotations.csproj" />
+    <ProjectReference Include="..\..\HLab.Core\HLab.Mvvm.Application\HLab.Mvvm.Application.csproj" />
     <ProjectReference Include="..\HLab.Erp.Core.Annotations\HLab.Erp.Core.Annotations.csproj" />
     <ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj" />
   </ItemGroup>

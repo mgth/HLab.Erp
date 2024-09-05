@@ -1,6 +1,5 @@
-﻿namespace HLab.Erp.Acl
+﻿namespace HLab.Erp.Acl;
+
+public interface ILoginViewModel
 {
-    public interface ILoginViewModel
-    {
-    }
 }

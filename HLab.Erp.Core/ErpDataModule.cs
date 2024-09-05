@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using HLab.Base.Extensions;
 using HLab.Core.Annotations;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Application;
-using HLab.Notify.PropertyChanged;
-
+using HLab.Mvvm.Application.Documents;
+using HLab.Mvvm.Application.Menus;
+using ReactiveUI;
 
 namespace HLab.Erp.Core
 {
@@ -14,7 +15,7 @@ namespace HLab.Erp.Core
         public override string MenuPath => "param";
     }
 
-    public abstract class NestedBootloader : NotifierBase, IBootloader
+    public abstract class NestedBootloader : ReactiveObject, IBootloader
     {
         public IDocumentService Docs { get; set; } 
         public IMenuService Menu { get; set; } 
@@ -22,8 +23,10 @@ namespace HLab.Erp.Core
         {
             MenuPath = menuPath;
             GetEntityName();
-            H<NestedBootloader>.Initialize(this);
+
+            OpenCommand = ReactiveCommand.CreateFromTask(Open);
         }
+
         public virtual string Caption => Name.FromCamelCase();
         public virtual string Name => _parentType.Name.BeforeSuffix(_suffix);
         public virtual string Header => $"{{{Caption}}}";
@@ -47,10 +50,9 @@ namespace HLab.Erp.Core
         public virtual bool Allowed => true;
 
 
-        public ICommand OpenCommand { get; } = H<NestedBootloader>.Command(c => c
-            .Action(e => e.Docs.OpenDocumentAsync(e.GetType().DeclaringType))
-            .CanExecute(e => true)
-        );
+        public ICommand OpenCommand { get; }
+
+        Task Open() => Docs.OpenDocumentAsync(GetType().DeclaringType);
 
         string _suffix = "";
         string _entityName = "";
@@ -79,7 +81,8 @@ namespace HLab.Erp.Core
                     _entityName = i.GenericTypeArguments[0].Name;
                     return;
                 }
-                else if (t == typeof(IViewModel<>))
+
+                if (t == typeof(IViewModel<>))
                 {
                     _suffix = "ViewModel";
                     _entityName = i.GenericTypeArguments[0].Name;

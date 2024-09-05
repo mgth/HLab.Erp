@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using HLab.Base;
-using HLab.Notify.PropertyChanged;
+using HLab.Core.ReactiveUI;
 using NPoco;
 
 namespace HLab.Erp.Data

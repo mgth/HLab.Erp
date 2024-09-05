@@ -10,7 +10,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using DynamicData.Binding;
 using HLab.Base;
 using HLab.Core.Annotations;
 using ReactiveUI;
@@ -40,16 +39,16 @@ namespace HLab.Erp.Data.Observables
         Task UpdateAsync();
     }
 
-    public class ObservableQuery<T> : ObservableCollectionExtended<T>, IReactiveObject, IObservableQuery<T>, ITriggerable//, IObservableQuery<T>
+    public class ObservableQuery<T> : ReactiveCollection<T>, IObservableQuery<T>, INotifyCollectionChanged, IEnumerable<T>
         where T : class, IEntity
     {
         readonly IGuiTimer _timer;
 
-        public ObservableQuery(IDataService db)
+        public ObservableQuery(IDataService db, IGuiTimer timer)
         {
             _db = db;
 
-            _timer = NotifyHelper.EventHandlerService.GetTimer();
+            _timer = timer;
             _timer.Tick += async (a, b) => await _timer_TickAsync(a, b);
             _timer.Interval = TimeSpan.FromMilliseconds(300);
 
@@ -145,10 +144,6 @@ namespace HLab.Erp.Data.Observables
             set => this.RaiseAndSetIfChanged(ref _sourceQuery, value);
         }
         Func<IQueryable<T>, IQueryable<T>> _sourceQuery = q => q;
-
-        //Func<IQueryable<T, IQueryable<T>>> _sourceQuery = H<ObservableQuery<T>>.Property<Func<IQueryable<T>, IQueryable<T>>>(c => c
-        //   .Set(e => (Func<IQueryable<T>, IQueryable<T>>)(q => q))
-        //);
 
         public Func<IAsyncEnumerable<T>> SourceEnumerable
         {
@@ -415,13 +410,6 @@ namespace HLab.Erp.Data.Observables
             }
         }
 
-        public T Selected
-        {
-            get => _selected;
-            set => this.RaiseAndSetIfChanged(ref _selected, value);
-        }
-        T _selected;
-
         ObservableQuery<T> AddCreator(IDictionary<string, Action<CreateHelper>> dict, Action<CreateHelper> func,
             string name = "")
         {
@@ -522,8 +510,6 @@ namespace HLab.Erp.Data.Observables
         Action _postUpdateAction;
         Stack<WaitHandle> _wait = new();
 
-        public event PropertyChangingEventHandler? PropertyChanging;
-
         public void Update()
         {
             lock (_lockUpdateNeeded)
@@ -588,7 +574,6 @@ namespace HLab.Erp.Data.Observables
             }
         }
 
-        Lock Lock = new();
 
         public async Task UpdateAsync(Action postUpdate, bool force, bool refresh)
         {
@@ -742,20 +727,19 @@ namespace HLab.Erp.Data.Observables
             Update();
         }
 
+        public override void Add(T item)
+        {
+            throw new NotImplementedException("Observable Query is readOnly");
+        }
+        public override void Insert(int index, T item)
+        {
+            throw new NotImplementedException("Observable Query is readOnly");
+        }
+
         void IObservableQuery<T>.AddOrderBy(Func<T, object> orderBy, SortDirection sortDirection)
         => AddOrderBy(orderBy,sortDirection);
 
         void IObservableQuery<T>.ResetOrderBy()
         => ResetOrderBy();
-
-        public void RaisePropertyChanging(PropertyChangingEventArgs args)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RaisePropertyChanged(PropertyChangedEventArgs args)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

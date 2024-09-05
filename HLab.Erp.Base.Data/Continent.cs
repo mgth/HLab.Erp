@@ -1,4 +1,6 @@
 using HLab.Erp.Data;
+using HLab.Mvvm.Application;
+using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Base.Data;
 

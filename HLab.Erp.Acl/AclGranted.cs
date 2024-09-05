@@ -1,66 +1,69 @@
-﻿using HLab.Erp.Data;
-using HLab.Notify.PropertyChanged;
+﻿using HLab.Core.ReactiveUI;
+using HLab.Erp.Data;
 using NPoco;
+using ReactiveUI;
 
-namespace HLab.Erp.Acl
+namespace HLab.Erp.Acl;
+
+public class AclGranted : Entity
 {
-    using H = HD<AclGranted>;
-
-    public class AclGranted : Entity
+    AclGranted() 
     {
-        public AclGranted() => H.Initialize(this);
-
-        public bool Deny
-        {
-            get => _aclGranted.Get();
-            set => _aclGranted.Set(value);
-        }
-
-        readonly IProperty<bool> _aclGranted = H.Property<bool>();
-
-        public int? RightId
-        {
-            get => _right.Id.Get();
-            set => _right.Id.Set(value);
-        }
-        [Ignore]
-        public AclRight Right
-        {
-            get => _right.Get();
-            set => _right.Set(value);
-        }
-
-        readonly IForeign<AclRight> _right = H.Foreign<AclRight>();
-
-
-        public int? ToNodeId
-        {
-            get => _toNode.Id.Get();
-            set => _toNode.Id.Set(value);
-        }
-
-        [Ignore]
-         public AclNode ToNode
-         {
-            get => _toNode.Get();
-            set => _toNode.Set(value);
-         }
-
-         readonly IForeign<AclNode> _toNode = H.Foreign<AclNode>();
-
-        public int? OnNodeId
-        {
-            get => _onNode.Id.Get();
-            set => _onNode.Id.Set(value);
-        }
-
-        [Ignore]
-         public AclNode OnNode
-         {
-            get => _onNode.Get();
-            set => _onNode.Set(value);
-         }
-
-         readonly IForeign<AclNode> _onNode = H.Foreign<AclNode>();
+        _right = Foreign(this, e => e.RightId, e => e.Right);
+        _onNode = Foreign(this, e => e.OnNodeId, e => e.OnNode);
+        _toNode = Foreign(this, e => e.ToNodeId, e => e.ToNode);
     }
+    public bool Deny
+    {
+        get => _aclGranted;
+        set => this.RaiseAndSetIfChanged(ref _aclGranted, value);
+    }
+    bool _aclGranted;
+
+    public int? RightId
+    {
+        get => _rightId;
+        set => this.RaiseAndSetIfChanged(ref _rightId,value);
+    }
+    int? _rightId;
+
+    [Ignore]
+    public AclRight Right
+    {
+        get => _right.Value;
+        set => RightId = value.Id;
+    }
+    readonly ObservableAsPropertyHelper<AclRight> _right;
+
+
+    public int? ToNodeId
+    {
+        get => _toNodeId;
+        set => this.RaiseAndSetIfChanged(ref _toNodeId, value);
+    }
+    int? _toNodeId;
+
+    [Ignore]
+     public AclNode ToNode
+     {
+        get => _toNode.Value;
+        set => ToNodeId = value.Id;
+     }
+
+    readonly ObservableAsPropertyHelper<AclNode> _toNode;
+
+    public int? OnNodeId
+    {
+        get => _onNodeId;
+        set => this.RaiseAndSetIfChanged(ref _onNodeId, value);
+    }
+    int? _onNodeId;
+
+    [Ignore]
+     public AclNode OnNode
+     {
+        get => _onNode.Value;
+        set => OnNodeId = value.Id;
+     }
+     readonly ObservableAsPropertyHelper<AclNode> _onNode;
 }
