@@ -1,27 +1,23 @@
-﻿using HLab.Notify.PropertyChanged;
+﻿using ReactiveUI;
+using System.Reflection;
 
 namespace HLab.Erp.Data
 {
-    using H = H<DataVersion>;
-
     public class DataVersion : Entity
     {
-        public DataVersion() => H.Initialize(this);
-
         public string Module
         {
-            get => _module.Get();
-            set => _module.Set(value);
+            get => _module;
+            set =>  this.RaiseAndSetIfChanged(ref _module, value);
         }
+        string _module = "";
 
-        readonly IProperty<string> _module = H.Property<string>(c => c.Default(""));
         public string Version
         {
-            get => _version.Get();
-            set => _version.Set(value);
+            get => _version;
+            set => this.RaiseAndSetIfChanged(ref _version, value);
         }
-
-        readonly IProperty<string> _version = H.Property<string>();
+        string _version;
 
     }
 }

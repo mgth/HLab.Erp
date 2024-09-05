@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-        <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
     <RootNamespace>HLab.Erp.Data</RootNamespace>
-    <Platforms>AnyCPU;x86;x64</Platforms>
+    <Platforms>AnyCPU;x64</Platforms>
     <Configurations>Debug;Release;DebugRelease</Configurations>
-    <LangVersion>default</LangVersion>
+    <LangVersion>preview</LangVersion>
+    <Version>2.1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

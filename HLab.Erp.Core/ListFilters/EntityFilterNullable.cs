@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
+using ReactiveUI;
 
 namespace HLab.Erp.Core.ListFilters
 {
@@ -21,14 +22,12 @@ namespace HLab.Erp.Core.ListFilters
         public EntityFilterNullable(IEntityListViewModel<TClass> target)
         {
             Target = target;
-            H<EntityFilterNullable<TClass>>.Initialize(this);
-        }
+            this.WhenAnyValue(
+                e => e.Target.SelectedIds
+                // TODO : , e => e.Target.List.Item()
+            ).Subscribe(e => Update?.Invoke());
 
-        ITrigger _ = H<EntityFilterNullable<TClass>>.Trigger(c => c
-            .On(e => e.Target.SelectedIds)
-            .On(e => e.Target.List.Item())
-            .Do(e => e.Update?.Invoke())
-        );
+        }
 
         public Type ListClass => Target.GetType();
 

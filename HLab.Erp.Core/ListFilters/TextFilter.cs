@@ -6,11 +6,11 @@ using HLab.Notify.PropertyChanged;
 
 namespace HLab.Erp.Core.ListFilters
 {
-    using H = H<TextFilter>;
-
     public class TextFilter : Filter<string>
     {
-        public TextFilter() => H.Initialize(this);
+        public TextFilter()
+        {
+        }
 
         static readonly MethodInfo ContainsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
         static readonly MethodInfo ToLowerMethod = typeof(string).GetMethod("ToLower", new Type[] { });

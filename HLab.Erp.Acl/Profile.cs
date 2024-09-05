@@ -3,38 +3,40 @@ using HLab.Mvvm.Application;
 using HLab.Notify.PropertyChanged;
 
 using NPoco;
+using ReactiveUI;
+using System.Reactive.Linq;
 
-namespace HLab.Erp.Acl
+namespace HLab.Erp.Acl;
+
+public class Profile : Entity, IListableModel
 {
-    using H = HD<Profile>;
+    public Profile() 
+    { 
+        _caption = this
+            .WhenAnyValue(e => e.Name)
+            .Select(e => string.IsNullOrWhiteSpace(e)?"{New profile}":e)
+        .ToProperty(this,nameof(Caption));
 
-    public class Profile : Entity, IListableModel
-    {
-        public Profile() => H.Initialize(this);
-
-        public string Name
-        {
-            get => _name.Get();
-            set => _name.Set(value);
-        }
-
-        readonly IProperty<string> _name = H.Property<string>(c => c.Default(""));
-        public string Note
-        {
-            get => _note.Get();
-            set => _note.Set(value);
-        }
-
-        [Ignore]
-        public string Caption => _caption.Get();
-
-        readonly IProperty<string> _caption = H.Property<string>(c => c
-            .On(e => e.Name)
-            .Set(e => string.IsNullOrWhiteSpace(e.Name)?"{New profile}":e.Name)
-        );
-
-        public string IconPath => throw new System.NotImplementedException();
-
-        readonly IProperty<string> _note = H.Property<string>(c => c.Default(""));
     }
+
+    public string Name
+    {
+        get => _name;
+        set => this.RaiseAndSetIfChanged(ref _name, value);
+    }
+    string _name = "";
+
+    public string Note
+    {
+        get => _note;
+        set =>this.RaiseAndSetIfChanged(ref _note, value);
+    }
+    string _note = "";
+
+    [Ignore]
+    public string Caption => _caption.Value;
+    readonly ObservableAsPropertyHelper<string> _caption;// = H.Property<string>(c => c
+
+    public string IconPath => throw new System.NotImplementedException();
+
 }

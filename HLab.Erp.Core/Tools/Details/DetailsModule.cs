@@ -1,6 +1,6 @@
 ﻿using System;
 using HLab.Core.Annotations;
-using HLab.Mvvm.Application;
+using HLab.Mvvm.Application.Documents;
 
 namespace HLab.Erp.Core.Tools.Details
 {

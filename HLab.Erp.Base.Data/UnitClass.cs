@@ -1,62 +1,58 @@
-﻿using System;
-using HLab.Erp.Data;
+﻿using HLab.Erp.Data;
 using HLab.Mvvm.Application;
-using HLab.Notify.Annotations;
-using HLab.Notify.PropertyChanged;
 using NPoco;
+using ReactiveUI;
 
-namespace HLab.Erp.Base.Data
+namespace HLab.Erp.Base.Data;
+
+public class UnitClass : Entity, IListableModel
 {
-    using H = HD<UnitClass>;
-    public class UnitClass : Entity, IListableModel
-    {
-        public UnitClass() => H.Initialize(this);
-
-        public string Name
-        {
-            get => _name.Get(); set => _name.Set(value);
-        }
-
-        readonly IProperty<string> _name = H.Property<string>(c => c.Default(""));
-
-        public string Symbol
-        {
-            get => _symbol.Get(); set => _symbol.Set(value);
-        }
-
-        readonly IProperty<string> _symbol = H.Property<string>(c => c.Default(""));
-
-        public string IconPath
-        {
-            get => _iconPath.Get();
-            set => _iconPath.Set(value);
-        }
-
-        readonly IProperty<string> _iconPath = H.Property<string>(c => c.Default(""));
-
-
-        public bool IsRatio
-        {
-            get => _isRatio.Get(); 
-            set => _isRatio.Set(value);
-        }
-
-        readonly IProperty<bool> _isRatio = H.Property<bool>(c => c.Default(false));
-
-        [Ignore]
-        public string Caption => _caption.Get();
-
-        readonly IProperty<string> _caption = H.Property<string>(c => c
-            .On(e => e.Name)
-            .Set(e => string.IsNullOrWhiteSpace(e.Name) ? "{New Unit}" : $"{e.Name}")
-        );
-
-
-        public static UnitClass DesignModel => new(){
-            Name = "Mass",
-            IconPath ="Icons/Entities/Units/mass.svg"
-            };
-
-
+    public UnitClass() 
+    { 
+        _caption = this
+            .WhenAnyValue(e => e.Name, e => string.IsNullOrWhiteSpace(e)?"{New Unit}":e)
+            .ToProperty(this, nameof(Caption));    
     }
+
+    public string Name
+    {
+        get => _name; 
+        set => this.RaiseAndSetIfChanged(ref _name, value);
+    }
+    string _name = "";
+
+    public string Symbol
+    {
+        get => _symbol; 
+        set => this.RaiseAndSetIfChanged(ref _symbol, value);
+    }
+
+    string _symbol = string.Empty;
+
+    public string IconPath
+    {
+        get => _iconPath;
+        set => this.RaiseAndSetIfChanged(ref _iconPath, value);
+    }
+
+    string _iconPath = string.Empty;
+
+
+    public bool IsRatio
+    {
+        get => _isRatio; 
+        set => this.RaiseAndSetIfChanged(ref _isRatio, value);
+    }
+    bool _isRatio = false;
+
+    [Ignore]
+    public string Caption => _caption.Value;
+    readonly ObservableAsPropertyHelper<string>_caption;
+
+    public static UnitClass DesignModel => new(){
+        Name = "Mass",
+        IconPath ="Icons/Entities/Units/mass.svg"
+        };
+
+
 }

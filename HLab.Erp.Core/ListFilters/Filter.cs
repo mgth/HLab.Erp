@@ -2,146 +2,146 @@
 using System.Linq.Expressions;
 using System.Xml.Linq;
 using HLab.Erp.Data.Observables;
-using HLab.Mvvm;
-using HLab.Notify.PropertyChanged;
+using HLab.Mvvm.ReactiveUI;
+using ReactiveUI;
 
-namespace HLab.Erp.Core.ListFilters
+namespace HLab.Erp.Core.ListFilters;
+
+public abstract class ListElement : ViewModel
 {
-    public abstract class ListElement : ViewModel
+    protected ListElement() { }
+    public object Header
     {
-        protected ListElement() => H<ListElement>.Initialize(this);
-        public object Header
-        {
-            get => _header.Get();
-            set => _header.Set(value);
-        }
-        readonly IProperty<object> _header = H<ListElement>.Property<object>();
+        get => _header;
+        set => this.RaiseAndSetIfChanged(ref _header,value);
+    }
+    object _header;
 
-        public string Name
-        {
-            get => _name.Get();
-            set => _name.Set(value);
-        }
-        readonly IProperty<string> _name = H<ListElement>.Property<string>();
+    public string Name
+    {
+        get => _name;
+        set => this.RaiseAndSetIfChanged(ref _name,value);
+    }
+    string _name;
 
-        public string IconPath
+    public string IconPath
+    {
+        get => _iconPath;
+        set => this.RaiseAndSetIfChanged(ref _iconPath,value);
+    }
+    string _iconPath;
+
+}
+
+public abstract class Filter : ListElement, IFilter
+{
+    protected Filter()
+    {
+        this.WhenAnyValue(e => e.Enabled).Subscribe(e =>
         {
-            get => _iconPath.Get();
-            set => _iconPath.Set(value);
-        }
-        readonly IProperty<string> _iconPath = H<ListElement>.Property<string>();
+            if (e) Enable();
+            else Disable();
+        });
 
     }
 
-    public abstract class Filter : ListElement, IFilter
+    public abstract void Link<T, TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter);
+
+    public bool Enabled
     {
-        protected Filter() => H<Filter>.Initialize(this);
+        get => _enabled;
+        set => this.RaiseAndSetIfChanged(ref _enabled,value);
+    }
+    bool _enabled;
 
-        public abstract void Link<T, TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter);
+    public abstract string StringValue { get; set; }
 
-        public bool Enabled
+    protected Action EnabledAction;
+    protected Action DisabledAction;
+    protected virtual void Enable() => EnabledAction?.Invoke();
+
+    protected virtual void Disable() => DisabledAction?.Invoke();
+
+    public abstract void FromXml(XElement child);
+
+    public virtual XElement ToXml()
+    {
+        return new XElement(Name);
+    }
+}
+
+
+public abstract class Filter<T> : Filter, IFilter<T>
+{
+    protected Filter()
+    {
+        this.WhenAnyValue(
+            e => e.Value, 
+            e => e.Enabled,
+            e => e.Update
+        ).Subscribe(e => e.Item3.Invoke());
+    }
+
+    public T Value {
+        get => _value;
+        set => this.RaiseAndSetIfChanged(ref _value,value);
+    }
+    T _value;
+
+    public override string StringValue
+    {
+        get => Value==null ? "" : Value.ToString();
+        set
         {
-            get => _enabled.Get();
-            set
+            if(typeof(T) == typeof(int?))
             {
-                if (!_enabled.Set(value)) return;
-                if(value) Enable();
-                else Disable();
+                if(int.TryParse(value, out var i))
+                {
+                    Value = (T)(object)i;
+                }
+                else Value = default;
+            }
+
+            if(typeof(T) == typeof(string))
+            {
+                Value = (T)(object)value;
             }
         }
-        readonly IProperty<bool> _enabled = H<Filter>.Property<bool>();
-
-        public abstract string StringValue { get; set; }
-
-        protected Action EnabledAction;
-        protected Action DisabledAction;
-        protected virtual void Enable() => EnabledAction?.Invoke();
-
-        protected virtual void Disable() => DisabledAction?.Invoke();
-
-        public abstract void FromXml(XElement child);
-
-        public virtual XElement ToXml()
-        {
-            return new XElement(Name);
-        }
     }
 
-
-    public abstract class Filter<T> : Filter, IFilter<T>
+    public Action Update
     {
-        protected Filter() => H<Filter<T>>.Initialize(this);
-        public T Value {
-            get => _value.Get();
-            set => _value.Set(value);
-        }
-
-        readonly IProperty<T> _value = H<Filter<T>>.Property<T>();
-
-        public override string StringValue
-        {
-            get => Value==null ? "" : Value.ToString();
-            set
-            {
-                if(typeof(T) == typeof(int?))
-                {
-                    if(int.TryParse(value, out var i))
-                    {
-                        Value = (T)(object)i;
-                    }
-                    else Value = default;
-                }
-
-                if(typeof(T) == typeof(string))
-                {
-                    Value = (T)(object)value;
-                }
-            }
-        }
-
-        public Action Update
-        {
-            get => _update.Get();
-            set => _update.Set(value);
-        }
-
-        readonly IProperty<Action> _update = H<Filter<T>>.Property<Action>();
-
-        IProperty<bool> _updateTrigger = H<Filter<T>>.Property<bool>(c => c
-            .On(e => e.Value)
-            .On(e => e.Enabled)
-            .On(e => e.Update)
-            .NotNull(e => e.Update)
-            .Do((e, p) => e.Update.Invoke())
-        );
-
-        public abstract Expression<Func<TSource, bool>> Match<TSource>(Expression<Func<TSource, T>> getter);
-        public abstract Func<TSource, bool> PostMatch<TSource>(Func<TSource, T> getter);
-
-        public override void Link<T1, TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T1>> getter)
-            => Link<TSource>(q, getter as Expression<Func<TSource, T>>);
-
-        bool _linked = false;
-
-        public void Link<TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter)
-//            where TSource : class, IEntity, new()
-        {
-            if(_linked) {}
-            _linked = true;
-
-            EnabledAction = () => q.AddFilter(() => Match(getter), 0, Header);
-            DisabledAction = () => q.RemoveFilter(Header);
-
-            Update = q.Update;
-        }
-
-        public void PostLink<TSource>(IObservableQuery<TSource> q, Func<TSource, T> getter)
-//            where TSource : class, IEntity, new()
-        {
-            EnabledAction = () => q.AddPostFilter(Header,PostMatch(getter));
-            DisabledAction = () => q.RemoveFilter(Header);
-            Update = q.Update;
-        }
-
+        get => _update;
+        set => this.RaiseAndSetIfChanged(ref _update,value);
     }
+    Action _update;
+
+    public abstract Expression<Func<TSource, bool>> Match<TSource>(Expression<Func<TSource, T>> getter);
+    public abstract Func<TSource, bool> PostMatch<TSource>(Func<TSource, T> getter);
+
+    public override void Link<T1, TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T1>> getter)
+        => Link<TSource>(q, getter as Expression<Func<TSource, T>>);
+
+    bool _linked = false;
+
+    public void Link<TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter)
+//            where TSource : class, IEntity, new()
+    {
+        if(_linked) {}
+        _linked = true;
+
+        EnabledAction = () => q.AddFilter(() => Match(getter), 0, Header);
+        DisabledAction = () => q.RemoveFilter(Header);
+
+        Update = q.Update;
+    }
+
+    public void PostLink<TSource>(IObservableQuery<TSource> q, Func<TSource, T> getter)
+//            where TSource : class, IEntity, new()
+    {
+        EnabledAction = () => q.AddPostFilter(Header,PostMatch(getter));
+        DisabledAction = () => q.RemoveFilter(Header);
+        Update = q.Update;
+    }
+
 }

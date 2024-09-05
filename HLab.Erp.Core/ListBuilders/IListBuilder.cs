@@ -2,7 +2,6 @@
 using System.Dynamic;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilters;
-using Ubiety.Dns.Core;
 
 namespace HLab.Erp.Core.ListBuilders
 {

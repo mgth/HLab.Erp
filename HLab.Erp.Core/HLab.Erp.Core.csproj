@@ -1,17 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-        <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
-    <Platforms>AnyCPU;x64;x86</Platforms>
+        <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+    <Platforms>AnyCPU;x64</Platforms>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <Configurations>Debug;Release;DebugRelease</Configurations>
-    <LangVersion>default</LangVersion>  
+    <LangVersion>preview</LangVersion>
+    <Version>2.1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\HLab\HLab.Application\HLab.Mvvm.Application.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Base\HLab.Base.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Core.Annotations\HLab.Core.Annotations.csproj" />
+    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Application\HLab.Mvvm.Application.csproj" />
     <ProjectReference Include="..\..\HLab\HLab.Mvvm\HLab.Mvvm.csproj" />
     <ProjectReference Include="..\HLab.Erp.Acl\HLab.Erp.Acl.csproj" />
     <ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj" />

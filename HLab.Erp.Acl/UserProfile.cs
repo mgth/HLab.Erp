@@ -1,41 +1,45 @@
 ﻿using HLab.Erp.Data;
 using HLab.Notify.PropertyChanged;
 using NPoco;
+using ReactiveUI;
 
-namespace HLab.Erp.Acl
+namespace HLab.Erp.Acl;
+
+public class UserProfile : Entity
 {
-    using H = HD<UserProfile>;
-
-    public class UserProfile : Entity
+    public UserProfile() 
     {
-        public UserProfile() => H.Initialize(this);
-
-        public int? ProfileId
-        {
-            get => _profile.Id.Get();
-            set => _profile.Id.Set(value);
-        }
-
-        [Ignore]
-        public Profile Profile
-        {
-            get => _profile.Get();
-            set => _profile.Set(value);
-        }
-        readonly IForeign<Profile> _profile = H.Foreign<Profile>();
-
-        public int? UserId
-        {
-            get => _user.Id.Get();
-            set => _user.Id.Set(value);
-        }
-
-        [Ignore]
-        public User User
-        {
-            get => _user.Get();
-            set => _user.Set(value);
-        }
-        readonly IForeign<User> _user = H.Foreign<User>();
+        _profile = Foreign(this, e => e.ProfileId, e => e.Profile);
+        _user = Foreign(this, e => e.UserId, e => e.User);
     }
+
+    public int? ProfileId
+    {
+        get => _profileId;
+        set => this.RaiseAndSetIfChanged(ref _profileId, value);
+    }
+    int? _profileId;
+
+    [Ignore]
+    public Profile Profile
+    {
+        get => _profile.Value;
+        set => ProfileId = value.Id;
+    }
+    readonly ObservableAsPropertyHelper<Profile> _profile;
+
+    public int? UserId
+    {
+        get => _userId;
+        set =>this.RaiseAndSetIfChanged(ref _userId, value);
+    }
+    int? _userId;
+
+    [Ignore]
+    public User User
+    {
+        get => _user.Value;
+        set => UserId = value.Id;
+    }
+    readonly ObservableAsPropertyHelper<User> _user;
 }
