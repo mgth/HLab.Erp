@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using HLab.Base.Wpf;
+using HLab.Base.Wpf.DependencyProperties;
 
 namespace HLab.Erp.Core.Views
 {

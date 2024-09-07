@@ -1,7 +1,5 @@
 ﻿using HLab.Core.Annotations;
-using HLab.Mvvm;
 using HLab.Mvvm.ReactiveUI;
-using HLab.Notify.PropertyChanged;
 using ReactiveUI;
 
 namespace HLab.Erp.Core.Tools.Details

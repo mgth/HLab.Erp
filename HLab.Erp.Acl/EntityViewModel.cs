@@ -3,57 +3,27 @@ using System.ComponentModel;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using HLab.Erp.Data;
-using HLab.Mvvm.Application;
 using HLab.Mvvm.Application.Documents;
 using HLab.Mvvm.ReactiveUI;
 using ReactiveUI;
 
 namespace HLab.Erp.Acl;
 
-public class ListableEntityViewModel<T> : EntityViewModel<T>
-    where T : class, IEntity<int>, INotifyPropertyChanged, IListableModel
-{
-    protected ListableEntityViewModel():base(null){}
-
-    public ListableEntityViewModel(Injector i) : base(i) 
-    {
-        _header = this.WhenAnyValue(
-            e => e.EntityName, 
-            e => e.Model.Caption, 
-            selector: (n, c) => $"{n}\n{c}")
-        .ToProperty(this, nameof(Header));
-
-        _iconPath = this.WhenAnyValue(e => e.Model.IconPath)
-            .ToProperty(this, nameof(IconPath));
-    }
-
-    public override object Header => _header.Value;
-    readonly ObservableAsPropertyHelper<string> _header;
-
-    public override string IconPath => _iconPath.Value;
-
-    readonly ObservableAsPropertyHelper<string> _iconPath;
-
-}
 public class EntityViewModel<T> : ViewModel<T>
     where T : class, IEntity<int>, INotifyPropertyChanged
 {
 
     public Injector Injected { get; }
-    public class Injector
+    public class Injector(
+        IDocumentService docs,
+        Func<T, IDataLocker<T>> getLocker,
+        IAclService acl,
+        IDataService data)
     {
-        public IDocumentService Docs { get; }
-        public Func<T, IDataLocker<T>> GetLocker;
-        public IAclService Acl { get; }
-        public IDataService Data { get; }
-        public Injector(IDocumentService docs, Func<T, IDataLocker<T>> getLocker, IAclService acl,
-            IDataService data)
-        {
-            Docs = docs;
-            GetLocker = getLocker;
-            Acl = acl;
-            Data = data;
-        }
+        public IDocumentService Docs { get; } = docs;
+        public Func<T, IDataLocker<T>> GetLocker = getLocker;
+        public IAclService Acl { get; } = acl;
+        public IDataService Data { get; } = data;
     }
 
 
@@ -99,7 +69,7 @@ public class EntityViewModel<T> : ViewModel<T>
 
     public IDataLocker<T> Locker => _locker.Value;
 
-    ObservableAsPropertyHelper<IDataLocker<T>> _locker;
+    readonly ObservableAsPropertyHelper<IDataLocker<T>> _locker;
     private IDataLocker<T> GetLocker(T model)
     {
         var locker = Injected.GetLocker(model);

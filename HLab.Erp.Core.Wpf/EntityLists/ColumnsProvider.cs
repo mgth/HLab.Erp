@@ -11,7 +11,6 @@ using HLab.Base.Extensions;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
-using HLab.Notify.Annotations;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using ListView = System.Windows.Controls.ListView;
 

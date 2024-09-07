@@ -8,12 +8,13 @@
                      xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:application="clr-namespace:HLab.Mvvm.Application;assembly=HLab.Mvvm.Application"
              xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
+             xmlns:documents="clr-namespace:HLab.Mvvm.Application.Documents;assembly=HLab.Mvvm.Application"
              mc:Ignorable="d" 
              >
 
     <wpf:ViewLocator 
-        ViewClass="{x:Type application:IViewClassDocument}"
-        ViewMode="{x:Type annotations:ViewModeDefault}" 
+        ViewClass="{x:Type documents:IDocumentViewClass}"
+        ViewMode="{x:Type annotations:DefaultViewMode}" 
         DataContext="{Binding}"/>
 </xcad:LayoutDocument>
 

@@ -3,15 +3,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 //using AvalonDock.Controls;
-using HLab.Base.Wpf;
+using HLab.Base.Wpf.Extensions;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.Wpf.ListFilters;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Application;
+using HLab.Mvvm.Application.Documents;
 
 namespace HLab.Erp.Core.Wpf.EntityLists
 {
@@ -19,8 +18,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
     /// Logique d'interaction pour EntityListView3.xaml
     /// </summary>
     public partial class EntityListView3 : UserControl,
-        IView<ViewModeDefault, IEntityListViewModel>,
-        IViewClassDocument, IViewClassDefault
+        IView<DefaultViewMode, IEntityListViewModel>,
+        IDocumentViewClass, IDefaultViewClass
     {
         public EntityListView3()
         {

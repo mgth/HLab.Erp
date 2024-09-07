@@ -1,47 +1,46 @@
-﻿using System.Windows.Input;
+﻿using System.Threading.Tasks;
+using System.Windows.Input;
+using HLab.Base.ReactiveUI;
 using HLab.Core.Annotations;
-using HLab.Erp.Core;
-using HLab.Mvvm.Application;
-using HLab.Notify.PropertyChanged;
+using HLab.Mvvm.Application.Documents;
+using HLab.Mvvm.Application.Menus;
+using ReactiveUI;
 
-namespace HLab.Erp.Acl.Users
+namespace HLab.Erp.Acl.Users;
+
+public class ImportUsersModule : ReactiveModel, IBootloader
 {
-    using H = H<ImportUsersModule>;
-
-    public class ImportUsersModule : NotifierBase, IBootloader
+    readonly IDocumentService _docs;
+    readonly IAclService _acl;
+    readonly IMenuService _menu;
+    public ImportUsersModule(IDocumentService docs, IAclService acl, IMenuService menu)
     {
-        readonly IDocumentService _docs;
-        readonly IAclService _acl;
-        readonly IMenuService _menu;
-        public ImportUsersModule(IDocumentService docs, IAclService acl, IMenuService menu)
-        {
-            _docs = docs;
-            _acl = acl;
-            _menu = menu;
-            H.Initialize(this);
-        }
+        _docs = docs;
+        _acl = acl;
+        _menu = menu;
 
-        public ICommand OpenCommand { get; } = H.Command(c => c.Action(
-            e => e._docs.OpenDocumentAsync(typeof(ImportUsersViewModel))
-        ).CanExecute(e => true));
-
-        protected virtual string IconPath => "Icons/Entities/";
-
-        public virtual void Load(IBootContext b)
-        {
-            if (b.WaitDependency("BootLoaderErpWpf")) return;
-
-            if (_acl.Connection == null)
-            {
-                if(!_acl.Cancelled) b.Requeue();
-                return;
-            }
-
-            if(!_acl.IsGranted(AclRights.ManageUser)) return;
-
-            _menu.RegisterMenu("tools/ImportUsers", "{Import Users}",
-                OpenCommand,
-                "icons/tools/ImportUsers");
-        }
+        OpenCommand = ReactiveCommand.CreateFromTask(async () => await _docs.OpenDocumentAsync(typeof(ImportUsersViewModel)));
     }
+
+    public ICommand OpenCommand { get; }
+
+    protected virtual string IconPath => "Icons/Entities/";
+
+    public async virtual Task LoadAsync(IBootContext b)
+    {
+        if (b.WaitDependency("BootLoaderErpWpf")) return;
+
+        if (_acl.Connection == null)
+        {
+            if(!_acl.Cancelled) b.Requeue();
+            return;
+        }
+
+        if(!_acl.IsGranted(AclRights.ManageUser)) return;
+
+        _menu.RegisterMenu("tools/ImportUsers", "{Import Users}",
+            OpenCommand,
+            "icons/tools/ImportUsers");
+    }
+
 }

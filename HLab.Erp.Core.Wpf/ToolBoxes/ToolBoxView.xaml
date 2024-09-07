@@ -17,7 +17,7 @@
             <controlsEx:ScrollViewerEx>
                     <ListView   
                         wpf:ViewLocator.ViewClass="toolBoxes:IViewClassToolItem"
-                        wpf:ViewLocator.ViewMode="annotations:ViewModeDefault"
+                        wpf:ViewLocator.ViewMode="annotations:DefaultViewMode"
                 
                         Name ="ListViewTest"
                         AllowDrop="True"

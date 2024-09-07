@@ -7,7 +7,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
     /// <summary>
     /// Logique d'interaction pour FilterTextView.xaml
     /// </summary>
-    public partial class BoolFilterView : UserControl, IView<ViewModeDefault, BoolFilter>, IFilterContentViewClass
+    public partial class BoolFilterView : UserControl, IView<DefaultViewMode, BoolFilter>, IFilterContentViewClass
     {
         public BoolFilterView()
         {

@@ -4,8 +4,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Formats.Asn1;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -19,7 +17,6 @@ using HLab.Erp.Core.ListFilters;
 using HLab.Erp.Core.Tools.Details;
 using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
-using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application.Documents;
 using HLab.Mvvm.ReactiveUI;
@@ -31,10 +28,7 @@ namespace HLab.Erp.Core.EntityLists;
 
 public abstract class EntityListViewModel : ViewModel
 {
-    protected class EntityConfigurationException : Exception
-    {
-        public EntityConfigurationException(string message):base(message) { }
-    }
+    protected class EntityConfigurationException(string message) : Exception(message);
 
     public bool ShowFilters
     {
@@ -96,18 +90,12 @@ public abstract class EntityListViewModel : ViewModel
 
     public virtual Injector Injected { get; }
 
-    public class Injector
+    public class Injector(IOptionsService options, Func<Type, object> get)
     {
-        public IOptionsService Options { get; }
-        internal Func<Type, object> Get;
+        public IOptionsService Options { get; } = options;
+        internal Func<Type, object> Get = get;
 
         protected Injector(Injector injector) : this(injector.Options, injector.Get){}
-
-        public Injector(IOptionsService options, Func<Type, object> get)
-        {
-            Options = options;
-            Get = get;
-        }
     }
 
     protected EntityListViewModel(Injector injector)
@@ -144,7 +132,7 @@ public abstract class EntityListViewModel : ViewModel
     public abstract void SetSelectAction(Action<object?> action);
 
 
-    protected readonly ObservableCollection<IFilter> _filters = new();
+    protected readonly ObservableCollection<IFilter> _filters = [];
     public ReadOnlyObservableCollection<IFilter> Filters { get; }
 
 
@@ -314,41 +302,27 @@ public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEnt
 
     readonly ConcurrentDictionary<T, dynamic> _cache = new();
 
-    public new class Injector : EntityListViewModel.Injector
+    public new class Injector(
+        EntityListViewModel.Injector innerInjector,
+        IEntityListHelper<T> helper,
+        Func<T> createInstance,
+        IColumnsProvider<T> columnsProvider,
+        ILocalizationService localization,
+        IAclService acl,
+        IDocumentService docs,
+        IMessagesService message,
+        IDataService data)
+        : EntityListViewModel.Injector(innerInjector)
     {
-        protected internal IEntityListHelper<T> Helper;
-        protected internal Func<T> CreateInstance { get; }
-        protected internal IColumnsProvider<T> ColumnsProvider { get; set; }
+        protected internal IEntityListHelper<T> Helper = helper;
+        protected internal Func<T> CreateInstance { get; } = createInstance;
+        protected internal IColumnsProvider<T> ColumnsProvider { get; set; } = columnsProvider;
 
-        public IAclService Acl { get; }
-        public ILocalizationService Localization { get; }
-        public IDocumentService Docs { get; }
-        public IDataService Data { get; }
-        public IMessagesService Message { get; }
-
-        public Injector(
-            EntityListViewModel.Injector innerInjector,
-            IEntityListHelper<T> helper,
-            Func<T> createInstance,
-            IColumnsProvider<T> columnsProvider,
-
-            ILocalizationService localization,
-            IAclService acl,
-            IDocumentService docs, 
-            IMessagesService message, 
-            IDataService data
-
-        ) : base(innerInjector)
-        {
-            Helper = helper;
-            CreateInstance = createInstance;
-            ColumnsProvider = columnsProvider;
-            Acl = acl;
-            Localization = localization;
-            Docs = docs;
-            Message = message;
-            Data = data;
-        }
+        public IAclService Acl { get; } = acl;
+        public ILocalizationService Localization { get; } = localization;
+        public IDocumentService Docs { get; } = docs;
+        public IDataService Data { get; } = data;
+        public IMessagesService Message { get; } = message;
     }
 
     public override Injector Injected => (Injector)base.Injected;
@@ -378,8 +352,6 @@ public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEnt
             e => e.Selected, 
             selector:e => e == null ? null : _cache.GetOrAdd(e, o => new ObjectMapper<T>(o, Injected.ColumnsProvider)))
             .ToProperty(this, e => e.SelectedViewModel);
-
-
 
         OpenCommand = ReactiveCommand.Create<object>(
             Open, 
@@ -634,14 +606,9 @@ public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEnt
     readonly ObservableAsPropertyHelper<dynamic?> _selectedViewModel;
 
 
-    class ExportIdValueProvider : IValueProvider
+    class ExportIdValueProvider(IValueProvider foreignProvider) : IValueProvider
     {
-        readonly IValueProvider _foreignProvider;
-
-        public ExportIdValueProvider(IValueProvider foreignProvider)
-        {
-            _foreignProvider = foreignProvider;
-        }
+        readonly IValueProvider _foreignProvider = foreignProvider;
 
         public void SetValue(object target, object? value)
         {

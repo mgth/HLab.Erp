@@ -38,12 +38,13 @@ public class User : Entity, IListableModel
     }
     string _initials = string.Empty;
 
-    public string Login
+    [Column("Login")]
+    public string Username
     {
-        get => _login;
-        set => this.RaiseAndSetIfChanged(ref _login, value);
+        get => _username;
+        set => this.RaiseAndSetIfChanged(ref _username, value);
     }
-    string _login = string.Empty; 
+    string _username = string.Empty; 
 
     public string Domain
     {
@@ -120,7 +121,7 @@ public class User : Entity, IListableModel
         Name = "Ouedraogo",
         FirstName = "Michel",
         Initials = "MO",
-        Login="o.ouedraogo",
+        Username="o.ouedraogo",
         Domain="hlab.org",
         Function = "Technician",
         Phone = "+200 547 684",

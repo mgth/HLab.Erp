@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Controls;
-using HLab.Base.Wpf;
+using HLab.Base.Wpf.Extensions;
 using HLab.Erp.Core.ListFilters;
 using HLab.Mvvm.Annotations;
 
@@ -9,7 +9,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
     /// <summary>
     /// Logique d'interaction pour FilterEntityView.xaml
     /// </summary>
-    public partial class EntityFilterView : UserControl , IView<ViewModeDefault, IEntityFilterViewModel>, IFilterContentViewClass
+    public partial class EntityFilterView : UserControl , IView<DefaultViewMode, IEntityFilterViewModel>, IFilterContentViewClass
     {
         public EntityFilterView()
         {

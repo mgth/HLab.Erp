@@ -1,28 +1,26 @@
 ﻿using System;
 using System.Windows.Controls;
 
-namespace HLab.Erp.Base.Wpf.Entities
+namespace HLab.Erp.Base.Wpf.Entities;
+
+/// <summary>
+/// Logique d'interaction pour DetailView.xaml
+/// </summary>
+public partial class DetailView : UserControl
 {
-    /// <summary>
-    /// Logique d'interaction pour DetailView.xaml
-    /// </summary>
-    public partial class DetailView : UserControl
+    public DetailView()
     {
-        public DetailView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        void Populate(Type modelType)
+    void Populate(Type modelType)
+    {
+        foreach (var property in modelType.GetProperties())
         {
-            foreach (var property in modelType.GetProperties())
+            if (property.PropertyType == typeof(string))
             {
-                if (property.PropertyType == typeof(string))
-                {
 
-                }
             }
         }
     }
-
 }

@@ -1,18 +1,19 @@
 ﻿using System.Windows.Controls;
+using HLab.Erp.Core.Tools.Details;
 using HLab.Mvvm.Annotations;
+using HLab.Mvvm.Application.Documents;
 
-namespace HLab.Erp.Core.Tools.Details
+namespace HLab.Erp.Core.Wpf.Tools.Details;
+
+/// <summary>
+/// Logique d'interaction pour DetailView.xaml
+/// </summary>
+public partial class DetailView : UserControl, IAnchorableViewClass, IView<DefaultViewMode, DetailsPanelViewModel>
 {
-    /// <summary>
-    /// Logique d'interaction pour DetailView.xaml
-    /// </summary>
-    public partial class DetailView : UserControl, IViewClassAnchorable, IView<ViewModeDefault, DetailsPanelViewModel>
+    public DetailView()
     {
-        public DetailView()
-        {
-            InitializeComponent();
-        }
-
-        public string ContentId => GetType().Name;
+        InitializeComponent();
     }
+
+    public string ContentId => GetType().Name;
 }

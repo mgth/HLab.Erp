@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Xml.Linq;
+using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm.ReactiveUI;
 using ReactiveUI;
@@ -45,7 +46,7 @@ public abstract class Filter : ListElement, IFilter
 
     }
 
-    public abstract void Link<T, TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter);
+    public abstract void Link<T, TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter) where TSource : class, IEntity;
 
     public bool Enabled
     {
@@ -125,7 +126,7 @@ public abstract class Filter<T> : Filter, IFilter<T>
     bool _linked = false;
 
     public void Link<TSource>(IObservableQuery<TSource> q, Expression<Func<TSource, T>> getter)
-//            where TSource : class, IEntity, new()
+            where TSource : class, IEntity
     {
         if(_linked) {}
         _linked = true;
@@ -137,7 +138,7 @@ public abstract class Filter<T> : Filter, IFilter<T>
     }
 
     public void PostLink<TSource>(IObservableQuery<TSource> q, Func<TSource, T> getter)
-//            where TSource : class, IEntity, new()
+            where TSource : class, IEntity
     {
         EnabledAction = () => q.AddPostFilter(Header,PostMatch(getter));
         DisabledAction = () => q.RemoveFilter(Header);

@@ -87,12 +87,12 @@ namespace HLab.Erp.Data
 
         IEnumerable<T> FetchWhere<T>(
             Expression<Func<T, bool>> expression,
-            Expression<Func<T,object>> orderBy = null
+            Expression<Func<T, object>>? orderBy = null
         ) where T : class, IEntity;
 
         IAsyncEnumerable<T> FetchWhereAsync<T>(
             Expression<Func<T, bool>> expression,
-            Expression<Func<T,object>> orderBy = null
+            Expression<Func<T, object>>? orderBy = null
             ) where T : class, IEntity;
 
         IAsyncEnumerable<TSelect> SelectDistinctAsync<T,TSelect>(
@@ -111,7 +111,7 @@ namespace HLab.Erp.Data
         IEnumerable<string> Connections { get; }
 
         //DbTransaction BeginTransaction();
-        void SetConfigureAction(Func<string> action);
+        void SetConfigureAction(Func<Task<string>> action);
 
         IAsyncEnumerable<string> GetDatabasesAsync(string host, string login, string password);
     }

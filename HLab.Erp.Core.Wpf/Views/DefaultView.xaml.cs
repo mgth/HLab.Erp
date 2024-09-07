@@ -12,7 +12,7 @@ namespace HLab.Erp.Core.Views
     /// Logique d'interaction pour DefaultView.xaml
     /// </summary>
     public partial class DefaultView : UserControl
-        //,IView<ViewModeDefault,INotifyPropertyChanged>
+        //,IView<DefaultViewMode,INotifyPropertyChanged>
     {
         public DefaultView()
         {

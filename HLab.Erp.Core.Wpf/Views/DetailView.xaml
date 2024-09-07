@@ -3,21 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:base="clr-namespace:HLab.Base;assembly=HLab.Base.Wpf"
-             xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors"
              xmlns:views1="clr-namespace:HLab.Mvvm.Views;assembly=HLab.Mvvm.Wpf"
-             xmlns:converters1="clr-namespace:HLab.Base.Wpf.Converters;assembly=HLab.Base.Wpf"
+             xmlns:converters="clr-namespace:HLab.Base.Wpf.Converters;assembly=HLab.Base.Wpf"
              xmlns:wpf="clr-namespace:HLab.Base.Wpf;assembly=HLab.Base.Wpf"
              xmlns:controlsEx="clr-namespace:HLab.Base.Wpf.ControlsEx;assembly=HLab.Base.Wpf"
              xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
              xmlns:views="clr-namespace:HLab.Erp.Core.Wpf.Views"
-             xmlns:entitySelectors1="clr-namespace:HLab.Erp.Core.Wpf.EntitySelectors"
+             xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.Wpf.EntitySelectors"
+             xmlns:controls="clr-namespace:HLab.Base.Wpf.Controls;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
-            <converters1:ToBooleanConverter TrueValue="false" FalseValue="true" x:Key="InvertBooleanConverter" />
+            <converters:ToBooleanConverter TrueValue="false" FalseValue="true" x:Key="InvertBooleanConverter" />
             <Style TargetType="wpf:DateEx">
                 <Setter Property="Width" Value="500"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -79,7 +78,7 @@
             Margin="0,0,5,0"
             HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto">
-            <base:PropertyGrid x:Name="PART_Host">
+            <controls:PropertyGrid x:Name="PART_Host">
                 <Grid.Resources>
                     <Style TargetType="TextBox">
                         <Setter Property="IsReadOnly" Value="{Binding EditMode, RelativeSource={RelativeSource AncestorType={x:Type views:DetailView}},Converter={StaticResource InvertBooleanConverter}}"/>
@@ -104,7 +103,7 @@
                         </Trigger>
                         </Style.Triggers>
                     </Style>
-                    <Style TargetType="entitySelectors1:ForeignView">
+                    <Style TargetType="entitySelectors:ForeignView">
                         <Setter Property="IsReadOnly" Value="{Binding EditMode, RelativeSource={RelativeSource AncestorType={x:Type views:DetailView}},Converter={StaticResource InvertBooleanConverter}}"/>
                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Control.Border}"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -139,7 +138,7 @@
                         </Trigger>
                         </Style.Triggers>
                     </Style>
-                    <Style TargetType="wpf:NumTextBox">
+                    <Style TargetType="controls:NumTextBox">
                         <Setter Property="IsReadOnly" Value="{Binding EditMode, RelativeSource={RelativeSource AncestorType={x:Type views:DetailView}},Converter={StaticResource InvertBooleanConverter}}"/>
                         <Style.Triggers>
                         <Trigger Property="IsReadOnly" Value="True">
@@ -154,7 +153,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-            </base:PropertyGrid>
+            </controls:PropertyGrid>
         </controlsEx:ScrollViewerEx>
 </Grid>
 </UserControl>

@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
+using HLab.ColorTools;
 using HLab.ColorTools.Wpf;
+using HLab.Erp.Core.ViewModelStates;
 
-namespace HLab.Erp.Core.ViewModelStates
+namespace HLab.Erp.Core.Wpf.ViewModelStates
 {
     public class BlackTheme : BrushTheme
     {
         public override Brush GetBrush(Color color, ViewModelState state, BrushSetUsage usage)
         {
-            if (usage == BrushSetUsage.Text || usage == BrushSetUsage.TextBackground)
+            if (usage is BrushSetUsage.Text or BrushSetUsage.TextBackground)
             {
                 return GetBrushText(color, state, usage);
             }
 
-            HSL c = color.ToHSL();
+            var c = color.ToColor<double>().ToHSL();
 
             switch (state)
             {
@@ -37,7 +39,7 @@ namespace HLab.Erp.Core.ViewModelStates
                     c = c.Desaturate(0.2);
                     break;
                     case ViewModelState.Darken:
-                    c = c.Transparent(0.3).Desaturate(0.5);
+                    c = c.LessOpacity(0.3).Desaturate(0.5);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(state), state, null);
@@ -49,7 +51,7 @@ namespace HLab.Erp.Core.ViewModelStates
                     break;
                 case BrushSetUsage.Background:
                     c = c.Highlight(0.5).Desaturate(0.3) /*.Transparent(0.5)*/;
-                    if (state == ViewModelState.Moving) c = c.Transparent(0.5);
+                    if (state == ViewModelState.Moving) c = c.LessOpacity(0.5);
                     break;
                 case BrushSetUsage.Border:
                     break;
@@ -57,9 +59,9 @@ namespace HLab.Erp.Core.ViewModelStates
                     throw new ArgumentOutOfRangeException(nameof(usage), usage, null);
             }
 
-            HSL c2 = c.Darken(0.6);
+            var c2 = c.Darken(0.6);
 
-            return new LinearGradientBrush(c, c2, new Point(0, 0), new Point(0, 1));
+            return new LinearGradientBrush(c.ToWpfColor(), c2.ToWpfColor(), new Point(0, 0), new Point(0, 1));
         }
         public Brush GetBrushText(Color color, ViewModelState state, BrushSetUsage usage)
         {
@@ -68,7 +70,7 @@ namespace HLab.Erp.Core.ViewModelStates
             //    return GetBrushText(color, state, usage);
             //}
 
-            HSL c = color.ToHSL();
+            var c = color.ToColor<double>().ToHSL();
 
             switch (state)
             {
@@ -89,7 +91,7 @@ namespace HLab.Erp.Core.ViewModelStates
                     c = c.Desaturate(0.2);
                     break;
                 case ViewModelState.Darken:
-                    c = c.Transparent(0.5).Desaturate(0.5);
+                    c = c.LessOpacity(0.5).Desaturate(0.5);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(state), state, null);
@@ -101,7 +103,7 @@ namespace HLab.Erp.Core.ViewModelStates
                     break;
                 case BrushSetUsage.TextBackground:
                     c = c.Highlight(0.5).Desaturate(0.3)/*.Transparent(0.5)*/;
-                    if (state == ViewModelState.Moving) c = c.Transparent(0.5);
+                    if (state == ViewModelState.Moving) c = c.LessOpacity(0.5);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(usage), usage, null);
@@ -110,7 +112,7 @@ namespace HLab.Erp.Core.ViewModelStates
             //HSL c2 = c.Darken(0.6);
 
             //return new LinearGradientBrush(c, c2, new Point(0, 0), new Point(0, 1));
-            return new SolidColorBrush(c);
+            return new SolidColorBrush(c.ToWpfColor());
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using HLab.Erp.Data;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm.Annotations;
 
@@ -16,7 +17,7 @@ namespace HLab.Erp.Core.EntityLists
         Dictionary<string, IColumn> Columns {get;} 
     }
 
-    public interface IColumnsProvider<T> : IColumnsProvider
+    public interface IColumnsProvider<T> : IColumnsProvider where T : class, IEntity
     {
         void SetDefaultOrderBy();
         bool GetValue(T obj, string name, out object result);

@@ -26,14 +26,42 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
+using DynamicData;
+using DynamicData.Binding;
 using HLab.Base;
 using Nito.AsyncEx;
 using ReactiveUI;
 
 namespace HLab.Erp.Data.Observables
 {
-    public abstract class ReactiveCollection<T> : ReactiveObject,//NotifierBase,
+    public abstract class ReactiveCollection2<T> : IObservableList<T>
+    {
+        public int Count => throw new NotImplementedException();
+
+        public IObservable<int> CountChanged => throw new NotImplementedException();
+
+        public IEnumerable<T> Items => throw new NotImplementedException();
+
+        public IObservable<IChangeSet<T>> Connect(Func<T, bool>? predicate = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IObservable<IChangeSet<T>> Preview(Func<T, bool>? predicate = null)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public abstract class ReactiveCollection<T> : ReactiveObject, IObservableList<T>,
         IList<T>, IList, IReadOnlyList<T>, INotifyCollectionChanged, ILockable
     {
         protected ReactiveCollection()
@@ -46,7 +74,7 @@ namespace HLab.Erp.Data.Observables
 
         #endregion
 
-        readonly List<T> _list = new();
+        readonly SourceList<T> _list = new();
 
         protected AsyncReaderWriterLock Lock { get; } = new();
 
@@ -62,14 +90,28 @@ namespace HLab.Erp.Data.Observables
         }
         T _selected;
 
-        public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => _list.GetEnumerator();
+        public IEnumerator<T> GetEnumerator() => _list.Items.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _list.Items.GetEnumerator();
+
+        public IObservable<IChangeSet<T>> Connect(Func<T, bool>? predicate = null)
+        {
+            return _list.Connect(predicate);
+        }
+
+        public IObservable<IChangeSet<T>> Preview(Func<T, bool>? predicate = null)
+        {
+            return _list.Preview(predicate);
+        }
 
         public int Count
         {
             get => _count;
             private set => this.RaiseAndSetIfChanged(ref _count, value);
         }
+
+        public IObservable<int> CountChanged => _list.CountChanged;
+
+        public IEnumerable<T> Items => _list.Items;
 
         int _count;
 
@@ -85,7 +127,7 @@ namespace HLab.Erp.Data.Observables
                     var index = _list.Count;
                     _list.Add(item);
                     Count = _list.Count;
-                    _changedQueue.Enqueue(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
+                    _changedQueue.Enqueue(new(NotifyCollectionChangedAction.Add, item, index));
                     return index;
                 }
             }
@@ -109,7 +151,7 @@ namespace HLab.Erp.Data.Observables
 
         public bool Remove(T item) => DoWriteLocked(() =>
             {
-                var index = _list.IndexOf(item);
+                var index = _list.Items.IndexOf(item);
                 var r = _list.Remove(item);
                 Count = _list.Count;
                 _changedQueue.Enqueue(
@@ -123,7 +165,7 @@ namespace HLab.Erp.Data.Observables
 
         protected void RemoveAtNoLock(int index)
         {
-            var item = _list[index];
+            var item = ((IList)_list.Items)[index];
             _list.RemoveAt(index);
             Count = _list.Count;
             _changedQueue.Enqueue(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
@@ -147,12 +189,12 @@ namespace HLab.Erp.Data.Observables
 
         public void CopyTo(Array array, int index) => DoReadLocked(() =>
         {
-            ((IList)_list).CopyTo(array, index);
+            ((IList)_list.Items).CopyTo(array, index);
         });
 
         public void CopyTo(T[] array, int arrayIndex) => DoReadLocked(() =>
         {
-            _list.CopyTo(array, arrayIndex);
+            ((IList)_list.Items).CopyTo(array, arrayIndex);
         });
 
         public void Clear() => DoWriteLocked(() =>
@@ -161,40 +203,40 @@ namespace HLab.Erp.Data.Observables
             _changedQueue.Enqueue(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         });
 
-        bool IList.Contains(object value) => DoReadLocked(() => ((IList)_list).Contains(value));
+        bool IList.Contains(object value) => DoReadLocked(() => ((IList)_list.Items).Contains(value));
 
-        public bool Contains(T item) => DoReadLocked(() => _list.Contains(item));
+        public bool Contains(T item) => DoReadLocked(() => _list.Items.Contains(item));
 
         void IList.Insert(int index, object value) => Insert(index, (T)value);
         void IList.Remove(object item) => Remove((T)item);
-        int IList.IndexOf(object value) => DoReadLocked(() => ((IList)_list).IndexOf(value));
-        public int IndexOf(T item) => DoReadLocked(() => _list.IndexOf(item));
-        object ICollection.SyncRoot => DoReadLocked(() => ((ICollection)_list).SyncRoot);
-        bool ICollection.IsSynchronized => DoReadLocked(() => ((ICollection)_list).IsSynchronized);
-        bool IList.IsFixedSize => DoReadLocked(() => ((IList)_list).IsFixedSize);
-        bool ICollection<T>.IsReadOnly => DoReadLocked(() => ((ICollection<T>)_list).IsReadOnly);
-        bool IList.IsReadOnly => DoReadLocked(() => ((IList)_list).IsReadOnly);
+        int IList.IndexOf(object value) => DoReadLocked(() => ((IList)_list.Items).IndexOf(value));
+        public int IndexOf(T item) => DoReadLocked(() => _list.Items.IndexOf(item));
+        object ICollection.SyncRoot => DoReadLocked(() => ((ICollection)_list.Items).SyncRoot);
+        bool ICollection.IsSynchronized => DoReadLocked(() => ((ICollection)_list.Items).IsSynchronized);
+        bool IList.IsFixedSize => DoReadLocked(() => ((IList)_list.Items).IsFixedSize);
+        bool ICollection<T>.IsReadOnly => DoReadLocked(() => ((ICollection<T>)_list.Items).IsReadOnly);
+        bool IList.IsReadOnly => DoReadLocked(() => ((IList)_list.Items).IsReadOnly);
 
         object IList.this[int index]
         {
-            get => DoReadLocked(() => _list[index]);
+            get => DoReadLocked(() => ((IList)_list.Items)[index]);
             set => DoWriteLocked(() =>
                 {
-                    ((IList)_list)[index] = value;
+                    ((IList)_list.Items)[index] = value;
                     Count = _list.Count;
                     _changedQueue.Enqueue(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, index));
                 }
             );
         }
 
-        protected T GetNoLock(int index) => _list[index];
+        protected T GetNoLock(int index) => (T)((IList)_list.Items)[index];
 
         public T this[int index]
         {
-            get => DoReadLocked(() => _list[index]);
+            get => DoReadLocked(() => (T)((IList)_list.Items)[index]);
             set => DoWriteLocked(() =>
             {
-                _list[index] = value;
+                ((IList)_list.Items)[index] = value;
                 Count = _list.Count;
                 _changedQueue.Enqueue(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, index));
             });
@@ -259,6 +301,11 @@ namespace HLab.Erp.Data.Observables
             {
                 OnCollectionChanged();
             }
+        }
+
+        public void Dispose()
+        {
+            _list.Dispose();
         }
     }
 }

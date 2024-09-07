@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>net6.0-windows;net7.0-windows</TargetFrameworks>
+	  <TargetFrameworks>net8.0-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <Configurations>Debug;Release;DebugRelease</Configurations>
@@ -37,16 +37,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="6.1.3.50" />
+    <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="Dirkster.HL" Version="1.0.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\HLab.Erp.Lims.Analysis\Hlab.Erp.Lims.Analysis.Data\HLab.Erp.Lims.Analysis.Data.csproj" />
-    <ProjectReference Include="..\..\HLab\HLab.Application.Wpf\HLab.Mvvm.Application.Wpf.csproj" />
-    <ProjectReference Include="..\..\HLab\HLab.Base.Wpf\HLab.Base.Wpf.csproj" />
-    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
+    <ProjectReference Include="..\..\HLab.Wpf\HLab.Base.Wpf\HLab.Base.Wpf.csproj" />
+    <ProjectReference Include="..\..\HLab.Wpf\HLab.Mvvm.Application.Wpf\HLab.Mvvm.Application.Wpf.csproj" />
+    <ProjectReference Include="..\..\HLab.Wpf\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
     <ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Base\HLab.Erp.Base.csproj" />
     <ProjectReference Include="..\HLab.Erp.Core.Wpf\HLab.Erp.Core.Wpf.csproj" />
     <ProjectReference Include="..\HLab.Erp.Workflows.Wpf\HLab.Erp.Workflows.Wpf.csproj" />
   </ItemGroup>

@@ -1,52 +1,43 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using HLab.Core.Annotations;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Data.Wpf
+namespace HLab.Erp.Data.Wpf;
+
+public class ErpDataBootloader(IDataService data, IMvvmService mvvm) : IBootloader
 {
-    public class ErpDataBootloader : IBootloader
+    public async Task LoadAsync(IBootContext bootstrapper)
     {
-        readonly IDataService _data;
-        readonly IMvvmService _mvvm;
+        //if (_mvvm.ServiceState != ServiceState.Available)
+        //{
+        //    bootstrapper.Requeue();
+        //    return;
+        //}
 
-        public ErpDataBootloader(IDataService data, IMvvmService mvvm)
+
+        data.SetConfigureAction(async () =>
         {
-            _data = data;
-            _mvvm = mvvm;
-        }
 
-        public void Load(IBootContext bootstrapper)
-        {
-            //if (_mvvm.ServiceState != ServiceState.Available)
-            //{
-            //    bootstrapper.Requeue();
-            //    return;
-            //}
+            var data = new ConnectionData();
 
+            var view = await mvvm.MainContext.GetViewAsync(data, typeof(DefaultViewMode), typeof(IDefaultViewClass));
 
-            _data.SetConfigureAction(() =>
+            var dialog = new Window
             {
+                Content = view,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                SizeToContent = SizeToContent.WidthAndHeight
+            };
 
-                var data = new ConnectionData();
+            if (dialog.ShowDialog() ?? false)
+            {
+                return $"Host={data.Server};Username={data.UserName};Password={data.Password};Database={data.Database}";;
 
-                var view = _mvvm.MainContext.GetView(data, typeof(ViewModeDefault), typeof(IViewClassDefault));
+            }
 
-                var dialog = new Window
-                {
-                    Content = view,
-                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                    SizeToContent = SizeToContent.WidthAndHeight
-                };
-
-                if (dialog.ShowDialog() ?? false)
-                {
-                    return $"Host={data.Server};Username={data.UserName};Password={data.Password};Database={data.Database}";;
-
-                }
-
-
-                return "";
-            });
-        }
+            return "";
+        });
     }
+
 }

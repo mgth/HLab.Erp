@@ -1,146 +1,139 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using HLab.Base;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Core.Wpf.Localization
+namespace HLab.Erp.Core.Wpf.Localization;
+
+public class LocalizeFromDb(IDataService db) : ILocalizationProvider
 {
-    public class LocalizeFromDb : ILocalizationProvider
+    readonly ConcurrentDictionary<string,AsyncDictionary<string,LocalizeEntry>> _cache = new();
+
+    async Task<AsyncDictionary<string, LocalizeEntry>> GetDictionaryAsync(string language)
     {
-        readonly IDataService _db;
-        public LocalizeFromDb(IDataService db)
+        var created = false;
+        var dic = _cache.GetOrAdd(language, t =>
         {
-            _db = db;
-        }
+            created = true;
+            return new();
+        });
 
-        readonly ConcurrentDictionary<string,AsyncDictionary<string,LocalizeEntry>> _cache = new();
+        if (!created) return dic;
 
-        async Task<AsyncDictionary<string, LocalizeEntry>> GetDictionaryAsync(string language)
+        var list = db.FetchWhereAsync<LocalizeEntry>(e => e.Tag == language,e => e.Tag).ConfigureAwait(false);
+        await foreach (var e in list)
         {
-            var created = false;
-            var dic = _cache.GetOrAdd(language, t =>
-            {
-                created = true;
-                return new AsyncDictionary<string, LocalizeEntry>();
-            });
-
-            if (created)
-            {
-                var list = _db.FetchWhereAsync<LocalizeEntry>(e => e.Tag == language,e => e.Tag).ConfigureAwait(false);
-                await foreach (var e in list)
-                {
-                    await dic.GetOrAddAsync(e.Code, async x => e).ConfigureAwait(false);
-                }
-            }
-            return dic;
+            await dic.GetOrAddAsync(e.Code,  x => Task.FromResult(e)).ConfigureAwait(false);
         }
+        return dic;
+    }
 
-        AsyncDictionary<string, LocalizeEntry> GetDictionary(string language)
+    AsyncDictionary<string, LocalizeEntry> GetDictionary(string language)
+    {
+        var created = false;
+        var dic = _cache.GetOrAdd(language, t =>
         {
-            var created = false;
-            var dic = _cache.GetOrAdd(language, t =>
-            {
-                created = true;
-                return new AsyncDictionary<string, LocalizeEntry>();
-            });
+            created = true;
+            return new();
+        });
 
-            if (!created) return dic;
+        if (!created) return dic;
 
-            var list = _db.FetchWhere<LocalizeEntry>(e => e.Tag == language,e => e.Tag);
-            foreach (var e in list)
-            {
-                dic.GetOrAdd(e.Code,   x => e);
-            }
-            return dic;
-        }
-
-
-        public string Localize(string language, string code)
+        var list = db.FetchWhere<LocalizeEntry>(e => e.Tag == language,e => e.Tag);
+        foreach (var e in list)
         {
-            try
-            {
-                var entry = GetLocalizeEntry(language, code);
-                return entry?.Value;
-            }
-            catch
-            {
-                return code;
-            }
+            dic.GetOrAdd(e.Code,   x => e);
         }
+        return dic;
+    }
 
-        public async Task<string> LocalizeAsync(string language, string code)
+
+    public string Localize(string language, string code)
+    {
+        try
         {
-            try
-            {
-                var entry = await GetLocalizeEntryAsync(language, code).ConfigureAwait(false);
-                return entry?.Value;
-            }
-            catch
-            {
-                return code;
-            }
+            var entry = GetLocalizeEntry(language, code);
+            return entry?.Value??"";
         }
-
-        public ILocalizeEntry GetLocalizeEntry(string language, string code)
+        catch
         {
-            var dic = GetDictionary(language);
-
-            var entry = dic.GetOrAdd(code, t =>
-            {
-                var en = _db.FetchOne<LocalizeEntry>(e => e.Tag == language && e.Code == code && e.Custom) ??
-                         _db.FetchOne<LocalizeEntry>(e => e.Tag == language && e.Code == code);
-
-                if(en!=null && en.BadCode)
-                    throw new ArgumentException(en.Code + " is told bad code");
-                return en;
-            });
-
-            return entry;
+            return code;
         }
+    }
 
-        public async Task<ILocalizeEntry> GetLocalizeEntryAsync(string language, string code)
+    public async Task<string> LocalizeAsync(string language, string code, CancellationToken token = default)
+    {
+        try
         {
-            var dic = await GetDictionaryAsync(language).ConfigureAwait(false);
-
-            var entry = await dic.GetOrAddAsync(code, async t =>
-            {
-                var en = await _db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == code && e.Custom).ConfigureAwait(false) ??
-                        await _db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == code).ConfigureAwait(false);
-
-                if(en!=null && en.BadCode)
-                    throw new ArgumentException(en.Code + " is told bad code");
-                return en;
-            }).ConfigureAwait(false);
-
-            return entry;
+            var entry = await GetLocalizeEntryAsync(language, code).ConfigureAwait(false);
+            return entry?.Value??"";
         }
-
-        public IEnumerable<ILocalizeEntry> GetLocalizeEntries(string code)
+        catch
         {
-            foreach(var item in _db.FetchWhere<LocalizeEntry>(e => e.Code == code, e => e.Value))
-                yield return item;
+            return code;
         }
+    }
 
-        public async IAsyncEnumerable<ILocalizeEntry> GetLocalizeEntriesAsync(string code)
+    public ILocalizeEntry GetLocalizeEntry(string language, string code)
+    {
+        var dic = GetDictionary(language);
+
+        var entry = dic.GetOrAdd(code, t =>
         {
-            await foreach(var item in _db.FetchWhereAsync<LocalizeEntry>(e => e.Code == code, e => e.Value).ConfigureAwait(false))
-                yield return item;
-        }
+            var en = db.FetchOne<LocalizeEntry>(e => e.Tag == language && e.Code == code && e.Custom) ??
+                     db.FetchOne<LocalizeEntry>(e => e.Tag == language && e.Code == code);
 
-        public void Register(string tag, string code, string value, bool quality)
+            if(en is { BadCode: true })
+                throw new ArgumentException(en.Code + " is told bad code");
+            return en;
+        });
+
+        return entry;
+    }
+
+    public async Task<ILocalizeEntry> GetLocalizeEntryAsync(string language, string code)
+    {
+        var dic = await GetDictionaryAsync(language).ConfigureAwait(false);
+
+        var entry = await dic.GetOrAddAsync(code, async t =>
         {
-                var entry = _db.AddAsync<LocalizeEntry>(e =>
-                {
-                    e.Tag = tag;
-                    e.Code = code;
-                    e.Value = value;
-                    e.Todo = !quality;
-                });
+            var en = await db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == code && e.Custom).ConfigureAwait(false) ??
+                     await db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == code).ConfigureAwait(false);
 
-        }
+            if(en is { BadCode: true })
+                throw new ArgumentException(en.Code + " is told bad code");
+            return en;
+        }).ConfigureAwait(false);
+
+        return entry;
+    }
+
+    public IEnumerable<ILocalizeEntry> GetLocalizeEntries(string code)
+    {
+        return db
+            .FetchWhere<LocalizeEntry>(e => e.Code == code, e => e.Value);
+    }
+
+    public async IAsyncEnumerable<ILocalizeEntry> GetLocalizeEntriesAsync(string code, CancellationToken token = default)
+    {
+        await foreach(var item in db.FetchWhereAsync<LocalizeEntry>(e => e.Code == code, e => e.Value).WithCancellation(token).ConfigureAwait(false))
+            yield return item;
+    }
+
+    public void Register(string tag, string code, string value, bool quality)
+    {
+        var entry = db.AddAsync<LocalizeEntry>(e =>
+        {
+            e.Tag = tag;
+            e.Code = code;
+            e.Value = value;
+            e.Todo = !quality;
+        });
+
     }
 }

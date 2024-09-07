@@ -3,12 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <LangVersion>default</LangVersion>
-    <Platforms>AnyCPU;x64;x86</Platforms>
+	  <Platforms>AnyCPU;x64</Platforms>
     <Configurations>Debug;Release;DebugRelease</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\HLab.Erp.Acl\HLab.Erp.Acl.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Core\HLab.Erp.Core.csproj" />
   </ItemGroup>
 
 </Project>

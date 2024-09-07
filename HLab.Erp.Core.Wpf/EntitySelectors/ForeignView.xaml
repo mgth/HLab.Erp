@@ -28,7 +28,7 @@
         <wpf:ViewLocator 
             x:Name="Locator" 
             DataContext="{Binding Model, ElementName=UserControl}"
-            ViewClass="{x:Type annotations:IViewClassListItem}"/>
+            ViewClass="{x:Type annotations:IListItemViewClass}"/>
         
         <Label Grid.Column="1"/>
 

@@ -1,31 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>HLab.Erp.Data</RootNamespace>
-    <Platforms>AnyCPU;x64</Platforms>
-    <LangVersion>preview</LangVersion>
-    <Configurations>Debug;Release;DebugRelease</Configurations>
-    <Version>2.1.0.0</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>HLab.Erp.Data</RootNamespace>
+		<Platforms>AnyCPU;x64</Platforms>
+		<LangVersion>preview</LangVersion>
+		<Configurations>Debug;Release;DebugRelease</Configurations>
+		<Version>2.1.0.0</Version>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="9.0.0" />
-    <PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
-    <PackageReference Include="Npgsql" Version="8.0.3" />
-    <PackageReference Include="NPoco" Version="5.7.1" />
-    <PackageReference Include="ReactiveUI" Version="18.3.1" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MySql.Data" Version="9.0.0" />
+		<PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
+		<PackageReference Include="Npgsql" Version="8.0.3" />
+		<PackageReference Include="NPoco" Version="5.7.1" />
+		<PackageReference Include="ReactiveUI" Version="18.3.1" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\HLab.Core\HLab.Base.ReactiveUI\HLab.Base.ReactiveUI.csproj" />
-    <ProjectReference Include="..\..\HLab.Core\HLab.Base\HLab.Base.csproj" />
-    <ProjectReference Include="..\..\HLab.Core\HLab.Core.ReactiveUI\HLab.Core.ReactiveUI.csproj" />
-    <ProjectReference Include="..\..\HLab.Core\HLab.Core\HLab.Core.csproj" />
-    <ProjectReference Include="..\..\HLab.Core\HLab.Mvvm\HLab.Mvvm.csproj" />
-    <ProjectReference Include="..\..\HLab.Core\HLab.Options\HLab.Options.csproj" />
-    <ProjectReference Include="..\HLab.Erp.Data.Annotations\HLab.Erp.Data.Annotations.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\HLab.Core\HLab.Base.ReactiveUI\HLab.Base.ReactiveUI.csproj" />
+		<ProjectReference Include="..\..\HLab.Core\HLab.Base\HLab.Base.csproj" />
+		<ProjectReference Include="..\..\HLab.Core\HLab.Core.ReactiveUI\HLab.Core.ReactiveUI.csproj" />
+		<ProjectReference Include="..\..\HLab.Core\HLab.Core\HLab.Core.csproj" />
+		<ProjectReference Include="..\..\HLab.Core\HLab.Mvvm\HLab.Mvvm.csproj" />
+		<ProjectReference Include="..\..\HLab.Core\HLab.Options\HLab.Options.csproj" />
+		<ProjectReference Include="..\HLab.Erp.Data.Annotations\HLab.Erp.Data.Annotations.csproj" />
+	</ItemGroup>
 
 </Project>

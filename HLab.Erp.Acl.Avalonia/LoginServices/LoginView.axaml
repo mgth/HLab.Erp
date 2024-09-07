@@ -1,0 +1,137 @@
+﻿<UserControl x:Class="HLab.Erp.Acl.Avalonia.LoginServices.LoginView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:icons="clr-namespace:HLab.Icons.Avalonia.Icons;assembly=HLab.Icons.Avalonia"
+             xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
+             xmlns:loginServices="clr-namespace:HLab.Erp.Acl.LoginServices;assembly=HLab.Erp.Acl"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="500" 
+             d:DataContext="{d:DesignInstance Type=loginServices:LoginViewModel}"
+             x:DataType="loginServices:LoginViewModel">
+	
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Viewbox Opacity="0.05">
+            <icons:IconView Path="icons/LogoBackground"/>
+        </Viewbox>
+
+        <StackPanel Margin="30,20,20,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <icons:IconView Path="Icons/Logo" IconMaxWidth="NaN"/>
+                <icons:IconView Margin="20" Path="Icons/AppName" IconMaxWidth="NaN"/>
+            </StackPanel>
+
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center"
+                  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,Auto">
+
+                <!--Database-->
+               
+                <lang:LocalizedLabel 
+                Text="{}{Database} : " 
+                HorizontalAlignment="Right"
+                IsVisible="{Binding AllowDatabaseSelection}"
+                />
+                <ComboBox 
+                    SelectedItem="{Binding Database}" 
+                    IsVisible="{Binding AllowDatabaseSelection}"      
+                    Grid.Row="0" 
+                    Grid.Column="1" 
+                    ItemsSource="{Binding Databases}"
+                    />
+
+                <lang:LocalizedLabel 
+                Text="{}{Theme} : " 
+                    Grid.Row="1" 
+                    Grid.Column="0" 
+                HorizontalAlignment="Right"
+                IsVisible="{Binding AllowThemeSelection}"
+                />
+                <ComboBox 
+                    SelectedItem="{Binding InfoService.Theme}" 
+                    IsVisible="{Binding AllowThemeSelection}"      
+                    Grid.Row="1" 
+                    Grid.Column="1" 
+                    ItemsSource="{Binding InfoService.Themes}"
+                    >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                                <lang:LocalizedLabel Text="{Binding}"/>
+                         </DataTemplate>
+                    </ComboBox.ItemTemplate>
+
+                </ComboBox>
+
+<!-- Name -->
+
+                <lang:LocalizedLabel 
+                Text="{}{Name} : " 
+                Grid.Row="2" Grid.Column="0"
+                HorizontalAlignment="Right"
+                />
+
+                <TextBox 
+                Text="{Binding Username}"
+                Grid.Row="2" 
+                Grid.Column="1" 
+                MinWidth="200"
+                />
+
+<!-- Password -->
+                <lang:LocalizedLabel 
+                Text="{}{Password} : " 
+                Grid.Row="3" Grid.Column="0"
+                HorizontalAlignment="Right"
+                />
+                <TextBox 
+                x:Name="PasswordBox" 
+                Grid.Column="1" 
+                Grid.Row="3" 
+                PasswordChar="*" 
+                TextChanged="PasswordBox_OnPasswordChanged"
+                />
+
+<!-- Password -->
+                <lang:LocalizedLabel 
+                IsVisible="{Binding DebugVisibility}" 
+                Text="{}{Encrypted Password} : " 
+                Grid.Row="4" Grid.Column="0" 
+                HorizontalAlignment="Right"
+                />
+                <TextBox 
+                IsVisible="{Binding DebugVisibility}" 
+                Text="{Binding Password}" 
+                x:Name="EncryptedPassword" 
+                Grid.Column="1" 
+                Grid.Row="4"
+                />
+
+<!-- Message -->
+                <TextBlock 
+                Margin="10"
+                HorizontalAlignment="Center"
+                Grid.Row="5" 
+                Grid.Column="0" 
+                Grid.ColumnSpan="2"   
+                Background="{DynamicResource MahApps.Brushes.Accent}"
+                TextWrapping="Wrap" 
+                Text="{Binding Message}"/>
+
+<!-- Connection -->
+                <Button 
+                IsDefault="True" 
+                Width="100" 
+                Grid.ColumnSpan="2" 
+                Grid.Column="0" 
+                Grid.Row="6" 
+                Margin="10" 
+                Command="{Binding LoginCommand}">
+                    <lang:Localize Id="{}{Connection}"/>
+                </Button>
+                
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>
+

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-	  <TargetFrameworks>net6.0-windows;net7.0-windows</TargetFrameworks>
+	  <TargetFrameworks>net8.0-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <Configurations>Debug;Release;DebugRelease</Configurations>
@@ -14,10 +14,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\HLab.Core\HLab.Core.Annotations\HLab.Core.Annotations.csproj" />
+    <ProjectReference Include="..\..\HLab.Core\HLab.Core\HLab.Core.csproj" />
+    <ProjectReference Include="..\..\HLab.Core\HLab.Mvvm.Annotations\HLab.Mvvm.Annotations.csproj" />
+    <ProjectReference Include="..\..\HLab.Core\HLab.Network\HLab.Network.csproj" />
     <ProjectReference Include="..\..\HLab.Erp\HLab.Erp.Data.Annotations\HLab.Erp.Data.Annotations.csproj" />
-    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Annotations\HLab.Mvvm.Annotations.csproj" />
-    <ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
-    <ProjectReference Include="..\..\HLab\HLab.Network\HLab.Network.csproj" />
+    <ProjectReference Include="..\..\HLab.Wpf\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

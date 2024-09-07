@@ -1,23 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-    <Platforms>AnyCPU;x64;x86</Platforms>
-    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
-    <Configurations>Debug;Release;DebugRelease</Configurations>
-    <LangVersion>preview</LangVersion>
-    <Version>2.1.0.0</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Platforms>AnyCPU;x64</Platforms>
+		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+		<Configurations>Debug;Release;DebugRelease</Configurations>
+		<LangVersion>preview</LangVersion>
+		<Version>2.1.0.0</Version>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\HLab.Core\HLab.Base\HLab.Base.csproj" />
-    <ProjectReference Include="..\..\HLab.Core\HLab.Core.Annotations\HLab.Core.Annotations.csproj" />
-    <ProjectReference Include="..\..\HLab.Core\HLab.Mvvm.Application\HLab.Mvvm.Application.csproj" />
-    <ProjectReference Include="..\..\HLab.Core\HLab.Mvvm\HLab.Mvvm.csproj" />
-    <ProjectReference Include="..\HLab.Erp.Acl\HLab.Erp.Acl.csproj" />
-    <ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj" />
-    <ProjectReference Include="..\HLab.Erp.Data.Annotations\HLab.Erp.Data.Annotations.csproj" />
-    <ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\HLab.Core\HLab.Base\HLab.Base.csproj" />
+		<ProjectReference Include="..\..\HLab.Core\HLab.Core.Annotations\HLab.Core.Annotations.csproj" />
+		<ProjectReference Include="..\..\HLab.Core\HLab.Mvvm.Application\HLab.Mvvm.Application.csproj" />
+		<ProjectReference Include="..\..\HLab.Core\HLab.Mvvm\HLab.Mvvm.csproj" />
+		<ProjectReference Include="..\HLab.Erp.Acl\HLab.Erp.Acl.csproj" />
+		<ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj" />
+		<ProjectReference Include="..\HLab.Erp.Data.Annotations\HLab.Erp.Data.Annotations.csproj" />
+		<ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj" />
+	</ItemGroup>
 
 </Project>

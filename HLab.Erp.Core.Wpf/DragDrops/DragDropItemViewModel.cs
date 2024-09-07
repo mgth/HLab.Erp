@@ -1,32 +1,27 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Reactive.Linq;
+using System.Windows.Media;
 using HLab.ColorTools.Wpf;
-using HLab.Erp.Core.ViewModelStates;
+using HLab.Erp.Core.Wpf.ViewModelStates;
 using HLab.Erp.Data;
-using HLab.Mvvm;
-using HLab.Notify.PropertyChanged;
+using HLab.Mvvm.ReactiveUI;
+using ReactiveUI;
 
-
-namespace HLab.Erp.Core.DragDrops
+namespace HLab.Erp.Core.Wpf.DragDrops
 {
-    public class DragDropItemViewModel<T> : ViewModel<T> where T : IEntity, IEntityWithColor, IEntityWithIcon
+    public class DragDropItemViewModel<T> : ViewModel<T> where T : class, IEntity, IEntityWithColor, IEntityWithIcon
     {
 
-        public DragDropItemViewModel()
-        {
-            H<DragDropItemViewModel<T>>.Initialize(this);
-        }
+        public DragDropItemViewModel() => this.WhenAnyValue(e => e.Model.Color)
+                .Do(c => State.OnTriggered())
+                .Subscribe();
 
         public State State
         {
-            get => _state.Get();
-            set => _state.Set(value.SetColor(() => Model?.Color.ToColor() ?? Colors.Transparent));
+            get => _state;
+            set => _state = (value.SetColor(() => Model?.Color.ToWpfColor() ?? Colors.Transparent));
         }
-
-        readonly IProperty<State> _state = H<DragDropItemViewModel<T>>.Property<State>(c => c
-            .On(e => e.Model.Color)
-            //.Do((a,p) => p.Get().Color = a.Model.Color.ToColor())
-            .Do(e=>e.State.OnTriggered())
-        );
+        State _state;
 
     }
 }

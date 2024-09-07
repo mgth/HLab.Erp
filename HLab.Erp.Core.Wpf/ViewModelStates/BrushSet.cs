@@ -1,98 +1,97 @@
 ﻿using System;
 using System.Windows.Media;
-using HLab.Mvvm;
-using HLab.Notify.Annotations;
-using HLab.Notify.PropertyChanged;
+using HLab.Erp.Core.ViewModelStates;
+using HLab.Mvvm.ReactiveUI;
+using ReactiveUI;
 
-namespace HLab.Erp.Core.ViewModelStates
+namespace HLab.Erp.Core.Wpf.ViewModelStates;
+
+public class BrushSet : ViewModel //, IChildObject
 {
-    using H = H<BrushSet>;
-
-    public class BrushSet : ViewModel, IChildObject
+    public BrushSet(ViewModelState vmState)
     {
-        public BrushSet(ViewModelState vmState)
-        {
-            VmState = vmState;
-            H.Initialize(this);
-        }
+        VmState = vmState;
 
-        public State State
-        {
-            get => _state.Get();
-            set => _state.Set(value);
-        }
+        _background = this.WhenAnyValue(
+            e => e.State.Theme,
+            e => e.State.Color,
+            e => e.VmState,
+            selector: (theme, color, state) => theme.GetBrush(color, state, BrushSetUsage.Background)
+            )
+            .ToProperty(this, e => e.Background);
 
-        readonly IProperty<State> _state = H.Property<State>();
+        _front = this.WhenAnyValue(
+            e => e.State.Theme,
+            e => e.State.Color,
+            e => e.VmState,
+            selector: (theme, color, state) => theme.GetBrush(color, state, BrushSetUsage.Front)
+            )
+            .ToProperty(this, e => e.Front);
 
-        public ViewModelState VmState { get; }
+        _border = this.WhenAnyValue(
+            e => e.State.Theme,
+            e => e.State.Color,
+            e => e.VmState,
+            selector: (theme, color, state) => theme.GetBrush(color, state, BrushSetUsage.Border)
+            )
+            .ToProperty(this, e => e.Border);
 
-        public Brush Background => _background.Get();
+        _text = this.WhenAnyValue(
+            e => e.State.Theme,
+            e => e.State.Color,
+            e => e.VmState,
+            selector: (theme, color, state) => theme.GetBrush(color, state, BrushSetUsage.Text)
+            )
+            .ToProperty(this, e => e.Text);
 
-        readonly IProperty<Brush> _background = H.Property<Brush>(c => c
-            .NotNull(e => e.State?.Theme)
-            .Set(e => e.State.Theme.GetBrush(e.State.Color, e.VmState, BrushSetUsage.Background))
-            .On(e => e.State.Theme)
-            .On(e => e.State.Color)
-            .On(e => e.VmState)
-            .Update()
-        );
+        _textBackground = this.WhenAnyValue(
+            e => e.State.Theme,
+            e => e.State.Color,
+            e => e.VmState,
+            selector: (theme, color, state) => theme.GetBrush(color, state, BrushSetUsage.TextBackground)
+            )
+            .ToProperty(this, e => e.TextBackground);
 
-        public Brush Front => _front.Get();
 
-        readonly IProperty<Brush> _front = H.Property<Brush>(c => c
-            .NotNull(e => e.State?.Theme)
-            .Set(e => e.State.Theme.GetBrush(e.State.Color, e.VmState, BrushSetUsage.Front))
-            .On(e => e.State.Theme)
-            .On(e => e.State.Color)
-            .On(e => e.VmState)
-            .Update()
-        );
-
-        public Brush Border => _border.Get();
-
-        readonly IProperty<Brush> _border = H.Property<Brush>(c => c
-            .NotNull(e => e.State?.Theme)
-            .Set(e => e.State.Theme.GetBrush(e.State.Color, e.VmState, BrushSetUsage.Border))
-            .On(e => e.State.Theme)
-            .On(e => e.State.Color)
-            .On(e => e.VmState)
-            .Update()
-        );
-
-        public Brush Text => _text.Get();
-
-        readonly IProperty<Brush> _text = H.Property<Brush>(c => c
-            .NotNull(e => e.State?.Theme)
-            .Set(e => e.State.Theme.GetBrush(e.State.Color, e.VmState, BrushSetUsage.Text))
-            .On(e => e.State.Theme)
-            .On(e => e.State.Color)
-            .On(e => e.VmState)
-            .Update()
-        );
-
-        public Brush TextBackground => _textBackground.Get();
-
-        readonly IProperty<Brush> _textBackground = H.Property<Brush>(c => c
-            .NotNull(e => e.State?.Theme)
-            .Set(e => e.State.Theme.GetBrush(e.State.Color, e.VmState, BrushSetUsage.TextBackground))
-            .On(e => e.State.Theme)
-            .On(e => e.State.Color)
-            .On(e => e.VmState)
-            .Update()
-        );
-
-        public INotifyPropertyChangedWithHelper Parent
-        {
-            get => State;
-            set
-            {
-                if(value is State state)
-                    State = state;
-            }
-        }
-
-        public void OnDispose(Action action)
-        {
-        }
     }
+
+    public State State
+    {
+        get => _state;
+        set => SetAndRaise(ref _state,value);
+    }
+    State _state;
+
+    public ViewModelState VmState { get; }
+
+    public Brush Background => _background.Value;
+    readonly ObservableAsPropertyHelper<Brush> _background;
+
+
+    public Brush Front => _front.Value;
+    readonly ObservableAsPropertyHelper<Brush> _front;
+
+    public Brush Border => _border.Value;
+    readonly ObservableAsPropertyHelper<Brush> _border;
+
+
+    public Brush Text => _text.Value;
+    readonly ObservableAsPropertyHelper<Brush> _text;
+
+    public Brush TextBackground => _textBackground.Value;
+    readonly ObservableAsPropertyHelper<Brush> _textBackground;
+
+    //public INotifyPropertyChangedWithHelper Parent
+    //{
+    //    get => State;
+    //    set
+    //    {
+    //        if(value is State state)
+    //            State = state;
+    //    }
+    //}
+
+    //public void OnDispose(Action action)
+    //{
+    //}
 }

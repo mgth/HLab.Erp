@@ -7,7 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 //using AvalonDock.Controls;
-using HLab.Base.Wpf;
+using HLab.Base.Wpf.Extensions;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.Wpf.ListFilters;
 using HLab.Mvvm.Annotations;
@@ -19,8 +19,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
     /// Logique d'interaction pour EntityListView2.xaml
     /// </summary>
     public partial class EntityListView2 : UserControl
-        //,IView<ViewModeDefault, IEntityListViewModel>,
-        //IViewClassDocument, IViewClassDefault
+        //,IView<DefaultViewMode, IEntityListViewModel>,
+        //IDocumentViewClass, IDefaultViewClass
     {
         public EntityListView2()
         {

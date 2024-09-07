@@ -4,7 +4,6 @@ using System.Reactive.Linq;
 using System.Xml.Linq;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
-using HLab.Notify.PropertyChanged;
 using ReactiveUI;
 
 namespace HLab.Erp.Core.ListFilters

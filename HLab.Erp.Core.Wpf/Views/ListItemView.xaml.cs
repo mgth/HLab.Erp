@@ -2,13 +2,13 @@
 using HLab.Erp.Core.ViewModels;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Core.Views
+namespace HLab.Erp.Core.Wpf.Views
 {
     /// <summary>
     /// Logique d'interaction pour ListItemView.xaml
     /// </summary>
     public partial class ListItemView : UserControl
-        ,IView<ViewModeList,IListItemViewModel>
+        ,IView<ListViewMode,IListItemViewModel>
     {
         public ListItemView()
         {

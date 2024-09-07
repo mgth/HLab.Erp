@@ -1,16 +1,18 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using HLab.Erp.Core.DragDrops;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
+using HLab.Mvvm.Application.Documents;
 
 namespace HLab.Erp.Core.ToolBoxes
 {
     /// <summary>
     /// Logique d'interaction pour SearchTestView.xaml
     /// </summary>
-    public partial class ToolBoxView : UserControl, IViewClassAnchorable
-        , IView<ViewModeDefault, IToolListViewModel>
+    public partial class ToolBoxView : UserControl, IAnchorableViewClass
+        , IView<DefaultViewMode, IToolListViewModel>
     {
         readonly IMvvmService _mvvm;
         readonly IDragDropService _dragDrop;
@@ -47,13 +49,16 @@ namespace HLab.Erp.Core.ToolBoxes
 
             source.DragShift = new Point(0, 0) - source.MouseEventArgs.GetPosition(i);
 
-
-            source.DraggedElement = (FrameworkElement)_mvvm.ViewHelperFactory.Get(this).Context.GetView(
-                ListViewTest.SelectedValue as IEntity,
-                typeof(ViewModeDefault),
-                typeof(IViewClassDraggable)
-                );
-        }
+            // TODO : 
+            Task.Run(async () =>
+            {
+                source.DraggedElement = (FrameworkElement)await _mvvm.ViewHelperFactory.Get(this).Context.GetViewAsync(
+                    ListViewTest.SelectedValue as IEntity,
+                    typeof(DefaultViewMode),
+                    typeof(IViewClassDraggable)
+                    );
+            });
+       }
 
         public string ContentId => GetType().Name;
 

@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0</TargetFrameworks>
+		<Platforms>AnyCPU;x64</Platforms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="System.DirectoryServices" Version="8.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\HLab.Avalonia\HLab.Base.Avalonia\HLab.Base.Avalonia.csproj" />
+		<ProjectReference Include="..\..\HLab.Avalonia\HLab.Icons.Avalonia\HLab.Icons.Avalonia.csproj" />
+		<ProjectReference Include="..\..\HLab.Avalonia\HLab.Localization.Avalonia3\HLab.Localization.Avalonia.csproj" />
+		<ProjectReference Include="..\..\HLab.Avalonia\HLab.Mvvm.Avalonia\HLab.Mvvm.Avalonia.csproj" />
+		<ProjectReference Include="..\HLab.Erp.Acl\HLab.Erp.Acl.csproj" />
+		<ProjectReference Include="..\HLab.Erp.Core.Avalonia\HLab.Erp.Core.Avalonia.csproj" />
+		<ProjectReference Include="..\HLab.Erp.Core\HLab.Erp.Core.csproj" />
+	</ItemGroup>
+
+</Project>

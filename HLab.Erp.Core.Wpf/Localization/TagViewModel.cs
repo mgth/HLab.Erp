@@ -1,19 +1,16 @@
-﻿using HLab.Mvvm;
-using HLab.Notify.PropertyChanged;
+﻿using HLab.Mvvm.ReactiveUI;
 
 namespace HLab.Erp.Core.Wpf.Localization
 {
     internal class TagViewModel : ViewModel
     {
-        public TagViewModel() => H<TagViewModel>.Initialize(this);
-
         public string Value
         {
-            get => _value.Get();
-            set => _value.Set(value);
+            get => _value;
+            set => SetAndRaise(ref _value,value);
         }
 
-        readonly IProperty<string> _value = H<TagViewModel>.Property<string>();
+        string _value;
 
     }
 }

@@ -1,14 +1,14 @@
 ﻿namespace HLab.Erp.Core.ListFilters
 {
-    //using H = H<EntityFilterViewModel>;
+    //
 
     //public class EntityFilterViewModel : FilterViewModel, IEntityFilterViewModel
     //{
-    //    public EntityFilterViewModel() => H.Initialize(this);
+    //    public EntityFilterViewModel() { }
 
     //    public INotifyCollectionChanged Query
     //    {
-    //        get => _query.Get();   
+    //        get => _query;   
     //        set
     //        {
     //            var old = Query;
@@ -28,7 +28,7 @@
     //            _query.Set(value);
     //        }
     //    }
-    //    private readonly IProperty<INotifyCollectionChanged> _query = H.Property<INotifyCollectionChanged>();
+    //    private INotifyCollectionChanged _query ;
 
     //    private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     //    {
@@ -84,9 +84,9 @@
 
     //    public IEntity Value
     //    {
-    //        get => _value.Get();
-    //        set => _value.Set(value);
+    //        get => _value;
+    //        set => SetAndRaise(ref _value,value);
     //    }
-    //    private readonly IProperty<IEntity> _value = H.Property<IEntity>();
+    //    private IEntity _value ;
     //}
 }

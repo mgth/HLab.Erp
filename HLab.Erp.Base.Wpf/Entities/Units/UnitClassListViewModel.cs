@@ -24,8 +24,8 @@ public class UnitClassesListViewModel : Core.EntityLists.EntityListViewModel<Uni
 
     readonly IAclService _acl;
 
-    protected override bool CanExecuteAdd(Action<string> errorAction) => _acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
-    protected override bool CanExecuteDelete(UnitClass unitClass, Action<string> errorAction) =>  _acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+    protected override bool AddCanExecute(Action<string> errorAction) => _acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
+    protected override bool DeleteCanExecute(UnitClass unitClass, Action<string> errorAction) =>  _acl.IsGranted(errorAction, ErpRights.ErpSignCustomer);
 
     public UnitClassesListViewModel(IAclService acl, Injector i) : base(i, c => c
         .Column("Name")

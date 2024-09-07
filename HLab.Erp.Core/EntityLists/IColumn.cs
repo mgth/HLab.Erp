@@ -27,7 +27,7 @@ namespace HLab.Erp.Core.EntityLists
         }
     }
 
-    public interface IColumn<T> : IColumn
+    public interface IColumn<T> : IColumn where T : class, IEntity
     {
         Func<T, object> OrderBy { get; set; }
 

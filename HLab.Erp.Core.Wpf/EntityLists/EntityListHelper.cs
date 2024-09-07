@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Data;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Data;
@@ -38,6 +36,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         {
             var date = DateTime.Now.ToString("u").Replace(':','-');
             var filename = $"Export-{date}.{typeof(T).Name}.gz";
+
+            ///////////////////////////////////////////////////
             SaveFileDialog saveFileDialog = new()
             {
                 FileName = filename, 
@@ -45,6 +45,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
                 Filter = $"{typeof(T).Name} (*.{typeof(T).Name}.gz)|*.{typeof(T).Name}.gz"
             };
             if (saveFileDialog.ShowDialog() == false) return;
+            ///////////////////////////////////////////////////
 
             var text = JsonConvert.SerializeObject(
                 list.ToList(),
@@ -66,9 +67,10 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         public async Task<IEnumerable<T>> ImportAsync()
         {
             var filename = typeof(T).Name + ".gz";
+            /////////////////////////////////////////////////////
             OpenFileDialog openFileDialog = new() { Filter = $"{typeof(T).Name} (*.{typeof(T).Name}.gz)|*.{typeof(T).Name}.gz" };
             if (openFileDialog.ShowDialog() == false) return new List<T>();
-
+            /////////////////////////////////////////////////////
             await using var fileStream = File.OpenRead(openFileDialog.FileName);
             await using var resultStream = new MemoryStream();
             await using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);

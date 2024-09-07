@@ -84,7 +84,7 @@
                 />
 
                 <TextBox 
-                Text="{Binding Login}"
+                Text="{Binding Username}"
                 Grid.Row="2" 
                 Grid.Column="1" 
                 MinWidth="200"

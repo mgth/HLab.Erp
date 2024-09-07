@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Xml.Linq;
 using HLab.Base;
 using HLab.Erp.Data;
-using HLab.Notify.PropertyChanged;
 using ReactiveUI;
 
 namespace HLab.Erp.Core.ListFilters

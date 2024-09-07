@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using HLab.Base.Wpf;
+using HLab.Base.Wpf.DependencyProperties;
 using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.Wpf.EntityLists

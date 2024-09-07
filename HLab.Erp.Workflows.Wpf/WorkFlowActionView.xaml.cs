@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using HLab.Erp.Workflows.ViewModels;
 using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Workflows

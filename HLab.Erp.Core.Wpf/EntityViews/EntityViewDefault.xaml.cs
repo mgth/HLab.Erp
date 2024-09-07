@@ -7,7 +7,7 @@ namespace HLab.Erp.Core.EntityViews
     /// <summary>
     /// Logique d'interaction pour EntityViewDefault.xaml
     /// </summary>
-    public partial class EntityViewDefault : UserControl, IView<ViewModeDefault,IEntity>
+    public partial class EntityViewDefault : UserControl, IView<DefaultViewMode,IEntity>
     {
         public EntityViewDefault()
         {

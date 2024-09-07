@@ -1,6 +1,5 @@
-﻿namespace HLab.Erp.Acl.Security
+﻿namespace HLab.Erp.Acl.Security;
+
+internal class ListAclNodeViewModel 
 {
-    internal class ListAclNodeViewModel 
-    {
-    }
 }

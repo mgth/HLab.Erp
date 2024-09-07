@@ -1,4 +1,5 @@
 ﻿using System.Windows.Media;
+using HLab.Erp.Core.Wpf.ViewModelStates;
 
 namespace HLab.Erp.Core.ViewModelStates
 {

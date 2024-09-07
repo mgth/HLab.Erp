@@ -3,189 +3,194 @@ using System.Collections.ObjectModel;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using HLab.Erp.Data;
-using HLab.Mvvm;
-using HLab.Notify.PropertyChanged;
+using HLab.Mvvm.ReactiveUI;
+using ReactiveUI;
 
-namespace HLab.Erp.Acl.Users
+
+namespace HLab.Erp.Acl.Users;
+
+public class AdUser
 {
-    using H = H<ImportUsersViewModel>;
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public required string Login { get; set; }
+    public required string Function { get; set; }
+    public required string Email { get; set; }
 
-    public class AdUser
+    public override string ToString() => $"{Login} : {FirstName} {LastName}";
+}
+
+public class ImportUsersViewModel : ViewModel
+{
+    public IAclService Acl;
+    readonly IDataService _data;
+    public ImportUsersViewModel(IAclService acl, IDataService data)
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Login { get; set; }
-        public string Function { get; set; }
-        public string Email { get; set; }
+        Acl = acl;
+        _data = data;
+            
 
-        public override string ToString() => Login + " : " + FirstName + " " + LastName;
+        Domain = Acl.Connection.User.Domain;
+        UserName = Acl.Connection.User.Username;
+
+        RetrieveUsersCommand = ReactiveCommand.Create<PasswordBox>((a) => RetrieveUsers(a as PasswordBox));
+
+        ImportUserCommand = ReactiveCommand.Create(
+            ImportUsers, 
+            this
+                .WhenAnyValue(e => e.Acl.Connection.User)
+                .Select(u => acl.IsGranted(AclRights.ManageUser)));
     }
 
-    public class ImportUsersViewModel : ViewModel
+    public string Title => "{Import Users}";
+
+
+    public ObservableCollection<AdUser> Users { get; } = [];
+
+    public string Domain { get => _domain; set => SetAndRaise(ref _domain,value); }
+    string _domain ;
+
+    public string Message { get => _message; set => SetAndRaise(ref _message,value); }
+    string _message ;
+
+    public bool Success { get => _success; set => SetAndRaise(ref _success,value); }
+    bool _success ;
+
+    public string UserName { get => _userName; set => SetAndRaise(ref _userName,value); }
+    string _userName ;
+    public AdUser? SelectedUser { get => _selectedUser; set => SetAndRaise(ref _selectedUser,value); }
+    AdUser? _selectedUser ;
+
+    public ICommand RetrieveUsersCommand { get; }
+
+    void RetrieveUsers(PasswordBox password)
     {
-        readonly IAclService _acl;
-        readonly IDataService _data;
-        public ImportUsersViewModel(IAclService acl, IDataService data)
+        try
         {
-            _acl = acl;
-            _data = data;
-            H.Initialize(this);
+            using var context = new PrincipalContext(ContextType.Domain, Domain, UserName, string.IsNullOrEmpty(password.Password)?null:password.Password);
+            using var searcher = new PrincipalSearcher(new UserPrincipal(context));
 
-            Domain = _acl.Connection.User.Domain;
-            UserName = _acl.Connection.User.Login;
-        }
+            Users.Clear();
 
-        public string Title => "{Import Users}";
-
-
-        public ObservableCollection<AdUser> Users { get; } = new ObservableCollection<AdUser>();
-
-        public string Domain { get => _domain.Get(); set => _domain.Set(value); }
-        readonly IProperty<string> _domain = H.Property<string>();
-
-        public string Message { get => _message.Get(); set => _message.Set(value); }
-        readonly IProperty<string> _message = H.Property<string>();
-
-        public bool Success { get => _success.Get(); set => _success.Set(value); }
-        readonly IProperty<bool> _success = H.Property<bool>();
-
-        public string UserName { get => _userName.Get(); set => _userName.Set(value); }
-        readonly IProperty<string> _userName = H.Property<string>();
-        public AdUser SelectedUser { get => _selectedUser.Get(); set => _selectedUser.Set(value); }
-        readonly IProperty<AdUser> _selectedUser = H.Property<AdUser>();
-
-        public ICommand RetrievetUsersCommand { get; } = H.Command(c => c
-              .Action((e, a) => e.RetrieveUsers(a as PasswordBox)));
-
-        void RetrieveUsers(PasswordBox password)
-        {
-            try
+            foreach (var result in searcher.FindAll())
             {
-                using var context = new PrincipalContext(ContextType.Domain, Domain, UserName, String.IsNullOrEmpty(password.Password)?null:password.Password);
-                using var searcher = new PrincipalSearcher(new UserPrincipal(context));
-
-                Users.Clear();
-
-                foreach (var result in searcher.FindAll())
+                if(result.GetUnderlyingObject() is not DirectoryEntry de) continue;
+                var user = new AdUser
                 {
-                    DirectoryEntry de = result.GetUnderlyingObject() as DirectoryEntry;
-                    var user = new AdUser
-                    {
-                        FirstName = de.Properties["givenName"].Value?.ToString() ?? "",
-                        LastName = de.Properties["sn"].Value?.ToString() ?? "",
-                        Login = (de.Properties["userPrincipalName"].Value?.ToString() ?? "").Replace("@" + Domain, ""),
-                        Email = de.Properties["email"].Value?.ToString() ?? "",
-                        Function = de.Properties["description"].Value?.ToString() ?? ""
-                    };
+                    FirstName = de.Properties["givenName"].Value?.ToString() ?? "",
+                    LastName = de.Properties["sn"].Value?.ToString() ?? "",
+                    Login = (de.Properties["userPrincipalName"].Value?.ToString() ?? "").Replace("@" + Domain, ""),
+                    Email = de.Properties["email"].Value?.ToString() ?? "",
+                    Function = de.Properties["description"].Value?.ToString() ?? ""
+                };
 
-                    Users.Add(user);
-                }
-            }
-            catch (PrincipalServerDownException ex)
-            {
-                Message = ex.Message;
-                Success = false;
-            }
-            catch (DirectoryServicesCOMException ex)
-            {
-                Message = ex.Message;
-                Success = false;
-            }
-            catch (Exception ex)
-            {
-                Message = ex.Message;
-                Success = false;
+                Users.Add(user);
             }
         }
-
-        public void GetADUsers()
+        catch (PrincipalServerDownException ex)
         {
-            try
+            Message = ex.Message;
+            Success = false;
+        }
+        catch (DirectoryServicesCOMException ex)
+        {
+            Message = ex.Message;
+            Success = false;
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+            Success = false;
+        }
+    }
+
+    public void GetADUsers()
+    {
+        try
+        {
+            var dcs = Domain.Split('.').Reverse();
+            var DomainPath = "LDAP://" + string.Join(",", dcs.Select(e => "DC=" + e));
+            var searchRoot = new DirectoryEntry(DomainPath);
+            var search = new DirectorySearcher(searchRoot);
+            search.Filter = "(&(objectClass=user)(objectCategory=person))";
+            search.PropertiesToLoad.Add("samaccountname");
+            search.PropertiesToLoad.Add("mail");
+            search.PropertiesToLoad.Add("usergroup");
+            search.PropertiesToLoad.Add("displayname");//first name
+            var resultCol = search.FindAll();
+            if (resultCol == null) return;
+
+            for (var counter = 0; counter < resultCol.Count; counter++)
             {
-                var dcs = Domain.Split('.').Reverse();
-                string DomainPath = "LDAP://" + String.Join(",", dcs.Select(e => "DC=" + e));
-                DirectoryEntry searchRoot = new DirectoryEntry(DomainPath);
-                DirectorySearcher search = new DirectorySearcher(searchRoot);
-                search.Filter = "(&(objectClass=user)(objectCategory=person))";
-                search.PropertiesToLoad.Add("samaccountname");
-                search.PropertiesToLoad.Add("mail");
-                search.PropertiesToLoad.Add("usergroup");
-                search.PropertiesToLoad.Add("displayname");//first name
-                SearchResult result;
-                SearchResultCollection resultCol = search.FindAll();
-                if (resultCol != null)
+                var result = resultCol[counter];
+
+                if (!result.Properties.Contains("samaccountname") ||
+                    !result.Properties.Contains("mail") ||
+                    !result.Properties.Contains("displayname")) continue;
+
+                var objSurveyUsers = new AdUser
                 {
-                    for (int counter = 0; counter < resultCol.Count; counter++)
-                    {
-                        string UserNameEmailString = string.Empty;
-                        result = resultCol[counter];
-                        if (result.Properties.Contains("samaccountname") &&
-                                 result.Properties.Contains("mail") &&
-                            result.Properties.Contains("displayname"))
-                        {
-                            AdUser objSurveyUsers = new AdUser();
-                            objSurveyUsers.Email = (String)result.Properties["mail"][0] +
-                              "^" + (String)result.Properties["displayname"][0];
-                            objSurveyUsers.Login = (String)result.Properties["samaccountname"][0];
-                            objSurveyUsers.FirstName = (String)result.Properties["givenName"][0];
-                            objSurveyUsers.LastName = (String)result.Properties["sn"][0];
-                            Users.Add(objSurveyUsers);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Message = ex.Message;
-                Success = false;
+                    Email = (string)result.Properties["mail"][0] +
+                            "^" +
+                            (string)result.Properties["displayname"][0],
+                    Login = (string)result.Properties["samaccountname"][0],
+                    FirstName = (string)result.Properties["givenName"][0],
+                    LastName = (string)result.Properties["sn"][0],
+                    Function = null
+                };
+                Users.Add(objSurveyUsers);
             }
         }
-
-        public ICommand ImportUserCommand { get; } = H.Command(c => c
-              .CanExecute(e => e._acl.IsGranted(AclRights.ManageUser))
-              .Action(e => e.ImportUsers()));
-
-        void ImportUsers()
+        catch (Exception ex)
         {
-            var user = SelectedUser;
-            if (user == null) return;
-
-            var existingUser = _data.FetchOne<User>(u => u.Login == user.Login);
-            if (existingUser != null)
-            {
-                existingUser.Domain = Domain;
-                existingUser.Name = user.LastName;
-                existingUser.FirstName = user.FirstName;
-                existingUser.Email = user.Email;
-                existingUser.Function = user.Function;
-                existingUser.Initials = user.FirstName.Substring(0, 1).ToUpper() + user.LastName.Substring(0, 1);
-
-                _data.Update(existingUser, new[] { "Domain", "Name", "Email", "Function", "Initials" });
-
-                Message = String.Format("{{User}} {0} {{updated}}",existingUser.Login);
-                Success = true;
-
-                return;
-            }
-
-            _data.Add<User>(u =>
-            {
-                u.Domain = Domain;
-                u.FirstName = user.FirstName;
-                u.Name = user.LastName;
-                u.Email = user.Email;
-                u.Function = user.Function;
-                u.Login = user.Login;
-                u.Initials = user.FirstName.Substring(0, 1).ToUpper() + user.LastName.Substring(0, 1);
-            }, u =>
-            {
-                Message = String.Format("{{User}} {0} {{created}}",u.Login);
-                Success = true;
-                SelectedUser = null;
-            });
+            Message = ex.Message;
+            Success = false;
         }
+    }
+
+    public ICommand ImportUserCommand { get; } 
+
+    void ImportUsers()
+    {
+        var user = SelectedUser;
+        if (user == null) return;
+
+        var existingUser = _data.FetchOne<User>(u => u.Username == user.Login);
+        if (existingUser != null)
+        {
+            existingUser.Domain = Domain;
+            existingUser.Name = user.LastName;
+            existingUser.FirstName = user.FirstName;
+            existingUser.Email = user.Email;
+            existingUser.Function = user.Function;
+            existingUser.Initials = string.Concat(user.FirstName[..1].ToUpper(), user.LastName[..1].ToUpper());
+
+            _data.Update(existingUser, "Domain", "Name", "Email", "Function", "Initials");
+
+            Message = $"{{User}} {existingUser.Username} {{updated}}";
+            Success = true;
+
+            return;
+        }
+
+        _data.Add<User>(u =>
+        {
+            u.Domain = Domain;
+            u.FirstName = user.FirstName;
+            u.Name = user.LastName;
+            u.Email = user.Email;
+            u.Function = user.Function;
+            u.Username = user.Login;
+            u.Initials = user.FirstName[..1].ToUpper() + user.LastName[..1].ToUpper();
+        }, u =>
+        {
+            Message = $"{{User}} {u.Username} {{created}}";
+            Success = true;
+            SelectedUser = null;
+        });
     }
 }

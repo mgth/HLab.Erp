@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using HLab.Erp.Acl.AuditTrails;
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
 using Nito.AsyncEx;

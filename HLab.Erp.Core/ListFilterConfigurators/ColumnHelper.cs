@@ -3,10 +3,11 @@ using System.Linq.Expressions;
 using HLab.Base;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilters;
+using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.ListFilterConfigurators
 {
-    public class ColumnBuilder<T> : IColumn<T>.IBuilder
+    public class ColumnBuilder<T> : IColumn<T>.IBuilder where T : class, IEntity
     {
         public ColumnBuilder(IEntityListViewModel<T> listViewModel, IColumn<T> column)
         {

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using HLab.Base.Wpf;
+using HLab.Base.Wpf.Extensions;
 using HLab.Erp.Core.ListFilters;
 using HLab.Mvvm.Annotations;
 
@@ -10,7 +10,7 @@ namespace HLab.Erp.Core.Wpf.ListFilters
     /// <summary>
     /// Logique d'interaction pour FilterView.xaml
     /// </summary>
-    public partial class FilterView : UserControl, IView<ViewModeDefault, IFilter>
+    public partial class FilterView : UserControl, IView<DefaultViewMode, IFilter>
     {
         public FilterView()
         {

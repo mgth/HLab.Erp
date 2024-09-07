@@ -7,8 +7,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
     /// Logique d'interaction pour EntityListView2.xaml
     /// </summary>
     public partial class EntityListView : UserControl 
-        //,IView<ViewModeDefault, IEntityListViewModel>
-        //,IViewClassDocument, IViewClassDefault
+        //,IView<DefaultViewMode, IEntityListViewModel>
+        //,IDocumentViewClass, IDefaultViewClass
     {
         public EntityListView()
         {

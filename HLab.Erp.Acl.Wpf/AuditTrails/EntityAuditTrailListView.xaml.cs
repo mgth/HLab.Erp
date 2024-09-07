@@ -13,16 +13,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace HLab.Erp.Acl.AuditTrails
+namespace HLab.Erp.Acl.AuditTrails;
+
+/// <summary>
+/// Logique d'interaction pour EntityAuditTrailListView.xaml
+/// </summary>
+public partial class EntityAuditTrailListView : UserControl
 {
-    /// <summary>
-    /// Logique d'interaction pour EntityAuditTrailListView.xaml
-    /// </summary>
-    public partial class EntityAuditTrailListView : UserControl
+    public EntityAuditTrailListView()
     {
-        public EntityAuditTrailListView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

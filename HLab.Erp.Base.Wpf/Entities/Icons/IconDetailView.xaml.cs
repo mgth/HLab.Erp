@@ -1,16 +1,15 @@
 ﻿using System.Windows.Controls;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Base.Wpf.Entities.Icons
+namespace HLab.Erp.Base.Wpf.Entities.Icons;
+
+/// <summary>
+/// Logique d'interaction pour IconView.xaml
+/// </summary>
+public partial class IconDetailView: UserControl, IView<IconViewModel>
 {
-    /// <summary>
-    /// Logique d'interaction pour IconView.xaml
-    /// </summary>
-    public partial class IconDetailView: UserControl, IView<IconViewModel>
+    public IconDetailView()
     {
-        public IconDetailView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

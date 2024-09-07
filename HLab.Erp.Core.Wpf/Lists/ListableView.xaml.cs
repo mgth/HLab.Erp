@@ -7,7 +7,7 @@ namespace HLab.Erp.Core.Lists
     /// <summary>
     /// Logique d'interaction pour ListableView.xaml
     /// </summary>
-    public partial class ListableView : UserControl, IView<IListableModel>, IViewClassListItem
+    public partial class ListableView : UserControl, IView<IListableModel>, IListItemViewClass
     {
         public ListableView()
         {

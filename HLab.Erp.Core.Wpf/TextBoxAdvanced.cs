@@ -4,8 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-
-using HLab.Base.Wpf;
+using HLab.Base.Wpf.Extensions;
 
 namespace HLab.Erp.Core
 {

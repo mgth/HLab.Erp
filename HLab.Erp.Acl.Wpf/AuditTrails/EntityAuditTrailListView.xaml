@@ -25,7 +25,7 @@
                     <wpf:ViewLocator 
                         Grid.Row="1"
                         Foreground="{DynamicResource HLab.Brushes.Foreground}"
-                        ViewClass="{x:Type annotations:IViewClassContent}"
+                        ViewClass="{x:Type annotations:IContentViewClass}"
                         Model="{Binding AuditTrail}"
                     />
                 </Expander>

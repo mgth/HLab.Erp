@@ -42,7 +42,7 @@ public class AclHelper : IAclHelper
     {
         var login = credential.UserName;
         var pin = Crypt(credential.SecurePassword);
-        return await Data.FetchOneAsync<User>(u => u.Login == login && u.Pin == pin);
+        return await Data.FetchOneAsync<User>(u => u.Username == login && u.Pin == pin);
     }
 
     public virtual async Task<User> GetUser(NetworkCredential credential)
@@ -50,7 +50,7 @@ public class AclHelper : IAclHelper
         try
         {
             return await Data.FetchOneAsync<User>(u =>
-                u.Login == credential.UserName && u.HashedPassword == Crypt(credential.SecurePassword));
+                u.Username == credential.UserName && u.HashedPassword == Crypt(credential.SecurePassword));
         }
         catch (DataException ex)
         {

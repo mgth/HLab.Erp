@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Reactive.Linq;
 using System.Windows.Media;
-using HLab.Mvvm;
-using HLab.Notify.Annotations;
-using HLab.Notify.PropertyChanged;
+using HLab.Core.Annotations;
+using HLab.Erp.Core.ViewModelStates;
+using HLab.Mvvm.ReactiveUI;
+using ReactiveUI;
 
-namespace HLab.Erp.Core.ViewModelStates
+namespace HLab.Erp.Core.Wpf.ViewModelStates
 {
-    using H = H<State>;
+
 
     public enum ViewModelState
     {
@@ -30,7 +32,45 @@ namespace HLab.Erp.Core.ViewModelStates
 
     public class State : ViewModel, ITriggerable
     {
-        public State() => H.Initialize(this);
+        public State()
+        {
+            _currentState = this
+                .WhenAnyValue(
+                e => e.Disabled, 
+                e => e.Moving,                 
+                e => e.Selected, 
+                e => e.RightHighlighted, 
+                e => e.LeftHighlighted, 
+                e => e.Darken,
+                selector: GetCurrentState)
+                .ToProperty(this, e => e.CurrentState, scheduler: RxApp.MainThreadScheduler);
+
+            _current = this.WhenAnyValue(e => e.CurrentState)
+                .Select(GetBrushSet)
+                .ToProperty(this, e => e.Current, scheduler: RxApp.MainThreadScheduler);
+
+            _background = this.WhenAnyValue(e => e.Current.Background)
+                .ToProperty(this, e => e.Background, scheduler: RxApp.MainThreadScheduler);
+
+            _front = this.WhenAnyValue(e => e.Current.Front)
+                .ToProperty(this, e => e.Front, scheduler: RxApp.MainThreadScheduler);
+
+            _border = this.WhenAnyValue(e => e.Current.Border)
+                .ToProperty(this, e => e.Border, scheduler: RxApp.MainThreadScheduler);
+
+            _text = this.WhenAnyValue(e => e.Current.Text)
+                .ToProperty(this, e => e.Text, scheduler: RxApp.MainThreadScheduler);
+
+            _textBackground = this.WhenAnyValue(e => e.Current.TextBackground)
+                .ToProperty(this, e => e.TextBackground, scheduler: RxApp.MainThreadScheduler);
+
+            _highlighted = this.WhenAnyValue(
+                e => e.LeftHighlighted, 
+                e => e.RightHighlighted,
+                (l, r) => l || r
+                )
+                .ToProperty(this, e => e.Highlighted, scheduler: RxApp.MainThreadScheduler);
+        }
 
         Func<Color> _getter;
         public State SetColor(Func<Color> getter)
@@ -42,35 +82,24 @@ namespace HLab.Erp.Core.ViewModelStates
 
         public BrushTheme Theme
         {
-            get => _theme.Get();
-            set => _theme.Set(value);
+            get => _theme;
+            set => SetAndRaise(ref _theme, value);
         }
+        BrushTheme _theme = BrushTheme.Current;
 
-        readonly IProperty<BrushTheme> _theme = H.Property<BrushTheme>(c => c
-            .Set(e => BrushTheme.Current)
-        );
+        public ViewModelState CurrentState => _currentState.Value;
+        readonly ObservableAsPropertyHelper<ViewModelState> _currentState;
 
-        public ViewModelState CurrentState => _currentState.Get();
-
-        readonly IProperty<ViewModelState> _currentState = H.Property<ViewModelState>(c => c
-            .Set(e =>
-                e.Disabled ? ViewModelState.Disabled :
-                e.Moving ? ViewModelState.Moving :
-                e.Selected ? ViewModelState.Selected :
-                e.RightHighlighted ? ViewModelState.RightHighlighted :
-                e.LeftHighlighted ? ViewModelState.RightHighlighted :
-                e.Darken ? ViewModelState.Darken :
-                    ViewModelState.Default)
-            .On(e => e.Selected)
-            .On(e => e.Highlighted)
-            .On(e => e.RightHighlighted)
-            .On(e => e.LeftHighlighted)
-            .On(e => e.Disabled)
-            .On(e => e.Moving)
-            .On(e => e.Darken)
-            .Update()
-        );
-
+        static ViewModelState GetCurrentState(bool disabled, bool moving, bool selected, bool rightHighlighted, bool leftHighlighted, bool darken)
+        {
+            if (disabled) return ViewModelState.Disabled;
+            if (moving) return ViewModelState.Moving;
+            if (selected) return ViewModelState.Selected;
+            if (rightHighlighted) return ViewModelState.RightHighlighted;
+            if (leftHighlighted) return ViewModelState.LeftHighlighted;
+            if (darken) return ViewModelState.Darken;
+            return ViewModelState.Default;
+        }
 
         public BrushSet DefaultBrushSet { get; } = new BrushSet(ViewModelState.Default);
 
@@ -86,97 +115,68 @@ namespace HLab.Erp.Core.ViewModelStates
 
         public BrushSet MovingBrushSet { get; } = new BrushSet(ViewModelState.Moving);
 
-        public BrushSet Current => _current.Get();
+        public BrushSet Current => _current.Value;
+        ObservableAsPropertyHelper<BrushSet> _current;
 
-        readonly IProperty<BrushSet> _current = H.Property<BrushSet>(c => c
-           .Set(e =>
-           {
-               switch (e.CurrentState)
-               {
-                   case ViewModelState.Default: return e.DefaultBrushSet;
-                   case ViewModelState.LeftHighlighted: return e.LeftHighlightedBrushSet;
-                   case ViewModelState.RightHighlighted: return e.RightHighlightedBrushSet;
-                   case ViewModelState.Selected: return e.SelectedBrushSet;
-                   case ViewModelState.Moving: return e.MovingBrushSet;
-                   case ViewModelState.Darken: return e.DarkenBrushSet;
-                   case ViewModelState.Disabled: return e.DisabledBrushSet;
-                   default: return e.DefaultBrushSet;
-               }
-           })
-           .On(e => e.CurrentState).Update()
-     );
+        BrushSet GetBrushSet(ViewModelState state)
+        {
+            switch (state)
+            {
+                case ViewModelState.Default: return DefaultBrushSet;
+                case ViewModelState.LeftHighlighted: return LeftHighlightedBrushSet;
+                case ViewModelState.RightHighlighted: return RightHighlightedBrushSet;
+                case ViewModelState.Selected: return SelectedBrushSet;
+                case ViewModelState.Moving: return MovingBrushSet;
+                case ViewModelState.Darken: return DarkenBrushSet;
+                case ViewModelState.Disabled: return DisabledBrushSet;
+                default: return DefaultBrushSet;
+            }
+        }
 
-        public Brush Background => _background.Get();
 
-        readonly IProperty<Brush> _background = H.Property<Brush>(c => c
-            .On(e => e.Current.Background)
-            .Set(e => e.Current.Background)
-            .Update()
-        );
 
-        public Brush Front => _front.Get();
+        public Brush Background => _background.Value;
+        readonly ObservableAsPropertyHelper<Brush> _background;
 
-        readonly IProperty<Brush> _front = H.Property<Brush>(c => c
-            .Set(e => e.Current.Front)
-            .On(e => e.Current.Front)
-            .Update()
-        );
+        public Brush Front => _front.Value;
+        readonly ObservableAsPropertyHelper<Brush> _front;
 
-        public Brush Border => _border.Get();
 
-        readonly IProperty<Brush> _border = H.Property<Brush>(c => c
-            .Set(e => e.Current.Border)
-            .On(e => e.Current.Border)
-            .Update()
-        );
+        public Brush Border => _border.Value;
+        readonly ObservableAsPropertyHelper<Brush> _border;
 
-        public Brush Text => _text.Get();
+        public Brush Text => _text.Value;
+        readonly ObservableAsPropertyHelper<Brush> _text;
 
-        readonly IProperty<Brush> _text = H.Property<Brush>(c => c
-            .Set(e => e.Current.Text)
-            .On(e => e.Current.Text)
-            .Update()
-        );
-
-        public Brush TextBackground => _textBackground.Get();
-
-        readonly IProperty<Brush> _textBackground = H.Property<Brush>(c => c
-            .Set(e => e.Current.TextBackground)
-            .On(e => e.Current.TextBackground)
-            .Update()
-        );
+        public Brush TextBackground => _textBackground.Value;
+        readonly ObservableAsPropertyHelper<Brush> _textBackground;
 
 
         public Color Color
         {
-            get => _color.Get();
-            set => _color.Set(value);
+            get => _color;
+            set => SetAndRaise(ref _color, value);
         }
 
-        readonly IProperty<Color> _color = H.Property<Color>();
-        public bool Selected { get => _selected.Get(); set => _selected.Set(value); }
-        readonly IProperty<bool> _selected = H.Property<bool>();
-        public bool LeftHighlighted { get => _leftHighlighted.Get(); set => _leftHighlighted.Set(value); }
-        readonly IProperty<bool> _leftHighlighted = H.Property<bool>();
-        public bool RightHighlighted { get => _rightHighlighted.Get(); set => _rightHighlighted.Set(value); }
-        readonly IProperty<bool> _rightHighlighted = H.Property<bool>();
+        Color _color;
+        public bool Selected { get => _selected; set => SetAndRaise(ref _selected, value); }
+        bool _selected;
+        public bool LeftHighlighted { get => _leftHighlighted; set => SetAndRaise(ref _leftHighlighted, value); }
+        bool _leftHighlighted;
+        public bool RightHighlighted { get => _rightHighlighted; set => SetAndRaise(ref _rightHighlighted, value); }
+        bool _rightHighlighted;
 
-        public bool Highlighted => _highlighted.Get();
+        public bool Highlighted => _highlighted.Value;
+        readonly ObservableAsPropertyHelper<bool> _highlighted;
 
-        readonly IProperty<bool> _highlighted = H.Property<bool>(c => c
-            .Set(e => e.LeftHighlighted || e.RightHighlighted)
-            .On(e => e.LeftHighlighted)
-            .On(e => e.RightHighlighted)
-            .Update()
-        );
-        public bool Darken { get => _darken.Get(); set => _darken.Set(value); }
-        readonly IProperty<bool> _darken = H.Property<bool>();
+        public bool Darken { get => _darken; set => SetAndRaise(ref _darken, value); }
+        bool _darken;
 
-        public bool Disabled { get => _disabled.Get(); set => _disabled.Set(value); }
-        readonly IProperty<bool> _disabled = H.Property<bool>();
+        public bool Disabled { get => _disabled; set => SetAndRaise(ref _disabled, value); }
+        bool _disabled;
 
-        public bool Moving { get => _moving.Get(); set => _moving.Set(value); }
-        readonly IProperty<bool> _moving = H.Property<bool>();
+        public bool Moving { get => _moving; set => SetAndRaise(ref _moving, value); }
+        bool _moving;
 
 
         public void OnTriggered()

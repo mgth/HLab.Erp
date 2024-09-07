@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-windows;net7.0-windows</TargetFrameworks>
+		<TargetFrameworks>net8.0-windows</TargetFrameworks>
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<RootNamespace>HLab.Erp.Core.Wpf</RootNamespace>
@@ -9,6 +9,7 @@
 		<Configurations>Debug;Release;DebugRelease</Configurations>
 		<LangVersion>default</LangVersion>
 	</PropertyGroup>
+
 
 	<ItemGroup>
 		<None Remove="colors.xml" />
@@ -297,25 +298,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Dirkster.AvalonDock" Version="4.72.1" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Resource Include="Icons\Add.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Resource>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dirkster.AvalonDock" Version="4.70.3" />
-		<PackageReference Include="Dirkster.AvalonDock.Themes.Aero" Version="4.70.3" />
-		<PackageReference Include="Dirkster.AvalonDock.Themes.Expression" Version="4.70.3" />
-		<PackageReference Include="Dirkster.AvalonDock.Themes.Metro" Version="4.70.3" />
-		<PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.70.3" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\HLab\HLab.Base.Wpf\HLab.Base.Wpf.csproj">
-			<CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-		</ProjectReference>
-		<ProjectReference Include="..\..\HLab\HLab.Icons.Wpf\HLab.Icons.Wpf.csproj" />
-		<ProjectReference Include="..\..\HLab\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
+		<ProjectReference Include="..\..\HLab.Core\HLab.ColorTools\HLab.ColorTools.csproj" />
+		<ProjectReference Include="..\..\HLab.Wpf\HLab.Base.Wpf\HLab.Base.Wpf.csproj" />
+		<ProjectReference Include="..\..\HLab.Wpf\HLab.Mvvm.Wpf\HLab.Mvvm.Wpf.csproj" />
 		<ProjectReference Include="..\HLab.Erp.Acl.Annotations\HLab.Erp.Acl.Annotations.csproj" />
 		<ProjectReference Include="..\HLab.Erp.Core.Annotations\HLab.Erp.Core.Annotations.csproj" />
 		<ProjectReference Include="..\HLab.Erp.Core\HLab.Erp.Core.csproj" />
@@ -597,6 +592,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Compile Update="EntityLists\ColumnDescriptionBlock.xaml.cs">
+		  <SubType>Code</SubType>
+		</Compile>
 		<Compile Update="EntitySelectors\EntitySelector.xaml.cs">
 			<DependentUpon>EntitySelector.xaml</DependentUpon>
 		</Compile>
@@ -648,12 +646,18 @@
 		<Compile Update="Views\ListViewDefault.xaml.cs">
 			<DependentUpon>ListViewDefault.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="Views\ProgressView.xaml.cs">
+		  <DependentUpon>ProgressView.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="WebService\BrowserView.xaml.cs">
 			<DependentUpon>BrowserView.xaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
+		<Page Update="EntityLists\ColumnDescriptionBlock.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
 		<Page Update="EntityLists\EntityListView3.xaml">
 		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		  <SubType>Designer</SubType>

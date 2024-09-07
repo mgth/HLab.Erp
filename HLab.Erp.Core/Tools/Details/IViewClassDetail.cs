@@ -2,7 +2,7 @@
 
 namespace HLab.Erp.Core.Tools.Details
 {
-    public interface IViewClassDetail : IViewClass
+    public interface IDetailViewClass : IViewClass
     {
     }
 }

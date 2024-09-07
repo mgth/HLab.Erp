@@ -13,7 +13,7 @@
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" Background="{DynamicResource MahApps.Brushes.Badged.Background}" >
             <Label FontSize="16" FontWeight="ExtraBlack" HorizontalContentAlignment="Center" Content="{Binding Initials,FallbackValue=IN}" Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}"/>
-            <Label HorizontalContentAlignment="Center" Content="{Binding Login,FallbackValue=m.truc}" Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}"/>
+            <Label HorizontalContentAlignment="Center" Content="{Binding Username,FallbackValue=m.truc}" Foreground="{DynamicResource MahApps.Brushes.Badged.Foreground}"/>
             </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

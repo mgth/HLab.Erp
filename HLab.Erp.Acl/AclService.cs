@@ -120,14 +120,14 @@ public class AclService : IAclService
     public bool IsGranted(AclRight right, object grantedTo = null, object grantedOn = null)
     {
         if(Connection==null) return false;
-        if(Connection.User.Login=="admin") return true;
+        if(Connection.User.Username=="admin") return true;
         if (right == null) return true;
         return CurrentRights.Contains(right);
     }
     public bool IsGranted(Action<string> setMessage,params AclRight[] rights)
     {
         if(Connection==null) return false;
-        if(Connection.User.Login=="admin") return true;
+        if(Connection.User.Username=="admin") return true;
         if (rights.Length == 0) return true;
         foreach (var right in rights)
         {

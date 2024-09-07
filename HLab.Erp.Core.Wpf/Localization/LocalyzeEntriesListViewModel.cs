@@ -2,55 +2,50 @@
 using System.Linq;
 using System.Threading.Tasks;
 using HLab.Erp.Base.Data;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
-using HLab.Notify.PropertyChanged;
+
 
 namespace HLab.Erp.Core.Wpf.Localization
 {
-    public class LocalizeEntriesListViewModel : Core.EntityLists.EntityListViewModel<LocalizeEntry>, IMvvmContextProvider
+    public class LocalizeEntriesListViewModel(EntityListViewModel<LocalizeEntry>.Injector i)
+        : EntityListViewModel<LocalizeEntry>(i, c => c
+            .Header("{Localization}")
+            .Column("Todo")
+            .Header("{Todo}")
+            .Content(s => s.Todo ? "X" : "-")
+            .Link(s => s.Todo)
+            .Filter()
+            .Column("Custom")
+            .Header("{Custom}")
+            .Content(s => s.Todo ? "X" : "-")
+            .Link(s => s.Custom)
+            .Filter()
+            .Column("Tag")
+            .Header("{Tag}")
+            .Link(s => s.Tag)
+            .Filter()
+            .Column("Code")
+            .Header("{Code}")
+            .Link(s => s.Code)
+            .Filter()
+            .Column("Value")
+            .Header("{Value}")
+            .Link(s => s.Value)
+            .Filter()
+        ), IMvvmContextProvider
     {
         public class Bootloader : ParamBootloader { }
 
-        protected override bool CanExecuteExport(Action<string> errorAction) => true; // Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
-        protected override bool CanExecuteImport(Action<string> errorAction) => true; // Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
+        protected override bool ExportCanExecute(Action<string> errorAction) => true; // Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
+        protected override bool ImportCanExecute(Action<string> errorAction) => true; // Erp.Acl.IsGranted(ErpRights.ErpManageCountries);
 
-        protected override bool CanExecuteDelete(LocalizeEntry arg, Action<string> errorAction) => true;
+        protected override bool DeleteCanExecute(LocalizeEntry arg, Action<string> errorAction) => true;
 
-        public LocalizeEntriesListViewModel(Injector i) : base(i, c => c
-                .Header("{Localization}")
-                .Column("Todo")
-                    .Header("{Todo}")
-                    .Content(s => s.Todo ? "X" : "-")
-                .Link(s => s.Todo)
-                .Filter()
-                //.PostLink(s => erp.Localization.Localize(s.Name))
-                .Column("Custom")
-                    .Header("{Custom}")
-                    .Content(s => s.Todo ? "X" : "-")
-                .Link(s => s.Custom)
-                .Filter()
-
-                .Column("Tag")
-                    .Header("{Tag}")
-                    .Link(s => s.Tag)
-                    .Filter()
-
-                .Column("Code")
-                    .Header("{Code}")
-                    .Link(s => s.Code)
-                    .Filter()
-
-                .Column("Value")
-                    .Header("{Value}")
-                    .Link(s => s.Value)
-                    .Filter()
-
-            )
-        {
-        }
+        //.PostLink(s => erp.Localization.Localize(s.Name))
 
         protected override async Task ImportAsync(IDataService data, LocalizeEntry importValue)
         {

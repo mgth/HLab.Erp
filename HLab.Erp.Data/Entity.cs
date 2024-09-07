@@ -8,26 +8,18 @@ using ReactiveUI;
 
 namespace HLab.Erp.Data;
 
-public class ForeignPropertyHelper<TObj,TRet>
-        where TObj : class, IReactiveObject
-        where TRet : class, IEntity<int>
+public class ForeignPropertyHelper<TObj, TRet>(TObj parent, ObservableAsPropertyHelper<TRet> foreign)
+    where TObj : class, IReactiveObject
+    where TRet : class, IEntity<int>
 {
     int? _id;
-    readonly ObservableAsPropertyHelper<TRet> _foreign;
-    readonly TObj _parent;
-
-    public ForeignPropertyHelper(TObj parent, ObservableAsPropertyHelper<TRet> foreign)
-    {
-        _parent = parent;
-        _foreign = foreign;
-    }
 
     public int? Id => _id;
-    public TRet Value => _foreign.Value;
+    public TRet Value => foreign.Value;
 
     public void SetId(int? id, [CallerMemberName] string? name = null)
     {
-        _parent.RaiseAndSetIfChanged(ref _id, id, name);
+        parent.RaiseAndSetIfChanged(ref _id, id, name);
     }
 }
 

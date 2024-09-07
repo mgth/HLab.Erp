@@ -1,30 +1,22 @@
-﻿using System.Windows.Input;
+﻿using System.Threading.Tasks;
+using System.Windows.Input;
+using HLab.Base.ReactiveUI;
 using HLab.Core.Annotations;
 using HLab.Erp.Core.WebService;
-using HLab.Mvvm.Application;
-using HLab.Notify.PropertyChanged;
+using HLab.Mvvm.Application.Documents;
+using HLab.Mvvm.Application.Menus;
+using ReactiveUI;
 
-namespace HLab.Erp.Core.Wpf.WebService
+
+namespace HLab.Erp.Core.Wpf.WebService;
+
+public class BrowserServiceModule(IDocumentService docs, IMenuService menu) : ReactiveModel, IBootloader
 {
-    using H = H<BrowserServiceModule>;
+    public ICommand OpenDocumentCommand { get; } = ReactiveCommand.Create(() => docs.OpenDocumentAsync(typeof(IBrowserService)));
 
-    public class BrowserServiceModule : NotifierBase, IBootloader
+    public Task LoadAsync(IBootContext bootstrapper)
     {
-        readonly IDocumentService _docs;
-        readonly IMenuService _menu;
-
-        public BrowserServiceModule(IDocumentService docs, IMenuService menu)
-        {
-            _docs = docs;
-            _menu = menu;
-            H.Initialize(this);
-        }
-
-        public ICommand OpenDocumentCommand { get; } = H.Command(c => c
-            .Action(e => e._docs.OpenDocumentAsync(typeof(IBrowserService)))
-        );
-
-        public void Load(IBootContext b) => _menu.RegisterMenu("tools/internet", "{Internet}", OpenDocumentCommand, "icons/internet");
-        
+        menu.RegisterMenu("tools/internet", "{Internet}", OpenDocumentCommand, "icons/internet");
+        return Task.CompletedTask;
     }
 }

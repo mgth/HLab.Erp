@@ -3,82 +3,82 @@ using System.Windows;
 using System.Windows.Controls;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
+using HLab.Mvvm.Application.Documents;
 
-namespace HLab.Erp.Base.Wpf.Entities.Icons
+namespace HLab.Erp.Base.Wpf.Entities.Icons;
+
+/// <summary>
+/// Logique d'interaction pour IconView.xaml
+/// </summary>
+public partial class IconEditorView : UserControl, IView<IconViewModel>, IDocumentViewClass
 {
-    /// <summary>
-    /// Logique d'interaction pour IconView.xaml
-    /// </summary>
-    public partial class IconEditorView : UserControl, IView<IconViewModel>, IViewClassDocument
+    public IconEditorView()
     {
-        public IconEditorView()
+        InitializeComponent();
+        DataContextChanged += TestClassView_DataContextChanged;
+    }
+
+    void TestClassView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if(e.OldValue is IconViewModel oldVm)
+            oldVm.Model.PropertyChanged -= Vm_PropertyChanged;
+
+        if (e.NewValue is IconViewModel vm)
         {
-            InitializeComponent();
-            DataContextChanged += TestClassView_DataContextChanged;
+            XamlEditor.Text = vm.Model.SourceXaml;
+            SvgEditor.Text = vm.Model.SourceSvg;
+            vm.Model.PropertyChanged += Vm_PropertyChanged;
         }
+    }
 
-        void TestClassView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+    bool _changingXaml = false;
+    bool _changingSvg = false;
+
+    void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
         {
-            if(e.OldValue is IconViewModel oldVm)
-                oldVm.Model.PropertyChanged -= Vm_PropertyChanged;
+            case "SourceXaml":
+                if (_changingXaml) return;
 
-            if (e.NewValue is IconViewModel vm)
-            {
-                XamlEditor.Text = vm.Model.SourceXaml;
-                SvgEditor.Text = vm.Model.SourceSvg;
-                vm.Model.PropertyChanged += Vm_PropertyChanged;
-            }
-        }
-
-        bool _changingXaml = false;
-        bool _changingSvg = false;
-
-        void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "SourceXaml":
-                    if (_changingXaml) return;
-
-                    Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
+                {
+                    if (DataContext is IconViewModel vm)
                     {
-                        if (DataContext is IconViewModel vm)
-                        {
-                            XamlEditor.Text = vm.Model.SourceXaml;
-                        }
-                    });
-                    break;
+                        XamlEditor.Text = vm.Model.SourceXaml;
+                    }
+                });
+                break;
 
-                case "SourceSvg":
-                    if (_changingSvg) return;
+            case "SourceSvg":
+                if (_changingSvg) return;
                     
-                    Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
+                {
+                    if (DataContext is IconViewModel vm)
                     {
-                        if (DataContext is IconViewModel vm)
-                        {
-                            SvgEditor.Text = vm.Model.SourceSvg;
-                        }
-                    });
+                        SvgEditor.Text = vm.Model.SourceSvg;
+                    }
+                });
                     
-                    break;
-            }
+                break;
+        }
+    }
+
+    void TextEditor_OnTextChanged(object sender, EventArgs e)
+    {
+        if (ReferenceEquals(sender, XamlEditor))
+        {
+            _changingXaml = true;
+            ((IconViewModel) DataContext).Model.SourceXaml = XamlEditor?.Text;
+            _changingXaml = false;
         }
 
-        void TextEditor_OnTextChanged(object sender, EventArgs e)
+        if (ReferenceEquals(sender, SvgEditor))
         {
-            if (ReferenceEquals(sender, XamlEditor))
-            {
-                _changingXaml = true;
-                ((IconViewModel) DataContext).Model.SourceXaml = XamlEditor?.Text;
-                _changingXaml = false;
-            }
-
-            if (ReferenceEquals(sender, SvgEditor))
-            {
-                _changingSvg = true;
-                ((IconViewModel) DataContext).Model.SourceSvg = SvgEditor?.Text;
-                _changingSvg = false;
-            }
+            _changingSvg = true;
+            ((IconViewModel) DataContext).Model.SourceSvg = SvgEditor?.Text;
+            _changingSvg = false;
         }
     }
 }

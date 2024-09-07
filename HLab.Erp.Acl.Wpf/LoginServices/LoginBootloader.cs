@@ -1,43 +1,32 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using HLab.Core.Annotations;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
-using HLab.Mvvm.Views;
 using HLab.Mvvm.Wpf.Views;
 
-namespace HLab.Erp.Acl.LoginServices
+namespace HLab.Erp.Acl.LoginServices;
+
+public class LoginBootloader(IMvvmService mvvm, Func<ILoginViewModel> getViewModel, IAclService acl)
+    : IBootloader
 {
-    public class LoginBootloader : IBootloader
+    public async Task LoadAsync(IBootContext bootstrapper)
     {
-        readonly Func<ILoginViewModel> _getViewModel;
-        readonly IMvvmService _mvvm;
-        readonly IAclService _acl;
+        //if we can have localization and picture lets do it
+        if (bootstrapper.WaitDependency("LocalizeBootloader", "IconBootloader")) return;
 
-        public LoginBootloader(IMvvmService mvvm, Func<ILoginViewModel> getViewModel, IAclService acl)
+        await Application.Current.Dispatcher.InvokeAsync(async () =>
         {
-            _mvvm = mvvm;
-            _acl = acl;
+            //retrieve login window
+            var view = await mvvm.MainContext.GetViewAsync(getViewModel(),typeof(DefaultViewMode));
+            var loginWindow = view.AsWindow();
+            //loginWindow.SizeToContent = SizeToContent.WidthAndHeight;
+            loginWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            loginWindow.ShowDialog();
 
-            _getViewModel = getViewModel;
-        }
-
-        public void Load(IBootContext bootstrapper)
-        {
-            //if we can have localization and picture lets do it
-            if (bootstrapper.WaitDependency("LocalizeBootloader", "IconBootloader")) return;
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                //retrieve login window
-                var loginWindow = _mvvm.MainContext.GetView(_getViewModel(),typeof(ViewModeDefault)).AsWindow();
-                //loginWindow.SizeToContent = SizeToContent.WidthAndHeight;
-                loginWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-                loginWindow.ShowDialog();
-
-                //if connection failed
-                if (_acl.Connection is null) Application.Current.Shutdown();
-            });
-        }
+            //if connection failed
+            if (acl.Connection is null) Application.Current.Shutdown();
+        });
     }
 }

@@ -14,7 +14,7 @@ using HLab.Erp.Data.Observables;
 
 namespace HLab.Erp.Core
 {
-    public interface IFiltersFluentConfigurator<T>
+    public interface IFiltersFluentConfigurator<T> where T : class, IEntity
     {
         IObservableQuery<T> List { get; }
     }
@@ -26,15 +26,13 @@ namespace HLab.Erp.Core
     }
 
 
-    public class FiltersFluentConfigurator<T, TFilter> : FluentConfigurator<TFilter>, IFiltersFluentConfigurator<T>//IFiltersFluentConfigurator<T, TFilter>
+    public class FiltersFluentConfigurator<T, TFilter>(IObservableQuery<T> list, TFilter target)
+        : FluentConfigurator<TFilter>(target), IFiltersFluentConfigurator<T> //IFiltersFluentConfigurator<T, TFilter>
         where TFilter : IFilter, new()
-        //        where T : class, IEntity
+        where T : class, IEntity
+    //        where T : class, IEntity
     {
-        public IObservableQuery<T> List { get; }
-        public FiltersFluentConfigurator(IObservableQuery<T> list, TFilter target) : base(target)
-        {
-            List = list;
-        }
+        public IObservableQuery<T> List { get; } = list;
     }
     /// <summary>
     /// 
@@ -87,7 +85,7 @@ namespace HLab.Erp.Core
         public IColumnsProvider Columns { get; }
     }
 
-    public interface IEntityListViewModel<T> : IEntityListViewModel
+    public interface IEntityListViewModel<T> : IEntityListViewModel where T : class, IEntity
     {
         IObservableQuery<T> List { get; }
         new IColumnsProvider<T> Columns { get; }

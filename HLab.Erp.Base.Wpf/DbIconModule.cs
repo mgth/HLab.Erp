@@ -2,56 +2,46 @@
 using HLab.Core.Annotations;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Data;
-using HLab.Icons.Annotations.Icons;
 using HLab.Icons.Wpf.Icons.Providers;
+using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Base.Wpf
+namespace HLab.Erp.Base.Wpf;
+
+public class DbIconModule(IIconService icons, IDataService data) : IBootloader
 {
-    public class DbIconModule : IBootloader
+    public async Task LoadAsync(IBootContext b)
     {
-        readonly IIconService _icons;
-        readonly IDataService _data;
-
-        public DbIconModule(IIconService icons, IDataService data)
+        if (data.ServiceState != ServiceState.Available)
         {
-            _icons = icons;
-            _data = data;
+            b.Requeue(); return;
         }
 
-        public void Load(IBootContext b)
+        await LoadAsync();
+    }
+
+    public async Task LoadAsync()
+    {
+        var dataIcons =  data.FetchAsync<Icon>().ConfigureAwait(true);
+
+        try
         {
-            if (_data.ServiceState != ServiceState.Available)
+            await foreach (var icon in dataIcons)
             {
-                b.Requeue(); return;
-            }
+                var path = icon.Path.ToLower();
 
-            LoadAsync();
-        }
-
-        public async void LoadAsync()
-        {
-            var icons =  _data.FetchAsync<Icon>().ConfigureAwait(true);
-
-            try
-            {
-                await foreach (var icon in icons)
+                if (!string.IsNullOrWhiteSpace(icon.SourceXaml))
                 {
-                    var path = icon.Path.ToLower();
-
-                    if (!string.IsNullOrWhiteSpace(icon.SourceXaml))
-                    {
-                        _icons.AddIconProvider(path, new IconProviderXamlFromSource(icon.SourceXaml, path, icon.Foreground));
-                    }
-                    else if (!string.IsNullOrWhiteSpace(icon.SourceSvg))
-                    {
-                        _icons.AddIconProvider(path, new IconProviderSvgFromSource(icon.SourceSvg, path, icon.Foreground));
-                    }
+                    icons.AddIconProvider(path, new IconProviderXamlFromSource(icon.SourceXaml, path, icon.Foreground));
+                }
+                else if (!string.IsNullOrWhiteSpace(icon.SourceSvg))
+                {
+                    icons.AddIconProvider(path, new IconProviderSvgFromSource(icon.SourceSvg, path, icon.Foreground));
                 }
             }
-            catch (DataException)
-            {
+        }
+        catch (DataException)
+        {
 
-            }
         }
     }
 

@@ -1,42 +1,41 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
 using NPoco;
-using ReactiveUI;
 
 namespace HLab.Erp.Acl;
 
 public class AclRight : Entity, IListableModel
 {
-    public static IDataService Data { get; set; }
-
-    static readonly ConcurrentDictionary<string, AclRight> _cache = new();
-    public static AclRight Get([CallerMemberName] string name = null)
+    public static IDataService? Data { get; set; }
+    AclRight(string name, string description)
     {
-        return _cache.GetOrAdd(name, e => GetFromDb(name));
+        Name = name;
+        Description = description;
+    }
+    public string Description { get; set; }
+
+    static readonly ConcurrentDictionary<string, AclRight> Cache = new();
+    public static AclRight Create(string description ="", [CallerMemberName] string? name = null)
+    {
+        if(name == null) throw new ArgumentException("name is null");
+        return Cache.GetOrAdd(name, e => CreateFromDb(e, description));
     }
 
-    static AclRight GetFromDb(string name)
+    static AclRight CreateFromDb(string name, string description)
     {
         return Data?.GetOrAdd<AclRight>(
             e => e.Name == name,
             e => e.Name = name)
-            ?? new AclRight { Name = name }
-            ;
+            ?? new AclRight (name, description);
     }
 
-    public string Name
-    {
-        get => _name;
-        set => this.RaiseAndSetIfChanged(ref _name, value);
-    }
-    string _name;
+    public string Name {get; set; }
 
     [Ignore]
-    public string Caption => $"{{{Name}}}";//_caption.Get();
-
-    //string _caption = HD<AclRight>.Property<string>(c => c.Set(e => $"{{{e.Name}}}").On(e => e.Name).Update());
+    public string Caption => $"{{{Name}}}";
 
     [Ignore]
     public string IconPath => "icons/approved";

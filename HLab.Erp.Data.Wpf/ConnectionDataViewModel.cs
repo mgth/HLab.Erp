@@ -2,62 +2,52 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using HLab.Mvvm;
+using HLab.Mvvm.ReactiveUI;
 using HLab.Network;
-using HLab.Notify.PropertyChanged;
 
-namespace HLab.Erp.Data.Wpf
+namespace HLab.Erp.Data.Wpf;
+
+public class ConnectionDataViewModel : ViewModel<ConnectionData>
 {
-    using H = H<ConnectionDataViewModel>;
-
-    public class ConnectionDataViewModel : ViewModel<ConnectionData>
+    readonly IDataService _data;
+    public ConnectionDataViewModel(IDataService data, IpScanner scanner)
     {
-        readonly IDataService _data;
-        public ConnectionDataViewModel(IDataService data, IpScanner scanner)
-        {
-            _data = data;
-            _scanner = scanner;
-            H<ConnectionDataViewModel>.Initialize(this);
+        _data = data;
+        _scanner = scanner;
 
-            _scanner.Scan(5432);
-        }
+        _scanner.Scan(5432);
 
-
-        public async Task GetDatabases()
-        {
-            await foreach (var database in _data.GetDatabasesAsync(Model.Server, Model.UserName, Model.Password))
-            {
-                Databases.Add(database);
-            }
-        }
-
-        public ObservableCollection<string> Databases { get; } = new();
-
-        public string Server
-        {
-            get => _server.Get();
-            set
-
-            {
-                if (_server.Set(value))
-                {
-                    Model.Server = value;
-                    GetDatabases();
-                }
-            }
-        }
-
-        readonly IProperty<string> _server = H<ConnectionDataViewModel>.Property<string>(c => c
-            .Set(e => e.Model.Server)
-            .On(e => e.Model.Server).Update());
-
-        IpScanner _scanner { get; }
-
-        public ReadOnlyObservableCollection<string> Servers => _scanner.FoundServers;
-
-        public ICommand OkCommand { get; } = H.Command(c => c
-            .Action(e =>
-            {
-                
-            }));
+        OkCommand = ReactiveUI.ReactiveCommand.Create(() => {});
     }
+
+
+    public async Task GetDatabases()
+    {
+        await foreach (var database in _data.GetDatabasesAsync(Model.Server, Model.UserName, Model.Password))
+        {
+            Databases.Add(database);
+        }
+    }
+
+    public ObservableCollection<string> Databases { get; } = new();
+
+    public string Server
+    {
+        get => _server;
+        set
+
+        {
+            if (!SetAndRaise(ref _server, value)) return;
+            Model.Server = value;
+            GetDatabases();
+        }
+    }
+
+    string _server;
+
+    IpScanner _scanner { get; }
+
+    public ReadOnlyObservableCollection<string> Servers => _scanner.FoundServers;
+
+    public ICommand OkCommand { get; }
 }

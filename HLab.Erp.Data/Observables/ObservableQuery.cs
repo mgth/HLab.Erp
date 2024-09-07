@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using DynamicData;
 using HLab.Base;
 using HLab.Core.Annotations;
 using ReactiveUI;
@@ -22,7 +23,8 @@ namespace HLab.Erp.Data.Observables
     {
         void Update();
     }
-    public interface IObservableQuery<T> : ITriggerable, IObservableQuery, IList<T>, INotifyCollectionChanged
+    public interface IObservableQuery<T> : ITriggerable, IObservableQuery, IList<T>, INotifyCollectionChanged, IObservableList<T>
+        where T : class, IEntity
     {
         Suspender Suspender { get; }
 

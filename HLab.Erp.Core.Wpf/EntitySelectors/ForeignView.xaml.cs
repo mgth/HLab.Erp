@@ -4,11 +4,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using HLab.Base.Wpf;
+using HLab.Base.Wpf.DependencyProperties;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.EntitySelectors;
 using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
+using HLab.Mvvm.Application.Documents;
 using HLab.Mvvm.Wpf;
 
 namespace HLab.Erp.Core.Wpf.EntitySelectors
@@ -171,7 +174,7 @@ namespace HLab.Erp.Core.Wpf.EntitySelectors
         }
 
 
-        void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             if (Popup.IsOpen) return;
 
@@ -233,7 +236,7 @@ namespace HLab.Erp.Core.Wpf.EntitySelectors
             }
 
 
-            var view = ctx.GetView(vm, typeof(ViewModeDefault), typeof(IViewClassDefault));
+            var view = await ctx.GetViewAsync(vm, typeof(DefaultViewMode), typeof(IDefaultViewClass));
             PopupContent.Content = view;
         }
 

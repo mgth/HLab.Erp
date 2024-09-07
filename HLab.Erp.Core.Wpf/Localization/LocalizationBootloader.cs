@@ -1,28 +1,19 @@
 ﻿using System;
+using System.Threading.Tasks;
 using HLab.Core.Annotations;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 
-namespace HLab.Erp.Core.Wpf.Localization
+namespace HLab.Erp.Core.Wpf.Localization;
+
+public class LocalizeBootloader(IDataService data, Func<LocalizeFromDb> get, ILocalizationService service)
+    : IBootloader
 {
-    public class LocalizeBootloader : IBootloader
+    public Task LoadAsync(IBootContext bootstrapper)
     {
-        readonly Func<LocalizeFromDb> _get;
-        readonly ILocalizationService _service;
-        readonly IDataService _data;
+        if(bootstrapper.WaitingForService(data)) return Task.CompletedTask;
 
-        public LocalizeBootloader(IDataService data, Func<LocalizeFromDb> get, ILocalizationService service)
-        {
-            _data = data;
-            _get = get;
-            _service = service;
-        }
-
-        public void Load(IBootContext b)
-        {
-            if(b.WaitService(_data)) return;
-
-            _service.Register(_get());
-        }
+        service.Register(get());
+        return Task.CompletedTask;
     }
 }

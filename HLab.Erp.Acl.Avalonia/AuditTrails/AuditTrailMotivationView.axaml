@@ -1,0 +1,133 @@
+﻿<UserControl x:Class="HLab.Erp.Acl.Avalonia.AuditTrails.AuditTrailMotivationView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:avalonia="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
+             xmlns:icons="clr-namespace:HLab.Icons.Avalonia.Icons;assembly=HLab.Icons.Avalonia"
+             xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
+             xmlns:base="clr-namespace:HLab.Base.Avalonia;assembly=HLab.Base.Avalonia"
+             xmlns:controls="clr-namespace:HLab.Base.Avalonia.Controls;assembly=HLab.Base.Avalonia"
+             xmlns:auditTrails="clr-namespace:HLab.Erp.Acl.AuditTrails;assembly=HLab.Erp.Acl"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:DataType="auditTrails:AuditTrailMotivationViewModel"
+			 >
+    <Grid>
+        <Border Background="{DynamicResource MahApps.Brushes.ThemeBackground}" CornerRadius="10" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}"/>
+        
+        <StackPanel HorizontalAlignment="Center" Margin="20">
+            <icons:IconView Path="{Binding IconPath}" MaxHeight="30" MaxWidth="30"/>
+            <lang:LocalizedLabel HorizontalAlignment="Center" Margin="5" Text="{Binding EntityCaption}" FontSize="14" FontWeight="Bold"/>
+            <TextBox 
+                IsReadOnly="True" 
+                MaxHeight="250" MaxWidth="800" 
+                BorderThickness="0" 
+                ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                Padding="5" 
+                Text="{Binding Log}" 
+                FontStyle="Italic" 
+                Foreground="#80FFFFFF" 
+                BorderBrush="Transparent">
+                
+                <TextBox.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Color="#10FFFFFF" Offset="0"/>
+                        <GradientStop Color="#10000000" Offset="1"/>
+                    </LinearGradientBrush>
+                </TextBox.Background>
+                
+            </TextBox>
+            <lang:LocalizedLabel>{Motivation} :</lang:LocalizedLabel>
+            <Grid>
+                <controls:MandatoryAdorner IsHitTestVisible="False" IsVisible="{Binding MotivationNeeded}"/>
+                <TextBox 
+            MinWidth="400" 
+            TextWrapping="Wrap" 
+            AcceptsReturn="True" 
+            
+            
+            MinHeight="50"  
+            MaxHeight="150"
+            Text="{Binding Motivation, UpdateSourceTrigger=PropertyChanged}"
+            Watermark="Enter audit trail justification"
+            >
+                    
+                    <!-- TODO : SpellCheck.IsEnabled="True"   -->
+                    <TextBox.Styles>
+                        <Style Selector="TextBox">
+                            <Style.Resources>
+                                <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                    <VisualBrush.Visual>
+                                        <lang:Localize Id="{}{Enter audit trail justification}" Foreground="#A0FFFFFF" />
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Style.Resources>
+                            
+                            <Style Selector="^:focus">
+                                <Setter Property="Background" Value="#10FFFFFF" />
+                            </Style>
+                            <Style Selector="^:empty">
+                                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                            </Style>
+                       </Style> 
+                    </TextBox.Styles>
+                    
+                    <ToolTip.Tip>
+                        <StackPanel Orientation="Horizontal">
+                            <icons:IconView Path="Icons/Edit" Height="10"/>
+                            <Label/>
+                            <lang:Localize>{Motivation to log in the audit trail}</lang:Localize>
+                        </StackPanel>
+                    </ToolTip.Tip>
+                    
+                </TextBox>
+            </Grid>
+            <Label/>
+            <TextBlock Text="{Binding User.Caption}"/>
+
+            <DockPanel Margin="0,5" IsVisible="{Binding Signing}">
+                <lang:LocalizedLabel Text="{}{Password} :"/>
+                <Label/>
+                <TextBox PasswordChar="*" DockPanel.Dock="Right" Height="23" x:Name="PasswordBox" VerticalAlignment="Center" TextChanged="PasswordBox_OnTextChanged"/>
+            </DockPanel>
+            <TextBlock Foreground="Red" Text="{Binding Message}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
+                <Button 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Width="80" 
+                IsCancel="True"
+                Tag="Actions/Revert.xaml" 
+                Command="{Binding CancelCommand}">
+                    <ToolTip.Tip>
+                        <StackPanel Orientation="Horizontal">
+                            <icons:IconView Path="Icons/Cancel" Height="10"/>
+                            <Label/>
+                            <lang:Localize>{Cancel}</lang:Localize>
+                        </StackPanel>
+                    </ToolTip.Tip>
+                    <icons:IconView Path="Icons/Cancel" Height="30"/>
+                </Button>
+                <Label/>
+                <Button 
+                HorizontalAlignment="Right" 
+                x:Name="BT_Ok" 
+                VerticalAlignment="Top" 
+                Width="80" 
+                Command="{Binding OkCommand}" IsDefault="True">
+                    <ToolTip.Tip>
+                        <StackPanel Orientation="Horizontal">
+                            <icons:IconView Path="Icons/Save" Height="10"/>
+                            <Label/>
+                            <lang:Localize>{Validate}</lang:Localize>
+                        </StackPanel>
+                    </ToolTip.Tip>
+                    <icons:IconView Path="Icons/Save" Height="30"/>
+                </Button>
+
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

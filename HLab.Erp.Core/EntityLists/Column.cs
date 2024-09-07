@@ -9,7 +9,7 @@ using HLab.Erp.Data;
 
 namespace HLab.Erp.Core.EntityLists;
 
-public class Column<T> : ListElement, IColumn<T> where T : class
+public class Column<T> : ListElement, IColumn<T> where T : class, IEntity
 {
     internal Column()
     {

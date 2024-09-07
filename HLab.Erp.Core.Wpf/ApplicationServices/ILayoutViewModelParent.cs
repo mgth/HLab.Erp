@@ -1,8 +1,7 @@
 ﻿
 using AvalonDock.Layout.Serialization;
-using HLab.Erp.Core._obsolete;
 
-namespace HLab.Erp.Core.ApplicationServices
+namespace HLab.Erp.Core.Wpf.ApplicationServices
 {
     /// <summary>
     /// Interface definition for parent viewmodel of <seealso cref="AvalonDockLayoutViewModel"/>

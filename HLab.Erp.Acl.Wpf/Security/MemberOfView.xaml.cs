@@ -1,15 +1,14 @@
 ﻿using System.Windows.Controls;
 
-namespace HLab.Erp.Acl.Security
+namespace HLab.Erp.Acl.Security;
+
+/// <summary>
+/// Logique d'interaction pour MemberOfView.xaml
+/// </summary>
+public partial class MemberOfView : UserControl
 {
-    /// <summary>
-    /// Logique d'interaction pour MemberOfView.xaml
-    /// </summary>
-    public partial class MemberOfView : UserControl
+    public MemberOfView()
     {
-        public MemberOfView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -48,7 +48,7 @@
                     <TextBox Text="{Binding Model.Domain,UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="TextBox_MouseDoubleClick"/>
                     
                     <lang:LocalizedLabel Text="{}{Login} : " />
-                    <TextBox Text="{Binding Model.Login,UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="TextBox_MouseDoubleClick"/>
+                    <TextBox Text="{Binding Model.Username,UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="TextBox_MouseDoubleClick"/>
 
                     <lang:LocalizedLabel Text="{}{Name} : "/>
                     <TextBox Text="{Binding Model.Name,UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="TextBox_MouseDoubleClick"/>
