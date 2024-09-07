@@ -91,14 +91,15 @@ namespace HLab.Erp.Core
             }
         }
 
-        public virtual void Load(IBootContext bootstrapper)
+        public Task LoadAsync(IBootContext bootstrapper)
         {
-            if (!Allowed) return;
+            if (!Allowed) return Task.CompletedTask;
 
             Menu.RegisterMenu($"{MenuPath}/{Name.ToLower()}" , Header,
                 OpenCommand,
                 IconPath);
+
+            return Task.CompletedTask;
         }
     }
-
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using HLab.Core.Annotations;
 using HLab.Mvvm.Application.Documents;
 
@@ -19,6 +20,12 @@ namespace HLab.Erp.Core.Tools.Details
         {
             //    //TODO :
             //    //_docs.OpenDocument(_getDetails());
+        }
+
+        public Task LoadAsync(IBootContext bootstrapper)
+        {
+            Load(bootstrapper);
+            return Task.CompletedTask;
         }
     }
 }

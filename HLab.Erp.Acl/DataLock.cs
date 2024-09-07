@@ -14,23 +14,22 @@ public class DataLock : Entity
 
     public string EntityClass        {
         get => _entityClass;
-        set => this.RaiseAndSetIfChanged(ref _entityClass, value);
+        set => SetAndRaise(ref _entityClass, value);
     }
     string _entityClass = "";
 
     public int? EntityId
     {
         get => _entityId;
-        set => this.RaiseAndSetIfChanged(ref _entityId, value);
+        set => SetAndRaise(ref _entityId, value);
     }
     int? _entityId;
 
     public int? UserId
     {
-        get => _userId;
-        set => this.RaiseAndSetIfChanged(ref _userId, value);
+        get => _user.Id;
+        set => _user.SetId(value);
     }
-    int? _userId;
 
     [Ignore]
     public User User
@@ -38,26 +37,26 @@ public class DataLock : Entity
         get => _user.Value;
         set => UserId = value.Id;
     }
-    readonly ObservableAsPropertyHelper<User> _user;
+    readonly ForeignPropertyHelper<DataLock,User> _user;
 
     public string Code
     {
         get => _code;
-        set => this.RaiseAndSetIfChanged(ref _code, value);
+        set => SetAndRaise(ref _code, value);
     }
     string _code = GetNewCode();
 
     public DateTime StartTime
     {
         get => _startTime;
-        set => this.RaiseAndSetIfChanged(ref _startTime, value);
+        set => SetAndRaise(ref _startTime, value);
     }
     DateTime _startTime = DateTime.Now.ToUniversalTime();
 
     public DateTime HeartbeatTime
     {
         get => _heartbeatTime; 
-        set => this.RaiseAndSetIfChanged(ref _heartbeatTime, value);
+        set => SetAndRaise(ref _heartbeatTime, value);
     }
     DateTime _heartbeatTime = DateTime.Now.ToUniversalTime();
 

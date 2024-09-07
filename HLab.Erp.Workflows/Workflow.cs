@@ -1,7 +1,8 @@
 ﻿
 using HLab.Base.Fluent;
+using HLab.Base.ReactiveUI;
 using HLab.Erp.Acl;
-using HLab.Notify.PropertyChanged;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,7 +19,7 @@ namespace HLab.Erp.Workflows
         string Name { get; }
     }
 
-    public abstract class Workflow<T> : NotifierBase, IWorkflow<T>
+    public abstract class Workflow<T> : ReactiveModel, IWorkflow<T>
         where T : /*Workflow<T>, */class, IWorkflow<T>
     {
         protected Workflow(object target, IDataLocker locker)
@@ -26,12 +27,23 @@ namespace HLab.Erp.Workflows
             Actions = new(_actions);
             Highlights = new(_highlights);
 
-            H<Workflow<T>>.Initialize(this);
-
             Target = target;
-            _locker.Set(locker);
+            Locker = locker;
 
-            if(target is INotifyPropertyChanged n)
+            _caption = this
+                .WhenAnyValue(e => e.CurrentStage,selector: s => s.GetCaption(this))
+                .ToProperty(this, e => e.Caption);
+
+            _iconPath = this
+                .WhenAnyValue(e => e.CurrentStage, selector: s => s.GetIconPath(this))
+                .ToProperty(this, e => e.IconPath);
+
+            _subIconPath = this
+                .WhenAnyValue(e => e.CurrentStage, selector: s => s.GetSubIconPath(this))
+                .ToProperty(this, e => e.SubIconPath);
+
+
+            if (target is INotifyPropertyChanged n)
                 n.PropertyChanged += Target_PropertyChanged;
         }
 
@@ -119,12 +131,9 @@ namespace HLab.Erp.Workflows
         }
 
         //Todo : user never set
-        //public User User { get; set; }
+        public User User { get; set; }
         public object Target { get; }
-        public IDataLocker Locker => _locker.Get();
-        readonly IProperty<IDataLocker> _locker = H<Workflow<T>>.Property<IDataLocker>();
-
-        //private readonly IProperty<object> _locker = H.Property<object>();
+        public IDataLocker Locker { get; }
 
         static List<Stage> _workflowStage;
         static List<Action> _workflowAction;
@@ -135,29 +144,14 @@ namespace HLab.Erp.Workflows
         protected void SetStage(Stage stage) => CurrentStage = stage;
 
 
-        public string Caption => _caption.Get();
+        public string Caption => _caption.Value;
+        readonly ObservableAsPropertyHelper<string> _caption;
 
-        readonly IProperty<string> _caption = H<Workflow<T>>.Property<string>(c => c
-            .Set(e => e.CurrentStage?.GetCaption(e))
-            .On(e => e.CurrentStage)
-            .Update()
-        );
+        public string IconPath => _iconPath.Value;
+        readonly ObservableAsPropertyHelper<string> _iconPath;
 
-        public string IconPath => _iconPath.Get();
-
-        readonly IProperty<string> _iconPath = H<Workflow<T>>.Property<string>(c => c
-            .Set(e => e.CurrentStage?.GetIconPath(e))
-            .On(e => e.CurrentStage)
-            .Update()
-        );
-
-        public string SubIconPath => _subIconPath.Get();
-
-        readonly IProperty<string> _subIconPath = H<Workflow<T>>.Property<string>(c => c
-            .Set(e => e.CurrentStage?.GetSubIconPath(e))
-            .On(e => e.CurrentStage)
-            .Update()
-        );
+        public string SubIconPath => _subIconPath.Value;
+        readonly ObservableAsPropertyHelper<string> _subIconPath;
 
         internal static bool AddStage(Stage stage)
         {
@@ -189,15 +183,15 @@ namespace HLab.Erp.Workflows
 
         public Stage CurrentStage
         {
-            get => _currentStage.Get();
+            get => _currentStage;
             set
             {
-                if (_currentStage.Set(value))
-                    value?.Action(this as T);
+                if (SetAndRaise(ref _currentStage, value) && this is T @this)
+                    value?.Action(@this);
             }
         }
 
-        readonly IProperty<Stage> _currentStage = H<Workflow<T>>.Property<Stage>();
+        Stage _currentStage;
 
         public async Task<bool> SetStageAsync(Func<Stage> setStage, string caption, string iconPath, bool sign, bool motivate)
         {
