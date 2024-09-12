@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HLab.Erp.Base.Wpf.Entities.Countries"
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
+             xmlns:countries="clr-namespace:HLab.Erp.Base.Wpf.Entities.Countries;assembly=HLab.Erp.Base"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance local:CountryToolsViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance countries:CountryToolsViewModel}"
              >
     <Grid>
         <Button Command="{Binding ImportCommand}">

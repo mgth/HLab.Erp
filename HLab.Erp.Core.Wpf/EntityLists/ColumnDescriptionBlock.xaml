@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
-             xmlns:wpf="clr-namespace:HLab.Icons.Wpf;assembly=HLab.Icons.Wpf"
+             xmlns:entityLists="clr-namespace:HLab.Erp.Core.Wpf.EntityLists"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              >
@@ -16,13 +16,13 @@
 
         <Grid Grid.Row="0">
                 <lang:LocalizedLabel
-                                 Text ="{Binding Title,RelativeSource={RelativeSource AncestorType=local:ColumnDescriptionBlock}}"  FontWeight="Bold" VerticalAlignment="Top"/>
+                                 Text ="{Binding Title,RelativeSource={RelativeSource AncestorType=entityLists:ColumnDescriptionBlock}}"  FontWeight="Bold" VerticalAlignment="Top"/>
         </Grid>
         <Grid Grid.Row="1">
             <Border Background="#30000000"></Border>
 
             <lang:LocalizedLabel
-                                 Text="{Binding Description,RelativeSource={RelativeSource AncestorType=local:ColumnDescriptionBlock}}" FontStyle="Italic"/>
+                                 Text="{Binding Description,RelativeSource={RelativeSource AncestorType=entityLists:ColumnDescriptionBlock}}" FontStyle="Italic"/>
         </Grid>
     </Grid>
 </UserControl>

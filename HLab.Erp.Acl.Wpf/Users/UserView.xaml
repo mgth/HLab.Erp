@@ -9,10 +9,10 @@
              xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
              xmlns:data="clr-namespace:HLab.Erp.Acl;assembly=HLab.Erp.Acl"
              xmlns:profiles="clr-namespace:HLab.Erp.Acl.Profiles"
-             xmlns:controlsEx="clr-namespace:HLab.Base.Wpf.ControlsEx;assembly=HLab.Base.Wpf"
              xmlns:views="clr-namespace:HLab.Erp.Core.Wpf.Views;assembly=HLab.Erp.Core.Wpf"
              xmlns:entitySelectors1="clr-namespace:HLab.Erp.Core.Wpf.EntitySelectors;assembly=HLab.Erp.Core.Wpf"
              xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
+             xmlns:controls="clr-namespace:HLab.Base.Wpf.Controls;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type users:UserViewModel+Design}, IsDesignTimeCreatable=True}"             
              d:DesignHeight="450" d:DesignWidth="800"
@@ -36,7 +36,7 @@
         
         <wpf:ViewLocator Model="{Binding Locker}"/>
         
-        <controlsEx:ScrollViewerEx Grid.Row="1">
+        <controls:ScrollViewerEx Grid.Row="1">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -106,7 +106,7 @@
 
                 </views:DetailView>
             </Grid>
-        </controlsEx:ScrollViewerEx>
+        </controls:ScrollViewerEx>
 
         <views:DetailView    Text="{}{Note}" IconPath="Icons/Edit"  Grid.Row="2" EditMode="{Binding Locker.IsActive}">
 
