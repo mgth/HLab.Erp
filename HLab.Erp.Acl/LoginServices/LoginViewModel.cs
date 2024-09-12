@@ -33,18 +33,18 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
         Database = DataService.Source;
 
         NumPadCommand = ReactiveCommand.CreateFromTask<string>(
-            NumPad, 
+            NumPad,
             this.WhenAnyValue(
-                e => e.Username, 
+                e => e.Username,
                 e => e.Password,
                 (userName, password) => userName.Length > 0 && password.Length > 0
                 ));
 
         LoginCommand = ReactiveCommand.CreateFromTask(
-            LoginAsync, 
+            LoginAsync,
             this.WhenAnyValue(
-                e => e.Username, 
-                e => e.Password, 
+                e => e.Username,
+                e => e.Password,
                 (userName, password) => userName.Length > 0 && password.Length > 0
                 ));
 
@@ -53,11 +53,11 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
     }
     public string Title => "{Connection}";
 
-    public ObservableCollection<string> Databases { get; } = new();
+    public ObservableCollection<string> Databases { get; } = [];
 
     public ILocalizationService LocalizationService { get; }
     public IIconService IconService { get; }
-    public object MainIcon { get; }
+    public object? MainIcon { get; } = null;
     public IDataService DataService { get; }
     public IApplicationInfoService InfoService { get; }
 
@@ -72,8 +72,8 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
             InfoService.DataSource = value;
         }
     }
-    string _database;
-        
+    string _database = "";
+
 
     public bool AllowDatabaseSelection
     {
@@ -94,17 +94,16 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
 
     async Task NumPad(string value)
     {
-                if (_pin.Length > 4) _pin = "";
-                _pin += value;
+        if (_pin.Length > 4) _pin = "";
+        _pin += value;
 
-                PinView = new string('.', _pin.Length);
+        PinView = new string('.', _pin.Length);
 
-                if (_pin.Length != 4) return;
-                Message = await Acl.Login(new NetworkCredential(Credential.UserName, _pin), true);
-                _pin = "";
-                PinView = "";
+        if (_pin.Length != 4) return;
+        Message = await Acl.Login(new NetworkCredential(Credential.UserName, _pin), true);
+        _pin = "";
+        PinView = "";
     }
-
 
     public ICommand LoginCommand { get; }
     async Task LoginAsync()
@@ -112,10 +111,9 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
         Message = "";
         Message = await Task.Run(() => Acl.Login(Credential));
     }
-        
-        
+
     public ICommand CancelCommand { get; }
-    public object AllowThemeSelection { get; }
+    public bool AllowThemeSelection { get; } = true;
 
     Task CancelAsync()
     {
