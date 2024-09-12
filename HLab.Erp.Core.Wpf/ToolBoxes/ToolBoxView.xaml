@@ -4,17 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:annotations="clr-namespace:HLab.Mvvm.Annotations;assembly=HLab.Mvvm.Annotations"
-             xmlns:mvvm="clr-namespace:HLab.Mvvm;assembly=HLab.Mvvm.Wpf"
              xmlns:toolBoxes="clr-namespace:HLab.Erp.Core.ToolBoxes"
-             xmlns:controlsEx="clr-namespace:HLab.Base.Wpf.ControlsEx;assembly=HLab.Base.Wpf"
              xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
+             xmlns:controls="clr-namespace:HLab.Base.Wpf.Controls;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <StackPanel>
             <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Command="{Binding CreateCommand}" >Créer</Button>
-            <controlsEx:ScrollViewerEx>
+            <controls:ScrollViewerEx>
                     <ListView   
                         wpf:ViewLocator.ViewClass="toolBoxes:IViewClassToolItem"
                         wpf:ViewLocator.ViewMode="annotations:DefaultViewMode"
@@ -24,7 +23,7 @@
                         ItemsSource="{Binding SearchList}"
                         SelectedItem="{Binding SearchList.SelectedViewModel}"
                         Background="#20FFFFFF" />
-            </controlsEx:ScrollViewerEx>
+            </controls:ScrollViewerEx>
         </StackPanel>
         <Canvas x:Name="DragCanvas"/>
     </Grid>

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:annotations="clr-namespace:HLab.Mvvm.Annotations;assembly=HLab.Mvvm.Annotations"
              xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
-             xmlns:controlsEx="clr-namespace:HLab.Base.Wpf.ControlsEx;assembly=HLab.Base.Wpf"
+             xmlns:controlsEx="clr-namespace:HLab.Base.Wpf.Controls;assembly=HLab.Base.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" 
              d:DesignWidth="800"

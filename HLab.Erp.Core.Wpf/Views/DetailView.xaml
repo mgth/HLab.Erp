@@ -6,7 +6,6 @@
              xmlns:views1="clr-namespace:HLab.Mvvm.Views;assembly=HLab.Mvvm.Wpf"
              xmlns:converters="clr-namespace:HLab.Base.Wpf.Converters;assembly=HLab.Base.Wpf"
              xmlns:wpf="clr-namespace:HLab.Base.Wpf;assembly=HLab.Base.Wpf"
-             xmlns:controlsEx="clr-namespace:HLab.Base.Wpf.ControlsEx;assembly=HLab.Base.Wpf"
              xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
              xmlns:views="clr-namespace:HLab.Erp.Core.Wpf.Views"
@@ -17,7 +16,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:ToBooleanConverter TrueValue="false" FalseValue="true" x:Key="InvertBooleanConverter" />
-            <Style TargetType="wpf:DateEx">
+            <Style TargetType="controls:DateEx">
                 <Setter Property="Width" Value="500"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
@@ -73,7 +72,7 @@
         </Label>
 
 
-        <controlsEx:ScrollViewerEx 
+        <controls:ScrollViewerEx 
             Grid.Row="1"
             Margin="0,0,5,0"
             HorizontalScrollBarVisibility="Disabled"
@@ -126,7 +125,7 @@
                             </Trigger>
                         </Style.Triggers>
                     </Style>
-                    <Style TargetType="wpf:DateEx">
+                    <Style TargetType="controls:DateEx">
                         <Setter Property="IsReadOnly" Value="{Binding EditMode, RelativeSource={RelativeSource AncestorType={x:Type views:DetailView}},Converter={StaticResource InvertBooleanConverter}}"/>
                         <Setter Property="Width" Value="120"/>
                         <Style.Triggers>
@@ -154,6 +153,6 @@
                 </Grid.ColumnDefinitions>
 
             </controls:PropertyGrid>
-        </controlsEx:ScrollViewerEx>
+        </controls:ScrollViewerEx>
 </Grid>
 </UserControl>

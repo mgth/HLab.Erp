@@ -6,9 +6,10 @@
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf"
                       xmlns:icons="clr-namespace:HLab.Icons.Wpf.Icons;assembly=HLab.Icons.Wpf"
                       xmlns:loginServices="clr-namespace:HLab.Erp.Acl.LoginServices"
+                      xmlns:loginServices1="clr-namespace:HLab.Erp.Acl.LoginServices;assembly=HLab.Erp.Acl"
                       mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="500" 
-             d:DataContext="{d:DesignInstance Type=loginServices:LoginViewModel}"
+             d:DataContext="{d:DesignInstance Type=loginServices1:LoginViewModel}"
              >
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
         <Viewbox Opacity="0.05">
