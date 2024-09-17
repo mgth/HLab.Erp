@@ -7,21 +7,16 @@ namespace HLab.Erp.Data.Wpf;
 
 public class ErpDataBootloader(IDataService data, IMvvmService mvvm) : IBootloader
 {
-    public async Task LoadAsync(IBootContext bootstrapper)
+    public Task LoadAsync(IBootContext bootstrapper)
     {
-        //if (_mvvm.ServiceState != ServiceState.Available)
-        //{
-        //    bootstrapper.Requeue();
-        //    return;
-        //}
-
+        if (bootstrapper.WaitingForService(mvvm)) return Task.CompletedTask;
 
         data.SetConfigureAction(async () =>
         {
 
-            var data = new ConnectionData();
+            var connectionData = new ConnectionData();
 
-            var view = await mvvm.MainContext.GetViewAsync(data, typeof(DefaultViewMode), typeof(IDefaultViewClass));
+            var view = await mvvm.MainContext.GetViewAsync(connectionData, typeof(DefaultViewMode), typeof(IDefaultViewClass));
 
             var dialog = new Window
             {
@@ -30,14 +25,12 @@ public class ErpDataBootloader(IDataService data, IMvvmService mvvm) : IBootload
                 SizeToContent = SizeToContent.WidthAndHeight
             };
 
-            if (dialog.ShowDialog() ?? false)
-            {
-                return $"Host={data.Server};Username={data.UserName};Password={data.Password};Database={data.Database}";;
+            if (!(dialog.ShowDialog() ?? false)) return "";
 
-            }
-
-            return "";
+            return $"Host={connectionData.Server};Username={connectionData.UserName};Password={connectionData.Password};Database={connectionData.Database}";;
         });
+
+        return Task.CompletedTask;
     }
 
 }

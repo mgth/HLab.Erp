@@ -73,13 +73,11 @@ namespace HLab.Erp.Data
         bool Any<T>(Expression<Func<T, bool>> expression)
             where T : class, IEntity;
 
-
-
-        T FetchOne<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
-        Task<T> FetchOneAsync<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
-        Task<T> FetchOneAsync<T>(int id) where T : class, IEntity<int>;
-        Task<T> FetchOneAsync<T>(string id) where T : class, IEntity<string>;
-        Task<T> ReFetchOneAsync<T>(T entity) where T : class, IEntity;
+        T? FetchOne<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
+        Task<T?> FetchOneAsync<T>(Expression<Func<T, bool>> expression) where T : class, IEntity;
+        Task<T?> FetchOneAsync<T>(int id) where T : class, IEntity<int>;
+        Task<T?> FetchOneAsync<T>(string id) where T : class, IEntity<string>;
+        Task<T?> ReFetchOneAsync<T>(T entity) where T : class, IEntity;
 
         T GetOrAdd<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null) where T : class, IEntity;
         Task<T> GetOrAddAsync<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null) where T : class, IEntity;

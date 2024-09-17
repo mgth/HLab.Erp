@@ -23,7 +23,9 @@
 		<ProjectReference Include="..\..\HLab.Core\HLab.Base\HLab.Base.csproj" />
 		<ProjectReference Include="..\..\HLab.Core\HLab.Core.ReactiveUI\HLab.Core.ReactiveUI.csproj" />
 		<ProjectReference Include="..\..\HLab.Core\HLab.Core\HLab.Core.csproj" />
+		<ProjectReference Include="..\..\HLab.Core\HLab.Mvvm.ReactiveUI\HLab.Mvvm.ReactiveUI.csproj" />
 		<ProjectReference Include="..\..\HLab.Core\HLab.Mvvm\HLab.Mvvm.csproj" />
+		<ProjectReference Include="..\..\HLab.Core\HLab.Network\HLab.Network.csproj" />
 		<ProjectReference Include="..\..\HLab.Core\HLab.Options\HLab.Options.csproj" />
 		<ProjectReference Include="..\HLab.Erp.Data.Annotations\HLab.Erp.Data.Annotations.csproj" />
 	</ItemGroup>

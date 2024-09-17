@@ -336,32 +336,32 @@ public class DataService : IDataService, IService
         }
     }
 
-    public async Task<T> FetchOneAsync<T>(Expression<Func<T, bool>> expression)
+    public async Task<T?> FetchOneAsync<T>(Expression<Func<T, bool>> expression)
         where T : class, IEntity
     {
-        var result = await DbGetAsync(async db => await db.QueryAsync<T>().Where(expression).FirstOrDefault().ConfigureAwait(false)).ConfigureAwait(false);
+        var result = await DbGetAsync(async db => await db.QueryAsync<T>().Where(expression).FirstOrDefault());
 
-        return result == null ? null : await DataCache<T>.Cache.GetOrAddAsync(result).ConfigureAwait(false);
+        return result == null ? null : await DataCache<T>.Cache.GetOrAddAsync(result);
     }
 
-    public T FetchOne<T>(Expression<Func<T, bool>> expression)
+    public T? FetchOne<T>(Expression<Func<T, bool>> expression)
         where T : class, IEntity
     {
         var result = DbGet(db => db.Query<T>().Where(expression).FirstOrDefault());
         return result == null ? null : DataCache<T>.Cache.GetOrAddAsync(result).Result;
     }
 
-    public Task<T> FetchOneAsync<T>(int id)
+    public Task<T?> FetchOneAsync<T>(int id)
         where T : class, IEntity<int>
 
         => FetchOneAsync<T>((object)id);
 
-    public Task<T> FetchOneAsync<T>(string id)
+    public Task<T?> FetchOneAsync<T>(string id)
         where T : class, IEntity<string>
 
         => FetchOneAsync<T>((object)id);
 
-    public async Task<T> ReFetchOneAsync<T>(T entity)
+    public async Task<T?> ReFetchOneAsync<T>(T entity)
         where T : class, IEntity
     {
         if (entity == null) return null;

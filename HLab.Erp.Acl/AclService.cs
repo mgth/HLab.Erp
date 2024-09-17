@@ -40,14 +40,13 @@ public class AclService : IAclService
 
     public bool Cancelled { get; private set; } = false;
 
-    public async Task<User> Check(NetworkCredential credential, bool pin = false)
+    public async Task<User?> Check(NetworkCredential credential, bool pin = false)
     {
         try
         {
-            if (pin)
-                return await _acl.GetUserWithPin(credential).ConfigureAwait(true);
-            else
-                return await _acl.GetUser(credential).ConfigureAwait(true);
+            if (pin) return await _acl.GetUserWithPinAsync(credential);
+
+            return await _acl.GetUserAsync(credential);
         }
         catch (Exception e)
         {
@@ -57,13 +56,13 @@ public class AclService : IAclService
 
     public async Task<string> Login(NetworkCredential credential,bool pin = false)
     {
-        Connection connection;
+        Connection? connection;
         try
         {
             if (pin)
-                connection = await _acl.GetConnectionWithPin(credential).ConfigureAwait(true);
+                connection = await _acl.GetConnectionWithPinAsync(credential);
             else
-                connection = await _acl.GetConnection(credential).ConfigureAwait(true);
+                connection = await _acl.GetConnectionAsync(credential);
         }
         catch (Exception e)
         {

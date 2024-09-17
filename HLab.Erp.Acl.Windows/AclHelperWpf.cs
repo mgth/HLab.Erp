@@ -6,11 +6,11 @@ namespace HLab.Erp.Acl.Windows;
 
 public class AclHelperWindows(IDataService db) : AclHelper(db)
 {
-    public override async Task<User> GetUser(NetworkCredential credential)
+    public override async Task<User?> GetUserAsync(NetworkCredential credential)
     {
         try
         {
-            var user = await Data.FetchOneAsync<User>(u => u.Username == credential.UserName).ConfigureAwait(false);
+            var user = await Data.FetchOneAsync<User>(u => u.Username == credential.UserName);
             if (user != null && !string.IsNullOrWhiteSpace(user.Domain))
             {
                 try
@@ -29,6 +29,6 @@ public class AclHelperWindows(IDataService db) : AclHelper(db)
             throw new AclException(ex.InnerException?.Message, ex);
         }
 
-        return await base.GetUser(credential).ConfigureAwait(false);
+        return await base.GetUserAsync(credential);
     }
 }

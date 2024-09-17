@@ -18,7 +18,7 @@ public abstract class DataUpdaterBootloader(IDataService data) : IBootloader
         var oldVersion = "";
         while (true)
         {
-            DataVersion version = null;
+            DataVersion? version = null;
             try
             {
                 version = await data.FetchOneAsync<DataVersion>(d => d.Module == CurrentModule);

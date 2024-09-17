@@ -32,7 +32,7 @@
             <ComboBox 
                 IsEditable="True"
                 Grid.Column="1" Grid.Row="2" 
-                Text="{Binding Server}" 
+                Text="{Binding Model.Server}" 
                 ItemsSource="{Binding Servers}"
                 />
                 

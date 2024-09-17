@@ -8,44 +8,39 @@ using System.Text;
 using System.Threading.Tasks;
 using HLab.Erp.Data;
 
-
 namespace HLab.Erp.Acl;
 
 public interface IAclHelper
 {
-    Task<User> GetUser(NetworkCredential credential);
-    Task<Connection> GetConnection(NetworkCredential credential);
+    Task<User?> GetUserAsync(NetworkCredential credential);
+    Task<Connection?> GetConnectionAsync(NetworkCredential credential);
 
-    Task<User> GetUserWithPin(NetworkCredential credential);
-    Task<Connection> GetConnectionWithPin(NetworkCredential credential);
+    Task<User?> GetUserWithPinAsync(NetworkCredential credential);
+    Task<Connection?> GetConnectionWithPinAsync(NetworkCredential credential);
     string Crypt(SecureString password);
 }
 
-public class AclHelper : IAclHelper
+public class AclHelper(IDataService db) : IAclHelper
 {
-    public async Task<Connection> GetConnection(NetworkCredential credential) => await GetConnection(await GetUser(credential).ConfigureAwait(false)).ConfigureAwait(false);
+    public async Task<Connection?> GetConnectionAsync(NetworkCredential credential) 
+        => await GetConnectionAsync(await GetUserAsync(credential));
 
-    public async Task<Connection> GetConnectionWithPin(NetworkCredential credential) => await GetConnection(await GetUserWithPin(credential).ConfigureAwait(false)).ConfigureAwait(false);
+    public async Task<Connection?> GetConnectionWithPinAsync(NetworkCredential credential) 
+        => await GetConnectionAsync(await GetUserWithPinAsync(credential));
 
+    const string KEY = "PG8JaR0ix+GP2w0bXse/ReZugKK+Q/g/";
+    const string IV = "TuG898IilQA=";
 
-    const string Cle = "PG8JaR0ix+GP2w0bXse/ReZugKK+Q/g/";
-    const string Iv = "TuG898IilQA=";
+    protected IDataService Data = db;
 
-    protected IDataService Data;
-
-    public AclHelper(IDataService db)
-    {
-        Data = db;
-    }
-
-    public async Task<User> GetUserWithPin(NetworkCredential credential)
+    public async Task<User?> GetUserWithPinAsync(NetworkCredential credential)
     {
         var login = credential.UserName;
         var pin = Crypt(credential.SecurePassword);
         return await Data.FetchOneAsync<User>(u => u.Username == login && u.Pin == pin);
     }
 
-    public virtual async Task<User> GetUser(NetworkCredential credential)
+    public virtual async Task<User?> GetUserAsync(NetworkCredential credential)
     {
         try
         {
@@ -54,17 +49,16 @@ public class AclHelper : IAclHelper
         }
         catch (DataException ex)
         {
-            throw new AclException(ex.InnerException?.Message,ex);
+            throw new AclException(ex.InnerException?.Message??"",ex);
         }
     }
 
-    async Task<Connection> GetConnection(User user)
+    async Task<Connection?> GetConnectionAsync(User? user)
     {
         if (user == null) return null;
 
         return await Data.AddAsync<Connection>(c =>
         {
-
             try
             {
                 var identity = System.Security.Principal.WindowsIdentity.GetCurrent().Name.Split('\\');
@@ -90,8 +84,12 @@ public class AclHelper : IAclHelper
     {
         try
         {
-            var symmetricAlgorithm = new TripleDESCryptoServiceProvider();
-            var encryptor = symmetricAlgorithm.CreateEncryptor(Convert.FromBase64String(Cle), Convert.FromBase64String(Iv));
+            var symmetricAlgorithm = TripleDES.Create();
+            //var symmetricAlgorithm = Aes.Create();
+            symmetricAlgorithm.Key = Convert.FromBase64String(KEY);
+            symmetricAlgorithm.IV = Convert.FromBase64String(IV);
+
+            var encryptor = symmetricAlgorithm.CreateEncryptor();
 
             var memoryStream = new MemoryStream();
             using var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);

@@ -16,7 +16,7 @@ public abstract class AclServiceBase : IAclService
         throw new InvalidOperationException();
     }
 
-    public virtual Task<User> Check(NetworkCredential credential, bool pin = false)
+    public virtual Task<User?> Check(NetworkCredential credential, bool pin = false)
     {
         throw new InvalidOperationException();
     }
@@ -54,7 +54,7 @@ public interface IAclService : IService
     bool Cancelled { get; }
     //string Login(string login, string password);
     Task<string> Login(NetworkCredential credential, bool pin = false);
-    Task<User> Check(NetworkCredential credential, bool pin = false);
+    Task<User?> Check(NetworkCredential credential, bool pin = false);
     string Crypt(SecureString password);
 
 
