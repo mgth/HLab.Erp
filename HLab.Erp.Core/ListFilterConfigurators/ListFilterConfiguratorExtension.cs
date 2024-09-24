@@ -443,7 +443,7 @@ public static class ListFilterConfiguratorExtension
         where T : class, IEntity, new()
         where TFilter : class, IFilter<TLink> 
     {
-        return Platform?.Localize(@this
+        return Implementation?.Localize(@this
             .OrderByDefault(getter.Compile())
             .AddProperty(getter,out var content)
             , content)??@this;
@@ -453,7 +453,7 @@ public static class ListFilterConfiguratorExtension
         where T : class, IEntity, new()
         where TFilter : class, IFilter<TLink> 
     {
-        return Platform?.Date( @this
+        return Implementation?.Date( @this
             .OrderByDefault(getter.CastReturn(default(object)).Compile())
             .AddProperty(getter,out var content)
             , content) ?? @this;
@@ -466,7 +466,7 @@ public static class ListFilterConfiguratorExtension
         where T : class, IEntity, new()
         where TFilter : class, IFilter<TLink> 
     {
-        return Platform?.Date( @this
+        return Implementation?.Date( @this
             .OrderByDefault(dateGetter.CastReturn(default(object)).Compile())
             .AddProperty(dateGetter,out var date)
             .AddProperty(dayValidGetter,out var dayValid)
@@ -475,7 +475,7 @@ public static class ListFilterConfiguratorExtension
 
     public static IColumnConfigurator<T, TLink, TFilter> Icon<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> @this, Expression<Func<T, string>> getPath, double size = 30.0)
         where T : class, IEntity, new()
-        where TFilter : class, IFilter<TLink> => Platform?.Icon( @this
+        where TFilter : class, IFilter<TLink> => Implementation?.Icon( @this
         .AddProperty(getPath.CastReturn(default(object)), out var iconPath)
             , iconPath, size) ?? @this;
 
@@ -491,7 +491,7 @@ public static class ListFilterConfiguratorExtension
     {
         var viewClassType = typeof(TViewClass);
 
-        return Platform?.Mvvm(@this, viewClass)??@this;
+        return Implementation?.Mvvm(@this, viewClass)??@this;
     }
 
     public static IColumnConfigurator<T, TLink, TFilter> Mvvm<T, TLink, TFilter>(this IColumnConfigurator<T, TLink, TFilter> c) 
@@ -542,9 +542,9 @@ public static class ListFilterConfiguratorExtension
     {
         var getter = getProgress.Compile();
 
-        if(Platform == null) throw new("Platform not set");
+        if(Implementation == null) throw new("Platform not set");
 
-        return Platform.Progress( @this.Column("Progress")
+        return Implementation.Progress( @this.Column("Progress")
             .Header("{Progress}").Width(80)
             .AddProperty(getProgress,out var progress), progress)
             .UpdateOn(getProgress)
@@ -560,14 +560,14 @@ public static class ListFilterConfiguratorExtension
     )
 
         where T : class, IEntity, new()
-        => Platform.Description( @this.Column(id)
+        => Implementation.Description( @this.Column(id)
             .AddProperty(getTitle, out var title)
             .AddProperty(getDescription, out var description)
             ,title, description);
 
 
 
-    public static IListFilterConfiguratorPlatformImplementation? Platform { get; set; }
+    public static IListFilterConfiguratorPlatformImplementation? Implementation { get; set; }
 }
 
 public interface IListFilterConfiguratorPlatformImplementation

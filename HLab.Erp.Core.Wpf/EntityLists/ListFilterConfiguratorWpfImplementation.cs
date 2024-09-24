@@ -8,13 +8,17 @@ using HLab.Icons.Wpf.Icons;
 using HLab.Localization.Wpf.Lang;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Wpf;
-using System;
 using HLab.Erp.Core.Wpf.Views;
 
 namespace HLab.Erp.Core.Wpf.EntityLists;
 
 public class ListFilterConfiguratorWpfImplementation : IListFilterConfiguratorPlatformImplementation
 {
+    public static void Initialize()
+    {
+        ListFilterConfiguratorExtension.Implementation = new ListFilterConfiguratorWpfImplementation();
+    }
+
     public IColumnConfigurator<T, TLink, TFilter> 
         Localize<T, TLink, TFilter>(IColumnConfigurator<T, TLink, TFilter> @this, string content) 
         where T : class, IEntity, new() 

@@ -1,7 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Net;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Google.Protobuf.WellKnownTypes;
 using HLab.Erp.Acl.AuditTrails;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
@@ -29,6 +32,14 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
             Databases.Add(connection);
             AllowDatabaseSelection = true;
         }
+
+        this.WhenAnyValue(e => e.Database)
+        .Select(database => { 
+            DataService.Source = database;
+            InfoService.DataSource = database;
+            return true;
+            })
+            .Subscribe();
 
         Database = DataService.Source;
 
@@ -64,13 +75,7 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
     public string Database
     {
         get => _database;
-        set
-        {
-            if (!SetAndRaise(ref _database, value)) return;
-
-            DataService.Source = value;
-            InfoService.DataSource = value;
-        }
+        set => SetAndRaise(ref _database, value);
     }
     string _database = "";
 

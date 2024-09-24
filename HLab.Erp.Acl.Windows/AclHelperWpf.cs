@@ -8,15 +8,18 @@ public class AclHelperWindows(IDataService db) : AclHelper(db)
 {
     public override async Task<User?> GetUserAsync(NetworkCredential credential)
     {
+        var username = credential.UserName;
+        var password = credential.Password;
+
         try
         {
-            var user = await Data.FetchOneAsync<User>(u => u.Username == credential.UserName);
+            var user = await Data.FetchOneAsync<User>(u => u.Username == username);
             if (user != null && !string.IsNullOrWhiteSpace(user.Domain))
             {
                 try
                 {
                     using var context = new PrincipalContext(ContextType.Domain, user.Domain);
-                    var valid = context.ValidateCredentials(credential.UserName, credential.Password);
+                    var valid = context.ValidateCredentials(username, password);
                     if (valid) return user;
                 }
                 catch

@@ -43,7 +43,7 @@ namespace HLab.Erp.Data.Observables
 
         public IObservable<int> CountChanged => throw new NotImplementedException();
 
-        public IEnumerable<T> Items => throw new NotImplementedException();
+        public IReadOnlyList<T> Items => throw new NotImplementedException();
 
         public IObservable<IChangeSet<T>> Connect(Func<T, bool>? predicate = null)
         {
@@ -111,7 +111,7 @@ namespace HLab.Erp.Data.Observables
 
         public IObservable<int> CountChanged => _list.CountChanged;
 
-        public IEnumerable<T> Items => _list.Items;
+        public IReadOnlyList<T> Items => _list.Items;
 
         int _count;
 

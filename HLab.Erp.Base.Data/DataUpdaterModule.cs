@@ -2,6 +2,7 @@
 using HLab.Erp.Data;
 using Npgsql;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HLab.Erp.Base.Data;
@@ -22,6 +23,11 @@ public abstract class DataUpdaterBootloader(IDataService data) : IBootloader
             try
             {
                 version = await data.FetchOneAsync<DataVersion>(d => d.Module == CurrentModule);
+            }
+            catch (KeyNotFoundException exception)
+            {
+                        CreateDataVersion();
+                        version = await data.FetchOneAsync<DataVersion>(d => d.Module == CurrentModule);
             }
             catch (DataException exception)
             {
