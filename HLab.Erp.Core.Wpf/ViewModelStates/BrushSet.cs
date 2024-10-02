@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Media;
+using HLab.Base.ReactiveUI;
 using HLab.Erp.Core.ViewModelStates;
 using HLab.Mvvm.ReactiveUI;
 using ReactiveUI;
@@ -58,7 +59,7 @@ public class BrushSet : ViewModel //, IChildObject
     public State State
     {
         get => _state;
-        set => SetAndRaise(ref _state,value);
+        set => this.SetAndRaise(ref _state,value);
     }
     State _state;
 

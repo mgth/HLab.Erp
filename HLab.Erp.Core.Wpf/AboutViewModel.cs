@@ -1,4 +1,5 @@
-﻿using HLab.Mvvm.ReactiveUI;
+﻿using HLab.Base.ReactiveUI;
+using HLab.Mvvm.ReactiveUI;
 
 namespace HLab.Erp.Core.Wpf
 {
@@ -16,7 +17,7 @@ namespace HLab.Erp.Core.Wpf
         public string Note
         {
             get => _note;
-            set => SetAndRaise(ref _note,value);
+            set => this.SetAndRaise(ref _note,value);
         }
         string _note;
         

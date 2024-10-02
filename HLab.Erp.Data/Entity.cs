@@ -39,7 +39,7 @@ where T : struct
     public virtual T Id
     {
         get => _id;
-        set => SetAndRaise(ref _id, value);
+        set => this.SetAndRaise(ref _id, value);
     }
 
     T _id = (T)(object)-1;

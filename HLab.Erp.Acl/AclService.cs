@@ -40,7 +40,7 @@ public class AclService : IAclService
 
     public bool Cancelled { get; private set; } = false;
 
-    public async Task<User?> Check(NetworkCredential credential, bool pin = false)
+    public async Task<User?> CheckAsync(NetworkCredential credential, bool pin = false)
     {
         try
         {
@@ -54,7 +54,7 @@ public class AclService : IAclService
         }
     }
 
-    public async Task<string> Login(NetworkCredential credential,bool pin = false)
+    public async Task<string> LoginAsync(NetworkCredential credential,bool pin = false)
     {
         Connection? connection;
         try
@@ -83,7 +83,7 @@ public class AclService : IAclService
 
     public async Task<string> Login(string login, SecureString password)
     {
-        return await Login(new NetworkCredential(login, password));
+        return await LoginAsync(new NetworkCredential(login, password));
     }
 
     public async Task<AclNode> GetAclNode(object target)

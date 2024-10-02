@@ -32,7 +32,7 @@ public abstract class QueryListBase<T> : ObservableCollection<T>, IQueryList, IV
     public Type ViewMode
     {
         get => _viewMode;
-        set => SetAndRaise(ref _viewMode,value);
+        set => this.SetAndRaise(ref _viewMode,value);
     }
     Type _viewMode = typeof(DefaultViewMode);
 
@@ -118,7 +118,7 @@ public class QueryListBase<T, TVm, TThis> : QueryListBase<TVm>
     public Func<IQueryable<T>> SourceFunc
     {
         get => _sourceFunc;
-        set => SetAndRaise(ref _sourceFunc,value);
+        set => this.SetAndRaise(ref _sourceFunc,value);
     }
 
     Func<IQueryable<T>> _sourceFunc = H<QueryListBase<T, TVm, TThis>>.Property<Func<IQueryable<T>>>();

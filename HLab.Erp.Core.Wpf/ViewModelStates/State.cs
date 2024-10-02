@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Windows.Media;
+using HLab.Base.ReactiveUI;
 using HLab.Core.Annotations;
 using HLab.Erp.Core.ViewModelStates;
 using HLab.Mvvm.ReactiveUI;
@@ -83,7 +84,7 @@ namespace HLab.Erp.Core.Wpf.ViewModelStates
         public BrushTheme Theme
         {
             get => _theme;
-            set => SetAndRaise(ref _theme, value);
+            set => this.SetAndRaise(ref _theme, value);
         }
         BrushTheme _theme = BrushTheme.Current;
 
@@ -155,27 +156,27 @@ namespace HLab.Erp.Core.Wpf.ViewModelStates
         public Color Color
         {
             get => _color;
-            set => SetAndRaise(ref _color, value);
+            set => this.SetAndRaise(ref _color, value);
         }
 
         Color _color;
-        public bool Selected { get => _selected; set => SetAndRaise(ref _selected, value); }
+        public bool Selected { get => _selected; set => this.SetAndRaise(ref _selected, value); }
         bool _selected;
-        public bool LeftHighlighted { get => _leftHighlighted; set => SetAndRaise(ref _leftHighlighted, value); }
+        public bool LeftHighlighted { get => _leftHighlighted; set => this.SetAndRaise(ref _leftHighlighted, value); }
         bool _leftHighlighted;
-        public bool RightHighlighted { get => _rightHighlighted; set => SetAndRaise(ref _rightHighlighted, value); }
+        public bool RightHighlighted { get => _rightHighlighted; set => this.SetAndRaise(ref _rightHighlighted, value); }
         bool _rightHighlighted;
 
         public bool Highlighted => _highlighted.Value;
         readonly ObservableAsPropertyHelper<bool> _highlighted;
 
-        public bool Darken { get => _darken; set => SetAndRaise(ref _darken, value); }
+        public bool Darken { get => _darken; set => this.SetAndRaise(ref _darken, value); }
         bool _darken;
 
-        public bool Disabled { get => _disabled; set => SetAndRaise(ref _disabled, value); }
+        public bool Disabled { get => _disabled; set => this.SetAndRaise(ref _disabled, value); }
         bool _disabled;
 
-        public bool Moving { get => _moving; set => SetAndRaise(ref _moving, value); }
+        public bool Moving { get => _moving; set => this.SetAndRaise(ref _moving, value); }
         bool _moving;
 
 

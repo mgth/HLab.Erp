@@ -5,10 +5,12 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Google.Protobuf.WellKnownTypes;
+using HLab.Base.ReactiveUI;
 using HLab.Erp.Acl.AuditTrails;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
+using HLab.UI;
 using ReactiveUI;
 
 namespace HLab.Erp.Acl.LoginServices;
@@ -75,7 +77,7 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
     public string Database
     {
         get => _database;
-        set => SetAndRaise(ref _database, value);
+        set => this.SetAndRaise(ref _database, value);
     }
     string _database = "";
 
@@ -83,14 +85,14 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
     public bool AllowDatabaseSelection
     {
         get => _allowDatabaseSelection;
-        set => SetAndRaise(ref _allowDatabaseSelection, value);
+        set => this.SetAndRaise(ref _allowDatabaseSelection, value);
     }
     bool _allowDatabaseSelection;
 
     public string PinView
     {
         get => _pinView;
-        set => SetAndRaise(ref _pinView, value);
+        set => this.SetAndRaise(ref _pinView, value);
     }
     string _pinView = "";
 
@@ -105,7 +107,7 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
         PinView = new string('.', _pin.Length);
 
         if (_pin.Length != 4) return;
-        Message = await Acl.Login(new NetworkCredential(Credential.UserName, _pin), true);
+        Message = await Acl.LoginAsync(new NetworkCredential(Credential.UserName, _pin), true);
         _pin = "";
         PinView = "";
     }
@@ -114,7 +116,9 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
     async Task LoginAsync()
     {
         Message = "";
-        Message = await Task.Run(() => Acl.Login(Credential));
+//        Message = await Task.Run(() => Acl.Login(Credential));
+        UiPlatform.InvokeOnUiThreadAsync(async () => Message = await Acl.LoginAsync(Credential));
+        //Message = await Acl.LoginAsync(Credential);
     }
 
     public ICommand CancelCommand { get; }

@@ -2,6 +2,7 @@
 using System.Security;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using HLab.Base.ReactiveUI;
 using HLab.Erp.Data.Observables;
 using HLab.Mvvm.ReactiveUI;
 using ReactiveUI;
@@ -21,7 +22,7 @@ public class KioskLoginViewModel : ViewModel
     {
         get => _username;
         set {
-            if (!SetAndRaise(ref _username, value)) return;
+            if (!this.SetAndRaise(ref _username, value)) return;
             Credential = new (value, Password);
         }
     }
@@ -35,7 +36,7 @@ public class KioskLoginViewModel : ViewModel
     public string Password
     {
         get => _password;
-        set => SetAndRaise(ref _password,value);
+        set => this.SetAndRaise(ref _password,value);
     }
 
     string _password = 
@@ -48,7 +49,7 @@ public class KioskLoginViewModel : ViewModel
     public string Pin
     {
         get => _pin;
-        set => SetAndRaise(ref _pin,value);
+        set => this.SetAndRaise(ref _pin,value);
     }
 
     string _pin = 
@@ -65,7 +66,7 @@ public class KioskLoginViewModel : ViewModel
         get => _credential;
         set
         {
-            if (!SetAndRaise(ref _credential, value)) return;
+            if (!this.SetAndRaise(ref _credential, value)) return;
             Username = value.UserName;
             Password = _acl.Crypt(value.SecurePassword);
         }
@@ -81,14 +82,14 @@ public class KioskLoginViewModel : ViewModel
     public string Message
     {
         get => _message;
-        set => SetAndRaise(ref _message,value);
+        set => this.SetAndRaise(ref _message,value);
     }
     string _message;
 
     public User User
     {
         get => _user;
-        set => SetAndRaise(ref _user,value);
+        set => this.SetAndRaise(ref _user,value);
     }
     User _user;
 
@@ -100,7 +101,7 @@ public class KioskLoginViewModel : ViewModel
     public ObservableQuery<User> UsersList
     {
         get => _usersList;
-        set => SetAndRaise(ref _usersList, value.FluentUpdate());
+        set => this.SetAndRaise(ref _usersList, value.FluentUpdate());
     }
 
     ObservableQuery<User> _usersList;
@@ -112,7 +113,7 @@ public class KioskLoginViewModel : ViewModel
     public string PinView
     {
         get => _pinView;
-        set => SetAndRaise(ref _pinView,value);
+        set => this.SetAndRaise(ref _pinView,value);
     }
     string _pinView = "";
 
@@ -146,7 +147,7 @@ public class KioskLoginViewModel : ViewModel
         PinView = new string('.', _pin.Length);
 
         if (_pin.Length != 4) return;
-        Message = await _acl.Login(new (Credential.UserName, _pin), true);
+        Message = await _acl.LoginAsync(new (Credential.UserName, _pin), true);
         _pin = "";
         PinView = "";
     }
@@ -156,7 +157,7 @@ public class KioskLoginViewModel : ViewModel
     async Task LoginAsync()
     {
         Message = "";
-        Message = await Task.Run(() => _acl.Login(Credential));
+        Message = await Task.Run(() => _acl.LoginAsync(Credential));
     }
 
     public void SetPassword(SecureString password)

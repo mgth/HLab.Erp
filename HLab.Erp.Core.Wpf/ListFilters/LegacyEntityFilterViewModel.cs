@@ -85,7 +85,7 @@
     //    public IEntity Value
     //    {
     //        get => _value;
-    //        set => SetAndRaise(ref _value,value);
+    //        set => this.SetAndRaise(ref _value,value);
     //    }
     //    private IEntity _value ;
     //}

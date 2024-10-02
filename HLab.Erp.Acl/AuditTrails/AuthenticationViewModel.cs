@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Security;
 using System.Windows;
+using HLab.Base.ReactiveUI;
 using HLab.Mvvm;
 using HLab.Mvvm.ReactiveUI;
 
@@ -14,7 +15,7 @@ public class AuthenticationViewModel(IAclService acl) : ViewModel
         get => _user;
         set
         {
-            if (SetAndRaise(ref _user, value))
+            if (this.SetAndRaise(ref _user, value))
             {
                 Username = value?.Username;
             }
@@ -27,7 +28,7 @@ public class AuthenticationViewModel(IAclService acl) : ViewModel
         get => _username;
         set
         {
-            if(SetAndRaise(ref _username, value))
+            if(this.SetAndRaise(ref _username, value))
             {
                 Credential.UserName = value;
             }
@@ -42,7 +43,7 @@ public class AuthenticationViewModel(IAclService acl) : ViewModel
     public string Password
     {
         get => _password;
-        set => SetAndRaise(ref _password,value);
+        set => this.SetAndRaise(ref _password,value);
     }
 
     string _password = 
@@ -56,7 +57,7 @@ public class AuthenticationViewModel(IAclService acl) : ViewModel
         get => _credential;
         set
         {
-            if (!SetAndRaise(ref _credential, value)) return;
+            if (!this.SetAndRaise(ref _credential, value)) return;
             if (value != null)
             {
                 Username = value.UserName;
@@ -80,7 +81,7 @@ public class AuthenticationViewModel(IAclService acl) : ViewModel
     public string Message
     {
         get => _message;
-        set => SetAndRaise(ref _message,value);
+        set => this.SetAndRaise(ref _message,value);
     }
     string _message = "";
 

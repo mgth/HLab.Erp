@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using DynamicData;
 using HLab.Base;
 using HLab.Core.Annotations;
+using HLab.UI;
 using ReactiveUI;
 
 ////using System.Data.Entity;

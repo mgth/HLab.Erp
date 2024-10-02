@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
+using HLab.Base.ReactiveUI;
 using HLab.Erp.Data;
 using HLab.Mvvm.ReactiveUI;
 using ReactiveUI;
@@ -51,18 +52,18 @@ public class ImportUsersViewModel : ViewModel
 
     public ObservableCollection<AdUser> Users { get; } = [];
 
-    public string Domain { get => _domain; set => SetAndRaise(ref _domain,value); }
+    public string Domain { get => _domain; set => this.SetAndRaise(ref _domain,value); }
     string _domain ;
 
-    public string Message { get => _message; set => SetAndRaise(ref _message,value); }
+    public string Message { get => _message; set => this.SetAndRaise(ref _message,value); }
     string _message ;
 
-    public bool Success { get => _success; set => SetAndRaise(ref _success,value); }
+    public bool Success { get => _success; set => this.SetAndRaise(ref _success,value); }
     bool _success ;
 
-    public string UserName { get => _userName; set => SetAndRaise(ref _userName,value); }
+    public string UserName { get => _userName; set => this.SetAndRaise(ref _userName,value); }
     string _userName ;
-    public AdUser? SelectedUser { get => _selectedUser; set => SetAndRaise(ref _selectedUser,value); }
+    public AdUser? SelectedUser { get => _selectedUser; set => this.SetAndRaise(ref _selectedUser,value); }
     AdUser? _selectedUser ;
 
     public ICommand RetrieveUsersCommand { get; }

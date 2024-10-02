@@ -1,4 +1,5 @@
 ﻿using System;
+using HLab.Base.ReactiveUI;
 using HLab.Erp.Data;
 using NPoco;
 using ReactiveUI;
@@ -14,14 +15,14 @@ public class DataLock : Entity
 
     public string EntityClass        {
         get => _entityClass;
-        set => SetAndRaise(ref _entityClass, value);
+        set => this.SetAndRaise(ref _entityClass, value);
     }
     string _entityClass = "";
 
     public int? EntityId
     {
         get => _entityId;
-        set => SetAndRaise(ref _entityId, value);
+        set => this.SetAndRaise(ref _entityId, value);
     }
     int? _entityId;
 
@@ -42,21 +43,21 @@ public class DataLock : Entity
     public string Code
     {
         get => _code;
-        set => SetAndRaise(ref _code, value);
+        set => this.SetAndRaise(ref _code, value);
     }
     string _code = GetNewCode();
 
     public DateTime StartTime
     {
         get => _startTime;
-        set => SetAndRaise(ref _startTime, value);
+        set => this.SetAndRaise(ref _startTime, value);
     }
     DateTime _startTime = DateTime.Now.ToUniversalTime();
 
     public DateTime HeartbeatTime
     {
         get => _heartbeatTime; 
-        set => SetAndRaise(ref _heartbeatTime, value);
+        set => this.SetAndRaise(ref _heartbeatTime, value);
     }
     DateTime _heartbeatTime = DateTime.Now.ToUniversalTime();
 

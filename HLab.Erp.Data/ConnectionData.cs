@@ -16,16 +16,16 @@ public class ConnectionData : ReactiveModel
         ).ToProperty(this, x => x.ConnectionString);
     }
 
-    public string Server { get => _server; set => SetAndRaise(ref _server, value); }
+    public string Server { get => _server; set => this.SetAndRaise(ref _server, value); }
     string _server = "";
 
-    public string Database { get => _database; set => SetAndRaise(ref _database, value); }
+    public string Database { get => _database; set => this.SetAndRaise(ref _database, value); }
     string _database = "";
 
-    public string UserName { get => _userName; set => SetAndRaise(ref _userName, value); }
+    public string UserName { get => _userName; set => this.SetAndRaise(ref _userName, value); }
     string _userName = "";
 
-    public string Password { get => _password; set => SetAndRaise(ref _password, value); }
+    public string Password { get => _password; set => this.SetAndRaise(ref _password, value); }
     string _password = "";
 
     public string ConnectionString => _connectionString.Value;

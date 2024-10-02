@@ -1,4 +1,5 @@
-﻿using HLab.Mvvm.ReactiveUI;
+﻿using HLab.Base.ReactiveUI;
+using HLab.Mvvm.ReactiveUI;
 
 namespace HLab.Erp.Core.Wpf.Localization
 {
@@ -7,7 +8,7 @@ namespace HLab.Erp.Core.Wpf.Localization
         public string Value
         {
             get => _value;
-            set => SetAndRaise(ref _value,value);
+            set => this.SetAndRaise(ref _value,value);
         }
 
         string _value;

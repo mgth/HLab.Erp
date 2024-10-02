@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
+using HLab.Base.ReactiveUI;
 using HLab.Core.Annotations;
 using HLab.Erp.Core.WebService;
 using HLab.Mvvm;
@@ -56,7 +57,7 @@ public class BrowserViewModel : ViewModel, IBrowserService
     public string Url
     {
         get => _url;
-        set => SetAndRaise(ref _url,value);
+        set => this.SetAndRaise(ref _url,value);
     }
     string _url = "";
 

@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Automation.Text;
 using System.Windows.Input;
 using System.Xml;
+using HLab.Base.ReactiveUI;
 using HLab.Erp.Acl;
 using HLab.Erp.Base.Data;
 using HLab.Mvvm.Annotations;
@@ -58,7 +59,7 @@ public class UnitViewModel: ListableEntityViewModel<Unit>
     public double TestValue
     {
         get => _testValue;
-        set => SetAndRaise(ref _testValue,value);
+        set => this.SetAndRaise(ref _testValue,value);
     }
 
     double _testValue = 1.0;
@@ -66,7 +67,7 @@ public class UnitViewModel: ListableEntityViewModel<Unit>
     public Unit TestUnit
     {
         get => _testUnit;
-        set => SetAndRaise(ref _testUnit,value);
+        set => this.SetAndRaise(ref _testUnit,value);
     }
     Unit _testUnit;
 

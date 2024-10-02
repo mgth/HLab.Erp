@@ -1,4 +1,5 @@
-﻿using HLab.Erp.Data;
+﻿using HLab.Base.ReactiveUI;
+using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
 using ReactiveUI;
@@ -19,7 +20,7 @@ public class LocalizeEntry : Entity, ILocalizeEntry, IListableModel
     public string Tag
     {
         get => _tag;
-        set => SetAndRaise(ref _tag,value);
+        set => this.SetAndRaise(ref _tag,value);
     }
 
     string _tag = "en-us";

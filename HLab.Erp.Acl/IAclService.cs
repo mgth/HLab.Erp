@@ -11,12 +11,12 @@ public abstract class AclServiceBase : IAclService
     public virtual ServiceState ServiceState => default;
     public virtual Connection Connection => default;
     public virtual bool Cancelled => default;
-    public virtual Task<string> Login(NetworkCredential credential, bool pin = false)
+    public virtual Task<string> LoginAsync(NetworkCredential credential, bool pin = false)
     {
         throw new InvalidOperationException();
     }
 
-    public virtual Task<User?> Check(NetworkCredential credential, bool pin = false)
+    public virtual Task<User?> CheckAsync(NetworkCredential credential, bool pin = false)
     {
         throw new InvalidOperationException();
     }
@@ -53,8 +53,8 @@ public interface IAclService : IService
 
     bool Cancelled { get; }
     //string Login(string login, string password);
-    Task<string> Login(NetworkCredential credential, bool pin = false);
-    Task<User?> Check(NetworkCredential credential, bool pin = false);
+    Task<string> LoginAsync(NetworkCredential credential, bool pin = false);
+    Task<User?> CheckAsync(NetworkCredential credential, bool pin = false);
     string Crypt(SecureString password);
 
 

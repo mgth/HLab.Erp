@@ -1,3 +1,4 @@
+using HLab.Base.ReactiveUI;
 using HLab.Erp.Data;
 
 namespace HLab.Erp.Base.Data;
@@ -9,42 +10,42 @@ public abstract class Corporation : Entity, ICorporation
     public string Name
     {
         get => _name;
-        set => SetAndRaise(ref _name,value);
+        set => this.SetAndRaise(ref _name,value);
     }
     string _name = "";
 
     public string Address
     {
         get => _address;
-        set => SetAndRaise(ref _address,value);
+        set => this.SetAndRaise(ref _address,value);
     }
     string _address = "";
 
     public string Phone
     {
         get => _phone;
-        set => SetAndRaise(ref _phone,value);
+        set => this.SetAndRaise(ref _phone,value);
     }
     string _phone = "";
 
     public string Fax
     {
         get => _fax;
-        set => SetAndRaise(ref _fax,value);
+        set => this.SetAndRaise(ref _fax,value);
     }
     string _fax = "";
 
     public string Email
     {
         get => _email;
-        set => SetAndRaise(ref _email,value);
+        set => this.SetAndRaise(ref _email,value);
     }
     string _email = "";
 
     public string Note
     {
         get => _note;
-        set => SetAndRaise(ref _note,value);
+        set => this.SetAndRaise(ref _note,value);
     }
     string _note = "";
 

@@ -187,7 +187,7 @@ namespace HLab.Erp.Workflows.Models
             get => _currentStage;
             set
             {
-                if (SetAndRaise(ref _currentStage, value) && this is T @this)
+                if (this.SetAndRaise(ref _currentStage, value) && this is T @this)
                     value?.Action(@this);
             }
         }

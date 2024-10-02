@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using HLab.Base.ReactiveUI;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 using ReactiveUI;
@@ -43,7 +44,7 @@ public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrai
     public bool MotivationMandatory
     {
         get => _motivationMandatory;
-        set => SetAndRaise(ref _motivationMandatory,value);
+        set => this.SetAndRaise(ref _motivationMandatory,value);
     }
     bool _motivationMandatory ;
 
@@ -53,42 +54,42 @@ public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrai
     public bool Signing
     {
         get => _signing;
-        set => SetAndRaise(ref _signing,value);
+        set => this.SetAndRaise(ref _signing,value);
     }
     bool _signing = false;
 
     public string Motivation
     {
         get => _motivation;
-        set => SetAndRaise(ref _motivation,value);
+        set => this.SetAndRaise(ref _motivation,value);
     }
     string _motivation = "";
 
     public string IconPath
     {
         get => _iconPath;
-        set => SetAndRaise(ref _iconPath,value);
+        set => this.SetAndRaise(ref _iconPath,value);
     }
     string _iconPath = "";
 
     public string EntityCaption
     {
         get => _entityCaption;
-        set => SetAndRaise(ref _entityCaption,value);
+        set => this.SetAndRaise(ref _entityCaption,value);
     }
     string _entityCaption = "";
 
     public string Log
     {
         get => _log;
-        set => SetAndRaise(ref _log,value);
+        set => this.SetAndRaise(ref _log,value);
     }
     string _log = "";
 
     public bool? Result
     {
         get => _result;
-        set => SetAndRaise(ref _result,value);
+        set => this.SetAndRaise(ref _result,value);
     }
     bool? _result = false;
 
@@ -100,7 +101,7 @@ public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrai
     {
         if(Signing)
         {
-            var user = await Acl.Check(Credential);
+            var user = await Acl.CheckAsync(Credential);
             if(user==null)
             {
                 Message = "Login ou mot de passe incorrect.";

@@ -27,6 +27,7 @@
 		<ProjectReference Include="..\..\HLab.Core\HLab.Mvvm\HLab.Mvvm.csproj" />
 		<ProjectReference Include="..\..\HLab.Core\HLab.Network\HLab.Network.csproj" />
 		<ProjectReference Include="..\..\HLab.Core\HLab.Options\HLab.Options.csproj" />
+		<ProjectReference Include="..\..\HLab.Core\HLab.UI\HLab.UI.csproj" />
 		<ProjectReference Include="..\HLab.Erp.Data.Annotations\HLab.Erp.Data.Annotations.csproj" />
 	</ItemGroup>
 
