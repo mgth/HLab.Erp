@@ -396,38 +396,43 @@ public class DataService : IDataService, IService
         return DbGet<bool>(db => db.Query<T>().Any(expression));
     }
 
-    IEnumerable<string> _connectionStrings;
-    public IEnumerable<string> Connections
-    {
-        get
-        {
-            if (_connectionStrings is null)
-            {
-                _connectionStrings = _options.GetSubList("", "Connections", null, "registry");
-            }
-            return _connectionStrings;
-        }
-    }
+    IEnumerable<string>? _connectionStrings;
+    public IEnumerable<string> Connections =>
+        _connectionStrings ??= _options.GetSubList("", "Connections", null, "registry");
 
-    string _connectionString;
     public string ConnectionString
     {
         get
         {
             if (!string.IsNullOrWhiteSpace(_connectionString)) return _connectionString;
 
-            var path = (string.IsNullOrWhiteSpace(Source)) ? "" : @$"Connections\{Source}";
-            _connectionString = _options.GetValue<string>(path, "Connection", null, null, "registry");
-            if (!string.IsNullOrWhiteSpace(_connectionString)) return _connectionString;
-
-            //TODO : remove result
-            _connectionString = _getConnectionString().Result;
-            _options.SetValue(path, "connection", _connectionString);
+            GetSourceParameters();
+            
             return _connectionString;
         }
     }
+    string _connectionString;
 
-    string _source;
+
+#if DEBUG
+    public string DefaultUsername {get; set; }
+    public string DefaultPassword { get; set; }
+#endif
+    void GetSourceParameters()
+    {
+        var path = (string.IsNullOrWhiteSpace(Source)) ? "" : @$"Connections\{Source}";
+        _connectionString = _options.GetValue<string>(path, "Connection", null, null, "registry");
+        if(string.IsNullOrWhiteSpace(_connectionString))
+        {
+            _connectionString = _getConnectionString().Result;
+            _options.SetValue(path, "connection", _connectionString);
+        }
+
+        #if DEBUG
+        DefaultUsername = _options.GetValue<string>(path, "DebugUsername", null, null, "registry");
+        DefaultPassword = _options.GetValue<string>(path, "DebugPassword", null, null, "registry");
+        #endif
+    }
 
     public string Source
     {
@@ -440,6 +445,7 @@ public class DataService : IDataService, IService
 //                _caches.Clear();
         }
     }
+    string? _source;
 
     //public object Locate<T>(DbDataReader d) => _Locate(typeof(T));
 

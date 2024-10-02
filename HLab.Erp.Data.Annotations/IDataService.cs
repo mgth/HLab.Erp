@@ -112,5 +112,11 @@ namespace HLab.Erp.Data
         void SetConfigureAction(Func<Task<string>> action);
 
         IAsyncEnumerable<string> GetDatabasesAsync(string host, string login, string password);
+
+#if DEBUG
+        public string DefaultUsername {get; set; }
+        public string DefaultPassword { get; set; }
+#endif
+
     }
 }

@@ -19,12 +19,12 @@ public class AclRightProfile : Entity
     int? _profileId;
 
     [Ignore]
-    public Profile Profile
+    public Profile? Profile
     {
         get => _profile.Value;
         set => ProfileId = value.Id;
     }
-    readonly ObservableAsPropertyHelper<Profile> _profile;
+    readonly ObservableAsPropertyHelper<Profile?> _profile;
 
     public int? AclRightId
     {

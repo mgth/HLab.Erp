@@ -1,82 +1,72 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using System.Reactive.Linq;
 using System.Security;
-using System.Windows;
 using HLab.Base.ReactiveUI;
-using HLab.Mvvm;
 using HLab.Mvvm.ReactiveUI;
+using ReactiveUI;
 
 namespace HLab.Erp.Acl.AuditTrails;
 
-public class AuthenticationViewModel(IAclService acl) : ViewModel
+public abstract class AuthenticationViewModel : ViewModel
 {
-    protected readonly IAclService Acl = acl;
-    public User User
+    protected readonly IAclService Acl  ;
+
+    protected AuthenticationViewModel(IAclService acl)
+    {
+        Acl = acl;
+
+        this.WhenAnyValue(e =>  e.User)
+            .Select(u => u?.Username)
+            .Do(u => Username = u??"")
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe();
+
+        this.WhenAnyValue(e =>  e.Username)
+            .Do(u => Credential.UserName = u)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe();
+
+        this.WhenAnyValue(e =>  e.Credential)
+            .Do(c =>
+            {
+                Username = c.UserName;
+                Password = Acl.Crypt(c.SecurePassword);
+            })
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe();
+
+    }
+
+
+    public User? User
     {
         get => _user;
-        set
-        {
-            if (this.SetAndRaise(ref _user, value))
-            {
-                Username = value?.Username;
-            }
-        }
+        set => this.SetAndRaise(ref _user, value);
     }
-    User _user;
+    User? _user;
 
     public string Username
     {
         get => _username;
-        set
-        {
-            if(this.SetAndRaise(ref _username, value))
-            {
-                Credential.UserName = value;
-            }
-        }
+        set => this.SetAndRaise(ref _username, value);
     }
-    string _username = 
-#if DEBUG
-        "administrateur";
-#else
-        "";
-#endif
+    string _username = "";
+
     public string Password
     {
         get => _password;
         set => this.SetAndRaise(ref _password,value);
     }
 
-    string _password = 
-#if DEBUG
-        "VEqwosdLL6ZPetwK5aFlIg";
-#else
-        "";
-#endif
+    string _password = "";
+
     public NetworkCredential Credential
     {
         get => _credential;
-        set
-        {
-            if (!this.SetAndRaise(ref _credential, value)) return;
-            if (value != null)
-            {
-                Username = value.UserName;
-                Password = Acl.Crypt(value.SecurePassword);
-            }
-            else
-            {
-                Username = "";
-                Password = "";
-            }
-        }
+        set => this.SetAndRaise(ref _credential, value);
     }
-
-    NetworkCredential _credential = 
-#if DEBUG
-    new NetworkCredential("administrateur", "blagueur");
-#else
-    new NetworkCredential("", "");
-#endif
+    NetworkCredential _credential = new ("", "");
 
     public string Message
     {

@@ -73,7 +73,7 @@ public class ProfileViewModel : ListableEntityViewModel<Profile>
 
     readonly IDataService _data;
 
-    void AddUser(User user)
+    void AddUser(User? user)
     {
         if (user == null) return;
         if (UserProfiles.List.Any(p => p.UserId == user.Id)) return;

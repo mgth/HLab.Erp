@@ -42,9 +42,9 @@
 <!--Database-->
                
                 <lang:LocalizedLabel 
-                Text="{}{Database} : " 
-                HorizontalAlignment="Right"
-                Visibility="{Binding AllowDatabaseSelection,Converter={StaticResource ToVisibilityConverter},FallbackValue=Collapsed}"
+                    Text="{}{Database} : " 
+                    HorizontalAlignment="Right"
+                    Visibility="{Binding AllowDatabaseSelection,Converter={StaticResource ToVisibilityConverter},FallbackValue=Collapsed}"
                 />
                 <ComboBox 
                     SelectedItem="{Binding Database}" 
@@ -52,20 +52,18 @@
                     Grid.Row="0" 
                     Grid.Column="1" 
                     ItemsSource="{Binding Databases}"
-                    />
-
+                />
                 <lang:LocalizedLabel 
-                Text="{}{Theme} : " 
+                    Text="{}{Theme} : " 
                     Grid.Row="1" 
                     Grid.Column="0" 
-                HorizontalAlignment="Right"
-                Visibility="{Binding AllowThemeSelection,Converter={StaticResource ToVisibilityConverter},FallbackValue=Visible}"
+                    HorizontalAlignment="Right"
+                    Visibility="{Binding AllowThemeSelection,Converter={StaticResource ToVisibilityConverter},FallbackValue=Visible}"
                 />
                 <ComboBox 
                     SelectedItem="{Binding InfoService.Theme}" 
                     Visibility="{Binding AllowThemeSelection,Converter={StaticResource ToVisibilityConverter},FallbackValue=Visible}"      
-                    Grid.Row="1" 
-                    Grid.Column="1" 
+                    Grid.Row="1" Grid.Column="1" 
                     ItemsSource="{Binding InfoService.Themes}"
                     >
                     <ComboBox.ItemTemplate>
@@ -73,76 +71,80 @@
                                 <lang:LocalizedLabel Text="{Binding}"/>
                          </DataTemplate>
                     </ComboBox.ItemTemplate>
-
                 </ComboBox>
 
-<!-- Name -->
-
+<!-- Username -->
                 <lang:LocalizedLabel 
-                Text="{}{Name} : " 
-                Grid.Row="2" Grid.Column="0"
-                HorizontalAlignment="Right"
+                    Text="{}{Name} : " 
+                    Grid.Row="2" Grid.Column="0"
+                    HorizontalAlignment="Right"
                 />
-
                 <TextBox 
-                Text="{Binding Username}"
-                Grid.Row="2" 
-                Grid.Column="1" 
-                MinWidth="200"
+                    Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
+                    Grid.Row="2" 
+                    Grid.Column="1" 
+                    MinWidth="200"
                 />
 
 <!-- Password -->
-
                 <lang:LocalizedLabel 
-                Text="{}{Password} : " 
-                Grid.Row="3" Grid.Column="0"
-                HorizontalAlignment="Right"
+                    Text="{}{Password} : " 
+                    Grid.Row="3" Grid.Column="0"
+                    HorizontalAlignment="Right"
                 />
                 <PasswordBox 
-                x:Name="PasswordBox" 
-                Grid.Column="1" 
-                Grid.Row="3" 
-                PasswordChar="*" 
-                PasswordChanged="PasswordBox_OnPasswordChanged"
+                    x:Name="PasswordBox" 
+                    Grid.Column="1" 
+                    Grid.Row="3" 
+                    PasswordChar="*" 
+                    PasswordChanged="PasswordBox_OnPasswordChanged"
                 />
 
 <!-- Password -->
                 <lang:LocalizedLabel 
-                Visibility="{Binding DebugVisibility}" 
-                Text="{}{Encrypted Password} : " 
-                Grid.Row="4" Grid.Column="0" 
-                HorizontalAlignment="Right"
+                    Visibility="{Binding DebugVisibility}" 
+                    Text="{}{Encrypted Password} : " 
+                    Grid.Row="4" Grid.Column="0" 
+                    HorizontalAlignment="Right"
                 />
                 <TextBox 
-                Visibility="{Binding DebugVisibility}" 
-                Text="{Binding Password}" 
-                x:Name="EncryptedPassword" 
-                Grid.Column="1" 
-                Grid.Row="4"
+                    Visibility="{Binding DebugVisibility}" 
+                    Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" 
+                    x:Name="EncryptedPassword" 
+                    Grid.Column="1" 
+                    Grid.Row="4"
                 />
 
 <!-- Message -->
                 <TextBlock 
                     Margin="10"
-                HorizontalAlignment="Center"
-                Grid.Row="5" 
-                Grid.Column="0" 
-                Grid.ColumnSpan="2"   
-                Background="{DynamicResource MahApps.Brushes.Accent}"
-                TextWrapping="Wrap" 
-                Text="{Binding Message}"/>
+                    HorizontalAlignment="Center"
+                    Grid.Row="5" 
+                    Grid.Column="0" 
+                    Grid.ColumnSpan="2"   
+                    Background="{DynamicResource MahApps.Brushes.Accent}"
+                    TextWrapping="Wrap" 
+                    Text="{Binding Message}"
+                />
 
 <!-- Connection -->
-                <Button 
-                IsDefault="True" 
-                Width="100" 
-                Grid.ColumnSpan="2" 
-                Grid.Column="0" 
-                Grid.Row="6" 
-                Margin="10" 
-                Command="{Binding LoginCommand}">
-                    <lang:Localize Id="{}{Connection}"/>
-                </Button>
+                <StackPanel Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button 
+                        IsDefault="True" 
+                        Width="100" 
+                        Margin="10" 
+                        Command="{Binding LoginCommand}">
+                        <lang:Localize Id="{}{Connection}"/>
+                    </Button>
+                    <Button 
+                        IsDefault="True" 
+                        Width="100" 
+                        Margin="10" 
+                        Command="{Binding CancelCommand}">
+                        <lang:Localize Id="{}{Cancel}"/>
+                    </Button>
+                </StackPanel>
+                
             </Grid>
         </StackPanel>
     </Grid>

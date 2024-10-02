@@ -46,7 +46,7 @@ public partial class LoginView : UserControl,
     {
         if (DataContext is LoginViewModel l)
         {
-            l.CancelCommand.Execute(null);
+            l.CancelCommand?.Execute(null);
         }
         Application.Current.Shutdown();
     }

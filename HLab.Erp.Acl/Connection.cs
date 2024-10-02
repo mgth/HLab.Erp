@@ -8,23 +8,18 @@ namespace HLab.Erp.Acl;
 //[SoftIncrementAttribut]
 public class Connection : Entity
 {
-    public Connection()
-    {
-
-    }
-
     public int? UserId
     { 
         get => _userId;
         set => this.RaiseAndSetIfChanged(ref _userId, value);    
     }
     int? _userId;
-    public User User
+    public User? User
     { 
         get => _user.Value;
         set => UserId = value.Id;    
     }
-    readonly ObservableAsPropertyHelper<User> _user;
+    readonly ObservableAsPropertyHelper<User?> _user;
 
     public string Account
     {

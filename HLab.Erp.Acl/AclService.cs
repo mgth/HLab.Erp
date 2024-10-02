@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HLab.Core.Annotations;
 using HLab.Erp.Data;
+using HLab.UI;
 
 
 namespace HLab.Erp.Acl;
@@ -36,7 +37,7 @@ public class AclService : IAclService
         _data = data;
     }
 
-    public Connection Connection { get; private set; } = null;
+    public Connection? Connection { get; private set; } = null;
 
     public bool Cancelled { get; private set; } = false;
 
@@ -56,13 +57,17 @@ public class AclService : IAclService
 
     public async Task<string> LoginAsync(NetworkCredential credential,bool pin = false)
     {
-        Connection? connection;
+        Connection? connection = null;
         try
         {
             if (pin)
                 connection = await _acl.GetConnectionWithPinAsync(credential);
             else
-                connection = await _acl.GetConnectionAsync(credential);
+            {
+                // TODO : re
+                await UiPlatform.InvokeOnUiThreadAsync(async () => 
+                connection = await _acl.GetConnectionAsync(credential));
+            }
         }
         catch (Exception e)
         {

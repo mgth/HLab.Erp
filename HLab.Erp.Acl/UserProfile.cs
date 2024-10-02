@@ -17,12 +17,12 @@ public class UserProfile : Entity
         set => _profile.SetId(value);
     }
     [Ignore]
-    public Profile Profile
+    public Profile? Profile
     {
         get => _profile.Value;
         set => ProfileId = value.Id;
     }
-    readonly ForeignPropertyHelper<UserProfile,Profile> _profile;
+    readonly ForeignPropertyHelper<UserProfile, Profile?> _profile;
 
     public int? UserId
     {
@@ -30,10 +30,10 @@ public class UserProfile : Entity
         set => _user.SetId(value);
     }
     [Ignore]
-    public User User
+    public User? User
     {
         get => _user.Value;
         set => UserId = value.Id;
     }
-    readonly ForeignPropertyHelper<UserProfile,User> _user;
+    readonly ForeignPropertyHelper<UserProfile, User?> _user;
 }

@@ -87,7 +87,7 @@ public class UserViewModel: ListableEntityViewModel<User>
         }
     }
 
-    void AddProfile(Profile profile)
+    void AddProfile(Profile? profile)
     {
         if(profile==null) return;
         if(UserProfiles.List.Any(p => p.ProfileId==profile.Id)) return;

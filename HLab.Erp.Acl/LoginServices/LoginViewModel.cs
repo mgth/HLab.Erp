@@ -4,12 +4,12 @@ using System.Net;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Google.Protobuf.WellKnownTypes;
 using HLab.Base.ReactiveUI;
 using HLab.Erp.Acl.AuditTrails;
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
+using HLab.Options;
 using HLab.UI;
 using ReactiveUI;
 
@@ -22,8 +22,12 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
         ILocalizationService localizationService,
         IIconService iconService,
         IDataService dataService,
-        IApplicationInfoService infoService) : base(acl)
+        IApplicationInfoService infoService,
+        IOptionsService options
+        ) : base(acl)
     {
+        UiPlatform.VerifyAccess();
+
         LocalizationService = localizationService;
         IconService = iconService;
         DataService = dataService;
@@ -36,30 +40,39 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
         }
 
         this.WhenAnyValue(e => e.Database)
-        .Select(database => { 
+        .Select(database =>
+        {
             DataService.Source = database;
             InfoService.DataSource = database;
+
+#if DEBUG
+            var path = (string.IsNullOrWhiteSpace(database)) ? "" : @$"Connections\{database}";
+            Username = options.GetValue<string>(path, "DebugUsername", null, null, "registry");
+            Password = options.GetValue<string>(path, "DebugPassword", null, null, "registry");
+#endif
+
             return true;
-            })
+        }).ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe();
 
         Database = DataService.Source;
 
-        NumPadCommand = ReactiveCommand.CreateFromTask<string>(
-            NumPad,
-            this.WhenAnyValue(
-                e => e.Username,
-                e => e.Password,
-                (userName, password) => userName.Length > 0 && password.Length > 0
-                ));
+        //NumPadCommand = ReactiveCommand.CreateFromTask<string>(
+        //    NumPad,
+        //    this.WhenAnyValue(
+        //        e => e.Username,
+        //        e => e.Password,
+        //        (userName, password) => userName.Length > 0 && password.Length > 0
+        //        ));
 
         LoginCommand = ReactiveCommand.CreateFromTask(
-            LoginAsync,
-            this.WhenAnyValue(
-                e => e.Username,
-                e => e.Password,
-                (userName, password) => userName.Length > 0 && password.Length > 0
-                ));
+            LoginAsync
+            , this.WhenAnyValue(
+            e => e.Username,
+            e => e.Password,
+            (userName, password) => (userName??"").Length > 0 && (password??"").Length > 0
+            )
+        );
 
         CancelCommand = ReactiveCommand.CreateFromTask(CancelAsync);
 
@@ -112,12 +125,19 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
         PinView = "";
     }
 
-    public ICommand LoginCommand { get; }
+    public ICommand? LoginCommand { get; private set;}
     async Task LoginAsync()
     {
-        Message = "";
-//        Message = await Task.Run(() => Acl.Login(Credential));
-        UiPlatform.InvokeOnUiThreadAsync(async () => Message = await Acl.LoginAsync(Credential));
+        //await UiPlatform.InvokeOnUiThreadAsync(async () =>
+        //    {
+        //        Message = "";
+        //        var credential = Credential;
+        //        var message = await Acl.LoginAsync(credential);
+        //        Message = message;
+        //    }
+        //);
+        //        Message = await Task.Run(() => Acl.Login(Credential));
+        // TODO : re
         //Message = await Acl.LoginAsync(Credential);
     }
 

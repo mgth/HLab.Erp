@@ -9,7 +9,7 @@ namespace HLab.Erp.Acl;
 public abstract class AclServiceBase : IAclService
 {
     public virtual ServiceState ServiceState => default;
-    public virtual Connection Connection => default;
+    public virtual Connection? Connection => default;
     public virtual bool Cancelled => default;
     public virtual Task<string> LoginAsync(NetworkCredential credential, bool pin = false)
     {
@@ -49,7 +49,7 @@ public abstract class AclServiceBase : IAclService
 
 public interface IAclService : IService
 {
-    Connection Connection { get; }
+    Connection? Connection { get; }
 
     bool Cancelled { get; }
     //string Login(string login, string password);

@@ -101,7 +101,7 @@ namespace HLab.Erp.Core.Wpf.EntitySelectors
         }
 
 
-        public object Model
+        public object? Model
         {
             get => GetValue(ModelProperty);
             set => SetValue(ModelProperty, value);
@@ -194,7 +194,7 @@ namespace HLab.Erp.Core.Wpf.EntitySelectors
 
             var ctx = ViewLocator.GetMvvmContext(this);
 
-            object vm = null;
+            object? vm = null;
 
             if (SecondaryModel != null)
             {
