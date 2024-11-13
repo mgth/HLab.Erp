@@ -1,0 +1,3 @@
+[submodule "NPoco"]
+	path = NPoco
+	url = https://github.com/mgth/NPoco
