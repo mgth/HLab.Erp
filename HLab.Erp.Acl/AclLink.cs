@@ -1,4 +1,5 @@
 ﻿using HLab.Erp.Data;
+using HLab.Erp.Data.foreigners;
 using NPoco;
 using ReactiveUI;
 
@@ -8,8 +9,8 @@ public class AclLink : Entity
 {
     public AclLink() 
     { 
-        _group = Foreign(this, e => e.GroupId, e => e.Group);
-        _member = Foreign(this, e => e.MemberId, e => e.Member);
+        _group = this.Foreign( e => e.GroupId, e => e.Group);
+        _member = this.Foreign( e => e.MemberId, e => e.Member);
     }
 
     public int? GroupId

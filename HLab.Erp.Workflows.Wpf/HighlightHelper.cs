@@ -21,46 +21,45 @@ public static class HighlightHelper
 {
     public static void SetHighlights<T>(this IView<T> view, Func<T, IWorkflow> w)
     {
-        if (view is FrameworkElement fe)
+        if (view is not FrameworkElement fe) return;
+
+        fe.DataContextChanged += (o, e) =>
         {
-            fe.DataContextChanged += (o, e) =>
+            if (!view.TryGetViewModel(out var vm)) return;
+
+            var workflow = w(vm);
+
+            if (workflow.Highlights is INotifyCollectionChanged c)
             {
-                if (!view.TryGetViewModel(out var vm)) return;
-
-                var workflow = w(vm);
-
-                if (workflow.Highlights is INotifyCollectionChanged c)
+                c.CollectionChanged += (target, arg) =>
                 {
-                    c.CollectionChanged += (target, arg) =>
+                    switch (arg.Action)
                     {
-                        switch (arg.Action)
-                        {
-                            case NotifyCollectionChangedAction.Add:
-                                if (arg.NewItems != null)
-                                    foreach (var item in arg.NewItems)
-                                    {
-                                        if (item is string s)
-                                            Highlight(view, s);
-                                    }
+                        case NotifyCollectionChangedAction.Add:
+                            if (arg.NewItems != null)
+                                foreach (var item in arg.NewItems)
+                                {
+                                    if (item is string s)
+                                        Highlight(view, s);
+                                }
 
-                                break;
-                            case NotifyCollectionChangedAction.Reset:
-                                Highlight(view, null);
-                                break;
-                            case NotifyCollectionChangedAction.Remove:
-                                break;
-                            case NotifyCollectionChangedAction.Replace:
-                                break;
-                            case NotifyCollectionChangedAction.Move:
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-                    };
-                }
+                            break;
+                        case NotifyCollectionChangedAction.Reset:
+                            Highlight(view, null);
+                            break;
+                        case NotifyCollectionChangedAction.Remove:
+                            break;
+                        case NotifyCollectionChangedAction.Replace:
+                            break;
+                        case NotifyCollectionChangedAction.Move:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                };
+            }
 
-            };
-        }
+        };
     }
 
 

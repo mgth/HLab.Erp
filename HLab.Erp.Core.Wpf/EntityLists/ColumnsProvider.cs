@@ -215,7 +215,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         }
 
         readonly Dictionary<string, Property> _properties = new();
-        string? PathFromExpression<TOut>(Expression<Func<T, TOut>> getter)
+
+        static string? PathFromExpression<TOut>(Expression<Func<T, TOut>> getter)
         {
             try 
             {

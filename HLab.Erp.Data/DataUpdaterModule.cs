@@ -1,11 +1,11 @@
-﻿using HLab.Core.Annotations;
-using HLab.Erp.Data;
-using Npgsql;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using HLab.Core.Annotations;
+using HLab.Erp.Base.Data;
+using Npgsql;
 
-namespace HLab.Erp.Base.Data;
+namespace HLab.Erp.Data;
 
 public abstract class DataUpdaterBootloader(IDataService data) : IBootloader
 {

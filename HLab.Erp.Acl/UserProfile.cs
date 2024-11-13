@@ -1,4 +1,5 @@
 ﻿using HLab.Erp.Data;
+using HLab.Erp.Data.foreigners;
 using NPoco;
 
 namespace HLab.Erp.Acl;
@@ -7,8 +8,8 @@ public class UserProfile : Entity
 {
     public UserProfile() 
     {
-        _profile = Foreign(this, e => e.ProfileId, e => e.Profile);
-        _user = Foreign(this, e => e.UserId, e => e.User);
+        _profile = this.Foreign( e => e.ProfileId, e => e.Profile);
+        _user = this.Foreign( e => e.UserId, e => e.User);
     }
 
     public int? ProfileId

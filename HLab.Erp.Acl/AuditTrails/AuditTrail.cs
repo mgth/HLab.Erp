@@ -1,6 +1,7 @@
 ﻿using System;
 using HLab.Base.ReactiveUI;
 using HLab.Erp.Data;
+using HLab.Erp.Data.foreigners;
 using HLab.Mvvm.Application;
 
 namespace HLab.Erp.Acl.AuditTrails;
@@ -9,7 +10,7 @@ public class AuditTrail : Entity, IListableModel
 {
     public AuditTrail()
     {
-        _user = Foreign(this, e => e.UserId, e => e.User);
+        _user = this.Foreign( e => e.UserId, e => e.User);
     }
 
     public string EntityClass

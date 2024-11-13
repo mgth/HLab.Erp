@@ -2,6 +2,7 @@
 using HLab.Erp.Data;
 using HLab.Mvvm.Annotations;
 using HLab.Mvvm.Application;
+using NPoco;
 using ReactiveUI;
 
 namespace HLab.Erp.Base.Data;
@@ -63,6 +64,7 @@ public class LocalizeEntry : Entity, ILocalizeEntry, IListableModel
     }
     bool _custom = false;
 
+    [Ignore]
     public string Caption => _caption.Value;
     readonly ObservableAsPropertyHelper<string> _caption;
 }

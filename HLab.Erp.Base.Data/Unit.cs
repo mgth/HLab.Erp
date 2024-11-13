@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using HLab.Erp.Data;
+using HLab.Erp.Data.foreigners;
 using HLab.Mvvm.Application;
 using NPoco;
 using ReactiveUI;
@@ -19,7 +20,7 @@ public class Unit : Entity, IListableModel
             .WhenAnyValue(e => e.Coefficient, e => e.Exponent, selector: (c, e) => Math.Pow(c, e))
             .ToProperty(this, nameof(Abs));
 
-        _unitClass = Foreign(this, e=> e.UnitClassId, e => e.UnitClass);
+        _unitClass = this.Foreign( e=> e.UnitClassId, e => e.UnitClass);
 
         this.WhenAnyValue(e => e.OffsetA, e => e.OffsetB, e => e.Coefficient, e => e.Exponent)
             .Subscribe(e => Compile());

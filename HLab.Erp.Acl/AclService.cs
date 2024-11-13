@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,6 +56,36 @@ public class AclService : IAclService
         }
     }
 
+
+#if DEBUG
+    public async Task<string> LoginAsync(string username, string hashedPassword, bool pin = false)
+    {
+        Connection? connection = null;
+        try
+        {
+            //if (pin)
+            //    connection = await _acl.GetConnectionWithPinAsync(credential);
+            //else
+            //{
+                connection = await _acl.GetConnectionAsync(username, hashedPassword);
+            //}
+        }
+        catch (Exception e)
+        {
+            return e.Message;
+        }
+        if (connection != null /*&& user.CryptedPassword == password*/)
+        {
+            Connection = connection;
+            await PopulateRightsAsync();
+            _msg.Publish(new UserLoggedInMessage(connection));
+            return Connection.User.FirstName + " " + Connection.User.Name + " Connecté.";
+        }
+        Thread.Sleep(5000);
+        return "Identifiant ou mot de passe incorrect.";
+    }
+    #endif
+
     public async Task<string> LoginAsync(NetworkCredential credential,bool pin = false)
     {
         Connection? connection = null;
@@ -64,9 +95,7 @@ public class AclService : IAclService
                 connection = await _acl.GetConnectionWithPinAsync(credential);
             else
             {
-                // TODO : re
-                await UiPlatform.InvokeOnUiThreadAsync(async () => 
-                connection = await _acl.GetConnectionAsync(credential));
+                connection = await _acl.GetConnectionAsync(credential);
             }
         }
         catch (Exception e)
@@ -84,7 +113,10 @@ public class AclService : IAclService
         return "Identifiant ou mot de passe incorrect.";
     }
 
+    public string Crypt(string password) => _acl.Crypt(password);
+
     public string Crypt(SecureString password) => _acl.Crypt(password);
+
 
     public async Task<string> Login(string login, SecureString password)
     {
@@ -119,16 +151,16 @@ public class AclService : IAclService
         return node;
     }
 
-    public List<AclRight> CurrentRights { get; private set; }
+    public List<AclRight?> CurrentRights { get; private set; }
 
-    public bool IsGranted(AclRight right, object grantedTo = null, object grantedOn = null)
+    public bool IsGranted(AclRight? right, object grantedTo = null, object grantedOn = null)
     {
         if(Connection==null) return false;
         if(Connection.User.Username=="admin") return true;
         if (right == null) return true;
         return CurrentRights.Contains(right);
     }
-    public bool IsGranted(Action<string> setMessage,params AclRight[] rights)
+    public bool IsGranted(Action<string> setMessage,params AclRight?[] rights)
     {
         if(Connection==null) return false;
         if(Connection.User.Username=="admin") return true;
@@ -151,7 +183,7 @@ public class AclService : IAclService
 
     async Task PopulateRightsAsync()
     {
-        List<AclRight> rights = new();
+        List<AclRight?> rights = new();
 
         var userProfiles = _data.FetchWhereAsync<UserProfile>(e => e.UserId == Connection.UserId, e => e.Id);
         await foreach (var userProfile in userProfiles)

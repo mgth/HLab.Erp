@@ -1,4 +1,5 @@
 ﻿using HLab.Erp.Data;
+using HLab.Erp.Data.foreigners;
 using NPoco;
 using ReactiveUI;
 
@@ -8,18 +9,24 @@ namespace HLab.Erp.Acl;
 //[SoftIncrementAttribut]
 public class Connection : Entity
 {
+    public Connection()
+    {
+        _user = this.Foreign(e => e.UserId, e => e.User);
+    }
+
     public int? UserId
     { 
-        get => _userId;
-        set => this.RaiseAndSetIfChanged(ref _userId, value);    
+        get => _user.Id;
+        set => _user.SetId(value);    
     }
-    int? _userId;
+
+    [Ignore]
     public User? User
     { 
         get => _user.Value;
-        set => UserId = value.Id;    
+        set => UserId = value?.Id;    
     }
-    readonly ObservableAsPropertyHelper<User?> _user;
+    readonly ForeignPropertyHelper<Connection,User> _user;
 
     public string Account
     {

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,15 +33,21 @@ namespace HLab.Erp.Workflows.Models
             Locker = locker;
 
             _caption = this
-                .WhenAnyValue(e => e.CurrentStage, selector: s => s.GetCaption(this))
+                .WhenAnyValue(e => e.CurrentStage)
+                .WhereNotNull()
+                .Select(e => e?.GetCaption(this))
                 .ToProperty(this, e => e.Caption);
 
             _iconPath = this
-                .WhenAnyValue(e => e.CurrentStage, selector: s => s.GetIconPath(this))
+                .WhenAnyValue(e => e.CurrentStage)
+                .WhereNotNull()
+                .Select(e => e?.GetIconPath(this))
                 .ToProperty(this, e => e.IconPath);
 
             _subIconPath = this
-                .WhenAnyValue(e => e.CurrentStage, selector: s => s.GetSubIconPath(this))
+                .WhenAnyValue(e => e.CurrentStage)
+                .WhereNotNull()
+                .Select(e => e?.GetSubIconPath(this))
                 .ToProperty(this, e => e.SubIconPath);
 
 

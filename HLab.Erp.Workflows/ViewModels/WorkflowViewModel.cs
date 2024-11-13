@@ -28,6 +28,7 @@ public class WorkflowViewModel : ViewModel<IWorkflow>
         Highlights = new(_highlights);
 
         this.WhenAnyValue(vm => vm.Model)
+            .WhereNotNull()
             .Subscribe(_ => UpdateActions());
     }
 

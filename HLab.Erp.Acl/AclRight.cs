@@ -17,14 +17,14 @@ public class AclRight : Entity, IListableModel
     }
     public string Description { get; set; }
 
-    static readonly ConcurrentDictionary<string, AclRight> Cache = new();
-    public static AclRight Create(string description ="", [CallerMemberName] string? name = null)
+    static readonly ConcurrentDictionary<string, AclRight?> Cache = new();
+    public static AclRight? Create(string description ="", [CallerMemberName] string? name = null)
     {
         if(name == null) throw new ArgumentException("name is null");
         return Cache.GetOrAdd(name, e => CreateFromDb(e, description));
     }
 
-    static AclRight CreateFromDb(string name, string description)
+    static AclRight? CreateFromDb(string name, string description)
     {
         return Data?.GetOrAdd<AclRight>(
             e => e.Name == name,

@@ -20,30 +20,34 @@ public class EntityViewModel<T> : ViewModel<T>
         IAclService acl,
         IDataService data)
     {
-        public IDocumentService Docs { get; } = docs;
-        public Func<T, IDataLocker<T>> GetLocker = getLocker;
-        public IAclService Acl { get; } = acl;
-        public IDataService Data { get; } = data;
+        public IDocumentService Docs => docs;
+        public Func<T, IDataLocker<T>> GetLocker => getLocker;
+        public IAclService Acl => acl;
+        public IDataService Data => data;
     }
-
 
     public EntityViewModel(Injector injector)
     {
         Injected = injector;
 
         _locker = this
-            .WhenAnyValue(e => e.Model)
-            .WhereNotNull()
-            .Select(GetLocker)
-        .ToProperty(this, nameof(Locker));
+        .WhenAnyValue(e => e.Model, GetLocker)
+        .WhereNotNull()
+        .ToProperty(this, e => e.Locker, scheduler: RxApp.TaskpoolScheduler );
 
         _editAllowed = this
             .WhenAnyValue(e => e.Injected.Acl)
             .Select(acl => acl.IsGranted(EditRight))
-            .ToProperty(this, nameof(EditAllowed));
+            .ToProperty(this, e => e.EditAllowed);
 
        this.WhenAnyValue(e => e.Locker, e => e.EditAllowed) 
-            .Subscribe(e => e.Item1.IsEnabled = e.Item2);
+            .Do(args =>
+            {
+                var (locker, allowed) = args;
+                if (locker == null) return;
+                locker.IsEnabled = allowed;
+            })
+            .Subscribe();
 
     //    = H<EntityViewModel<T>>.Property<string>(c => c
     //.Set(e => "icons/entities/" + typeof(T).Name + (e.Locker.IsActive?"|Icons/Unlocked":""))
@@ -68,13 +72,17 @@ public class EntityViewModel<T> : ViewModel<T>
     }
 
     public IDataLocker<T> Locker => _locker.Value;
-
     readonly ObservableAsPropertyHelper<IDataLocker<T>> _locker;
-    private IDataLocker<T> GetLocker(T model)
+
+    public IDataLocker<T> LockerDone { get; set; }
+
+    IDataLocker<T>? GetLocker(T? model)
     {
+        if(model is null) return null;
         var locker = Injected.GetLocker(model);
         locker.PropertyChanged += Locker_PropertyChanged;
         locker.BeforeSavingAction = BeforeSaving;
+        LockerDone = locker;
         return locker;
     }
 
@@ -93,7 +101,7 @@ public class EntityViewModel<T> : ViewModel<T>
         }
     }
 
-    public virtual AclRight EditRight => null;
+    public virtual AclRight? EditRight => null;
     public virtual bool EditAllowed => _editAllowed.Value;
 
     readonly ObservableAsPropertyHelper<bool> _editAllowed;
@@ -110,7 +118,7 @@ public class EntityViewModel<T> : ViewModel<T>
 
     // TODO : move to locker ?
     // TODO : make it async ?
-    private void Close()
+    void Close()
     {
             if (Locker.IsActive)
             {

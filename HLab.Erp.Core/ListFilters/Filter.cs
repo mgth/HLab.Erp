@@ -80,7 +80,7 @@ public abstract class Filter<T> : Filter, IFilter<T>
             e => e.Value, 
             e => e.Enabled,
             e => e.Update
-        ).Subscribe(e => e.Item3.Invoke());
+        ).Subscribe(e => e.Item3?.Invoke());
     }
 
     public T Value {

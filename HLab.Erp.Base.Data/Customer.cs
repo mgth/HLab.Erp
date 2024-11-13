@@ -1,5 +1,6 @@
 using HLab.Erp.Data;
 using HLab.Mvvm.Application;
+using NPoco;
 using ReactiveUI;
 
 namespace HLab.Erp.Base.Data;
@@ -17,9 +18,11 @@ public class Customer : Corporation, ILocalCache, IListableModel
             .ToProperty(this, nameof(IconPath));
     }
 
+    [Ignore]
     public string Caption => _caption.Value;
     readonly ObservableAsPropertyHelper<string> _caption;
 
+    [Ignore]
     public string IconPath => _iconPath.Value;
     readonly ObservableAsPropertyHelper<string> _iconPath;
 

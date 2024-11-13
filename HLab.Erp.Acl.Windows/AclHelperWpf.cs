@@ -11,9 +11,11 @@ public class AclHelperWindows(IDataService db) : AclHelper(db)
         var username = credential.UserName;
         var password = credential.Password;
 
+        User? user = null;
+
         try
         {
-            var user = await Data.FetchOneAsync<User>(u => u.Username == username);
+            user = await Data.FetchOneAsync<User>(u => u.Username == username);
             if (user != null && !string.IsNullOrWhiteSpace(user.Domain))
             {
                 try
@@ -32,6 +34,7 @@ public class AclHelperWindows(IDataService db) : AclHelper(db)
             throw new AclException(ex.InnerException?.Message, ex);
         }
 
-        return await base.GetUserAsync(credential);
+        user = await base.GetUserAsync(credential);
+        return user;
     }
 }

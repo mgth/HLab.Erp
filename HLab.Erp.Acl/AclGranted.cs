@@ -1,4 +1,5 @@
 ﻿using HLab.Erp.Data;
+using HLab.Erp.Data.foreigners;
 using NPoco;
 using ReactiveUI;
 
@@ -8,9 +9,9 @@ public class AclGranted : Entity
 {
     AclGranted()
     {
-        _right = Foreign(this, e => e.RightId, e => e.Right);
-        _onNode = Foreign(this, e => e.OnNodeId, e => e.OnNode);
-        _toNode = Foreign(this, e => e.ToNodeId, e => e.ToNode);
+        _right = this.Foreign( e => e.RightId, e => e.Right);
+        _onNode = this.Foreign( e => e.OnNodeId, e => e.OnNode);
+        _toNode = this.Foreign( e => e.ToNodeId, e => e.ToNode);
     }
     public bool Deny
     {

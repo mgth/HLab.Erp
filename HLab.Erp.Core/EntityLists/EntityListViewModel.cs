@@ -107,7 +107,7 @@ public abstract class EntityListViewModel : ViewModel
 
         FilterPresets = new ReadOnlyObservableCollection<string>(_filterPresets);
 
-        this.WhenAnyValue(_ => FiltersPresetSelected).Subscribe(c => FilterPresetChanged());
+        this.WhenAnyValue(e => e.FiltersPresetSelected).Subscribe(c => FilterPresetChanged());
 
         SaveFiltersPresetCommand = ReactiveCommand.Create(() =>
             {

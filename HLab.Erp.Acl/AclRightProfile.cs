@@ -1,4 +1,5 @@
 ﻿using HLab.Erp.Data;
+using HLab.Erp.Data.foreigners;
 using NPoco;
 using ReactiveUI;
 
@@ -8,36 +9,35 @@ public class AclRightProfile : Entity
 {
     public AclRightProfile()
     {
-
+        _profile = this.Foreign(e => e.ProfileId, e => e.Profile);
+        _aclRight = this.Foreign(e => e.AclRightId, e => e.AclRight);
     }
 
     public int? ProfileId
     {
-        get => _profileId;
-        set => this.RaiseAndSetIfChanged(ref _profileId, value);
+        get => _profile.Id;
+        set => _profile.SetId(value);
     }
-    int? _profileId;
 
     [Ignore]
     public Profile? Profile
     {
         get => _profile.Value;
-        set => ProfileId = value.Id;
+        set => ProfileId = value?.Id;
     }
-    readonly ObservableAsPropertyHelper<Profile?> _profile;
+    readonly ForeignPropertyHelper<AclRightProfile,Profile> _profile;
 
     public int? AclRightId
     {
-        get => _aclRightId;
-        set => this.RaiseAndSetIfChanged(ref _aclRightId, value);
+        get => _aclRight.Id;
+        set => _aclRight.SetId(value);
     }
-    int? _aclRightId;
 
     [Ignore]
-    public AclRight AclRight
+    public AclRight? AclRight
     {
         get => _aclRight.Value;
-        set => AclRightId = value.Id;
+        set => AclRightId = value?.Id;
     }
-    readonly ObservableAsPropertyHelper<AclRight> _aclRight;
+    readonly ForeignPropertyHelper<AclRightProfile, AclRight> _aclRight;
 }

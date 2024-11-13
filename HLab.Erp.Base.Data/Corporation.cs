@@ -1,11 +1,13 @@
 using HLab.Base.ReactiveUI;
 using HLab.Erp.Data;
+using HLab.Erp.Data.foreigners;
+using NPoco;
 
 namespace HLab.Erp.Base.Data;
 
 public abstract class Corporation : Entity, ICorporation 
 {
-    public Corporation() => _country = Foreign(this, e => e.CountryId, e => e.Country);
+    protected Corporation() => _country = this.Foreign( e => e.CountryId, e => e.Country);
 
     public string Name
     {
@@ -54,6 +56,8 @@ public abstract class Corporation : Entity, ICorporation
         get => _country.Id;
         set => _country.SetId(value);
     }
+
+    [Ignore]
     public Country Country
     {
         get => _country.Value;

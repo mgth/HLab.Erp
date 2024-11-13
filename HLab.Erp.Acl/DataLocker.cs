@@ -142,9 +142,9 @@ where T : class, IEntity<int>
     /// <summary>
     /// Command to save data to database
     /// </summary>
-    public ICommand SaveCommand { get; } 
+    public ICommand SaveCommand { get; }
 
-    private async Task SaveAsync()
+    async Task SaveAsync()
     {
             var caption = "";
             var iconPath = "";

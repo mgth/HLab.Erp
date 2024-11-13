@@ -128,17 +128,20 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
     public ICommand? LoginCommand { get; private set;}
     async Task LoginAsync()
     {
-        //await UiPlatform.InvokeOnUiThreadAsync(async () =>
-        //    {
-        //        Message = "";
-        //        var credential = Credential;
-        //        var message = await Acl.LoginAsync(credential);
-        //        Message = message;
-        //    }
-        //);
-        //        Message = await Task.Run(() => Acl.Login(Credential));
-        // TODO : re
-        //Message = await Acl.LoginAsync(Credential);
+        var credential = Credential;
+
+        await Task.Run(async () =>
+        {
+            Message = "";
+
+#if DEBUG
+            Message = await Acl.LoginAsync(Username,Password);
+
+            if (Acl.Connection!=null) return;
+#endif
+
+            Message = await Acl.LoginAsync(credential);
+        });
     }
 
     public ICommand CancelCommand { get; }

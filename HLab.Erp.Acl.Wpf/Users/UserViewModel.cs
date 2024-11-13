@@ -103,7 +103,7 @@ public class UserViewModel: ListableEntityViewModel<User>
         }
     }
 
-    public override AclRight EditRight => AclRights.ManageUser;
+    public override AclRight? EditRight => AclRights.ManageUser;
 
     public bool EditMode => _editMode.Value;
     readonly ObservableAsPropertyHelper<bool> _editMode;

@@ -3,13 +3,15 @@ using HLab.Mvvm.Application;
 using ReactiveUI;
 using System.Reactive.Linq;
 using HLab.Base.ReactiveUI;
+using HLab.Erp.Data.foreigners;
+using NPoco;
 
 namespace HLab.Erp.Base.Data;
 
 public class Country : Entity, IListableModel
 {
     public Country() {
-        _continent = Foreign(this, e => e.ContinentId, e => e.Continent);
+        _continent = this.Foreign( e => e.ContinentId, e => e.Continent);
 
         _caption = this.WhenAnyValue(e => e.Name)
             .Select(e => string.IsNullOrWhiteSpace(e) ? "{New country}" : e)
@@ -59,6 +61,8 @@ public class Country : Entity, IListableModel
         get => _continent.Id;
         set => _continent.SetId(value);
     }
+
+    [Ignore]
     public Continent Continent
     {
         get => _continent.Value;
@@ -66,6 +70,8 @@ public class Country : Entity, IListableModel
     }
     readonly ForeignPropertyHelper<Country,Continent> _continent;
 
+    [Ignore]
     public string Caption => _caption.Value;
-    ObservableAsPropertyHelper<string> _caption;
+
+    readonly ObservableAsPropertyHelper<string> _caption;
 }

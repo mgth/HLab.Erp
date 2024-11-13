@@ -2,6 +2,7 @@
 using HLab.Mvvm.Application;
 using ReactiveUI;
 using System.Linq;
+using NPoco;
 
 namespace HLab.Erp.Base.Data;
 
@@ -48,10 +49,12 @@ public class Icon : Entity, IListableModel
 
     int? _foreground = (int?)null;
 
+    [Ignore]
     public string Caption => _caption.Value;
 
     readonly ObservableAsPropertyHelper<string> _caption;
 
+    [Ignore]
     public string IconPath => _iconPath.Value;
     readonly ObservableAsPropertyHelper<string> _iconPath;
 

@@ -87,7 +87,7 @@ public class ProfileViewModel : ListableEntityViewModel<Profile>
             UserProfiles.List.Update();
     }
 
-    void AddRight(AclRight right)
+    void AddRight(AclRight? right)
     {
         if (right == null) return;
         if (ProfileRights.List.Any(p => p.AclRightId == right.Id)) return;

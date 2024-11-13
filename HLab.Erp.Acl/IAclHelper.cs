@@ -13,44 +13,76 @@ namespace HLab.Erp.Acl;
 public interface IAclHelper
 {
     Task<User?> GetUserAsync(NetworkCredential credential);
+
+#if DEBUG
+    Task<User?> GetUserWithEncryptedPasswordAsync(string username, string hashedPassword);
+    Task<Connection?> GetConnectionAsync(string username, string hashedPassword);
+#endif
+
     Task<Connection?> GetConnectionAsync(NetworkCredential credential);
 
     Task<User?> GetUserWithPinAsync(NetworkCredential credential);
     Task<Connection?> GetConnectionWithPinAsync(NetworkCredential credential);
+
+    string Crypt(string password);
     string Crypt(SecureString password);
 }
 
 public class AclHelper(IDataService db) : IAclHelper
 {
+
     public async Task<Connection?> GetConnectionAsync(NetworkCredential credential) 
         => await GetConnectionAsync(await GetUserAsync(credential));
 
     public async Task<Connection?> GetConnectionWithPinAsync(NetworkCredential credential) 
         => await GetConnectionAsync(await GetUserWithPinAsync(credential));
 
-    const string KEY = "PG8JaR0ix+GP2w0bXse/ReZugKK+Q/g/";
-    const string IV = "TuG898IilQA=";
+    const string Key = "PG8JaR0ix+GP2w0bXse/ReZugKK+Q/g/";
+    const string Iv = "TuG898IilQA=";
 
     protected IDataService Data = db;
 
     public async Task<User?> GetUserWithPinAsync(NetworkCredential credential)
     {
         var login = credential.UserName;
-        var pin = Crypt(credential.SecurePassword);
+        var valuePtr = Marshal.SecureStringToGlobalAllocUnicode(credential.SecurePassword);
+        var pin = Crypt(Marshal.PtrToStringUni(valuePtr));
+
         return await Data.FetchOneAsync<User>(u => u.Username == login && u.Pin == pin);
     }
 
-    public virtual async Task<User?> GetUserAsync(NetworkCredential credential)
+    #if DEBUG
+    public async Task<Connection?> GetConnectionAsync(string username, string hashedPassword)
+        => await GetConnectionAsync(await GetUserWithEncryptedPasswordAsync(username, hashedPassword));
+
+    public
+    #endif
+    virtual async Task<User?> GetUserWithEncryptedPasswordAsync(string username, string hashedPassword)
     {
         try
         {
-            return await Data.FetchOneAsync<User>(u =>
-                u.Username == credential.UserName && u.HashedPassword == Crypt(credential.SecurePassword));
+            var user = await Data.FetchOneAsync<User>(u =>
+                u.Username == username && u.HashedPassword == hashedPassword);
+
+            return user;
         }
         catch (DataException ex)
         {
             throw new AclException(ex.InnerException?.Message??"",ex);
         }
+
+    }
+    public virtual async Task<User?> GetUserAsync(string username, string password)
+    {
+        return await GetUserWithEncryptedPasswordAsync(username,Crypt(password));
+    }
+
+    public virtual async Task<User?> GetUserAsync(NetworkCredential credential)
+    {
+        var valuePtr = Marshal.SecureStringToGlobalAllocUnicode(credential.SecurePassword);
+        var password = Marshal.PtrToStringUni(valuePtr);
+
+        return await GetUserAsync(credential.UserName, password);
     }
 
     async Task<Connection?> GetConnectionAsync(User? user)
@@ -80,14 +112,14 @@ public class AclHelper(IDataService db) : IAclHelper
         }).ConfigureAwait(false);
     }
 
-    public string Crypt(SecureString password)
+    public string Crypt(string password)
     {
         try
         {
             var symmetricAlgorithm = TripleDES.Create();
             //var symmetricAlgorithm = Aes.Create();
-            symmetricAlgorithm.Key = Convert.FromBase64String(KEY);
-            symmetricAlgorithm.IV = Convert.FromBase64String(IV);
+            symmetricAlgorithm.Key = Convert.FromBase64String(Key);
+            symmetricAlgorithm.IV = Convert.FromBase64String(Iv);
 
             var encryptor = symmetricAlgorithm.CreateEncryptor();
 
@@ -96,10 +128,7 @@ public class AclHelper(IDataService db) : IAclHelper
             var valuePtr = IntPtr.Zero;
             try
             {
-                valuePtr = Marshal.SecureStringToGlobalAllocUnicode(password);
-                var p = Marshal.PtrToStringUni(valuePtr);
-                if (p == null) return "";
-                var bytes = Encoding.UTF8.GetBytes(p);
+                var bytes = Encoding.UTF8.GetBytes(password);
                 cryptoStream.Write(bytes, 0, bytes.Length);
                 cryptoStream.FlushFinalBlock();
                 cryptoStream.Close();
@@ -117,4 +146,10 @@ public class AclHelper(IDataService db) : IAclHelper
         }
     }
 
+    public string Crypt(SecureString securePassword)
+    {
+        var valuePtr = Marshal.SecureStringToGlobalAllocUnicode(securePassword);
+        var password = Marshal.PtrToStringUni(valuePtr);
+        return Crypt(password);
+    }
 }

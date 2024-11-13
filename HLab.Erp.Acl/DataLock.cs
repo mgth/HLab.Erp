@@ -1,6 +1,7 @@
 ﻿using System;
 using HLab.Base.ReactiveUI;
 using HLab.Erp.Data;
+using HLab.Erp.Data.foreigners;
 using NPoco;
 using ReactiveUI;
 
@@ -10,7 +11,7 @@ public class DataLock : Entity
 {
     public DataLock()
     {
-        _user = Foreign(this, e => e.UserId, e => e.User);
+        _user = this.Foreign( e => e.UserId, e => e.User);
     }
 
     public string EntityClass        {
