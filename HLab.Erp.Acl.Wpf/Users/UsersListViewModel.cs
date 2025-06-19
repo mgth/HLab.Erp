@@ -19,8 +19,9 @@ public class UsersListViewModel : Core.EntityLists.EntityListViewModel<User>, IM
     }
 
     readonly IAclService _acl;
-    protected override bool AddCanExecute(Action<string> errorAction) => _acl.IsGranted(AclRights.ManageUser);
-    protected override bool DeleteCanExecute(User inn, Action<string> errorAction) => _acl.IsGranted(AclRights.ManageUser);
+    protected override bool AddCanExecute(Action<string> errorAction) => _acl?.IsGranted(AclRights.ManageUser)??false;
+
+    protected override bool DeleteCanExecute(User inn, Action<string> errorAction) => _acl?.IsGranted(AclRights.ManageUser)??false;
 
     public UsersListViewModel(Injector i, IAclService acl) : base(i, c => c
         .Column("FirstName")

@@ -1,28 +1,21 @@
 ﻿using HLab.Erp.Core;
-using HLab.Erp.Core.Wpf.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 using System;
+using HLab.Erp.Core.EntityLists;
 
 namespace HLab.Erp.Acl.Profiles;
 
-public class ProfilesListViewModel : Core.EntityLists.EntityListViewModel<Profile>
+public class ProfilesListViewModel(IAclService acl, EntityListViewModel<Profile>.Injector i)
+   : EntityListViewModel<Profile>(i, c => c
+      .Column("Name")
+      .Header("{Name}")
+      .Width(100).Content(s => s.Name))
 {
     public class Bootloader : NestedBootloader
     {
         public override string MenuPath => "param";
     }
 
-    readonly IAclService _acl;
-
-    public ProfilesListViewModel(IAclService acl, Injector i) : base(i, c => c
-        .Column("Name")
-        .Header("{Name}")
-        .Width(100).Content(s => s.Name)
-    )
-    {
-        _acl = acl;
-    }
-
-    protected override bool AddCanExecute(Action<string> errorAction) => _acl.IsGranted(errorAction, AclRights.ManageProfiles);
-    protected override bool DeleteCanExecute(Profile profile, Action<string> errorAction) => _acl.IsGranted(errorAction, AclRights.ManageProfiles);
+    protected override bool AddCanExecute(Action<string> errorAction) => acl?.IsGranted(errorAction, AclRights.ManageProfiles)??false;
+    protected override bool DeleteCanExecute(Profile profile, Action<string> errorAction) => acl?.IsGranted(errorAction, AclRights.ManageProfiles) ?? false;
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Linq;
@@ -371,7 +372,7 @@ public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEnt
             AddAsync, 
             this.WhenAnyValue(
                 e => e.AddArgumentClass, 
-                selector: AddCanExecute));
+                selector: AddCanExecute).SubscribeOn(RxApp.MainThreadScheduler));
 
         ExportCommand= ReactiveCommand.CreateFromTask(
              ExportAsync, 
