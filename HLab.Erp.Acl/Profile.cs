@@ -18,24 +18,14 @@ public class Profile : Entity, IListableModel
 
     }
 
-    public string Name
-    {
-        get => _name;
-        set => this.RaiseAndSetIfChanged(ref _name, value);
-    }
-    string _name = "";
+    public string Name { get; set => this.RaiseAndSetIfChanged(ref field, value); } = "";
 
-    public string Note
-    {
-        get => _note;
-        set =>this.RaiseAndSetIfChanged(ref _note, value);
-    }
-    string _note = "";
+    public string Note { get; set => this.RaiseAndSetIfChanged(ref field, value); } = "";
 
     [Ignore]
     public string Caption => _caption.Value;
     readonly ObservableAsPropertyHelper<string> _caption;// = H.Property<string>(c => c
 
-    public string IconPath => throw new System.NotImplementedException();
+    public string IconPath { get; set => this.RaiseAndSetIfChanged(ref field, value); } = "";
 
 }

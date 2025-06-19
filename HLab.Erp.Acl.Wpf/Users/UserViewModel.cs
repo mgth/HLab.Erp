@@ -65,7 +65,36 @@ public class UserViewModel: ListableEntityViewModel<User>
     {
         _getProfilesPerUser = getUserProfiles;
         _getProfiles = getProfiles;
-            
+      
+        _userProfiles = this
+           .WhenAnyValue(e => e.Model)
+           .Select(m => _getProfilesPerUser(m))
+           .ToProperty(this, e => e.UserProfiles);
+
+        _profiles = this
+           .WhenAnyValue(e => e.Model)
+           .Select(m => _getProfiles())
+           .ToProperty(this, e => e.Profiles);
+
+        ChangePasswordCommand = ReactiveCommand.Create(()=>{ }, 
+           this.WhenAnyValue(
+              e => e.Model.Id,
+              e => e.Injected.Acl.Connection.UserId,
+              selector : (id, userId) => id == userId
+           ));
+
+        AddProfileCommand = ReactiveCommand.Create<Profile>(
+           AddProfile, this
+              .WhenAnyValue(e => e.Injected.Acl)
+              .Select(acl => acl.IsGranted(EditRight)));
+
+        RemoveProfileCommand = ReactiveCommand.Create<UserProfile>(
+           RemoveProfile, this
+              .WhenAnyValue(e => e.UserProfiles.Selected)
+              .Select(p => p != null)
+        );
+
+        _editMode = this.WhenAnyValue(e => e.Locker.IsActive).ToProperty(this, e => e.EditMode);
     }
 
     public ProfilesPerUserListViewModel UserProfiles => _userProfiles.Value;

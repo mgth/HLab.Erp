@@ -6,7 +6,7 @@
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <Configurations>Debug;Release;DebugRelease</Configurations>
     <LangVersion>preview</LangVersion>
-    <Version>2.1.0.0</Version>
+    <Version>2.2.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

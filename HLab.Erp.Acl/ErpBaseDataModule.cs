@@ -15,7 +15,11 @@ public class ErpBaseDataModule(IDataService data) : DataUpdaterBootloader(data)
                         .AddColumn(i => i.Description)
                     .Include(base.GetSqlUpdater)
                     .Version("2.1.0.0");
-
+            case "2.1.0.0":
+                return builder
+                    .Table<Profile>()
+                        .AddColumn(i => i.IconPath)
+                    .Version("2.2.0.0");
 
             default:
                 break;
