@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>net8.0-windows</TargetFrameworks>
+	  <TargetFrameworks>net9.0-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <RootNamespace>HLab.Erp.Workflows</RootNamespace>
     <Platforms>AnyCPU;x64;x86</Platforms>

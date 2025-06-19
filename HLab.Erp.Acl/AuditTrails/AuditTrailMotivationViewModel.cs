@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reactive.Linq;
+using System.Security;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using HLab.Base.ReactiveUI;
@@ -122,43 +124,43 @@ public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrai
     static bool CancelCanExecute(string username) => (username?.Length??0) > 0;
 
 
-    public bool Audit(string action, AclRight rightNeeded, string log, object entity, string caption, string iconPath, bool sign, bool motivate)
+    public async Task<bool> Audit(string action, AclRight rightNeeded, string log, object entity, string caption, string iconPath, bool sign, bool motivate)
     {
+         Debug.Assert(User!=null);
+      
         Log = log;
         MotivationMandatory = motivate;
         Signing = sign;
 
         EntityCaption = caption;
         IconPath = iconPath;
-        SetPassword(new System.Security.SecureString());
+        SetPassword(new SecureString());
 
         try
         {
-            /* TODO
-            var view = _mvvm.MainContext.GetView<DefaultViewMode>(this).AsDialog();
-            if(view.ShowDialog()??false)
+            var view = _mvvm.ViewAsWindow(await _mvvm.MainContext.GetViewAsync(this));
+         
+            if (!(view.ShowDialog() ?? false)) return false;
+            
+            var audit = _transaction.Add<AuditTrail>(e =>
             {
-                var audit = _transaction.Add<AuditTrail>(e =>
-                {
-                    e.Action = action;
-                    e.Motivation = Motivation;
-                    e.Log = log;
-                    e.TimeStamp = DateTime.Now;
-                    e.UserId = User.Id;
-                    e.UserCaption = User.Caption;
-                    e.EntityCaption = EntityCaption;
-                    e.IconPath = IconPath;
-                    e.EntityClass = entity.GetType().Name;
+               e.Action = action;
+               e.Motivation = Motivation;
+               e.Log = log;
+               e.TimeStamp = DateTime.Now;
+               e.UserId = User.Id;
+               e.UserCaption = User.Caption;
+               e.EntityCaption = EntityCaption;
+               e.IconPath = IconPath;
+               e.EntityClass = entity.GetType().Name;
 
-                    if(entity is IEntity<int> entityInt)
-                        e.EntityId = entityInt.Id;
+               if(entity is IEntity<int> entityInt)
+                  e.EntityId = entityInt.Id;
 
-                    e.Failed = false;
-                });
-                if(audit!=null) return true;
-                Message = "Failed to write audit entry";
-            }
-            */
+               e.Failed = false;
+            });
+            if(audit!=null) return true;
+            Message = "Failed to write audit entry";
             return false;
 
         }

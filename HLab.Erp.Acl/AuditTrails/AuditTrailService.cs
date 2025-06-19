@@ -1,9 +1,11 @@
-﻿namespace HLab.Erp.Acl.AuditTrails;
+﻿using System.Threading.Tasks;
+
+namespace HLab.Erp.Acl.AuditTrails;
 
 
 public interface IAuditTrailProvider
 {
-    bool Audit(string action, AclRight rightNeeded, string log, object entity, string caption, string iconPath, bool sign, bool motivate);
+   Task<bool> Audit(string action, AclRight rightNeeded, string log, object entity, string caption, string iconPath, bool sign, bool motivate);
 }
 
 

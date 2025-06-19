@@ -26,7 +26,7 @@ where T : class, IEntity<int>
     readonly T _entity;
 
     DataLock _lock;
-    readonly List<IDataLocker> _dependencies = new();
+    readonly List<IDataLocker> _dependencies = [];
 
     public void AddDependencyLocker(params IDataLocker[] lockers)
     {
@@ -34,12 +34,7 @@ where T : class, IEntity<int>
             _dependencies.Add(locker);
     }
 
-    public EntityPersister<T> Persister
-    {
-        get => _persister;
-        private init => this.RaiseAndSetIfChanged(ref _persister, value);
-    }
-    EntityPersister<T> _persister;
+    public EntityPersister<T> Persister  { get; private init => this.RaiseAndSetIfChanged(ref field, value); }
 
     EntityPersister<DataLock> _lockPersister;
 
@@ -107,32 +102,17 @@ where T : class, IEntity<int>
     /// <summary>
     /// True when locker is on
     /// </summary>
-    public bool IsActive
-    {
-        get => _isActive;
-        private set => this.RaiseAndSetIfChanged(ref _isActive, value);
-    }
-    bool _isActive;
+    public bool IsActive { get; private set => this.RaiseAndSetIfChanged(ref field, value); }
 
     /// <summary>
     /// True when locking allowed
     /// </summary>
-    public bool IsEnabled
-    {
-        get => _isEnabled;
-        set => this.RaiseAndSetIfChanged(ref _isEnabled, value);
-    }
-    bool _isEnabled =false;
+    public bool IsEnabled { get;  set => this.RaiseAndSetIfChanged(ref field, value); } = false;
 
     /// <summary>
     /// True when database is responding
     /// </summary>
-    public bool IsConnected
-    {
-        get => _isConnected;
-        set => this.RaiseAndSetIfChanged(ref _isConnected, value);
-    }
-    bool _isConnected = false;
+    public bool IsConnected { get; set => this.RaiseAndSetIfChanged(ref field, value); } = false;
 
     /// <summary>
     /// Command to activate locker
@@ -273,7 +253,7 @@ where T : class, IEntity<int>
 
             var action = _entityId < 0 ? "Create" : "Update";
 
-            if (_getAudit(transaction).Audit(action, null, log, _entity, caption, iconPath, sign, motivate))
+            if (await _getAudit(transaction).Audit(action, null, log, _entity, caption, iconPath, sign, motivate))
             {
                 await SaveAsync(transaction);
                 transaction.Done();
@@ -387,7 +367,7 @@ where T : class, IEntity<int>
     string _message;
 
     public bool IsReadOnly => _isReadOnly.Value;
-    ObservableAsPropertyHelper<bool> _isReadOnly;
+    readonly ObservableAsPropertyHelper<bool> _isReadOnly;
 
     public async void Dispose()
     {
