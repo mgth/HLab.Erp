@@ -10,12 +10,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="9.0.0" />
+		<PackageReference Include="MySql.Data" Version="9.3.0" />
 		<PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
-		<PackageReference Include="Npgsql" Version="8.0.4" />
-		<PackageReference Include="ReactiveUI" Version="20.1.63" />
+		<PackageReference Include="Npgsql" Version="9.0.3" />
+		<PackageReference Include="ReactiveUI" Version="20.3.1" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+		<PackageReference Include="System.Text.Json" Version="9.0.6" />
 	</ItemGroup>
 
 	<ItemGroup>
