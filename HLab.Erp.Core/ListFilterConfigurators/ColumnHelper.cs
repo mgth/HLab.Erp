@@ -20,7 +20,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         public IColumn<T> Column { get; }
         IFilter _filter;
 
-        public TFilter GetFilter<TFilter>() where TFilter : IFilter
+        public TFilter? GetFilter<TFilter>() where TFilter : IFilter
         {
             if (_filter != null) return (TFilter) _filter;
 
@@ -28,6 +28,7 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             if (!t.IsClass || t.IsAbstract) return default;
 
             var filter = ListViewModel.GetFilter<TFilter>();
+            if (filter is null) return default;
             
             filter.Header = Column.Header;
             filter.IconPath = Column.IconPath;

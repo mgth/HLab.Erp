@@ -10,95 +10,93 @@ using ReactiveUI;
 
 namespace HLab.Erp.Core
 {
-    public abstract class ParamBootloader : NestedBootloader
-    {
-        public override string MenuPath => "param";
-    }
+   public abstract class ParamBootloader(string menuPath = "param") : NestedBootloader(menuPath);
 
-    public abstract class NestedBootloader : ReactiveObject, IBootloader
-    {
-        public IDocumentService Docs { get; set; } 
-        public IMenuService Menu { get; set; } 
-        protected NestedBootloader(string menuPath = "data")
-        {
-            MenuPath = menuPath;
-            GetEntityName();
+   public abstract class NestedBootloader : Bootloader
+   {
+      public IDocumentService Docs { get; set; }
+      public IMenuService Menu { get; set; }
+      protected NestedBootloader(string menuPath = "data")
+      {
+         MenuPath = menuPath;
+         GetEntityName();
 
-            OpenCommand = ReactiveCommand.CreateFromTask(Open);
-        }
+         OpenCommand = ReactiveCommand.CreateFromTask(Open);
+      }
 
-        public virtual string Caption => Name.FromCamelCase();
-        public virtual string Name => _parentType.Name.BeforeSuffix(_suffix);
-        public virtual string Header => $"{{{Caption}}}";
-        public virtual string IconPath
-        {
-            get
+      public virtual string Caption => Name.FromCamelCase();
+      public virtual string Name => _parentType.Name.BeforeSuffix(_suffix);
+      public virtual string Header => $"{{{Caption}}}";
+      public virtual string IconPath
+      {
+         get
+         {
+            var name = _entityName;
+
+            if (name.EndsWith("Class"))
             {
-                var name = _entityName;
-
-                if (name.EndsWith("Class"))
-                {
-                    name = name[..^5];
-                    return $"Icons/Entities/{name}|Icons/Class";
-                }
-
-                return $"Icons/Entities/{name}";
+               name = name[..^5];
+               return $"Icons/Entities/{name}|Icons/Class";
             }
-        }
 
-        public virtual string MenuPath { get; }
-        public virtual bool Allowed => true;
+            return $"Icons/Entities/{name}";
+         }
+      }
 
-        public ICommand OpenCommand { get; }
+      public virtual string MenuPath { get; }
+      public virtual bool Allowed => true;
 
-        Task Open() => Docs.OpenDocumentAsync(GetType().DeclaringType);
+      public ICommand OpenCommand { get; }
 
-        string _suffix = "";
-        string _entityName = "";
+      Task Open() => Docs.OpenDocumentAsync(GetType().DeclaringType);
 
-        Type _parentType;
+      string _suffix = "";
+      string _entityName = "";
 
-        void GetEntityName()
-        {
-            _parentType = GetType().DeclaringType;
+      Type _parentType;
 
-            _ = _parentType ?? throw new ArgumentException($"class {GetType().Name} must be used nested");
+      void GetEntityName()
+      {
+         _parentType = GetType().DeclaringType;
 
-            var interfaces = _parentType.GetInterfaces();
+         _ = _parentType ?? throw new ArgumentException($"class {GetType().Name} must be used nested");
 
-            foreach (var i in interfaces)
+         var interfaces = _parentType.GetInterfaces();
+
+         foreach (var i in interfaces)
+         {
+            if (i == typeof(IViewModel)) _suffix = "ViewModel";
+
+            if (!i.IsConstructedGenericType) continue;
+
+            var t = i.GetGenericTypeDefinition();
+
+            if (t == typeof(IEntityListViewModel<>))
             {
-                if (i == typeof(IViewModel)) _suffix = "ViewModel";
-
-                if (!i.IsConstructedGenericType) continue;
-
-                var t = i.GetGenericTypeDefinition();
-
-                if (t == typeof(IEntityListViewModel<>))
-                {
-                    _suffix = "ListViewModel";
-                    _entityName = i.GenericTypeArguments[0].Name;
-                    return;
-                }
-
-                if (t == typeof(IViewModel<>))
-                {
-                    _suffix = "ViewModel";
-                    _entityName = i.GenericTypeArguments[0].Name;
-                    return;
-                }
+               _suffix = "ListViewModel";
+               _entityName = i.GenericTypeArguments[0].Name;
+               return;
             }
-        }
 
-        public Task LoadAsync(IBootContext bootstrapper)
-        {
-            if (!Allowed) return Task.CompletedTask;
+            if (t == typeof(IViewModel<>))
+            {
+               _suffix = "ViewModel";
+               _entityName = i.GenericTypeArguments[0].Name;
+               return;
+            }
+         }
+      }
 
-            Menu.RegisterMenu($"{MenuPath}/{Name.ToLower()}" , Header,
+      protected override BootState Load()
+      {
+         if (Allowed)
+         {
+            Menu.RegisterMenu($"{MenuPath}/{Name.ToLower()}", Header,
                 OpenCommand,
                 IconPath);
+         }
 
-            return Task.CompletedTask;
-        }
-    }
+         return base.Load();
+      }
+   }
 }

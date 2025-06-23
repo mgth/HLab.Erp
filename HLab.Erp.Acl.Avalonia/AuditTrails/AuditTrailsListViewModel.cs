@@ -32,7 +32,8 @@ namespace HLab.Erp.Acl.Avalonia.AuditTrails
         public AuditTrailsListViewModel(Injector i) : base(i, c => c
             .Column("Date")
             .Header("{Date}").Width(110)
-            .Date(at => at.TimeStamp)
+        // TODO : Date ne marche pas
+            //.Date(at => at.TimeStamp)
             .Link(at => at.TimeStamp)
             .Filter()
             .MaxDate(DateTime.Now)
@@ -55,7 +56,8 @@ namespace HLab.Erp.Acl.Avalonia.AuditTrails
 
             .Column("Icon")
             .Header("{Icon}").Width(60)
-            .Icon(at => at.IconPath)
+            // TODO : Icon ne marche pas
+            //.Icon(at => at.IconPath)
 
             .Column("Log")
             .Header("{Log}").Width(350).Content(at => LogAbstract(at.Log, 50))

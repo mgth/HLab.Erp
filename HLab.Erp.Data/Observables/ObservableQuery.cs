@@ -62,10 +62,10 @@ namespace HLab.Erp.Data.Observables
 
       readonly IDataService _db;
 
-      SuspenderToken _token;
+      SuspenderToken? _token;
       public Suspender Suspender { get; }
 
-      readonly object _lock = new();
+      readonly Lock _lock = new();
 
       public void Start()
       {
@@ -77,6 +77,7 @@ namespace HLab.Erp.Data.Observables
             token.Dispose();
          }
       }
+      
       public void Stop()
       {
          lock (_lock)
@@ -102,7 +103,7 @@ namespace HLab.Erp.Data.Observables
 
       class Filter
       {
-         public object Name { get; set; }
+         public object Name { get; set; } = "";
          public Func<Expression<Func<T, bool>>> GetExpression { get; init; } = null;
          public Func<IQueryable<T>, IQueryable<T>> Func { get; init; } = null;
          public int Order { get; init; }
@@ -110,7 +111,7 @@ namespace HLab.Erp.Data.Observables
 
       class PostFilter
       {
-         public object Name { get; init; }
+         public object Name { get; init; } = "";
          public Func<T, bool> Expression { get; init; } = null;
          public Func<IAsyncEnumerable<T>, IAsyncEnumerable<T>> Func { get; init; }
          public int Order { get; init; }
@@ -416,9 +417,9 @@ namespace HLab.Erp.Data.Observables
       ObservableQuery<T> AddCreator(IDictionary<string, Action<CreateHelper>> dict, Action<CreateHelper> func,
           string name = "")
       {
-         lock (_lockFilters) // Todo : insuffisent 
+         lock (_lockFilters) // Todo : insuffisant 
          {
-            if (name != null && dict.ContainsKey(name)) dict.Remove(name);
+            if (name != null) dict.Remove(name);
             dict.Add(name ?? "", func);
             return this;
          }
@@ -505,8 +506,7 @@ namespace HLab.Erp.Data.Observables
          _ = await Task.Run(() => w.WaitOne());
       }
 
-      readonly object _lockUpdateNeeded = new();
-
+      readonly Lock _lockUpdateNeeded = new();
 
       volatile bool _updateNeeded;
       volatile bool _refresh = false;

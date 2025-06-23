@@ -521,7 +521,19 @@ public static class ListFilterConfiguratorExtension
         var lambda = getter.Compile();
 //            getterId ??= GetterIdNullableFromGetter(getter);
 
-        return c.Column(id)
+      var c1 = c.Column(id);
+      var c2 = c1.Header($"{{{typeof(TE).Name}}}");
+      var c3 = c2.Width(width);
+      var c4 = c3.LinkNullable(getter);
+      var c5 = c4.Localize(caption);
+      var c6 = c5.Icon(iconPath);
+      var c7 = c6.OrderBy(e => c.Localize(lambda(e)?.Caption));
+      var c8 = c7.Filter();
+      var c9 = c8.IconPath($"Icons/Entities/{typeof(TE).Name}");
+      
+      return c9;
+
+      return c.Column(id)
                 .Header($"{{{typeof(TE).Name}}}")
                 .Width(width)
                 .LinkNullable(getter)

@@ -7,14 +7,14 @@ using Npgsql;
 
 namespace HLab.Erp.Data;
 
-public abstract class DataUpdaterBootloader(IDataService data) : IBootloader
+public abstract class DataUpdaterBootloader(IDataService data) : Bootloader
 {
     protected virtual string CurrentVersion => this.GetType().Assembly.GetName().Version.ToString();
     protected virtual string CurrentModule => this.GetType().Assembly.GetName().Name;
 
-    public async Task LoadAsync(IBootContext bootstrapper)
+    public override async Task<BootState> LoadAsync()
     {
-        if (bootstrapper.WaitingForService(data)) return;
+        if (WaitingForServices(data)) return BootState.Requeue;
 
         var oldVersion = "";
         while (true)
@@ -62,7 +62,7 @@ public abstract class DataUpdaterBootloader(IDataService data) : IBootloader
 
                 }
 #endif
-                return;
+                return BootState.Completed;
             }
 
             oldVersion = version.Version;

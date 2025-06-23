@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace HLab.Erp.Acl;
 
-public class AclBootLoader(IDataService? data) : IBootloader
+public class AclBootLoader(IDataService? data) : Bootloader
 {
-    public Task LoadAsync(IBootContext bootstrapper)
-    {
-        AclRight.Data = data;
-        return Task.CompletedTask;
-    }
+   protected override BootState Load()
+   {
+      AclRight.Data = data;
+      return BootState.Completed;
+   }
 }

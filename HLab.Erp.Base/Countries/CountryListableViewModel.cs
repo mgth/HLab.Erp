@@ -3,8 +3,7 @@ using HLab.Mvvm.Application;
 using HLab.Mvvm.ReactiveUI;
 using ReactiveUI;
 
-
-namespace HLab.Erp.Base.Wpf.Entities.Countries;
+namespace HLab.Erp.Base.Countries;
 
 public class CountryListableViewModel : ViewModel<Country>, IListableModel
 {

@@ -13,17 +13,26 @@ using HLab.Options;
 
 namespace HLab.Erp.Data;
 
-public class DataService : IDataService, IService
+public class DataService(Func<Type, object> locate, IOptionsService options) : IDataService, IService
 {
-    readonly IOptionsService _options;
-    public Func<Type, object> Locate { get; private set;}
+   public class Bootloader(IOptionsService options, IDataService data) : Core.Annotations.Bootloader
+   {
+      public override async Task<BootState> LoadAsync()
+      {
+         if(WaitingForServices(options)) return BootState.Requeue;
+         
+         var d = DataCache.DataService = (DataService)data;
+         
+         d.Connections = (await options.GetSubListAsync("", "Connections", null, "registry")).ToArray();
+         d.Source = options.GetValue("", "Source", null, ()=>"", "registry");
+         
+         
+         return BootState.Completed;
+      }
+   }
+   
+    public Func<Type, object> Locate => locate;
 
-    public DataService(Func<Type, object> locate, IOptionsService options)
-    {
-        Locate = locate;
-        _options = options;
-        DataCache.DataService = this;
-    }
 
     public async Task<T> AddAsync<T>(Action<T> setter, Action<T> added = null)
         where T : class, IEntity
@@ -68,7 +77,7 @@ public class DataService : IDataService, IService
             added?.Invoke(t);
         }
 
-        return await DataCache<T>.Cache.GetOrAddAsync(t).ConfigureAwait(false);
+        return await DataCache.EntityCache<T>.Cache.GetOrAddAsync(t).ConfigureAwait(false);
     }
     public T Add<T>(Action<T> setter, Action<T> added = null)
         where T : class, IEntity
@@ -104,7 +113,7 @@ public class DataService : IDataService, IService
             added?.Invoke(t);
         }
 
-        return DataCache<T>.Cache.GetOrAddAsync(t).Result;
+        return DataCache.EntityCache<T>.Cache.GetOrAddAsync(t).Result;
     }
 
 
@@ -115,7 +124,7 @@ public class DataService : IDataService, IService
 
         if (result > 0)
         {
-            var b = DataCache<T>.Cache.ForgetAsync(entity).Result;
+            var b =DataCache.EntityCache<T>.Cache.ForgetAsync(entity).Result;
             deleted?.Invoke((T)entity);
             return true;
         }
@@ -131,7 +140,7 @@ public class DataService : IDataService, IService
 
         if (result > 0)
         {
-            await DataCache<T>.Cache.ForgetAsync(entity);
+            await DataCache.EntityCache<T>.Cache.ForgetAsync(entity);
             deleted?.Invoke((T)entity);
             return true;
         }
@@ -146,7 +155,7 @@ public class DataService : IDataService, IService
 
         var t = await transaction?.Database.QueryAsync<T>().FirstOrDefault(getter);
 
-        if (t != null) return await DataCache<T>.Cache.GetOrAddAsync(t).ConfigureAwait(false);
+        if (t != null) return await DataCache.EntityCache<T>.Cache.GetOrAddAsync(t).ConfigureAwait(false);
 
         var result = transaction.Add(setter, added);
         transaction.Done();
@@ -164,7 +173,7 @@ public class DataService : IDataService, IService
 
             var t = transaction.Database.Query<T>().FirstOrDefault(getter);
 
-            if (t != null) return DataCache<T>.Cache.GetOrAdd(t);
+            if (t != null) return DataCache.EntityCache<T>.Cache.GetOrAdd(t);
             var result = transaction.Add(setter, added);
             transaction.Done();
             return result;
@@ -179,12 +188,12 @@ public class DataService : IDataService, IService
     public Task<T> GetOrAddAsync<T>(T entity)
         where T : class, IEntity
     {
-        return DataCache<T>.Cache.GetOrAddAsync(entity);
+        return DataCache.EntityCache<T>.Cache.GetOrAddAsync(entity);
     }
     //public static IQueryProviderWithIncludes<T> Query<T>() => D.Get().Query<T>();
     public async IAsyncEnumerable<T> FetchAsync<T>() where T : class, IEntity
     {
-        var cache = DataCache<T>.Cache;
+        var cache =DataCache.EntityCache<T>.Cache;
 
         var retry = true;
         while (retry)
@@ -244,7 +253,7 @@ public class DataService : IDataService, IService
     public IEnumerable<T> FetchWhere<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>>? orderBy = null)
         where T : class, IEntity
     {
-        var cache = DataCache<T>.Cache;
+        var cache =DataCache.EntityCache<T>.Cache;
 
 
         if (typeof(ILocalCache).IsAssignableFrom(typeof(T)))
@@ -291,7 +300,7 @@ public class DataService : IDataService, IService
     public IAsyncEnumerable<T> FetchWhereAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>>? orderBy = null)
         where T : class, IEntity
     {
-        var cache = DataCache<T>.Cache;
+        var cache =DataCache.EntityCache<T>.Cache;
 
 
         if (typeof(ILocalCache).IsAssignableFrom(typeof(T)))
@@ -341,24 +350,21 @@ public class DataService : IDataService, IService
     {
         var result = await DbGetAsync(async db => await db.QueryAsync<T>().Where(expression).FirstOrDefault());
 
-        return result == null ? null : await DataCache<T>.Cache.GetOrAddAsync(result);
+        return result == null ? null : await DataCache.EntityCache<T>.Cache.GetOrAddAsync(result);
     }
 
     public T? FetchOne<T>(Expression<Func<T, bool>> expression)
         where T : class, IEntity
     {
         var result = DbGet(db => db.Query<T>().Where(expression).FirstOrDefault());
-        return result == null ? null : DataCache<T>.Cache.GetOrAddAsync(result).Result;
+        return result == null ? null :DataCache.EntityCache<T>.Cache.GetOrAddAsync(result).Result;
     }
 
-    public Task<T?> FetchOneAsync<T>(int id)
-        where T : class, IEntity<int>
+    public Task<T?> FetchOneAsync<T>(int id) where T : class, IEntity<int>
 
         => FetchOneAsync<T>((object)id);
 
-    public Task<T?> FetchOneAsync<T>(string id)
-        where T : class, IEntity<string>
-
+    public Task<T?> FetchOneAsync<T>(string id) where T : class, IEntity<string>
         => FetchOneAsync<T>((object)id);
 
     public async Task<T?> ReFetchOneAsync<T>(T entity)
@@ -367,7 +373,7 @@ public class DataService : IDataService, IService
         if (entity == null) return null;
 
         var result = await DbGetAsync(async db => await db.SingleByIdAsync<T>(entity.Id).ConfigureAwait(false)).ConfigureAwait(true);
-        return await DataCache<T>.Cache.GetOrAddAsync(result).ConfigureAwait(true);
+        return await DataCache.EntityCache<T>.Cache.GetOrAddAsync(result).ConfigureAwait(true);
     }
 
     public async Task<T> FetchOneAsync<T>(object id)
@@ -375,7 +381,7 @@ public class DataService : IDataService, IService
     {
         var subscribe = false;
 
-        var obj = await DataCache<T>.Cache.GetOrAddAsync(id,
+        var obj = await DataCache.EntityCache<T>.Cache.GetOrAddAsync(id,
             async k =>
             {
                 subscribe = true;
@@ -390,64 +396,44 @@ public class DataService : IDataService, IService
 
     }
 
-    public bool Any<T>(Expression<Func<T, bool>> expression)
-        where T : class, IEntity
+    public bool Any<T>(Expression<Func<T, bool>> expression) where T : class, IEntity
     {
         return DbGet<bool>(db => db.Query<T>().Any(expression));
     }
 
-    IEnumerable<string>? _connectionStrings;
-    public IEnumerable<string> Connections =>
-        _connectionStrings ??= _options.GetSubList("", "Connections", null, "registry");
 
-    public string ConnectionString
-    {
-        get
-        {
-            if (!string.IsNullOrWhiteSpace(_connectionString)) return _connectionString;
-
-            GetSourceParameters();
-            
-            return _connectionString;
-        }
-    }
-    string _connectionString;
+    public string ConnectionString {get; set; } = "";
+    public string[] ConnectionStrings {get; set; } = [];
 
 
 #if DEBUG
-    public string DefaultUsername {get; set; }
-    public string DefaultPassword { get; set; }
+    public string DefaultUsername {get; set; } = "";
+    public string DefaultPassword { get; set; } = "";
 #endif
-    void GetSourceParameters()
-    {
-        var path = (string.IsNullOrWhiteSpace(Source)) ? "" : @$"Connections\{Source}";
-        _connectionString = _options.GetValue<string>(path, "Connection", null, null, "registry");
-        if(string.IsNullOrWhiteSpace(_connectionString))
-        {
-            _connectionString = _getConnectionString().Result;
-            _options.SetValue(path, "connection", _connectionString);
-        }
 
-        #if DEBUG
-        DefaultUsername = _options.GetValue<string>(path, "DebugUsername", null, null, "registry");
-        DefaultPassword = _options.GetValue<string>(path, "DebugPassword", null, null, "registry");
-        #endif
-    }
+   public string Source { get;
+      set {
+         field = value;
+         options.SetValue("", "Source", value, "registry");
+         DataCache.ClearAll();
+         
+         var path = (string.IsNullOrWhiteSpace(Source)) ? "" : @$"Connections\{Source}";
+         var connectionString = options.GetValue<string>(path, "Connection", null, null, "registry");
+         if(string.IsNullOrWhiteSpace(connectionString))
+         {
+            connectionString = _getConnectionString().Result;
+            options.SetValueAsync(path, "connection", connectionString);
+         }
+         ConnectionString = connectionString;
 
-    public string Source
-    {
-        get => _source ??= _options.GetValue("", "Source", null, ()=>"", "registry");
-        set
-        {
-            _source = value;
-            _options.SetValue<string>("", "Source", value, "registry");
-            _connectionString = null;
-//                _caches.Clear();
-        }
-    }
-    string? _source;
+#if DEBUG
+         DefaultUsername = options.GetValue<string>(path, "DebugUsername", null, null, "registry");
+         DefaultPassword = options.GetValue<string>(path, "DebugPassword", null, null, "registry");
+#endif
+      } 
+   } = "";
 
-    //public object Locate<T>(DbDataReader d) => _Locate(typeof(T));
+   //public object Locate<T>(DbDataReader d) => _Locate(typeof(T));
 
 
 
@@ -537,7 +523,7 @@ public class DataService : IDataService, IService
         return true;
     });
 
-    T DbGet<T>(Func<IDatabase, T> action)
+    T? DbGet<T>(Func<IDatabase, T> action)
     {
         while (true)
         {
@@ -560,7 +546,7 @@ public class DataService : IDataService, IService
         return true;
     });
 
-    async Task<T> DbGetAsync<T>(Func<IDatabase, Task<T>> action)
+    async Task<T?> DbGetAsync<T>(Func<IDatabase, Task<T>> action)
     {
         while (true)
         {
@@ -577,6 +563,8 @@ public class DataService : IDataService, IService
     }
 
     Func<Task<string>> _getConnectionString = ()=> Task.FromResult("");
+
+    public IEnumerable<string> Connections { get; set;}
 
     public void SetConfigureAction(Func<Task<string>> action)
     {            
@@ -615,6 +603,7 @@ public class DataService : IDataService, IService
 
         await conn.CloseAsync().ConfigureAwait(false);
     }
+   
     public async Task<bool> IsHLabDatabasesAsync(string host, string database, string login, string password)
     {
         var connectionString = $"Host={host};Username={login};Password={password};Database={database}";

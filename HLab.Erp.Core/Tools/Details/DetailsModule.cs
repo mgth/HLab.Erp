@@ -6,20 +6,16 @@ using HLab.Mvvm.Application.Documents;
 namespace HLab.Erp.Core.Tools.Details;
 
 public class DetailsModule(IDocumentService docs, Func<DetailsPanelViewModel> getDetails)
-    : IBootloader
+    : Bootloader
 {
     readonly IDocumentService _docs = docs;
     readonly Func<DetailsPanelViewModel> _getDetails = getDetails;
 
-    public void Load(IBootContext b)
+    protected override BootState Load()
     {
         //    //TODO :
         //    //_docs.OpenDocument(_getDetails());
-    }
+        return base.Load();
+   }
 
-    public Task LoadAsync(IBootContext bootstrapper)
-    {
-        Load(bootstrapper);
-        return Task.CompletedTask;
-    }
 }

@@ -7,20 +7,11 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf;
 
-public class DbIconModule(IIconService icons, IDataService data) : IBootloader
+public class DbIconModule(IIconService icons, IDataService data) : Bootloader
 {
-    public async Task LoadAsync(IBootContext b)
+    public override async Task<BootState> LoadAsync()
     {
-        if (data.ServiceState != ServiceState.Available)
-        {
-            b.Requeue(); return;
-        }
-
-        await LoadAsync();
-    }
-
-    public async Task LoadAsync()
-    {
+        if (data.ServiceState != ServiceState.Available) return BootState.Requeue;
         var dataIcons =  data.FetchAsync<Icon>().ConfigureAwait(true);
 
         try
@@ -43,6 +34,9 @@ public class DbIconModule(IIconService icons, IDataService data) : IBootloader
         {
 
         }
+      
+        return BootState.Completed;
+
     }
 
 }

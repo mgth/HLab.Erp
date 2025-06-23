@@ -1,30 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using HLab.Base;
 
 namespace HLab.Erp.Data
 {
-    public interface IDataServiceProvider
-    {
-        IDataService DataService { get; set; }
-    }
+   public interface IDataServiceProvider
+   {
+      IDataService DataService { get; set; }
+   }
 
-    internal class DataCache
-    {
-        public static DataService DataService { get; set; }
-    }
+   internal abstract class DataCache
+   {
+      public static DataService? DataService { get; set; }
+      static readonly Dictionary<Type, DataCache> Caches = new();
+      
+      public abstract void Clear();
 
-    internal class DataCache<T> : DataCache where T : class, IEntity
-    {
-        public static DataCache<T> Cache = new();
+      public static void ClearAll()
+      {
+         foreach (var cache in Caches.Values)
+         {
+               cache.Clear();
+         }
+      }
+      
+      internal class EntityCache<T> : DataCache where T : class, IEntity
+      {
 
-        readonly AsyncDictionary<object,T> _cache = new();
-        bool _fullCache = false;
+         static EntityCache()
+         {
+            var cache = new EntityCache<T>();
+            Cache = cache;
+            Caches.Add(typeof(T), cache);
+         }
 
-        public IEnumerable<T> Fetch(Expression<Func<T, bool>> expression)
-        {
+         public override void Clear()
+         {
+            _cache.Clear();
+            _fullCache = false;
+         }
+
+         public static EntityCache<T> Cache;
+
+         readonly AsyncDictionary<object, T> _cache = new();
+         bool _fullCache = false;
+
+         public IEnumerable<T> Fetch(Expression<Func<T, bool>> expression)
+         {
 #if DEBUG
             var literal = expression.ToString();
 #endif
@@ -33,98 +58,100 @@ namespace HLab.Erp.Data
 
             if (!_fullCache)
             {
-                using var db = DataService.Get();
-                var dbList = db.Query<T>().ToEnumerable();
+               using var db = DataService.Get();
+               var dbList = db.Query<T>().ToEnumerable();
 
-                foreach (var obj in dbList)
-                {
-                    var cached = GetOrAdd(obj);
-                    if(e(cached)) yield return cached;
-                }
+               foreach (var obj in dbList)
+               {
+                  var cached = GetOrAdd(obj);
+                  if (e(cached)) yield return cached;
+               }
 
-                _fullCache = true;
+               _fullCache = true;
             }
             else
-                foreach (var item in _cache.Where(expression)) yield return item;
-        }
+               foreach (var item in _cache.Where(expression)) yield return item;
+         }
 
-        public async IAsyncEnumerable<T> FetchAsync(Expression<Func<T, bool>> expression)
-        {
-            #if DEBUG
+         public async IAsyncEnumerable<T> FetchAsync(Expression<Func<T, bool>> expression)
+         {
+#if DEBUG
             var literal = expression.ToString();
-            #endif
+#endif
 
             var e = expression.Compile();
 
             if (!_fullCache)
             {
-                using var db = DataService.Get();
-                var dbList = db.QueryAsync<T>().ToEnumerable().ConfigureAwait(false);
+               using var db = DataService.Get();
+               var dbList = db.QueryAsync<T>().ToEnumerable().ConfigureAwait(false);
 
-                // TODO : bof
-                await foreach (var obj in dbList)
-                {
-                    var cached = await GetOrAddAsync(obj).ConfigureAwait(false);
-                    if(e(cached)) yield return cached;
-                }
+               // TODO : bof
+               await foreach (var obj in dbList)
+               {
+                  var cached = await GetOrAddAsync(obj).ConfigureAwait(false);
+                  if (e(cached)) yield return cached;
+               }
 
-                _fullCache = true;
+               _fullCache = true;
             }
             else
-                await foreach (var item in _cache.WhereAsync(expression)) yield return item;
-        }
+               await foreach (var item in _cache.WhereAsync(expression)) yield return item;
+         }
 
-        public Task<T> GetOrAddAsync(object key, Func<object, Task<T>> factory) 
-            => _cache.GetOrAddAsync(key, factory);
+         public Task<T> GetOrAddAsync(object key, Func<object, Task<T>> factory)
+             => _cache.GetOrAddAsync(key, factory);
 
-        public async Task<bool> ForgetAsync(T obj)
-        {
+         public async Task<bool> ForgetAsync(T obj)
+         {
             var r = await _cache.TryRemoveAsync(obj.Id).ConfigureAwait(false);
             return r.Item1;
-        }
-        public IEnumerable<T> GetOrAdd(IEnumerable<T> list)
-        {
+         }
+         public IEnumerable<T> GetOrAdd(IEnumerable<T> list)
+         {
             foreach (var e in list)
             {
-                var obj = GetOrAdd(e);
-                yield return obj;
+               var obj = GetOrAdd(e);
+               yield return obj;
             }
-        }
+         }
 
-        public async IAsyncEnumerable<T> GetOrAddAsync(IAsyncEnumerable<T> list)
-        {
+         public async IAsyncEnumerable<T> GetOrAddAsync(IAsyncEnumerable<T> list)
+         {
             await foreach (var e in list)
             {
-                var obj = await GetOrAddAsync(e).ConfigureAwait(true);
-                yield return obj;
+               var obj = await GetOrAddAsync(e).ConfigureAwait(true);
+               yield return obj;
             }
-        }
+         }
 
-        public async Task<T> GetOrAddAsync(T obj)
-        {
+         public async Task<T> GetOrAddAsync(T obj)
+         {
             var result = await _cache.GetOrAddAsync(obj.Id,
                  k => Task.FromResult(obj)).ConfigureAwait(true);
 
-            if(!ReferenceEquals(obj,result))
-                obj.CopyPrimitivesTo(result);
+            if (!ReferenceEquals(obj, result))
+               obj.CopyPrimitivesTo(result);
 
-            if (result is IDataServiceProvider {DataService: null} dbf) 
-                dbf.DataService = DataService;
+            if (result is IDataServiceProvider { DataService: null } dbf)
+               dbf.DataService = DataService;
 
             return result;
-        }
+         }
 
-        public T GetOrAdd(T obj)
-        {
+         public T GetOrAdd(T obj)
+         {
             var result = _cache.GetOrAdd(obj.Id, k => obj);
 
-            if(!ReferenceEquals(obj,result))
-                obj.CopyPrimitivesTo(result);
+            if (!ReferenceEquals(obj, result))
+               obj.CopyPrimitivesTo(result);
 
-            if (result is IDataServiceProvider {DataService: null} dbf) 
-                dbf.DataService = DataService;
+            if (result is IDataServiceProvider { DataService: null } dbf)
+               dbf.DataService = DataService;
 
             return result;
-        }
-    }
+         }
+      }
+   }
+
 }

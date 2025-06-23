@@ -18,17 +18,11 @@ namespace HLab.Erp.Data
         }
     }
 
-    public class AddFluentHelper<TProvider> where TProvider : IDataProvider
+    public class AddFluentHelper<TProvider>(TProvider provider)
+       where TProvider : IDataProvider
     {
-        TProvider _provider;
-
-        public AddFluentHelper(TProvider provider)
-        {
-            _provider = provider;
-        }
-
-        public TProvider Entity<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity
-            => _provider.Add<TProvider,T>(setter, added);
+       public TProvider Entity<T>(Action<T> setter, Action<T> added = null) where T : class, IEntity
+            => provider.Add<TProvider,T>(setter, added);
     }
 
     public static class DataProviderExtension
@@ -38,12 +32,9 @@ namespace HLab.Erp.Data
             where TProvider : IDataProvider
             => data.Fluently(d => d.Add(setter, added));
 
-
-
         public static AddFluentHelper<TProvider> Add<TProvider>(this TProvider data) where TProvider : IDataProvider
             => new(data);
     }
-
 
     public interface IDataProvider
     {
@@ -104,7 +95,7 @@ namespace HLab.Erp.Data
 
         List<Type> Entities { get; }
 
-        string ConnectionString { get; }
+        string ConnectionString { get; set;}
         string Source { get; set; }
         IEnumerable<string> Connections { get; }
 

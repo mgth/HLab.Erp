@@ -6,7 +6,7 @@ using HLab.Mvvm.Application;
 
 namespace HLab.Erp.Core.EntityLists;
 
-public class ListableEntityListViewModel<T> : Core.EntityLists.EntityListViewModel<T>, IListableEntityListViewModel<T>
+public class ListableEntityListViewModel<T> : EntityListViewModel<T>, IListableEntityListViewModel<T>
     where T : class, IEntity, IListableModel, new()
 {
     public ListableEntityListViewModel(Injector i) : base(i, c => c

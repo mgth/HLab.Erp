@@ -12,42 +12,36 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Core.ListFilterConfigurators
 {
-    public class ColumnConfigurator<T> : IColumnConfigurator<T> where T : class, IEntity, new()
+    public class ColumnConfigurator<T>(IEntityListViewModel<T> list, ILocalizationService localization, IAclService acl)
+       : IColumnConfigurator<T>
+       where T : class, IEntity, new()
     {
-        public ILocalizationService Localization { get; }
-        public IAclService Acl { get; }
-        readonly IEntityListViewModel<T> _list;
-        public ColumnConfigurator(IEntityListViewModel<T> list, ILocalizationService localization, IAclService acl)
-        {
-            _list = list;
-            Localization = localization;
-            Acl = acl;
-        }
+        public ILocalizationService Localization { get; } = localization;
+        public IAclService Acl { get; } = acl;
 
         public virtual IColumnConfigurator<T, object, IFilter<object>> GetColumnConfigurator()
         {
             return new ColumnConfigurator<T, object, IFilter<object>>(
-                new ColumnBuilder<T>(_list, new Column<T>())
+                new ColumnBuilder<T>(list, new Column<T>())
                 ,Localization,Acl
             );
         }
 
         public IColumnConfigurator<T> BuildList(Action<IEntityListViewModel<T>> build)
         {
-            build(_list);
+            build(list);
             return this;
         }
-        public IColumnConfigurator<T> List<TT>(out TT list) where TT : IEntityListViewModel<T>
+      
+        public IColumnConfigurator<T> List<TT>(out TT list1) where TT : IEntityListViewModel<T>
         {
-            list = (TT)_list;
+            list1 = (TT)list;
             return this;
         }
 
         public virtual void Dispose()
         {
         }
-
-
     }
 
     public class ColumnConfigurator<T, TLink, TFilter> : ColumnConfigurator<T>, IColumnConfigurator<T, TLink, TFilter>
@@ -60,7 +54,6 @@ namespace HLab.Erp.Core.ListFilterConfigurators
         {
             return new ColumnConfigurator<T, TLinkChild, TFilterChild>(_builder,Localization,Acl);
         }
-
 
         public override IColumnConfigurator<T, object, IFilter<object>> GetColumnConfigurator()
         {
@@ -83,22 +76,16 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             filter?.Link(builder.ListViewModel.List, link);
         }
 
-        class ColumnBuilder : IColumnBuilder<T, TLink, TFilter>
+        class ColumnBuilder(IColumn<T>.IBuilder builder) : IColumnBuilder<T, TLink, TFilter>
         {
-            readonly IColumn<T>.IBuilder _builder;
-            public ColumnBuilder(IColumn<T>.IBuilder builder)
-            {
-                _builder = builder;
-            }
-
-            public IEntityListViewModel<T> ListViewModel => _builder.ListViewModel;
-            public IColumn<T> Column => _builder.Column;
-            public TFilter Filter => _builder.GetFilter<TFilter>();
+           public IEntityListViewModel<T> ListViewModel => builder.ListViewModel;
+            public IColumn<T> Column => builder.Column;
+            public TFilter Filter => builder.GetFilter<TFilter>();
 
             public int OrderByRank
             {
-                get => _builder.OrderByRank;
-                set => _builder.OrderByRank = value;
+                get => builder.OrderByRank;
+                set => builder.OrderByRank = value;
             }
         }
 
@@ -157,7 +144,6 @@ namespace HLab.Erp.Core.ListFilterConfigurators
             _builder.DataTemplateSource = _builder.DataTemplateSource.Replace(XamlTool.ContentPlaceHolder, template);
             return this;
         }
-
 
         public TFilter Filter => _builder.GetFilter<TFilter>();
         public Expression<Func<T, TLink>> LinkExpression

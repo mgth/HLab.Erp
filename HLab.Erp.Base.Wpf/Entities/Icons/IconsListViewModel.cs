@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using HLab.Erp.Base.Data;
 using HLab.Erp.Core;
-using HLab.Erp.Core.Wpf.EntityLists;
+using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.ListFilterConfigurators;
 using HLab.Erp.Data;
 using HLab.Icons.Wpf.Icons;
@@ -12,7 +12,17 @@ using HLab.Mvvm.Annotations;
 
 namespace HLab.Erp.Base.Wpf.Entities.Icons;
 
-public class IconsListViewModel : Core.EntityLists.EntityListViewModel<Icon>, IMvvmContextProvider
+public class IconsListViewModel(EntityListViewModel<Icon>.Injector i) : EntityListViewModel<Icon>(i, c => c
+   .Column("Path")
+   .Header("{Path}")
+   .Link(s => s.Path)
+   .Filter()
+   .Column("Xaml")
+   .Header("{Xaml}")
+   .Content(s => GetXamlIconAsync(s.SourceXaml, s.Foreground))
+   .Column("Svg")
+   .Header("{Svg}")
+   .Content(s => GetSvgIconAsync(s.SourceSvg, s.Foreground))), IMvvmContextProvider
 {
     public class Bootloader : ParamBootloader { }
 
@@ -76,22 +86,5 @@ public class IconsListViewModel : Core.EntityLists.EntityListViewModel<Icon>, IM
             Child = icon,
             MaxHeight = 30
         };
-    }
-
-    public IconsListViewModel(Injector i) : base(i, c => c
-        .Column("Path")
-        .Header("{Path}")
-        .Link(s => s.Path)
-        .Filter()
-
-        .Column("Xaml")
-        .Header("{Xaml}")
-        .Content( s => GetXamlIconAsync(s.SourceXaml, s.Foreground))
-
-        .Column("Svg")
-        .Header("{Svg}")
-        .Content(s => GetSvgIconAsync(s.SourceSvg, s.Foreground))
-    )
-    {
     }
 }
