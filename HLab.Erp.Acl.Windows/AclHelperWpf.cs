@@ -1,10 +1,11 @@
 ﻿using System.DirectoryServices.AccountManagement;
 using System.Net;
+using HLab.Core;
 using HLab.Erp.Data;
 
 namespace HLab.Erp.Acl.Windows;
 
-public class AclHelperWindows(IDataService db) : AclHelper(db)
+public class AclHelperWindows(ICryptService crypt, IDataService db) : AclHelper(db,crypt)
 {
     public override async Task<User?> GetUserAsync(NetworkCredential credential)
     {

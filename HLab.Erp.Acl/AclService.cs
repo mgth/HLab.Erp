@@ -25,20 +25,13 @@ public interface IAclTarget
     int? GetAclId();
 }
 
-public class AclService : IAclService
+public class AclService(IMessagesService msg, IAclHelper acl, IDataService data) : IAclService
 {
-    readonly IMessagesService _msg;
-    readonly IAclHelper _acl;
-    readonly IDataService _data;
+    readonly IMessagesService _msg = msg;
+    readonly IAclHelper _acl = acl;
+    readonly IDataService _data = data;
 
-    public AclService(IMessagesService msg, IAclHelper acl, IDataService data)
-    {
-        _msg = msg;
-        _acl = acl;
-        _data = data;
-    }
-
-    public Connection? Connection { get; private set; } = null;
+   public Connection? Connection { get; private set; } = null;
 
     public bool Cancelled { get; private set; } = false;
 
@@ -112,11 +105,6 @@ public class AclService : IAclService
         Thread.Sleep(5000);
         return "Identifiant ou mot de passe incorrect.";
     }
-
-    public string Crypt(string password) => _acl.Crypt(password);
-
-    public string Crypt(SecureString password) => _acl.Crypt(password);
-
 
     public async Task<string> Login(string login, SecureString password)
     {
@@ -213,7 +201,11 @@ public class AclService : IAclService
         return await toNode.IsGrantedAsync(right, onNode).ConfigureAwait(false);
     }
 
-    public ServiceState ServiceState { get; internal set; } = ServiceState.Available;
+   public string Crypt(string password) => _acl.Crypt(password);
+
+   public string Crypt(SecureString password) => _acl.Crypt(password);
+
+   public ServiceState ServiceState { get; internal set; } = ServiceState.Available;
 
     //private ConcurrentDictionary<string,DataLock> _locks = new ConcurrentDictionary<string,DataLock>();
 

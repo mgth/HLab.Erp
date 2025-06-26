@@ -100,7 +100,7 @@ namespace HLab.Erp.Data
         IEnumerable<string> Connections { get; }
 
         //DbTransaction BeginTransaction();
-        void SetConfigureAction(Func<Task<string>> action);
+        void SetConfigureAction(Func<Task<string>> action, bool force = false);
 
         IAsyncEnumerable<string> GetDatabasesAsync(string host, string login, string password);
 

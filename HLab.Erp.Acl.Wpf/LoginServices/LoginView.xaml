@@ -102,13 +102,13 @@
 
 <!-- Password -->
                 <lang:LocalizedLabel 
-                    Visibility="{Binding DebugVisibility}" 
+                    Visibility="{Binding DebugVisibility, Converter={BoolToVisibilityConverter}, FallbackValue=Visibility.Hidden}" 
                     Text="{}{Encrypted Password} : " 
                     Grid.Row="4" Grid.Column="0" 
                     HorizontalAlignment="Right"
                 />
                 <TextBox 
-                    Visibility="{Binding DebugVisibility}" 
+                    Visibility="{Binding DebugVisibility, Converter={BoolToVisibilityConverter}, FallbackValue=Visibility.Hidden}" 
                     Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" 
                     x:Name="EncryptedPassword" 
                     Grid.Column="1" 
@@ -137,7 +137,7 @@
                         <lang:Localize Id="{}{Connection}"/>
                     </Button>
                     <Button 
-                        IsDefault="True" 
+                        IsDefault="False" 
                         Width="100" 
                         Margin="10" 
                         Command="{Binding CancelCommand}">

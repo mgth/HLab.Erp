@@ -6,13 +6,15 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using HLab.Core;
+using HLab.Core.Annotations;
 using HLab.Erp.Data;
 
 namespace HLab.Erp.Acl;
 
 public interface IAclHelper
 {
-    Task<User?> GetUserAsync(NetworkCredential credential);
+   Task<User?> GetUserAsync(NetworkCredential credential);
 
 #if DEBUG
     Task<User?> GetUserWithEncryptedPasswordAsync(string username, string hashedPassword);
@@ -28,7 +30,7 @@ public interface IAclHelper
     string Crypt(SecureString password);
 }
 
-public class AclHelper(IDataService db) : IAclHelper
+public class AclHelper(IDataService db, ICryptService crypt) : IAclHelper
 {
 
     public async Task<Connection?> GetConnectionAsync(NetworkCredential credential) 
@@ -37,12 +39,11 @@ public class AclHelper(IDataService db) : IAclHelper
     public async Task<Connection?> GetConnectionWithPinAsync(NetworkCredential credential) 
         => await GetConnectionAsync(await GetUserWithPinAsync(credential));
 
-    const string Key = "PG8JaR0ix+GP2w0bXse/ReZugKK+Q/g/";
-    const string Iv = "TuG898IilQA=";
 
-    protected IDataService Data = db;
+   protected IDataService Data = db;
 
-    public async Task<User?> GetUserWithPinAsync(NetworkCredential credential)
+
+   public async Task<User?> GetUserWithPinAsync(NetworkCredential credential)
     {
         var login = credential.UserName;
         var valuePtr = Marshal.SecureStringToGlobalAllocUnicode(credential.SecurePassword);
@@ -55,9 +56,9 @@ public class AclHelper(IDataService db) : IAclHelper
     public async Task<Connection?> GetConnectionAsync(string username, string hashedPassword)
         => await GetConnectionAsync(await GetUserWithEncryptedPasswordAsync(username, hashedPassword));
 
-    public
+    
     #endif
-    virtual async Task<User?> GetUserWithEncryptedPasswordAsync(string username, string hashedPassword)
+    public virtual async Task<User?> GetUserWithEncryptedPasswordAsync(string username, string hashedPassword)
     {
         try
         {
@@ -76,6 +77,7 @@ public class AclHelper(IDataService db) : IAclHelper
     {
         return await GetUserWithEncryptedPasswordAsync(username,Crypt(password));
     }
+
 
     public virtual async Task<User?> GetUserAsync(NetworkCredential credential)
     {
@@ -112,41 +114,9 @@ public class AclHelper(IDataService db) : IAclHelper
         }).ConfigureAwait(false);
     }
 
-    public string Crypt(string password)
-    {
-        try
-        {
-            var symmetricAlgorithm = TripleDES.Create();
-            //var symmetricAlgorithm = Aes.Create();
-            symmetricAlgorithm.Key = Convert.FromBase64String(Key);
-            symmetricAlgorithm.IV = Convert.FromBase64String(Iv);
+    public string Crypt(string password) => crypt.Crypt(password);
 
-            var encryptor = symmetricAlgorithm.CreateEncryptor();
-
-            var memoryStream = new MemoryStream();
-            using var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
-            var valuePtr = IntPtr.Zero;
-            try
-            {
-                var bytes = Encoding.UTF8.GetBytes(password);
-                cryptoStream.Write(bytes, 0, bytes.Length);
-                cryptoStream.FlushFinalBlock();
-                cryptoStream.Close();
-
-                return Convert.ToBase64String(memoryStream.ToArray());
-            }
-            finally
-            {
-                Marshal.ZeroFreeGlobalAllocUnicode(valuePtr);
-            }
-        }
-        catch
-        {
-            return "";
-        }
-    }
-
-    public string Crypt(SecureString securePassword)
+   public string Crypt(SecureString securePassword)
     {
         var valuePtr = Marshal.SecureStringToGlobalAllocUnicode(securePassword);
         var password = Marshal.PtrToStringUni(valuePtr);

@@ -10,419 +10,429 @@ using HLab.Core.Annotations;
 using Npgsql;
 using NPoco;
 using HLab.Options;
+using HLab.Core;
 
 namespace HLab.Erp.Data;
 
-public class DataService(Func<Type, object> locate, IOptionsService options) : IDataService, IService
+public class DataService(Func<Type, object> locate, IOptionsService options, ICryptService crypt) : IDataService, IService
 {
-   public class Bootloader(IOptionsService options, IDataService data) : Core.Annotations.Bootloader
+   public class Bootloader(IOptionsService options, IDataService data, ICryptService crypt) : Core.Annotations.Bootloader
    {
       public override async Task<BootState> LoadAsync()
       {
-         if(WaitingForServices(options)) return BootState.Requeue;
-         
+         if (WaitingForServices(crypt)) return BootState.Requeue; 
+         if (WaitingForServices(options)) return BootState.Requeue;
+         if (((DataService)data)._getConnectionString is null) return BootState.Requeue;
+
          var d = DataCache.DataService = (DataService)data;
-         
+
          d.Connections = (await options.GetSubListAsync("", "Connections", null, "registry")).ToArray();
-         d.Source = options.GetValue("", "Source", null, ()=>"", "registry");
-         
-         
+         d.Source = options.GetValue("", "Source", null, () => "", "registry");
+
+
          return BootState.Completed;
       }
    }
-   
-    public Func<Type, object> Locate => locate;
+
+   public Func<Type, object> Locate => locate;
 
 
-    public async Task<T> AddAsync<T>(Action<T> setter, Action<T> added = null)
-        where T : class, IEntity
-    {
-        var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
-        if (t is IEntity<int> tt) tt.Id = -1;
+   public async Task<T> AddAsync<T>(Action<T> setter, Action<T> added = null)
+       where T : class, IEntity
+   {
+      var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
+      if (t is IEntity<int> tt) tt.Id = -1;
 
-        try
-        {
-            setter?.Invoke(t);
-        }
-        catch (DataSetterException)
-        {
-            return null;
-        }
+      try
+      {
+         setter?.Invoke(t);
+      }
+      catch (DataSetterException)
+      {
+         return null;
+      }
 
-        object e = null;
-        if (typeof(T).GetCustomAttributes<SoftIncrementAttribut>().FirstOrDefault() is { } a)
-        {
-            if (t is IEntity<int> ti)
+      object e = null;
+      if (typeof(T).GetCustomAttributes<SoftIncrementAttribut>().FirstOrDefault() is { } a)
+      {
+         if (t is IEntity<int> ti)
+         {
+            await DbAsync(async db =>
             {
-                await DbAsync(async db =>
-                {
-                    var ids = await db.QueryAsync<T>().OrderByDescending(d => ((IEntity<int>)d).Id)
-                        .FirstOrDefault().ConfigureAwait(false);
+               var ids = await db.QueryAsync<T>().OrderByDescending(d => ((IEntity<int>)d).Id)
+                       .FirstOrDefault().ConfigureAwait(false);
 
-                    var id = ((IEntity<int>)ids)?.Id ?? 0;
+               var id = ((IEntity<int>)ids)?.Id ?? 0;
 
-                    id++;
+               id++;
 
-                    ti.Id = id;
+               ti.Id = id;
 
-                });
-            }
-        }
+            });
+         }
+      }
 
-        e = await DbGetAsync(async db => await db.InsertAsync(t).ConfigureAwait(false));
+      e = await DbGetAsync(async db => await db.InsertAsync(t).ConfigureAwait(false));
 
-        if (e != null)
-        {
-            t.IsLoaded = true;
-            added?.Invoke(t);
-        }
+      if (e != null)
+      {
+         t.IsLoaded = true;
+         added?.Invoke(t);
+      }
 
-        return await DataCache.EntityCache<T>.Cache.GetOrAddAsync(t).ConfigureAwait(false);
-    }
-    public T Add<T>(Action<T> setter, Action<T> added = null)
-        where T : class, IEntity
-    {
-        var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
-        //if(t is IEntity<int> tt) tt.Id=-1;
+      return await DataCache.EntityCache<T>.Cache.GetOrAddAsync(t).ConfigureAwait(false);
+   }
+   public T Add<T>(Action<T> setter, Action<T> added = null)
+       where T : class, IEntity
+   {
+      var t = (T)Activator.CreateInstance(typeof(T));  //_entityFactory(typeof(T));
+                                                       //if(t is IEntity<int> tt) tt.Id=-1;
 
-        setter?.Invoke(t);
+      setter?.Invoke(t);
 
-        object e = null;
-        if (typeof(T).GetCustomAttributes<SoftIncrementAttribut>().FirstOrDefault() is SoftIncrementAttribut a)
-        {
-            if (t is IEntity<int> ti)
+      object e = null;
+      if (typeof(T).GetCustomAttributes<SoftIncrementAttribut>().FirstOrDefault() is SoftIncrementAttribut a)
+      {
+         if (t is IEntity<int> ti)
+         {
+            Db(db =>
             {
-                Db(db =>
-                {
-                    var ids = db.Query<T>().OrderByDescending(d => ((IEntity<int>)d).Id).FirstOrDefault();
+               var ids = db.Query<T>().OrderByDescending(d => ((IEntity<int>)d).Id).FirstOrDefault();
 
-                    var id = ((IEntity<int>)ids)?.Id ?? 0;
+               var id = ((IEntity<int>)ids)?.Id ?? 0;
 
-                    id++;
+               id++;
 
-                    ti.Id = id;
-                });
+               ti.Id = id;
+            });
+         }
+      }
+
+      e = DbGet(db => db.Insert(t));
+
+      if (e != null)
+      {
+         t.IsLoaded = true;
+         added?.Invoke(t);
+      }
+
+      return DataCache.EntityCache<T>.Cache.GetOrAddAsync(t).Result;
+   }
+
+
+   public bool Delete<T>(T entity, Action<T> deleted = null)
+       where T : class, IEntity
+   {
+      var result = DbGet(db => db.Delete<T>(entity));
+
+      if (result > 0)
+      {
+         var b = DataCache.EntityCache<T>.Cache.ForgetAsync(entity).Result;
+         deleted?.Invoke((T)entity);
+         return true;
+      }
+
+      return false;
+   }
+   public async Task<bool> DeleteAsync<T>(T entity, Action<T> deleted = null)
+       where T : class, IEntity
+   {
+      if (entity == null) return false;
+
+      var result = await DbGetAsync(async db => await db.DeleteAsync(entity));
+
+      if (result > 0)
+      {
+         await DataCache.EntityCache<T>.Cache.ForgetAsync(entity);
+         deleted?.Invoke((T)entity);
+         return true;
+      }
+
+      return false;
+   }
+
+   public async Task<T> GetOrAddAsync<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
+       where T : class, IEntity
+   {
+      using var transaction = GetTransaction() as DataTransaction;
+
+      var t = await transaction?.Database.QueryAsync<T>().FirstOrDefault(getter);
+
+      if (t != null) return await DataCache.EntityCache<T>.Cache.GetOrAddAsync(t).ConfigureAwait(false);
+
+      var result = transaction.Add(setter, added);
+      transaction.Done();
+      return result;
+   }
+
+   public T GetOrAdd<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
+       where T : class, IEntity
+   {
+      try
+      {
+         using var transaction = GetTransaction() as DataTransaction;
+
+         if (transaction == null) throw new DataException("Unable to create transaction");
+
+         var t = transaction.Database.Query<T>().FirstOrDefault(getter);
+
+         if (t != null) return DataCache.EntityCache<T>.Cache.GetOrAdd(t);
+         var result = transaction.Add(setter, added);
+         transaction.Done();
+         return result;
+
+      }
+      catch (Exception ex)
+      {
+         throw new DataException("Unable to create transaction", ex);
+      }
+
+   }
+   public Task<T> GetOrAddAsync<T>(T entity)
+       where T : class, IEntity
+   {
+      return DataCache.EntityCache<T>.Cache.GetOrAddAsync(entity);
+   }
+   //public static IQueryProviderWithIncludes<T> Query<T>() => D.Get().Query<T>();
+   public async IAsyncEnumerable<T> FetchAsync<T>() where T : class, IEntity
+   {
+      var cache = DataCache.EntityCache<T>.Cache;
+
+      var retry = true;
+      while (retry)
+      {
+         retry = false;
+         using var db = Get();
+         await using var enumerator = db.QueryAsync<T>().ToEnumerable().GetAsyncEnumerator();
+         {
+            var more = true;
+
+            while (more)
+            {
+               try
+               {
+                  more = await enumerator.MoveNextAsync();
+               }
+               catch (ArgumentException e)
+               {
+                  more = false;
+                  retry = Configure(e);
+               }
+               catch (NpgsqlException e)
+               {
+                  throw new DataException(e.Message, e);
+               }
+
+               if (more) yield return await cache.GetOrAddAsync(enumerator.Current).ConfigureAwait(false);
             }
-        }
 
-        e = DbGet(db => db.Insert(t));
+         }
+      }
+   }
 
-        if (e != null)
-        {
-            t.IsLoaded = true;
-            added?.Invoke(t);
-        }
+   public void Execute(Action<IDatabase> action)
+   {
+      Db(action);
+   }
 
-        return DataCache.EntityCache<T>.Cache.GetOrAddAsync(t).Result;
-    }
+   public async Task ExecuteSqlAsync(string sql)
+   {
+      using var db = Get();
+      await db.ExecuteAsync(sql);
+   }
+
+   public int ExecuteSql(string sql)
+   {
+      try
+      {
+         using var db = Get();
+         return db.Execute(sql);
+      }
+      catch (Exception)
+      {
+         return -1;
+      }
+   }
+   public IEnumerable<T> FetchWhere<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>>? orderBy = null)
+       where T : class, IEntity
+   {
+      var cache = DataCache.EntityCache<T>.Cache;
 
 
-    public bool Delete<T>(T entity, Action<T> deleted = null)
-        where T : class, IEntity
-    {
-        var result = DbGet(db => db.Delete<T>(entity));
+      if (typeof(ILocalCache).IsAssignableFrom(typeof(T)))
+      {
+         var list = cache.Fetch(expression);
+         if (orderBy == null) return list;
+         var o = orderBy.Compile();
+         list = list.OrderBy(o);
 
-        if (result > 0)
-        {
-            var b =DataCache.EntityCache<T>.Cache.ForgetAsync(entity).Result;
-            deleted?.Invoke((T)entity);
-            return true;
-        }
+         return list;
+      }
 
-        return false;
-    }
-    public async Task<bool> DeleteAsync<T>(T entity, Action<T> deleted = null)
-        where T : class, IEntity
-    {
-        if (entity == null) return false;
+      using var db = Get();
+      {
+#if DEBUG
+         var literal = expression.ToString();
+#endif
+         var list =
+             db.Query<T>().Where(expression);
 
-        var result = await DbGetAsync(async db => await db.DeleteAsync(entity));
+         if (orderBy != null) list = list.OrderBy(orderBy);
 
-        if (result > 0)
-        {
-            await DataCache.EntityCache<T>.Cache.ForgetAsync(entity);
-            deleted?.Invoke((T)entity);
-            return true;
-        }
-
-        return false;
-    }
-
-    public async Task<T> GetOrAddAsync<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
-        where T : class, IEntity
-    {
-        using var transaction = GetTransaction() as DataTransaction;
-
-        var t = await transaction?.Database.QueryAsync<T>().FirstOrDefault(getter);
-
-        if (t != null) return await DataCache.EntityCache<T>.Cache.GetOrAddAsync(t).ConfigureAwait(false);
-
-        var result = transaction.Add(setter, added);
-        transaction.Done();
-        return result;
-    }
-
-    public T GetOrAdd<T>(Expression<Func<T, bool>> getter, Action<T> setter, Action<T> added = null)
-        where T : class, IEntity
-    {
-        try
-        {
-            using var transaction = GetTransaction() as DataTransaction;
-
-            if (transaction == null) throw new DataException("Unable to create transaction");
-
-            var t = transaction.Database.Query<T>().FirstOrDefault(getter);
-
-            if (t != null) return DataCache.EntityCache<T>.Cache.GetOrAdd(t);
-            var result = transaction.Add(setter, added);
-            transaction.Done();
-            return result;
-
-        }
-        catch (Exception ex)
-        {
-            throw new DataException("Unable to create transaction",ex);
-        }
-
-    }
-    public Task<T> GetOrAddAsync<T>(T entity)
-        where T : class, IEntity
-    {
-        return DataCache.EntityCache<T>.Cache.GetOrAddAsync(entity);
-    }
-    //public static IQueryProviderWithIncludes<T> Query<T>() => D.Get().Query<T>();
-    public async IAsyncEnumerable<T> FetchAsync<T>() where T : class, IEntity
-    {
-        var cache =DataCache.EntityCache<T>.Cache;
-
-        var retry = true;
-        while (retry)
-        {
+         var retry = true;
+         Exception ex = null;
+         while (retry)
+         {
             retry = false;
-            using var db = Get();
-            await using var enumerator = db.QueryAsync<T>().ToEnumerable().GetAsyncEnumerator();
+            try
             {
-                var more = true;
-
-                while (more)
-                {
-                    try
-                    {
-                        more = await enumerator.MoveNextAsync();
-                    }
-                    catch (ArgumentException e)
-                    {
-                        more = false;
-                        retry = Configure(e);
-                    }
-                    catch (NpgsqlException e)
-                    {
-                        throw new DataException(e.Message, e);
-                    }
-
-                    if (more) yield return await cache.GetOrAddAsync(enumerator.Current).ConfigureAwait(false);
-                }
+               return cache.GetOrAdd(list.ToEnumerable());
 
             }
-        }
-    }
+            catch (ArgumentException e)
+            {
+               ex = e;
+               retry = Configure(e);
+            }
+         }
 
-    public void Execute(Action<IDatabase> action)
-    {
-        Db(action);
-    }
+         throw new DataException(ex.Message, ex);
+      }
+   }
 
-    public async Task ExecuteSqlAsync(string sql)
-    {
-        using var db = Get();
-        await db.ExecuteAsync(sql);
-    }
-
-    public int ExecuteSql(string sql)
-    {
-        try
-        {
-            using var db = Get();
-            return db.Execute(sql);
-        }
-        catch (Exception)
-        {
-            return -1;
-        }
-    }
-    public IEnumerable<T> FetchWhere<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>>? orderBy = null)
-        where T : class, IEntity
-    {
-        var cache =DataCache.EntityCache<T>.Cache;
+   public IAsyncEnumerable<T> FetchWhereAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>>? orderBy = null)
+       where T : class, IEntity
+   {
+      var cache = DataCache.EntityCache<T>.Cache;
 
 
-        if (typeof(ILocalCache).IsAssignableFrom(typeof(T)))
-        {
-            var list = cache.Fetch(expression);
-            if (orderBy == null) return list;
-            var o = orderBy.Compile();
-            list = list.OrderBy(o);
+      if (typeof(ILocalCache).IsAssignableFrom(typeof(T)))
+      {
+         var list = cache.FetchAsync(expression);
+         if (orderBy == null) return list;
 
-            return list;
-        }
+         var o = orderBy.Compile();
+         list = list.OrderBy(o);
 
-        using var db = Get();
-        {
+         return list;
+      }
+
+      using var db = Get();
+      {
 #if DEBUG
-            var literal = expression.ToString();
+         var literal = expression.ToString();
 #endif
-            var list =
-                db.Query<T>().Where(expression);
+         var list =
+             db.QueryAsync<T>().Where(expression);
 
-            if (orderBy != null) list = list.OrderBy(orderBy);
+         if (orderBy != null) list = list.OrderBy(orderBy);
 
-            var retry = true;
-            Exception ex = null;
-            while (retry)
+         var retry = true;
+         Exception ex = null;
+         while (retry)
+         {
+            retry = false;
+            try
             {
-                retry = false;
-                try
-                {
-                    return cache.GetOrAdd(list.ToEnumerable());
+               return cache.GetOrAddAsync(list.ToEnumerable());
 
-                }
-                catch (ArgumentException e)
-                {
-                    ex = e;
-                    retry = Configure(e);
-                }
             }
-
-            throw new DataException(ex.Message, ex);
-        }
-    }
-
-    public IAsyncEnumerable<T> FetchWhereAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>>? orderBy = null)
-        where T : class, IEntity
-    {
-        var cache =DataCache.EntityCache<T>.Cache;
-
-
-        if (typeof(ILocalCache).IsAssignableFrom(typeof(T)))
-        {
-            var list = cache.FetchAsync(expression);
-            if (orderBy == null) return list;
-
-            var o = orderBy.Compile();
-            list = list.OrderBy(o);
-
-            return list;
-        }
-
-        using var db = Get();
-        {
-#if DEBUG
-            var literal = expression.ToString();
-#endif
-            var list =
-                db.QueryAsync<T>().Where(expression);
-
-            if (orderBy != null) list = list.OrderBy(orderBy);
-
-            var retry = true;
-            Exception ex = null;
-            while (retry)
+            catch (ArgumentException e)
             {
-                retry = false;
-                try
-                {
-                    return cache.GetOrAddAsync(list.ToEnumerable());
-
-                }
-                catch (ArgumentException e)
-                {
-                    ex = e;
-                    retry = Configure(e);
-                }
+               ex = e;
+               retry = Configure(e);
             }
+         }
 
-            throw new DataException(ex.Message, ex);
-        }
-    }
+         throw new DataException(ex.Message, ex);
+      }
+   }
 
-    public async Task<T?> FetchOneAsync<T>(Expression<Func<T, bool>> expression)
-        where T : class, IEntity
-    {
-        var result = await DbGetAsync(async db => await db.QueryAsync<T>().Where(expression).FirstOrDefault());
+   public async Task<T?> FetchOneAsync<T>(Expression<Func<T, bool>> expression)
+       where T : class, IEntity
+   {
+      var result = await DbGetAsync(async db => await db.QueryAsync<T>().Where(expression).FirstOrDefault());
 
-        return result == null ? null : await DataCache.EntityCache<T>.Cache.GetOrAddAsync(result);
-    }
+      return result == null ? null : await DataCache.EntityCache<T>.Cache.GetOrAddAsync(result);
+   }
 
-    public T? FetchOne<T>(Expression<Func<T, bool>> expression)
-        where T : class, IEntity
-    {
-        var result = DbGet(db => db.Query<T>().Where(expression).FirstOrDefault());
-        return result == null ? null :DataCache.EntityCache<T>.Cache.GetOrAddAsync(result).Result;
-    }
+   public T? FetchOne<T>(Expression<Func<T, bool>> expression)
+       where T : class, IEntity
+   {
+      var result = DbGet(db => db.Query<T>().Where(expression).FirstOrDefault());
+      return result == null ? null : DataCache.EntityCache<T>.Cache.GetOrAddAsync(result).Result;
+   }
 
-    public Task<T?> FetchOneAsync<T>(int id) where T : class, IEntity<int>
+   public Task<T?> FetchOneAsync<T>(int id) where T : class, IEntity<int>
 
-        => FetchOneAsync<T>((object)id);
+       => FetchOneAsync<T>((object)id);
 
-    public Task<T?> FetchOneAsync<T>(string id) where T : class, IEntity<string>
-        => FetchOneAsync<T>((object)id);
+   public Task<T?> FetchOneAsync<T>(string id) where T : class, IEntity<string>
+       => FetchOneAsync<T>((object)id);
 
-    public async Task<T?> ReFetchOneAsync<T>(T entity)
-        where T : class, IEntity
-    {
-        if (entity == null) return null;
+   public async Task<T?> ReFetchOneAsync<T>(T entity)
+       where T : class, IEntity
+   {
+      if (entity == null) return null;
 
-        var result = await DbGetAsync(async db => await db.SingleByIdAsync<T>(entity.Id).ConfigureAwait(false)).ConfigureAwait(true);
-        return await DataCache.EntityCache<T>.Cache.GetOrAddAsync(result).ConfigureAwait(true);
-    }
+      var result = await DbGetAsync(async db => await db.SingleByIdAsync<T>(entity.Id).ConfigureAwait(false)).ConfigureAwait(true);
+      return await DataCache.EntityCache<T>.Cache.GetOrAddAsync(result).ConfigureAwait(true);
+   }
 
-    public async Task<T> FetchOneAsync<T>(object id)
-        where T : class, IEntity
-    {
-        var subscribe = false;
+   public async Task<T> FetchOneAsync<T>(object id)
+       where T : class, IEntity
+   {
+      var subscribe = false;
 
-        var obj = await DataCache.EntityCache<T>.Cache.GetOrAddAsync(id,
-            async k =>
-            {
-                subscribe = true;
-                return await DbGetAsync(async db => await db.SingleOrDefaultByIdAsync<T>(k).ConfigureAwait(false)).ConfigureAwait(false);
-            }).ConfigureAwait(false);
+      var obj = await DataCache.EntityCache<T>.Cache.GetOrAddAsync(id,
+          async k =>
+          {
+             subscribe = true;
+             return await DbGetAsync(async db => await db.SingleOrDefaultByIdAsync<T>(k).ConfigureAwait(false)).ConfigureAwait(false);
+          }).ConfigureAwait(false);
 
-        //if(subscribe && obj is INotifierObject nobj) nobj.GetNotifier().Subscribe();
-        if (subscribe && obj is IEntity entity) entity.OnLoaded();
-        if (subscribe && obj is IDataServiceProvider dbf) dbf.DataService = this;
+      //if(subscribe && obj is INotifierObject nobj) nobj.GetNotifier().Subscribe();
+      if (subscribe && obj is IEntity entity) entity.OnLoaded();
+      if (subscribe && obj is IDataServiceProvider dbf) dbf.DataService = this;
 
-        return obj;
+      return obj;
 
-    }
+   }
 
-    public bool Any<T>(Expression<Func<T, bool>> expression) where T : class, IEntity
-    {
-        return DbGet<bool>(db => db.Query<T>().Any(expression));
-    }
+   public bool Any<T>(Expression<Func<T, bool>> expression) where T : class, IEntity
+   {
+      return DbGet<bool>(db => db.Query<T>().Any(expression));
+   }
 
 
-    public string ConnectionString {get; set; } = "";
-    public string[] ConnectionStrings {get; set; } = [];
+   public string ConnectionString { get; set; } = "";
+   public string[] ConnectionStrings { get; set; } = [];
 
 
 #if DEBUG
-    public string DefaultUsername {get; set; } = "";
-    public string DefaultPassword { get; set; } = "";
+   public string DefaultUsername { get; set; } = "";
+   public string DefaultPassword { get; set; } = "";
 #endif
 
-   public string Source { get;
-      set {
+   public string Source
+   {
+      get;
+      set
+      {
          field = value;
          options.SetValue("", "Source", value, "registry");
          DataCache.ClearAll();
-         
+
          var path = (string.IsNullOrWhiteSpace(Source)) ? "" : @$"Connections\{Source}";
          var connectionString = options.GetValue<string>(path, "Connection", null, null, "registry");
-         if(string.IsNullOrWhiteSpace(connectionString))
+         if (!string.IsNullOrWhiteSpace(connectionString) && !connectionString.Contains("Database", StringComparison.OrdinalIgnoreCase))
+         {
+            connectionString = crypt.Decrypt(connectionString);
+         }
+         if (string.IsNullOrWhiteSpace(connectionString))
          {
             connectionString = _getConnectionString().Result;
-            options.SetValueAsync(path, "connection", connectionString);
+            options.SetValueAsync(path, "connection", crypt.Crypt(connectionString));
          }
          ConnectionString = connectionString;
 
@@ -430,214 +440,218 @@ public class DataService(Func<Type, object> locate, IOptionsService options) : I
          DefaultUsername = options.GetValue<string>(path, "DebugUsername", null, null, "registry");
          DefaultPassword = options.GetValue<string>(path, "DebugPassword", null, null, "registry");
 #endif
-      } 
+      }
    } = "";
 
    //public object Locate<T>(DbDataReader d) => _Locate(typeof(T));
 
 
 
-    public void RegisterEntities(Action<Type> action)
-    {
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+   public void RegisterEntities(Action<Type> action)
+   {
+      var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-        foreach (var assembly in assemblies)
-        {
-            foreach (var type in assembly.GetTypesSafe().Where(t => t.IsClass && !t.IsAbstract && typeof(IEntity).IsAssignableFrom(t)))
-            {
-                action(type);
-                Entities.Add(type);
-            }
-        }
-    }
+      foreach (var assembly in assemblies)
+      {
+         foreach (var type in assembly.GetTypesSafe().Where(t => t.IsClass && !t.IsAbstract && typeof(IEntity).IsAssignableFrom(t)))
+         {
+            action(type);
+            Entities.Add(type);
+         }
+      }
+   }
 
-    public List<Type> Entities { get; } = new List<Type>();
+   public List<Type> Entities { get; } = new List<Type>();
 
-    internal IDatabase Get()
-    {
-        var db = new Database(
-            ConnectionString,
-            DatabaseType.PostgreSQL,
-            NpgsqlFactory.Instance
-        );
+   internal IDatabase Get()
+   {
+      var db = new Database(
+          ConnectionString,
+          DatabaseType.PostgreSQL,
+          NpgsqlFactory.Instance
+      );
 
-        return db;
-    }
+      return db;
+   }
 
-    public IDataTransaction GetTransaction()
-    {
-        return new DataTransaction(this, Get());
-    }
-
-
-//        public DbTransaction BeginTransaction() => Get().Transaction;
-
-    public void Save<T>(T value) where T : class, IEntity
-    {
-        Db(d => d.Save(value));
-    }
-    public async Task SaveAsync<T>(T value) where T : class, IEntity
-    {
-        await DbAsync(async d => await Task.Run(() => d.Save(value)));
-    }
-
-    public bool Update<T>(T value, params string[] columns) where T : class, IEntity
-    {
-        var n = DbGet(d => d.Update(value, columns));
-        return (n > 0);
-    }
-    public async Task<bool> UpdateAsync<T>(T value, params string[] columns) where T : class, IEntity
-    {
-        var n = await DbGetAsync(d => d.UpdateAsync(value, columns));
-        return (n > 0);
-    }
-
-    public bool Update<T>(T value, Action<T> setter) where T : class, IEntity
-    {
-        var persister = new EntityPersister<T>(this, value);
-        setter(value);
-        return persister.Save();
-    }
-    public Task<bool> UpdateAsync<T>(T value, Action<T> setter) where T : class, IEntity
-    {
-        var persister = new EntityPersister<T>(this, value);
-        setter(value);
-        return persister.SaveAsync();
-    }
-
-    public IAsyncEnumerable<TSelect> SelectDistinctAsync<T, TSelect>(Expression<Func<T, bool>> expression, Func<T, TSelect> select)
-    {
-        using var d = Get();
-        return d.QueryAsync<T>().Where(expression).ToEnumerable().Select(select).Distinct();
-    }
-
-    bool Retry()
-    {
-        return true;
-    }
+   public IDataTransaction GetTransaction()
+   {
+      return new DataTransaction(this, Get());
+   }
 
 
-    void Db(Action<IDatabase> action) => DbGet(db =>
-    {
-        action(db);
-        return true;
-    });
+   //        public DbTransaction BeginTransaction() => Get().Transaction;
 
-    T? DbGet<T>(Func<IDatabase, T> action)
-    {
-        while (true)
-        {
-            try
-            {
-                using var d = Get();
-                return action(d);
-            }
-            catch (NpgsqlException exception)
-            {
-                throw new DataException("Data connection failed", exception);
-                //Thread.Sleep(5000);
-            }
-        }
-    }
+   public void Save<T>(T value) where T : class, IEntity
+   {
+      Db(d => d.Save(value));
+   }
+   public async Task SaveAsync<T>(T value) where T : class, IEntity
+   {
+      await DbAsync(async d => await Task.Run(() => d.Save(value)));
+   }
 
-    async Task DbAsync(Func<IDatabase, Task> action) => await DbGetAsync(async db =>
-    {
-        await action(db);
-        return true;
-    });
+   public bool Update<T>(T value, params string[] columns) where T : class, IEntity
+   {
+      var n = DbGet(d => d.Update(value, columns));
+      return (n > 0);
+   }
+   public async Task<bool> UpdateAsync<T>(T value, params string[] columns) where T : class, IEntity
+   {
+      var n = await DbGetAsync(d => d.UpdateAsync(value, columns));
+      return (n > 0);
+   }
 
-    async Task<T?> DbGetAsync<T>(Func<IDatabase, Task<T>> action)
-    {
-        while (true)
-        {
-            try
-            {
-                using var d = Get();
-                return await action(d);
-            }
-            catch (NpgsqlException exception)
-            {
-                throw new DataException("Data connection failed", exception);
-            }
-        }
-    }
+   public bool Update<T>(T value, Action<T> setter) where T : class, IEntity
+   {
+      var persister = new EntityPersister<T>(this, value);
+      setter(value);
+      return persister.Save();
+   }
+   public Task<bool> UpdateAsync<T>(T value, Action<T> setter) where T : class, IEntity
+   {
+      var persister = new EntityPersister<T>(this, value);
+      setter(value);
+      return persister.SaveAsync();
+   }
 
-    Func<Task<string>> _getConnectionString = ()=> Task.FromResult("");
+   public IAsyncEnumerable<TSelect> SelectDistinctAsync<T, TSelect>(Expression<Func<T, bool>> expression, Func<T, TSelect> select)
+   {
+      using var d = Get();
+      return d.QueryAsync<T>().Where(expression).ToEnumerable().Select(select).Distinct();
+   }
 
-    public IEnumerable<string> Connections { get; set;}
+   bool Retry()
+   {
+      return true;
+   }
 
-    public void SetConfigureAction(Func<Task<string>> action)
-    {            
-        _getConnectionString = action;
-        ServiceState = ServiceState.Available;
-    }
 
-    bool Configure(Exception exception = null)
-    {
-        return true;
-    }
+   void Db(Action<IDatabase> action) => DbGet(db =>
+   {
+      action(db);
+      return true;
+   });
 
-    public async IAsyncEnumerable<string> GetDatabasesAsync(string host, string login, string password)
-    {
-        var connString = $"Host={host};Username={login};Password={password};Database=postgres";
+   T? DbGet<T>(Func<IDatabase, T> action)
+   {
+      while (true)
+      {
+         try
+         {
+            using var d = Get();
+            return action(d);
+         }
+         catch (NpgsqlException exception)
+         {
+            throw new DataException("Data connection failed", exception);
+            //Thread.Sleep(5000);
+         }
+      }
+   }
 
-        await using var conn = new NpgsqlConnection(connString);
-        await conn.OpenAsync().ConfigureAwait(false);
-        List<string> databases = new List<string>();
-        // Retrieve all rows
-        await using (var cmd = new NpgsqlCommand("SELECT datname FROM pg_database;", conn))
-        await using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
-            while (await reader.ReadAsync().ConfigureAwait(false))
-            {
-                var database = reader.GetString(0);
-                databases.Add(database);
-            }
+   async Task DbAsync(Func<IDatabase, Task> action) => await DbGetAsync(async db =>
+   {
+      await action(db);
+      return true;
+   });
 
-        foreach (var database in databases)
-        {
-            if (!await IsHLabDatabasesAsync(host, database, login, password).ConfigureAwait(false)) continue;
+   async Task<T?> DbGetAsync<T>(Func<IDatabase, Task<T>> action)
+   {
+      while (true)
+      {
+         try
+         {
+            using var d = Get();
+            return await action(d);
+         }
+         catch (NpgsqlException exception)
+         {
+            throw new DataException("Data connection failed", exception);
+         }
+      }
+   }
 
-            Debug.WriteLine($"Database : {database}");
-            yield return database;
-        }
+   Func<Task<string>>? _getConnectionString = null;
 
-        await conn.CloseAsync().ConfigureAwait(false);
-    }
-   
-    public async Task<bool> IsHLabDatabasesAsync(string host, string database, string login, string password)
-    {
-        var connectionString = $"Host={host};Username={login};Password={password};Database={database}";
+   public IEnumerable<string> Connections { get; set; }
 
-        await using var connection = new NpgsqlConnection(connectionString);
+   public void SetConfigureAction(Func<Task<string>> action, bool force = false)
+   {
+      if (force)
+         _getConnectionString = action;
+      else
+         _getConnectionString ??= action;
 
-        // Retrieve all rows
-        try
-        {
-            await connection.OpenAsync();
-            await using var cmd =
-                new NpgsqlCommand($"SELECT \"Name\",\"Version\" FROM public.\"Module\";", connection);
-            await using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
-            while (await reader.ReadAsync().ConfigureAwait(false))
-            {
-                var module = reader.GetString(0);
-                var version = reader.GetString(1);
-                if (module == "HLab.Erp") return true;
-            }
-        }
-        catch (PostgresException e)
+      ServiceState = ServiceState.Available;
+   }
 
-        {
-            Debug.WriteLine(e.Message);
-        }
-        finally
-        { 
-            await connection.CloseAsync().ConfigureAwait(false);
-        }
-            
-        Debug.WriteLine(database);
+   bool Configure(Exception exception = null)
+   {
+      return true;
+   }
 
-        return false;
-    }
+   public async IAsyncEnumerable<string> GetDatabasesAsync(string host, string login, string password)
+   {
+      var connString = $"Host={host};Username={login};Password={password};Database=postgres";
 
-    public ServiceState ServiceState { get; private set; }
+      await using var conn = new NpgsqlConnection(connString);
+      await conn.OpenAsync().ConfigureAwait(false);
+      List<string> databases = new List<string>();
+      // Retrieve all rows
+      await using (var cmd = new NpgsqlCommand("SELECT datname FROM pg_database;", conn))
+      await using (var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false))
+         while (await reader.ReadAsync().ConfigureAwait(false))
+         {
+            var database = reader.GetString(0);
+            databases.Add(database);
+         }
+
+      foreach (var database in databases)
+      {
+         if (!await IsHLabDatabasesAsync(host, database, login, password).ConfigureAwait(false)) continue;
+
+         Debug.WriteLine($"Database : {database}");
+         yield return database;
+      }
+
+      await conn.CloseAsync().ConfigureAwait(false);
+   }
+
+   public async Task<bool> IsHLabDatabasesAsync(string host, string database, string login, string password)
+   {
+      var connectionString = $"Host={host};Username={login};Password={password};Database={database}";
+
+      await using var connection = new NpgsqlConnection(connectionString);
+
+      // Retrieve all rows
+      try
+      {
+         await connection.OpenAsync();
+         await using var cmd =
+             new NpgsqlCommand($"SELECT \"Name\",\"Version\" FROM public.\"Module\";", connection);
+         await using var reader = await cmd.ExecuteReaderAsync().ConfigureAwait(false);
+         while (await reader.ReadAsync().ConfigureAwait(false))
+         {
+            var module = reader.GetString(0);
+            var version = reader.GetString(1);
+            if (module == "HLab.Erp") return true;
+         }
+      }
+      catch (PostgresException e)
+
+      {
+         Debug.WriteLine(e.Message);
+      }
+      finally
+      {
+         await connection.CloseAsync().ConfigureAwait(false);
+      }
+
+      Debug.WriteLine(database);
+
+      return false;
+   }
+
+   public ServiceState ServiceState { get; private set; }
 }
