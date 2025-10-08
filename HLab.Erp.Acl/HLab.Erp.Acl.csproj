@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ReactiveUI" Version="20.3.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\HLab.Core\HLab.Mvvm.Application\HLab.Mvvm.Application.csproj" />
     <ProjectReference Include="..\..\HLab.Core\HLab.Mvvm.ReactiveUI\HLab.Mvvm.ReactiveUI.csproj" />
     <ProjectReference Include="..\..\HLab.Core\HLab.UI\HLab.UI.csproj" />
