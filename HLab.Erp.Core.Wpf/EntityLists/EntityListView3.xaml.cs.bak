@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
+//using AvalonDock.Controls;
 using HLab.Base.Wpf.Extensions;
 using HLab.Erp.Core.EntityLists;
 using HLab.Erp.Core.Wpf.ListFilters;
@@ -24,9 +25,10 @@ namespace HLab.Erp.Core.Wpf.EntityLists
         {
             InitializeComponent();
             DataContextChanged += EntityListView_DataContextChanged;
-            Loaded += EntityListView_Loaded;
+            Loaded += EntityListView2_Loaded;
             ListView.SelectionChanged += ListView_SelectionChanged;
-            Unloaded += EntityListView_Unloaded;
+            Unloaded += EntityListView2_Unloaded;
+
         }
 
         void Sv_LayoutUpdated(object sender, System.EventArgs e)
@@ -59,7 +61,7 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             }
         }
 
-        void EntityListView_Loaded(object sender, RoutedEventArgs e)
+        void EntityListView2_Loaded(object sender, RoutedEventArgs e)
         {
             var filter = this.FindVisualAncestor<FilterView>();
             if (filter != null)
@@ -80,7 +82,8 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             }
         }
 
-        void EntityListView_Unloaded(object sender, RoutedEventArgs e)
+
+        void EntityListView2_Unloaded(object sender, RoutedEventArgs e)
         {
             if (DataContext is IEntityListViewModel vm)
             {
@@ -106,6 +109,10 @@ namespace HLab.Erp.Core.Wpf.EntityLists
             if (e.PropertyName == "SelectedIds")
                 OnSelectIdsChange();
         }
+
+
+
+
 
         public string ContentId => nameof(EntityListView);
 

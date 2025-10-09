@@ -35,51 +35,20 @@ public abstract class AuthenticationViewModel : ViewModel
             })
             .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe();
-
     }
 
 
-    public User? User
-    {
-        get => _user;
-        set => this.SetAndRaise(ref _user, value);
-    }
-    User? _user;
+    public User? User { get; set => this.SetAndRaise(ref field, value); }
 
-    public string Username
-    {
-        get => _username;
-        set => this.SetAndRaise(ref _username, value);
-    }
-    string _username = "";
+    public string Username { get ; set => this.SetAndRaise(ref field, value); } = "";
 
-    public string Password
-    {
-        get => _password;
-        set => this.SetAndRaise(ref _password,value);
-    }
+    public string Password { get ; set => this.SetAndRaise(ref field,value); } = "";
 
-    string _password = "";
+    public NetworkCredential Credential { get ; set => this.SetAndRaise(ref field, value); } = new ("", "");
 
-    public NetworkCredential Credential
-    {
-        get => _credential;
-        set => this.SetAndRaise(ref _credential, value);
-    }
-    NetworkCredential _credential = new ("", "");
+    public string Message { get; set => this.SetAndRaise(ref field,value); } = "";
 
-    public string Message
-    {
-        get => _message;
-        set => this.SetAndRaise(ref _message,value);
-    }
-    string _message = "";
-
-
-    public void SetPassword(SecureString password)
-    {
-        Credential.SecurePassword = password;
-    }
+    public void SetPassword(SecureString password) { Credential.SecurePassword = password; }
 
 #if DEBUG
     public bool DebugVisibility => true;

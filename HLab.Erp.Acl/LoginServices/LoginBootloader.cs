@@ -24,19 +24,20 @@ public class LoginBootloader(
       //if we can have localization and picture lets do it
       if (WaitingForServices(localize, icons, data)) return BootState.Requeue;
 
-      //await UiPlatform.InvokeOnUiThreadAsync(async () =>
-      //{
-      var viewmodel = getViewModel();
-      //retrieve login window
-      var view = await mvvm.MainContext.GetViewAsync(viewmodel, typeof(DefaultViewMode));
-      var loginWindow = mvvm.ViewAsWindow(view);
-      //loginWindow.SizeToContent = SizeToContent.WidthAndHeight;
-      //loginWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-      loginWindow.ShowDialog();
+      await UiPlatform.InvokeOnUiThreadAsync(async () =>
+      {
+          var viewmodel = getViewModel();
+          //retrieve login window
+          var view = await mvvm.MainContext.GetViewAsync(viewmodel, typeof(DefaultViewMode));
+          var loginWindow = mvvm.ViewAsWindow(view);
+          //loginWindow.SizeToContent = SizeToContent.WidthAndHeight;
+          //loginWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+          loginWindow.ShowDialog();
 
-      //if connection failed
+          //if connection failed
+      });
+
       if (acl.Connection is null) UiPlatform.Quit();
-      //});
       
       return await base.LoadAsync();
    }

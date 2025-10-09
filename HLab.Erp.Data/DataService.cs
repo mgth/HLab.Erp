@@ -583,7 +583,7 @@ public class DataService(Func<Type, object> locate, IOptionsService options, ICr
       else
          _getConnectionString ??= action;
 
-      ServiceState = ServiceState.Available;
+      //ServiceState = ServiceState.Available;
    }
 
    bool Configure(Exception exception = null)
@@ -653,5 +653,5 @@ public class DataService(Func<Type, object> locate, IOptionsService options, ICr
       return false;
    }
 
-   public ServiceState ServiceState { get; private set; }
+    public ServiceState ServiceState => string.IsNullOrWhiteSpace(ConnectionString)?ServiceState.NotConfigured:ServiceState.Available;
 }

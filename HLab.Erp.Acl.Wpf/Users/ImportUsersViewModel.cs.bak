@@ -113,8 +113,7 @@ public class ImportUsersViewModel : ViewModel
     {
         try
         {
-            var dcs = Domain.Split('.').ToArray(); 
-            dcs.Reverse();
+            var dcs = Domain.Split('.').Reverse();
             var DomainPath = "LDAP://" + string.Join(",", dcs.Select(e => "DC=" + e));
             var searchRoot = new DirectoryEntry(DomainPath);
             var search = new DirectorySearcher(searchRoot);

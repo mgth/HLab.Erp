@@ -130,9 +130,13 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
     {
         var credential = Credential;
 
+        //await UiPlatform.InvokeOnUiThreadAsync(async () =>
+
         await Task.Run(async () =>
         {
-            Message = "";
+            // TODO: implement localization
+
+            Message = "Connexion en cours...";
 
 #if DEBUG
             Message = await Acl.LoginAsync(Username,Password);
