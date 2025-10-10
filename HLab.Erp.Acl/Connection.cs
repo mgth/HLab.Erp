@@ -30,67 +30,58 @@ public class Connection : Entity
 
     public string Account
     {
-        get => _account;
-        set => this.RaiseAndSetIfChanged(ref _account, value);
-    }
-    string _account = "";
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "";
 
     public string Domain
     {
-        get => _domain;
-        set => this.RaiseAndSetIfChanged(ref _domain, value);
-    }
-    string _domain = "";
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "";
 
     public string Workstation
     {
-        get => _workstation;
-        set => this.RaiseAndSetIfChanged(ref _workstation, value);
-    }
-    string _workstation = "";
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "";
 
     public string Os
     {
-        get => _os;
-        set => this.RaiseAndSetIfChanged(ref _os, value);
-    }
-    string _os = "";
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "";
 
     public string Framework
     {
-        get => _framework;
-        set => this.RaiseAndSetIfChanged(ref _framework, value);
-    }
-    string _framework = "";
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "";
 
     [Column]
     public string Exe
     {
-        get => _exe;
-        set => this.RaiseAndSetIfChanged(ref _exe, value);
-    }
-    string _exe = "";
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "";
 
     [Column]
     public string Version
     {
-        get => _version;
-        set => this.RaiseAndSetIfChanged(ref _version, value);
-    }
-    string _version = "";
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "";
 
     [Column]
     public bool X64
     {
-        get => _x64;
-        set => this.RaiseAndSetIfChanged(ref _x64, value);
-    }
-    bool _x64 = true;
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = true;
 
     public int Notify
     {
-        get => _notify;
-        set => this.RaiseAndSetIfChanged(ref _notify, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    int _notify;
 }

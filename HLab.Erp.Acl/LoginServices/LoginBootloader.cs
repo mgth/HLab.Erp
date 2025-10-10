@@ -27,6 +27,8 @@ public class LoginBootloader(
       await UiPlatform.InvokeOnUiThreadAsync(async () =>
       {
           var viewmodel = getViewModel();
+
+          viewmodel.Username = Environment.UserName;
           //retrieve login window
           var view = await mvvm.MainContext.GetViewAsync(viewmodel, typeof(DefaultViewMode));
           var loginWindow = mvvm.ViewAsWindow(view);

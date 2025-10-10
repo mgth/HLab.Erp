@@ -108,10 +108,11 @@ public class LocalizeFromDb(IDataService db) : ILocalizationProvider
    {
       var dic = await GetDictionaryAsync(language).ConfigureAwait(false);
 
-      var entry = await dic.GetOrAddAsync(code, async t =>
+      var entry = await dic.GetOrAddAsync(code, async c =>
       {
-         var en = await db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == code && e.Custom).ConfigureAwait(false) ??
-                    await db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == code).ConfigureAwait(false);
+         var en = 
+             await db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == c && e.Custom).ConfigureAwait(false)
+             ?? await db.FetchOneAsync<LocalizeEntry>(e => e.Tag == language && e.Code == c).ConfigureAwait(false);
 
          if (en is { BadCode: true })
             throw new ArgumentException(en.Code + " is told bad code");

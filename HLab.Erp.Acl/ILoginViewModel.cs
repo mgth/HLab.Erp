@@ -2,4 +2,5 @@
 
 public interface ILoginViewModel
 {
+    string Username { get; set; }
 }
