@@ -89,25 +89,22 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
 
     public string Database
     {
-        get => _database;
-        set => this.SetAndRaise(ref _database, value);
-    }
-    string _database = "";
+        get;
+        set => this.SetAndRaise(ref field, value);
+    } = "";
 
 
     public bool AllowDatabaseSelection
     {
-        get => _allowDatabaseSelection;
-        set => this.SetAndRaise(ref _allowDatabaseSelection, value);
+        get;
+        set => this.SetAndRaise(ref field, value);
     }
-    bool _allowDatabaseSelection;
 
     public string PinView
     {
-        get => _pinView;
-        set => this.SetAndRaise(ref _pinView, value);
-    }
-    string _pinView = "";
+        get;
+        set => this.SetAndRaise(ref field, value);
+    } = "";
 
     string _pin = "";
     public ICommand NumPadCommand { get; }
