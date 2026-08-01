@@ -9,6 +9,7 @@
              xmlns:lang="clr-namespace:HLab.Localization.Wpf.Lang;assembly=HLab.Localization.Wpf" xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.EntitySelectors"
              xmlns:entitySelectors1="clr-namespace:HLab.Erp.Core.Wpf.EntitySelectors"
              xmlns:entityLists="clr-namespace:HLab.Erp.Core.Wpf.EntityLists"
+             xmlns:wpf="clr-namespace:HLab.Mvvm.Wpf;assembly=HLab.Mvvm.Wpf"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=core:IEntityListViewModel, IsDesignTimeCreatable=false}"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -63,6 +64,13 @@
                             <StackPanel Orientation="Vertical"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
+                    <!-- ViewLocator explicite : le template implicite ne couvre pas les
+                         filtres génériques fermés au runtime (EntityFilterNullable<T>...). -->
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <wpf:ViewLocator Model="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
         </ScrollViewer>

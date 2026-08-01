@@ -6,6 +6,7 @@ using HLab.Core.Annotations;
 using HLab.Erp.Data;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
+using HLab.Options;
 using HLab.UI;
 
 namespace HLab.Erp.Acl.LoginServices;
@@ -16,14 +17,16 @@ public class LoginBootloader(
    IAclService acl,
    IIconService icons,
    ILocalizationService localize,
-   IDataService data
+   IDataService data,
+   IOptionsService options
    ) : Bootloader
 {
    public override async Task<BootState> LoadAsync()
    {
       //if we can have localization and picture lets do it
       //mvvm : views must be registered before the login view can resolve
-      if (WaitingForServices(localize, icons, data, mvvm)) return BootState.Requeue;
+      //options : le préremplissage DEBUG lit le provider registre, qui doit être enregistré
+      if (WaitingForServices(localize, icons, data, mvvm, options)) return BootState.Requeue;
 
       await UiPlatform.InvokeOnUiThreadAsync(async () =>
       {

@@ -1,8 +1,11 @@
 <UserControl x:Class="HLab.Erp.Core.Avalonia.ListFilters.EntityFilterView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mvvm="clr-namespace:HLab.Mvvm.Avalonia;assembly=HLab.Mvvm.Avalonia"
              >
     <Grid>
-        <ContentControl x:Name="ContentControl" Content="{Binding Target}" />
+        <!-- WPF affichait Target via ses DataTemplates implicites ; en Avalonia
+             la résolution passe explicitement par le ViewLocator. -->
+        <mvvm:ViewLocator x:Name="ContentControl" Model="{Binding Target}" />
     </Grid>
 </UserControl>

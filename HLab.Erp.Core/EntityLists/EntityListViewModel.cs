@@ -114,6 +114,7 @@ public abstract class EntityListViewModel : ViewModel
 
 
    public void AddFilter(IFilter filter) => _filters.Add(filter);
+
    public T? GetFilter<T>() where T : IFilter
    {
       var locate = (Func<IEntityListViewModel, T>)Injected.Get(typeof(Func<IEntityListViewModel, T>));
@@ -123,7 +124,7 @@ public abstract class EntityListViewModel : ViewModel
       }
       catch (Exception e)
       {
-         Debug.WriteLine($"Error creating filter of type {typeof(T).Name} : {e.Message}");
+         Console.Error.WriteLine($"Error creating filter of type {typeof(T).Name} : {e}");
          return default;
       }
    }

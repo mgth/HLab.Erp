@@ -77,13 +77,16 @@
                     </StackPanel>-->
                 </StackPanel>
             </Grid>
-            <ContentControl x:Name="ContentControl"
+            <!-- ViewLocator explicite : le ContentControl + template implicite ne couvre
+                 pas les génériques fermés au runtime (ex : EntityFilterNullable<Country>),
+                 le DataTemplate n'étant enregistré que pour la définition ouverte. -->
+            <wpf:ViewLocator x:Name="ContentControl"
                 Visibility="{Binding Enabled,Converter={StaticResource ToVisibilityConverter}}"
                 Margin="5"
-                Grid.Row="1" 
+                Grid.Row="1"
                 Grid.Column="1"
-                wpf:ViewLocator.ViewClass="{x:Type listFilters2:IFilterContentViewClass}"  
-                Content="{Binding}"/>
+                ViewClass="{x:Type listFilters2:IFilterContentViewClass}"
+                Model="{Binding}"/>
         </Grid>
     </Grid>
 </UserControl>
