@@ -1,0 +1,31 @@
+<UserControl x:Class="HLab.Erp.Core.Avalonia.Views.ProgressView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <ProgressBar
+            x:Name="ProgressBar"
+            Maximum="1.0"
+            Minimum="0.0"
+            >
+            <ProgressBar.Foreground>
+                <LinearGradientBrush EndPoint="100%,0%" StartPoint="0%,0%">
+                    <GradientStop Color="#FF508050" Offset="0"/>
+                    <GradientStop Color="#FF18641E" Offset="1"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+            <ProgressBar.Background>
+                <SolidColorBrush Color="Transparent"/>
+            </ProgressBar.Background>
+        </ProgressBar>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0">
+                <TextBlock
+                    x:Name="Label"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    Foreground="{DynamicResource HLab.Brushes.Foreground}"
+                    FontSize="12"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

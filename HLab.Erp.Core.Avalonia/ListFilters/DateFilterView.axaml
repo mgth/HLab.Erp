@@ -1,0 +1,50 @@
+<UserControl x:Class="HLab.Erp.Core.Avalonia.ListFilters.DateFilterView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
+             >
+    <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto">
+        <Label Grid.Column="0" Grid.Row="0">
+            <lang:Localize Id="{}{Start}"/>
+        </Label>
+
+        <StackPanel Grid.Column="1" Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <CalendarDatePicker x:Name="MinDatePicker" SelectedDate="{Binding MinDate}" IsEnabled="{Binding MinDateEnabled}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        IsVisible="{Binding MinDateCalculated}">
+                <NumericUpDown Width="100" ShowButtonSpinner="False" Value="{Binding MinDateShift}"/>
+                <ComboBox>
+                    <ComboBox.Items>
+                        <lang:Localize Id="{}{Days}"/>
+                        <lang:Localize Id="{}{Months}"/>
+                        <lang:Localize Id="{}{Years}"/>
+                    </ComboBox.Items>
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+
+        <Label Grid.Column="0" Grid.Row="1">
+            <lang:Localize Id="{}{End}"/>
+        </Label>
+
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <StackPanel Orientation="Horizontal">
+                <CalendarDatePicker x:Name="MaxDatePicker" SelectedDate="{Binding MaxDate}" IsEnabled="{Binding MaxDateEnabled}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" IsEnabled="{Binding MaxDateCalculated}" IsVisible="{Binding MaxDateCalculated}">
+                <NumericUpDown Width="100" ShowButtonSpinner="False" Value="{Binding MaxDateShift}"/>
+                <ComboBox>
+                    <ComboBox.Items>
+                        <lang:Localize Id="{}{Days}"/>
+                        <lang:Localize Id="{}{Months}"/>
+                        <lang:Localize Id="{}{Years}"/>
+                    </ComboBox.Items>
+                </ComboBox>
+                <CheckBox Content="Shift" IsChecked="{Binding MaxDateCalculated}"/>
+            </StackPanel>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,157 @@
+<UserControl x:Class="HLab.Erp.Core.Avalonia.EntityLists.EntityListView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:icons="clr-namespace:HLab.Icons.Avalonia.Icons;assembly=HLab.Icons.Avalonia"
+             xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
+             xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.Avalonia.EntitySelectors"
+             Background="{DynamicResource HLab.Brushes.Background}"
+             >
+    <UserControl.Styles>
+        <!-- Équivalent du trigger WPF : bouton désactivé => masqué -->
+        <Style Selector="StackPanel#MenuPanel > Button:disabled">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid ColumnDefinitions="Auto,5,*">
+
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" IsVisible="{Binding ShowFilters}">
+            <Grid RowDefinitions="Auto,*">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <icons:IconView Path="icons/filters/filter" Foreground="{DynamicResource HLab.Brushes.Foreground}"/>
+                    <ComboBox Grid.Column="1"
+                        SelectedItem="{Binding FiltersPresetSelected}"
+                        ItemsSource="{Binding FilterPresets}"
+                        />
+                    <StackPanel Orientation="Horizontal" Grid.Column="2">
+                        <Button Command="{Binding SaveFiltersPresetCommand}"><icons:IconView Path="icons/save" Height="15"/></Button>
+                    </StackPanel>
+                </Grid>
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding Filters}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Grid>
+        </ScrollViewer>
+
+        <GridSplitter Grid.Column="1" />
+
+        <Grid Grid.Column="2" RowDefinitions="Auto,Auto,*">
+
+            <StackPanel Grid.Row="0" Orientation="Vertical">
+
+                <StackPanel x:Name="MenuPanel" Orientation="Horizontal" IsVisible="{Binding ShowMenu}">
+                    <ToggleButton IsChecked="{Binding ShowFilters}">
+                        <ToolTip.Tip>
+                            <lang:Localize Id="{}{Filters}"/>
+                        </ToolTip.Tip>
+                        <icons:IconView Path="icons/filters/filter" MaxHeight="15" MaxWidth="15"/>
+                    </ToggleButton>
+
+                    <Button Command="{Binding AddCommand}" IsEnabled="{Binding IsEnabledSimpleAddButton}">
+                        <ToolTip.Tip>
+                            <lang:Localize Id="{}{Add}"/>
+                        </ToolTip.Tip>
+                        <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
+                    </Button>
+
+                    <entitySelectors:ForeignView
+                                    IsReadOnly="False"
+                                    ModelClass="{Binding AddArgumentClass}"
+                                    ListClass="{Binding AddListClass}"
+                                    Command="{Binding AddCommand}"
+                                    >
+                        <icons:IconView Path="Icons/Add" MaxHeight="15" MaxWidth="15"/>
+                    </entitySelectors:ForeignView>
+
+                    <Button Command="{Binding DeleteCommand}">
+                        <ToolTip.Tip>
+                            <lang:Localize Id="{}{Delete}"/>
+                        </ToolTip.Tip>
+                        <icons:IconView Path="Icons/Delete" MaxHeight="15" MaxWidth="15"/>
+                    </Button>
+
+                    <Button Command="{Binding RefreshCommand}">
+                        <ToolTip.Tip>
+                            <lang:Localize Id="{}{Refresh}"/>
+                        </ToolTip.Tip>
+                        <icons:IconView Path="Icons/Refresh" MaxHeight="15"/>
+                    </Button>
+
+                    <Button Command="{Binding OpenCommand}">
+                        <ToolTip.Tip>
+                            <lang:Localize Id="{}{Open}"/>
+                        </ToolTip.Tip>
+                        <icons:IconView Path="Icons/OpenForeign" MaxHeight="15"/>
+                    </Button>
+
+                    <Button Command="{Binding ExportCommand}">
+                        <ToolTip.Tip>
+                            <lang:Localize Id="{}{Export}"/>
+                        </ToolTip.Tip>
+                        <icons:IconView Path="Icons/Export" MaxHeight="15"/>
+                    </Button>
+
+                    <Button Command="{Binding ImportCommand}">
+                        <ToolTip.Tip>
+                            <lang:Localize Id="{}{Import}"/>
+                        </ToolTip.Tip>
+                        <icons:IconView Path="Icons/Import" MaxHeight="15"/>
+                    </Button>
+
+                    <Button Click="Button_Click">
+                        <ToolTip.Tip>
+                            <lang:Localize Id="{}{Resize}"/>
+                        </ToolTip.Tip>
+                        <icons:IconView Path="Icons/horizontal-resize" MaxHeight="15"/>
+                    </Button>
+
+                    <Button Click="ButtonBase_OnClick" BorderThickness="0" BorderBrush="Transparent" Background="Transparent">
+                        <ToolTip.Tip>
+                            <lang:Localize Id="{}{Expand}"/>
+                        </ToolTip.Tip>
+                        ...
+                    </Button>
+
+                    <Button Command="{Binding HideMenuCommand}" Content="&lt;">
+                        <ToolTip.Tip>
+                            <lang:Localize Id="{}{Resize}"/>
+                        </ToolTip.Tip>
+                    </Button>
+
+                </StackPanel>
+            </StackPanel>
+            <TextBlock IsVisible="False" x:Name="MessageTextBlock" Grid.Row="1" Text="{Binding ErrorMessage}" Foreground="DarkRed"/>
+
+            <Grid Grid.Row="2" ColumnDefinitions="Auto,*">
+                <DataGrid
+                      Grid.Column="1"
+                       VerticalAlignment="Top"
+                       ItemsSource="{Binding ListViewModel}"
+                       SelectedItem="{Binding SelectedViewModel}"
+                       x:Name="ListView"
+                       Background="{DynamicResource HLab.Brushes.Background}"
+                       AutoGenerateColumns="False"
+                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                       ScrollViewer.VerticalScrollBarVisibility="Auto"
+                />
+                <Button
+                    Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Width="15"
+                    Padding="0"
+                    Height="35"
+                    IsVisible="{Binding !ShowMenu}"
+                    Command="{Binding ShowMenuCommand}"
+                    Content="&gt;"
+                    />
+
+            </Grid>
+        </Grid>
+
+    </Grid>
+</UserControl>

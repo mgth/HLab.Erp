@@ -1,0 +1,37 @@
+<UserControl x:Class="HLab.Erp.Core.Avalonia.ListFilters.FilterView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:icons="clr-namespace:HLab.Icons.Avalonia.Icons;assembly=HLab.Icons.Avalonia"
+             xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
+             xmlns:mvvm="clr-namespace:HLab.Mvvm.Avalonia;assembly=HLab.Mvvm.Avalonia"
+             xmlns:listFilters="clr-namespace:HLab.Erp.Core.Wpf.ListFilters;assembly=HLab.Erp.Core"
+             >
+    <Grid>
+        <Border
+            Background="{DynamicResource HLab.Brushes.Header.Background}"
+            BorderThickness="0"
+            CornerRadius="5"/>
+        <Grid RowDefinitions="Auto,*" ColumnDefinitions="Auto,*">
+
+            <Grid Grid.Column="1" RowDefinitions="Auto,*">
+                <StackPanel Orientation="Vertical" Grid.Row="0">
+                    <ToggleButton x:Name="ToggleButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" IsChecked="{Binding Enabled}">
+                        <icons:IconView
+                            Path="{Binding IconPath,FallbackValue=icons/default}"
+                            IconMaxHeight="15"
+                            >
+                            <lang:Localize Id="{Binding Header}" VerticalAlignment="Center"/>
+                        </icons:IconView>
+                    </ToggleButton>
+                </StackPanel>
+            </Grid>
+            <mvvm:ViewLocator x:Name="ContentControl"
+                IsVisible="{Binding Enabled}"
+                Margin="5"
+                Grid.Row="1"
+                Grid.Column="1"
+                ViewClass="{x:Type listFilters:IFilterContentViewClass}"
+                Model="{Binding}"/>
+        </Grid>
+    </Grid>
+</UserControl>

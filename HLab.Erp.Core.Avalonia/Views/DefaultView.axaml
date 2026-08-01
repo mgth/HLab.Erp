@@ -1,0 +1,6 @@
+<UserControl x:Class="HLab.Erp.Core.Avalonia.Views.DefaultView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="BlueViolet">
+    <Label Content="{Binding Caption, FallbackValue=DefaultView}"/>
+</UserControl>

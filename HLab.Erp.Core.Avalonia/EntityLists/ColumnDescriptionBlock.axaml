@@ -1,0 +1,20 @@
+<UserControl x:Class="HLab.Erp.Core.Avalonia.EntityLists.ColumnDescriptionBlock"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
+             x:Name="Root"
+             >
+    <Grid RowDefinitions="*,*">
+
+        <Grid Grid.Row="0">
+            <lang:LocalizedLabel
+                Text="{Binding Title, ElementName=Root}" FontWeight="Bold" VerticalAlignment="Top"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Border Background="#30000000"></Border>
+
+            <lang:LocalizedLabel
+                Text="{Binding Description, ElementName=Root}" FontStyle="Italic"/>
+        </Grid>
+    </Grid>
+</UserControl>

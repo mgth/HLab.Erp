@@ -1,0 +1,16 @@
+<UserControl x:Class="HLab.Erp.Core.Avalonia.Lists.ListableView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
+             xmlns:icons="clr-namespace:HLab.Icons.Avalonia.Icons;assembly=HLab.Icons.Avalonia">
+    <Grid ColumnDefinitions="Auto,Auto,*">
+
+        <icons:IconView Path="{Binding IconPath}" MaxHeight="25" HorizontalAlignment="Center"/>
+        <Label Grid.Column="1"/>
+        <lang:LocalizedLabel
+            Grid.Column="2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Text="{Binding Caption}"/>
+    </Grid>
+</UserControl>

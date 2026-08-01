@@ -1,0 +1,26 @@
+<UserControl x:Class="HLab.Erp.Core.Avalonia.EntityLists.ColumnHeaderView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:icons="clr-namespace:HLab.Icons.Avalonia.Icons;assembly=HLab.Icons.Avalonia"
+             x:Name="UserControl"
+             HorizontalAlignment="Stretch"
+             >
+    <Button
+        HorizontalAlignment="Stretch"
+        BorderThickness="0"
+        Background="Transparent"
+        Click="ButtonBase_OnClick" HorizontalContentAlignment="Stretch">
+            <Grid HorizontalAlignment="Stretch" ColumnDefinitions="Auto,*,Auto" RowDefinitions="*,Auto">
+                <icons:IconView
+                    Grid.Column="0"
+                    Path="{Binding IconPath}"
+                    Caption="{Binding Header}"
+                    Height="20"
+                    />
+
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2">
+                    <icons:IconView HorizontalAlignment="Right" Path="icons/sort/none" x:Name="SortingIcon" Width="15" Height="15"/>
+                </StackPanel>
+            </Grid>
+    </Button>
+</UserControl>
