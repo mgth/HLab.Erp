@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="32px"
+   height="32px"
+   viewBox="0 0 32 32"
+   id="icon"
+   version="1.1"
+   sodipodi:docname="Light.svg"
+   inkscape:version="1.2-beta (1b65182ce9, 2022-04-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview26"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="32.09375"
+     inkscape:cx="15.984421"
+     inkscape:cy="16"
+     inkscape:window-width="3840"
+     inkscape:window-height="2071"
+     inkscape:window-x="2391"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="icon" />
+  <defs
+     id="defs4">
+    <style
+       id="style2">
+      .cls-1 {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <path
+     id="rect6"
+     d="m 15,2 h 2 v 5 h -2 z"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     id="rect8"
+     transform="rotate(-45,24.14652,7.8534841)"
+     d="m 21.6675,6.8536 h 4.958 v 1.9998 h -4.958 z"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     id="rect10"
+     d="m 25,15 h 5 v 2 h -5 z"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     id="rect12"
+     transform="rotate(-45,24.146504,24.146491)"
+     d="m 23.146601,21.6675 h 1.9998 l 0,4.958 h -1.9998 z"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     id="rect14"
+     d="m 15,25 h 2 v 5 h -2 z"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     id="rect16"
+     transform="rotate(-45,7.8534974,24.146475)"
+     d="M 5.3744998,23.146601 H 10.3325 v 1.9998 l -4.9580002,0 z"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     id="rect18"
+     d="m 2,15 h 5 v 2 H 2 Z"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     id="rect20"
+     transform="rotate(-45,7.8535131,7.8534684)"
+     d="m 6.8536,5.3744998 h 1.9998 l 0,4.9580002 H 6.8536 Z"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     d="m 16,12 c 3.563867,0 5.348013,4.308554 2.828283,6.828283 C 16.308554,21.348013 12,19.563867 12,16 c 0.0025,-2.208111 1.791889,-3.99752 4,-4 m 0,-2 C 10.654199,10 7.977981,16.462831 11.757575,20.242425 15.537169,24.022019 22,21.345801 22,16 22,12.686292 19.313708,10 16,10 Z"
+     id="path22"
+     sodipodi:nodetypes="csccssss" />
+</svg>

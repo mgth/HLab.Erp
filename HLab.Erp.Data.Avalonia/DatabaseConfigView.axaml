@@ -1,0 +1,33 @@
+<UserControl x:Class="HLab.Erp.Data.Avalonia.DatabaseConfigView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             >
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid ColumnDefinitions="Auto,300" RowDefinitions="*,*,*,*,*">
+            <Label Grid.Column="0" Grid.Row="0" Content="User Name"/>
+            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Model.UserName}"/>
+
+            <Label Grid.Column="0" Grid.Row="1" Content="Password"/>
+            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Model.Password}" PasswordChar="*"/>
+
+            <Label Grid.Column="0" Grid.Row="2" Content="Server"/>
+            <AutoCompleteBox
+                Grid.Column="1" Grid.Row="2"
+                Text="{Binding Model.Server}"
+                ItemsSource="{Binding Servers}"
+                />
+
+            <Label Grid.Column="0" Grid.Row="3" Content="Database"/>
+            <AutoCompleteBox
+                Grid.Column="1" Grid.Row="3"
+                Text="{Binding Model.Database}"
+                ItemsSource="{Binding Databases}"
+            />
+            <Grid Grid.Column="1" Grid.Row="4" ColumnDefinitions="*,*">
+                <Button Click="OkButton_OnClick" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Ok</Button>
+                <Button Grid.Column="1" Click="CancelButton_OnClick" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Cancel</Button>
+            </Grid>
+
+        </Grid>
+    </StackPanel>
+</UserControl>

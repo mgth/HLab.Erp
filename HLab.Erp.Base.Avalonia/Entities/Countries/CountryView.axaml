@@ -1,0 +1,32 @@
+<UserControl x:Class="HLab.Erp.Base.Avalonia.Entities.Countries.CountryView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
+             xmlns:views="clr-namespace:HLab.Erp.Core.Avalonia.Views;assembly=HLab.Erp.Core.Avalonia"
+             xmlns:mvvm="clr-namespace:HLab.Mvvm.Avalonia;assembly=HLab.Mvvm.Avalonia"
+             >
+    <Grid>
+        <views:DetailView EditMode="{Binding Locker.IsActive}">
+            <mvvm:ViewLocator Height="50" Model="{Binding Locker}" Grid.ColumnSpan="2"/>
+
+            <lang:LocalizedLabel Text="{}{Name} : "/>
+            <lang:LocalizedTextBox
+                Text="{Binding Model.Name}"
+                IsReadOnly="{Binding Locker.IsReadOnly}"/>
+
+            <lang:LocalizedLabel Text="{}ISO A2 : "/>
+            <TextBox Text="{Binding Model.IsoA2}"/>
+
+            <lang:LocalizedLabel Text="{}ISO A3 : "/>
+            <TextBox Text="{Binding Model.IsoA3}"/>
+
+            <lang:LocalizedLabel Text="{}ISO : "/>
+            <TextBox Text="{Binding Model.Iso}"/>
+
+            <lang:LocalizedLabel Text="{}{Icon} : "/>
+            <!-- TODO : IconSelectorView non porté (HLab.Mvvm.Application.Wpf) -->
+            <TextBox Text="{Binding Model.IconPath}"/>
+
+       </views:DetailView>
+    </Grid>
+</UserControl>

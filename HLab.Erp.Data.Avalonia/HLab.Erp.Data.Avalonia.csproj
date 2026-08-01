@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\HLab.Avalonia\HLab.Mvvm.Avalonia\HLab.Mvvm.Avalonia.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Data\HLab.Erp.Data.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,81 @@
+<UserControl x:Class="HLab.Erp.Base.Avalonia.Entities.Customers.CorporationView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
+             xmlns:data="clr-namespace:HLab.Erp.Base.Data;assembly=HLab.Erp.Base.Data"
+             xmlns:views="clr-namespace:HLab.Erp.Core.Avalonia.Views;assembly=HLab.Erp.Core.Avalonia"
+             xmlns:workflows="clr-namespace:HLab.Erp.Workflow.Avalonia.Views;assembly=HLab.Erp.Workflow.Avalonia"
+             xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.Avalonia.EntitySelectors;assembly=HLab.Erp.Core.Avalonia"
+             xmlns:countries="clr-namespace:HLab.Erp.Base.Wpf.Entities.Countries;assembly=HLab.Erp.Base"
+             >
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <workflows:WorkflowLockerView/>
+
+        <views:DetailView
+            Grid.Row="1"
+            Text="{Binding EntityName}"
+            IconPath="{Binding IconPath}"
+            EditMode="{Binding Locker.IsActive}">
+
+            <lang:LocalizedLabel Text="{}{Name} : "/>
+            <TextBox Text="{Binding Model.Name}" HorizontalContentAlignment="Left" />
+
+            <lang:LocalizedLabel Text="{}{Address} : "/>
+            <TextBox
+                Text="{Binding Model.Address}"
+                AcceptsReturn="True"
+                TextWrapping="Wrap"
+                HorizontalContentAlignment="Left" />
+
+            <lang:LocalizedLabel Text="{}{Country} : "/>
+            <entitySelectors:ForeignView
+                HorizontalAlignment="Left"
+                IsReadOnly="{Binding Locker.IsReadOnly}"
+                Model="{Binding Model.Country}"
+                ModelClass="{x:Type data:Country}"
+                ListClass="{x:Type countries:CountriesPopupListViewModel}"
+                />
+
+            <lang:LocalizedLabel Text="{}{eMail} : "/>
+            <TextBox Text="{Binding Model.Email}" HorizontalContentAlignment="Left" />
+
+            <lang:LocalizedLabel Text="{}{Phone} : "/>
+            <TextBox Text="{Binding Model.Phone}" HorizontalContentAlignment="Left" />
+
+            <lang:LocalizedLabel Text="{}{Fax} : "/>
+            <TextBox Text="{Binding Model.Fax}" HorizontalContentAlignment="Left" />
+
+            <lang:LocalizedLabel Text="{}{Contacts} : "/>
+            <DataGrid
+                Margin="10,19,0,14"
+                Background="#CFFFFFFF"
+                HeadersVisibility="None"
+                ItemsSource="{Binding Contacts}">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Binding="{Binding Model.Name}"
+                        Header="{}{Name}" Width="*"
+                        CanUserResize="False"/>
+                </DataGrid.Columns>
+
+            </DataGrid>
+        </views:DetailView>
+
+        <views:DetailView Grid.Row="2" IconPath="Icons/Edit" Text="{}{Note}" EditMode="{Binding Locker.IsActive}">
+
+            <TextBox
+                Margin="50,0,15,0"
+                Grid.ColumnSpan="2"
+                Text="{Binding Model.Note}"
+                AcceptsReturn="True"
+                TextWrapping="Wrap"
+                MaxHeight="200"
+                />
+            <Label />
+
+        </views:DetailView>
+
+    </Grid>
+</UserControl>

@@ -12,15 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.0" />
-    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="12.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\HLab.Avalonia\HLab.Base.Avalonia\HLab.Base.Avalonia.csproj" />
     <ProjectReference Include="..\..\HLab.Avalonia\HLab.Icons.Avalonia\HLab.Icons.Avalonia.csproj" />
     <ProjectReference Include="..\..\HLab.Avalonia\HLab.Localization.Avalonia3\HLab.Localization.Avalonia.csproj" />
     <ProjectReference Include="..\..\HLab.Avalonia\HLab.Mvvm.Avalonia\HLab.Mvvm.Avalonia.csproj" />
+    <ProjectReference Include="..\..\HLab.Erp.Avalonia\HLab.Erp.Workflow.Avalonia\HLab.Erp.Workflow.Avalonia.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Base.Data\HLab.Erp.Base.Data.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Base\HLab.Erp.Base.csproj" />
+    <ProjectReference Include="..\HLab.Erp.Core.Avalonia\HLab.Erp.Core.Avalonia.csproj" />
     <ProjectReference Include="..\HLab.Erp.Core\HLab.Erp.Core.csproj" />
   </ItemGroup>
 </Project>
