@@ -33,6 +33,9 @@
         </Style>
     </UserControl.Styles>
 
+    <!-- Content explicite obligatoire : Children étant [Content], le contenu
+         implicite de ce fichier serait routé vers PART_Host (null pendant l'init). -->
+    <UserControl.Content>
     <Grid RowDefinitions="Auto,*,10">
 
         <Border Grid.Row="0"
@@ -55,4 +58,5 @@
             <controls:PropertyGrid x:Name="PART_Host" ColumnDefinitions="Auto,*"/>
         </ScrollViewer>
     </Grid>
+    </UserControl.Content>
 </UserControl>

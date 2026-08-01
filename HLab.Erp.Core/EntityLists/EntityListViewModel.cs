@@ -565,7 +565,9 @@ public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEnt
 
    public override dynamic? SelectedViewModel
    {
-      get => _selectedViewModel;
+      // Bien renvoyer la Value : renvoyer le helper (objet hors liste) fait
+      // annuler la sélection par le DataGrid Avalonia (binding TwoWay).
+      get => _selectedViewModel.Value;
       set => Selected = value?.Model;
    }
    readonly ObservableAsPropertyHelper<dynamic?> _selectedViewModel;
