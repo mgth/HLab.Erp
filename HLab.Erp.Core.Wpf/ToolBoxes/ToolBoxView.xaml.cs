@@ -49,15 +49,11 @@ namespace HLab.Erp.Core.ToolBoxes
 
             source.DragShift = new Point(0, 0) - source.MouseEventArgs.GetPosition(i);
 
-            // TODO : 
-            Task.Run(async () =>
-            {
-                source.DraggedElement = (FrameworkElement)await _mvvm.ViewHelperFactory.Get(this).Context.GetViewAsync(
-                    ListViewTest.SelectedValue as IEntity,
-                    typeof(DefaultViewMode),
-                    typeof(IViewClassDraggable)
-                    );
-            });
+            source.DraggedElement = (FrameworkElement)_mvvm.ViewHelperFactory.Get(this).Context.GetView(
+                ListViewTest.SelectedValue as IEntity,
+                typeof(DefaultViewMode),
+                typeof(IViewClassDraggable)
+                );
        }
 
         public string ContentId => GetType().Name;

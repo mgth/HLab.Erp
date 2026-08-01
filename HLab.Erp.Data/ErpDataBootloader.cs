@@ -16,7 +16,7 @@ public class ErpDataBootloader(IDataService data, IMvvmService mvvm, IOptionsSer
 
          var connectionData = new ConnectionData();
 
-         var view = await mvvm.MainContext.GetViewAsync(connectionData, typeof(DefaultViewMode), typeof(IDefaultViewClass));
+         var view = mvvm.MainContext.GetView(connectionData, typeof(DefaultViewMode), typeof(IDefaultViewClass));
 
 
          var dialog = mvvm.ViewAsWindow(view);

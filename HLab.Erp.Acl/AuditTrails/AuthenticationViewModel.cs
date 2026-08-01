@@ -19,12 +19,12 @@ public abstract class AuthenticationViewModel : ViewModel
         this.WhenAnyValue(e =>  e.User)
             .Select(u => u?.Username)
             .Do(u => Username = u??"")
-            .ObserveOn(RxApp.MainThreadScheduler)
+            .ObserveOn(RxSchedulers.MainThreadScheduler)
             .Subscribe();
 
         this.WhenAnyValue(e =>  e.Username)
             .Do(u => Credential.UserName = u)
-            .ObserveOn(RxApp.MainThreadScheduler)
+            .ObserveOn(RxSchedulers.MainThreadScheduler)
             .Subscribe();
 
         this.WhenAnyValue(e =>  e.Credential)
@@ -33,7 +33,7 @@ public abstract class AuthenticationViewModel : ViewModel
                 Username = c.UserName;
                 Password = Acl.Crypt(c.SecurePassword);
             })
-            .ObserveOn(RxApp.MainThreadScheduler)
+            .ObserveOn(RxSchedulers.MainThreadScheduler)
             .Subscribe();
     }
 

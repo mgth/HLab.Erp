@@ -235,7 +235,7 @@ namespace HLab.Erp.Core.Wpf.EntitySelectors
             }
 
 
-            var view = await ctx.GetViewAsync(vm, typeof(DefaultViewMode), typeof(IDefaultViewClass));
+            var view = ctx.GetView(vm, typeof(DefaultViewMode), typeof(IDefaultViewClass));
             PopupContent.Content = view;
         }
 

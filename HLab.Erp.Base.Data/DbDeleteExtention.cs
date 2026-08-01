@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using HLab.Erp.Data;
 using HLab.Mvvm;
 using HLab.Mvvm.Annotations;
@@ -7,7 +8,7 @@ namespace HLab.Erp.Base.Data;
 
 public static class DbDeleteExtention
 {
-    public static bool DeleteModel<T>(this IViewModel<T> viewModel, IDialogService navigationService, IDataService dbService, string deleteMessage=null, string caption=null)
+    public static async Task<bool> DeleteModelAsync<T>(this IViewModel<T> viewModel, IDialogService navigationService, IDataService dbService, string deleteMessage=null, string caption=null)
     where T : class, IEntity
     {
         var e = viewModel.Model;
@@ -18,7 +19,7 @@ public static class DbDeleteExtention
                     dbService.Delete(e);
                     //db.SaveChanges();
                     if (string.IsNullOrEmpty(deleteMessage) ||
-                        navigationService.ShowMessageYesNo(caption, deleteMessage, "Question"))
+                        await navigationService.ShowMessageYesNoAsync(caption, deleteMessage, "Question"))
 
                         transaction.Done();
                     else
@@ -26,7 +27,7 @@ public static class DbDeleteExtention
                         return false;
                     }
                 }
-            
+
 
 
             //dbService.Execute(db =>
@@ -38,7 +39,7 @@ public static class DbDeleteExtention
         }
         catch(Exception)
         {
-            navigationService.ShowMessageOk("Suppression Impossible", caption ?? "", "Error");
+            await navigationService.ShowMessageOkAsync("Suppression Impossible", caption ?? "", "Error");
             return false;
         }
         return true;

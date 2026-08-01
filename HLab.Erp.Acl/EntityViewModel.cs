@@ -33,7 +33,7 @@ public class EntityViewModel<T> : ViewModel<T>
         _locker = this
         .WhenAnyValue(e => e.Model, GetLocker)
         .WhereNotNull()
-        .ToProperty(this, e => e.Locker, scheduler: RxApp.TaskpoolScheduler );
+        .ToProperty(this, e => e.Locker, scheduler: RxSchedulers.TaskpoolScheduler );
 
         _editAllowed = this
             .WhenAnyValue(e => e.Injected.Acl)

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<RootNamespace>HLab.Erp.Data</RootNamespace>
 		<Platforms>AnyCPU;x64</Platforms>
 		<Configurations>Debug;Release;DebugRelease</Configurations>

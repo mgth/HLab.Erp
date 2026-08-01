@@ -17,7 +17,7 @@ namespace HLab.Erp.Acl.Avalonia.LoginServices
          Dispatcher.UIThread.Post(async () =>
          {
             //retrieve login window
-            var view = await mvvm.MainContext.GetViewAsync(getViewModel(), typeof(DefaultViewMode), default);
+            var view = mvvm.MainContext.GetView(getViewModel(), typeof(DefaultViewMode), typeof(IDefaultViewClass));
             var loginWindow = view.AsWindow();
 
             //loginWindow.SizeToContent = SizeToContent.WidthAndHeight;

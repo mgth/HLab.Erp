@@ -44,33 +44,33 @@ namespace HLab.Erp.Core.Wpf.ViewModelStates
                 e => e.LeftHighlighted, 
                 e => e.Darken,
                 selector: GetCurrentState)
-                .ToProperty(this, e => e.CurrentState, scheduler: RxApp.MainThreadScheduler);
+                .ToProperty(this, e => e.CurrentState, scheduler: RxSchedulers.MainThreadScheduler);
 
             _current = this.WhenAnyValue(e => e.CurrentState)
                 .Select(GetBrushSet)
-                .ToProperty(this, e => e.Current, scheduler: RxApp.MainThreadScheduler);
+                .ToProperty(this, e => e.Current, scheduler: RxSchedulers.MainThreadScheduler);
 
             _background = this.WhenAnyValue(e => e.Current.Background)
-                .ToProperty(this, e => e.Background, scheduler: RxApp.MainThreadScheduler);
+                .ToProperty(this, e => e.Background, scheduler: RxSchedulers.MainThreadScheduler);
 
             _front = this.WhenAnyValue(e => e.Current.Front)
-                .ToProperty(this, e => e.Front, scheduler: RxApp.MainThreadScheduler);
+                .ToProperty(this, e => e.Front, scheduler: RxSchedulers.MainThreadScheduler);
 
             _border = this.WhenAnyValue(e => e.Current.Border)
-                .ToProperty(this, e => e.Border, scheduler: RxApp.MainThreadScheduler);
+                .ToProperty(this, e => e.Border, scheduler: RxSchedulers.MainThreadScheduler);
 
             _text = this.WhenAnyValue(e => e.Current.Text)
-                .ToProperty(this, e => e.Text, scheduler: RxApp.MainThreadScheduler);
+                .ToProperty(this, e => e.Text, scheduler: RxSchedulers.MainThreadScheduler);
 
             _textBackground = this.WhenAnyValue(e => e.Current.TextBackground)
-                .ToProperty(this, e => e.TextBackground, scheduler: RxApp.MainThreadScheduler);
+                .ToProperty(this, e => e.TextBackground, scheduler: RxSchedulers.MainThreadScheduler);
 
             _highlighted = this.WhenAnyValue(
                 e => e.LeftHighlighted, 
                 e => e.RightHighlighted,
                 (l, r) => l || r
                 )
-                .ToProperty(this, e => e.Highlighted, scheduler: RxApp.MainThreadScheduler);
+                .ToProperty(this, e => e.Highlighted, scheduler: RxSchedulers.MainThreadScheduler);
         }
 
         Func<Color> _getter;

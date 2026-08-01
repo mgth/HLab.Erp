@@ -30,7 +30,7 @@ public class LoginBootloader(
 
           viewmodel.Username = Environment.UserName;
           //retrieve login window
-          var view = await mvvm.MainContext.GetViewAsync(viewmodel, typeof(DefaultViewMode));
+          var view = mvvm.MainContext.GetView(viewmodel, typeof(DefaultViewMode), typeof(IDefaultViewClass));
           var loginWindow = mvvm.ViewAsWindow(view);
           //loginWindow.SizeToContent = SizeToContent.WidthAndHeight;
           //loginWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;

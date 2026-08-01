@@ -52,7 +52,7 @@ public class LoginViewModel : AuthenticationViewModel, ILoginViewModel, IMainVie
 #endif
 
             return true;
-        }).ObserveOn(RxApp.MainThreadScheduler)
+        }).ObserveOn(RxSchedulers.MainThreadScheduler)
             .Subscribe();
 
         Database = DataService.Source;

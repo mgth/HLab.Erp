@@ -338,7 +338,7 @@ public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEnt
           AddAsync,
           this.WhenAnyValue(
               e => e.AddArgumentClass,
-              selector: AddCanExecute).SubscribeOn(RxApp.MainThreadScheduler));
+              selector: AddCanExecute).SubscribeOn(RxSchedulers.MainThreadScheduler));
 
       ExportCommand = ReactiveCommand.CreateFromTask(
            ExportAsync,

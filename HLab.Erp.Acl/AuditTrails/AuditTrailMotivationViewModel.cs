@@ -138,7 +138,7 @@ public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrai
 
         try
         {
-            var view = _mvvm.ViewAsWindow(await _mvvm.MainContext.GetViewAsync(this));
+            var view = _mvvm.ViewAsWindow(_mvvm.MainContext.GetView(this));
          
             if (!(view.ShowDialog() ?? false)) return false;
             
