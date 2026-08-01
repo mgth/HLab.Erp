@@ -20,7 +20,8 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <lang:LocalizedLabel Grid.Column="0" Text="{}{Audit}"/>
-                            <CheckBox Grid.Column="1" IsChecked="{Binding AuditDetail}" IsVisible="{Binding ElementName=AuditExpender, Path=IsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <!-- IsVisible est un bool en Avalonia : pas de converter -->
+                            <CheckBox Grid.Column="1" IsChecked="{Binding AuditDetail}" IsVisible="{Binding ElementName=AuditExpender, Path=IsExpanded}">
                                 <lang:LocalizedLabel Text="{}{Detail}"/>
                             </CheckBox>
                         </Grid>
