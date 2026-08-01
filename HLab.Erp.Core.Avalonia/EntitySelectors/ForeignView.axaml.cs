@@ -19,8 +19,10 @@ using H = DependencyHelper<ForeignView>;
 /// <summary>
 /// Logique d'interaction pour ForeignView.axaml
 /// </summary>
-public partial class ForeignView : UserControl, IView<IForeignViewModel>, IViewClassForeign
+public partial class ForeignView : UserControl, IView<IForeignViewModel>, IViewClassForeign, global::HLab.Base.Avalonia.Controls.IMandatoryNotFilled
 {
+    public AvaloniaProperty MandatoryProperty => ModelProperty;
+
     public ForeignView()
     {
         InitializeComponent();

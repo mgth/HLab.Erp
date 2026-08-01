@@ -4,6 +4,7 @@
              xmlns:icons="clr-namespace:HLab.Icons.Avalonia.Icons;assembly=HLab.Icons.Avalonia"
              xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
              xmlns:controls="clr-namespace:HLab.Base.Avalonia.Controls;assembly=HLab.Base.Avalonia"
+             xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.Avalonia.EntitySelectors"
              xmlns:views="clr-namespace:HLab.Erp.Core.Avalonia.Views"
              >
     <UserControl.Styles>
@@ -21,15 +22,27 @@
             <Setter Property="HorizontalContentAlignment" Value="Right"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
         </Style>
-        <Style Selector="controls|PropertyGrid > TextBox">
-            <Setter Property="IsReadOnly" Value="{Binding !EditMode, RelativeSource={RelativeSource FindAncestor, AncestorType=views:DetailView}}"/>
+        <!-- Équivalent des styles implicites du DetailView WPF : hors édition les
+             champs sont en lecture seule. Syntaxe Avalonia : $parent[Type].Prop
+             (le markup RelativeSource FindAncestor ne s'applique pas en setter). -->
+        <Style Selector="controls|PropertyGrid TextBox">
+            <Setter Property="IsReadOnly" Value="{Binding !$parent[views:DetailView].EditMode}"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0,0,15,0"/>
         </Style>
-        <Style Selector="controls|PropertyGrid > CheckBox">
-            <Setter Property="IsEnabled" Value="{Binding EditMode, RelativeSource={RelativeSource FindAncestor, AncestorType=views:DetailView}}"/>
+        <Style Selector="controls|PropertyGrid NumericUpDown">
+            <Setter Property="IsReadOnly" Value="{Binding !$parent[views:DetailView].EditMode}"/>
+        </Style>
+        <Style Selector="controls|PropertyGrid CheckBox">
+            <Setter Property="IsEnabled" Value="{Binding $parent[views:DetailView].EditMode}"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0,0,15,0"/>
+        </Style>
+        <Style Selector="controls|PropertyGrid CalendarDatePicker">
+            <Setter Property="IsEnabled" Value="{Binding $parent[views:DetailView].EditMode}"/>
+        </Style>
+        <Style Selector="controls|PropertyGrid entitySelectors|ForeignView">
+            <Setter Property="IsReadOnly" Value="{Binding !$parent[views:DetailView].EditMode}"/>
         </Style>
     </UserControl.Styles>
 
