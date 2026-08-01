@@ -1,0 +1,97 @@
+<UserControl x:Class="HLab.Erp.Acl.Avalonia.Users.UserView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
+             xmlns:data="clr-namespace:HLab.Erp.Acl;assembly=HLab.Erp.Acl"
+             xmlns:profiles="clr-namespace:HLab.Erp.Acl.Profiles;assembly=HLab.Erp.Acl.Avalonia"
+             xmlns:views="clr-namespace:HLab.Erp.Core.Avalonia.Views;assembly=HLab.Erp.Core.Avalonia"
+             xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.Avalonia.EntitySelectors;assembly=HLab.Erp.Core.Avalonia"
+             xmlns:mvvm="clr-namespace:HLab.Mvvm.Avalonia;assembly=HLab.Mvvm.Avalonia"
+             x:CompileBindings="False"
+             >
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <mvvm:ViewLocator Model="{Binding Locker}"/>
+
+        <ScrollViewer Grid.Row="1">
+            <Grid ColumnDefinitions="*,*">
+                <views:DetailView Grid.Column="0" IconPath="Icons/entities/User" Text="{}{User}" EditMode="{Binding Locker.IsActive}">
+
+                    <lang:LocalizedLabel Text="{}{Domain} : " />
+                    <TextBox Text="{Binding Model.Domain}"/>
+
+                    <lang:LocalizedLabel Text="{}{Login} : " />
+                    <TextBox Text="{Binding Model.Username}"/>
+
+                    <lang:LocalizedLabel Text="{}{Name} : "/>
+                    <TextBox Text="{Binding Model.Name}"/>
+
+                    <lang:LocalizedLabel Text="{}{First Name} : "/>
+                    <TextBox
+                        Text="{Binding Model.FirstName}"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        HorizontalContentAlignment="Left"/>
+
+                    <lang:LocalizedLabel Text="{}{Function} : "/>
+                    <TextBox Text="{Binding Model.Function}"/>
+
+                    <lang:LocalizedLabel Text="{}{eMail} : "/>
+                    <TextBox Text="{Binding Model.Email}"/>
+
+                    <lang:LocalizedLabel Text="{}{Phone} : "/>
+                    <TextBox Text="{Binding Model.Phone}"/>
+
+                    <lang:LocalizedLabel Text="{}{Initials} : "/>
+                    <TextBox Text="{Binding Model.Initials}"/>
+
+                    <lang:LocalizedLabel Text="{}{Password} : "/>
+                    <Button Command="{Binding ChangePasswordCommand}">
+                        <lang:Localize Id="{}{Change}"/>
+                    </Button>
+                </views:DetailView>
+
+                <views:DetailView Grid.Column="1" Text="{}{Profiles}" IconPath="Icons/Edit" EditMode="{Binding Locker.IsActive}">
+
+                    <Label/>
+
+                    <StackPanel
+                        Orientation="Horizontal"
+                        IsVisible="{Binding Locker.IsActive}">
+
+                        <lang:LocalizedLabel Text="{}{Add Profile}"/>
+
+                        <entitySelectors:ForeignView
+                            HorizontalAlignment="Left"
+                            ModelClass="{x:Type data:Profile}"
+                            ListClass="{x:Type profiles:ProfilesListViewModel}"
+                            Command="{Binding AddProfileCommand}"
+                        />
+                    </StackPanel>
+
+                    <Label/>
+                    <Button Command="{Binding RemoveProfileCommand}">
+                        <lang:Localize Id="{}{Remove}"/>
+                    </Button>
+
+                    <Label/>
+                    <mvvm:ViewLocator Model="{Binding UserProfiles}"/>
+
+                </views:DetailView>
+            </Grid>
+        </ScrollViewer>
+
+        <views:DetailView Text="{}{Note}" IconPath="Icons/Edit" Grid.Row="2" EditMode="{Binding Locker.IsActive}">
+
+            <TextBox
+                Margin="50,0,15,0" Grid.ColumnSpan="2"
+                Text="{Binding Model.Note}"
+                AcceptsReturn="True"
+                TextWrapping="Wrap"/>
+
+            <Label />
+
+        </views:DetailView>
+
+    </Grid>
+</UserControl>

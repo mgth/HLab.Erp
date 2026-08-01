@@ -1,0 +1,45 @@
+<UserControl x:Class="HLab.Erp.Acl.Avalonia.DataLockerView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
+             xmlns:icons="clr-namespace:HLab.Icons.Avalonia.Icons;assembly=HLab.Icons.Avalonia"
+             x:CompileBindings="False"
+             IsEnabled="{Binding IsEnabled}"
+             >
+    <Grid>
+        <StackPanel>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Height="30">
+                <Button Command="{Binding ActivateCommand}" Background="#40000000"
+                        IsVisible="{Binding !IsActive}">
+                    <ToolTip.Tip>
+                        <lang:Localize Id="{}{Edit}" />
+                    </ToolTip.Tip>
+                    <StackPanel Orientation="Vertical">
+                        <icons:IconView Path="icons/Locked" Height="25"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Command="{Binding CancelCommand}" BorderThickness="0" Background="Transparent"
+                        IsVisible="{Binding IsActive}">
+                    <ToolTip.Tip>
+                        <lang:Localize Id="{}{Cancel}" />
+                    </ToolTip.Tip>
+                    <StackPanel Orientation="Vertical">
+                        <icons:IconView Path="Icons/Cancel" Height="25"/>
+                    </StackPanel>
+                </Button>
+                <Label />
+                <Button Command="{Binding SaveCommand}" BorderThickness="0" Background="Transparent"
+                        IsVisible="{Binding IsActive}">
+                    <ToolTip.Tip>
+                        <lang:Localize Id="{}{Save}" />
+                    </ToolTip.Tip>
+                    <StackPanel Orientation="Vertical">
+                        <icons:IconView Path="icons/Save" Height="25"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <lang:Localize Foreground="DarkRed" Id="{Binding Message}" TextWrapping="Wrap" MaxWidth="200"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

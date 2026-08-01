@@ -1,0 +1,78 @@
+<UserControl x:Class="HLab.Erp.Acl.Avalonia.Profiles.ProfileView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
+             xmlns:data="clr-namespace:HLab.Erp.Acl;assembly=HLab.Erp.Acl"
+             xmlns:views="clr-namespace:HLab.Erp.Core.Avalonia.Views;assembly=HLab.Erp.Core.Avalonia"
+             xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.Avalonia.EntitySelectors;assembly=HLab.Erp.Core.Avalonia"
+             xmlns:mvvm="clr-namespace:HLab.Mvvm.Avalonia;assembly=HLab.Mvvm.Avalonia"
+             x:CompileBindings="False"
+             >
+    <Grid RowDefinitions="Auto,*,Auto">
+        <mvvm:ViewLocator Height="50" Model="{Binding Locker}" Grid.ColumnSpan="2"/>
+
+        <ScrollViewer Grid.Row="1">
+            <!-- UniformGridAuto non porté : UniformGrid natif -->
+            <UniformGrid Columns="3">
+
+                <views:DetailView Text="{}{Profile}" IconPath="Icons/users">
+                    <lang:LocalizedLabel Text="{}{Name} : "/>
+                    <TextBox Text="{Binding Model.Name}" HorizontalContentAlignment="Left" />
+                </views:DetailView>
+
+                <views:DetailView Text="{}{Users}" IconPath="Icons/Entities/User">
+                    <Label/>
+                    <StackPanel Orientation="Horizontal" IsVisible="{Binding Locker.IsActive}">
+
+                        <entitySelectors:ForeignView
+                            HorizontalAlignment="Left"
+                            IsReadOnly="{Binding Locker.IsReadOnly}"
+                            ModelClass="{x:Type data:User}"
+                            Command="{Binding AddUserCommand}"
+                            >
+                            <lang:Localize Id="{}{Add}"/>
+                        </entitySelectors:ForeignView>
+
+                        <Button Command="{Binding RemoveUserCommand}">
+                            <lang:Localize Id="{}{Remove}"/>
+                        </Button>
+
+                    </StackPanel>
+                    <Label/>
+                    <mvvm:ViewLocator Model="{Binding UserProfiles}"/>
+
+                </views:DetailView>
+
+                <views:DetailView Text="{}{Rights}" IconPath="Icons/Locked">
+                <Label/>
+                    <StackPanel Orientation="Horizontal" IsVisible="{Binding Locker.IsActive}">
+                        <entitySelectors:ForeignView
+                    HorizontalAlignment="Left"
+                    IsReadOnly="{Binding Locker.IsReadOnly}"
+                    ModelClass="{x:Type data:AclRight}"
+                    Command="{Binding AddAclRightCommand}"
+                >
+                            <lang:Localize Id="{}{Add Right}"/>
+                        </entitySelectors:ForeignView>
+                        <Button Command="{Binding RemoveRightCommand}">
+                            <lang:Localize Id="{}{Remove}"/>
+                        </Button>
+                    </StackPanel>
+
+                    <Label/>
+
+                    <mvvm:ViewLocator Model="{Binding ProfileRights}"/>
+
+                </views:DetailView>
+            </UniformGrid>
+        </ScrollViewer>
+
+        <views:DetailView Grid.Row="2" Text="{}{Note}" IconPath="Icons/Edit">
+
+            <TextBox Margin="50,0,15,0" Grid.ColumnSpan="2" Text="{Binding Model.Note}" AcceptsReturn="True" TextWrapping="Wrap"/>
+            <Label />
+
+        </views:DetailView>
+
+    </Grid>
+</UserControl>
