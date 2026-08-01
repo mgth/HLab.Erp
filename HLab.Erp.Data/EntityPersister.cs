@@ -104,6 +104,7 @@ namespace HLab.Erp.Data
                     Dirty.Add(p);
                 }
 
+                Console.Error.WriteLine($"Save failure {typeof(T).Name} ({string.Join(",", columns.Select(c => c.Name))}): {ex}");
                 throw new DataException("Save failure",ex);
             }
             finally

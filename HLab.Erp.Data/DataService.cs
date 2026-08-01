@@ -471,6 +471,8 @@ public class DataService(Func<Type, object> locate, IOptionsService options, ICr
           NpgsqlFactory.Instance
       );
 
+      db.Mappers.Add(new UtcDateTimeMapper());
+
       return db;
    }
 
