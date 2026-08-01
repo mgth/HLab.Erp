@@ -11,12 +11,15 @@ using ReactiveUI;
 
 namespace HLab.Erp.Acl.AuditTrails;
 
-public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrailProvider
+// IMainViewModel : les fenêtres (DefaultWindow) bindent Title/MainIcon/IconService/
+// LocalizationService avec des bindings compilés typés sur cette interface.
+public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrailProvider, IMainViewModel
 {
     public IIconService IconService { get; }
     public ILocalizationService LocalizationService { get; }
 
     public string Title => EntityCaption;
+    public object? MainIcon => null;
 
     readonly IMvvmService _mvvm;
     readonly IDataTransaction _transaction;
@@ -93,7 +96,9 @@ public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrai
         get => _result;
         set => this.SetAndRaise(ref _result,value);
     }
-    bool? _result = false;
+    // null tant que l'utilisateur n'a pas choisi : Cancel pose false, et un
+    // défaut à false empêchait SetAndRaise de notifier (fenêtre jamais fermée).
+    bool? _result = null;
 
     public ICommand OkCommand { get; }
         
@@ -135,6 +140,8 @@ public class AuditTrailMotivationViewModel : AuthenticationViewModel, IAuditTrai
         EntityCaption = caption;
         IconPath = iconPath;
         SetPassword(new SecureString());
+        // Le VM est réutilisé d'un dialogue à l'autre : repartir d'un résultat neutre.
+        Result = null;
 
         try
         {
