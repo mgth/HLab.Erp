@@ -22,7 +22,8 @@ public class LoginBootloader(
    public override async Task<BootState> LoadAsync()
    {
       //if we can have localization and picture lets do it
-      if (WaitingForServices(localize, icons, data)) return BootState.Requeue;
+      //mvvm : views must be registered before the login view can resolve
+      if (WaitingForServices(localize, icons, data, mvvm)) return BootState.Requeue;
 
       await UiPlatform.InvokeOnUiThreadAsync(async () =>
       {

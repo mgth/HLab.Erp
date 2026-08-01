@@ -54,17 +54,12 @@ namespace HLab.Erp.Acl.Avalonia.LoginServices
             Dispatcher.UIThread.BeginInvokeShutdown(DispatcherPriority.Normal);
         }
 
-        //void PasswordBox_OnPasswordChanged(object sender, EventArgs e)
-        //{
-        //    if (DataContext is LoginViewModel l)
-        //    {
-        //        l.Credential = new (l.Username, PasswordBox.Text);
-        //    }
-        //}
-
         void PasswordBox_OnPasswordChanged(object? sender, TextChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (DataContext is LoginViewModel l)
+            {
+                l.Credential = new (l.Username, PasswordBox.Text);
+            }
         }
     }
 }
