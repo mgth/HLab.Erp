@@ -63,6 +63,10 @@ public partial class ForeignView : UserControl, IView<IForeignViewModel>, IViewC
         .Register();
 
     public static readonly StyledProperty<object?> ButtonContentProperty = H.Property<object?>()
+        .OnChanged((s, a) =>
+        {
+            if (s.ButtonContentHost is { } host) host.Content = a.NewValue.Value;
+        })
         .Register();
 
     public static readonly StyledProperty<bool> MandatoryNotFilledProperty = H.Property<bool>()

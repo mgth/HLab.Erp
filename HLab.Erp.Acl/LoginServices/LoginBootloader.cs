@@ -29,7 +29,9 @@ public class LoginBootloader(
       {
           var viewmodel = getViewModel();
 
-          viewmodel.Username = Environment.UserName;
+          // Défaut : compte Windows, sans écraser un éventuel préremplissage (DebugUsername)
+          if (string.IsNullOrEmpty(viewmodel.Username))
+              viewmodel.Username = Environment.UserName;
           //retrieve login window
           var view = mvvm.MainContext.GetView(viewmodel, typeof(DefaultViewMode), typeof(IDefaultViewClass));
           var loginWindow = mvvm.ViewAsWindow(view);

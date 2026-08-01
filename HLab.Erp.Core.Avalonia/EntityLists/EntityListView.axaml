@@ -4,6 +4,7 @@
              xmlns:icons="clr-namespace:HLab.Icons.Avalonia.Icons;assembly=HLab.Icons.Avalonia"
              xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
              xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.Avalonia.EntitySelectors"
+             xmlns:mvvm="clr-namespace:HLab.Mvvm.Avalonia;assembly=HLab.Mvvm.Avalonia"
              Background="{DynamicResource HLab.Brushes.Background}"
              >
     <UserControl.Styles>
@@ -15,7 +16,7 @@
 
     <Grid ColumnDefinitions="Auto,5,*">
 
-        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" IsVisible="{Binding ShowFilters}">
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" MaxWidth="350" IsVisible="{Binding ShowFilters}">
             <Grid RowDefinitions="Auto,*">
                 <Grid ColumnDefinitions="Auto,*,Auto">
                     <icons:IconView Path="icons/filters/filter" Foreground="{DynamicResource HLab.Brushes.Foreground}"/>
@@ -33,6 +34,13 @@
                             <StackPanel Orientation="Vertical"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
+                    <!-- Sans template, Avalonia affiche le ToString() des VMs de filtre
+                         (WPF les résolvait via ses DataTemplates implicites). -->
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <mvvm:ViewLocator Model="{Binding}" Margin="0,2"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
         </ScrollViewer>
@@ -127,9 +135,10 @@
             <TextBlock IsVisible="False" x:Name="MessageTextBlock" Grid.Row="1" Text="{Binding ErrorMessage}" Foreground="DarkRed"/>
 
             <Grid Grid.Row="2" ColumnDefinitions="Auto,*">
+                <!-- Pas de VerticalAlignment="Top" : sans hauteur contrainte le DataGrid
+                     matérialise TOUTES les lignes (aucune virtualisation) et fige l'UI. -->
                 <DataGrid
                       Grid.Column="1"
-                       VerticalAlignment="Top"
                        ItemsSource="{Binding ListViewModel}"
                        SelectedItem="{Binding SelectedViewModel}"
                        x:Name="ListView"

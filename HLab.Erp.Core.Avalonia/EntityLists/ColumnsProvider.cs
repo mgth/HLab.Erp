@@ -164,9 +164,25 @@ public class ColumnsProvider<T>(IObservableQuery<T> list) : IColumnsProvider<T>
     {
         if (string.IsNullOrWhiteSpace(template)) template = XamlTool.ContentPlaceHolder;
 
+        // Le chargeur XAML runtime d'Avalonia n'accepte les déclarations xmlns que
+        // sur l'élément racine (contrairement au XamlReader WPF) : on remonte celles
+        // que les configurateurs de colonnes génèrent sur les éléments internes.
+        var namespaces = new Dictionary<string, string>();
+        template = System.Text.RegularExpressions.Regex.Replace(
+            template,
+            "\\s+xmlns:([A-Za-z0-9_]+)=\"([^\"]*)\"",
+            m =>
+            {
+                namespaces[m.Groups[1].Value] = m.Groups[2].Value;
+                return "";
+            });
+
+        var hoisted = string.Join(" ", namespaces.Select(kv => $"xmlns:{kv.Key}=\"{kv.Value}\""));
+
         var source = @$"<DataTemplate
                     xmlns=""https://github.com/avaloniaui""
-                    xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
+                    xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
+                    {hoisted}>
                     {template}
             </DataTemplate>";
 

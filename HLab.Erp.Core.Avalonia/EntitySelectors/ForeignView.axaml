@@ -6,10 +6,12 @@
              xmlns:mvvm="clr-namespace:HLab.Mvvm.Avalonia;assembly=HLab.Mvvm.Avalonia"
              x:Name="UserControl"
              >
+    <!-- Content explicite obligatoire : ButtonContent étant [Content], le contenu
+         implicite de ce fichier serait routé vers ButtonContent (boucle de re-parentage). -->
+    <UserControl.Content>
     <Grid Background="Transparent" ColumnDefinitions="*,Auto,Auto,Auto">
         <mvvm:ViewLocator
             x:Name="Locator"
-            DataContext="{Binding Model, ElementName=UserControl}"
             ViewClass="{x:Type annotations:IListItemViewClass}"/>
 
         <Label Grid.Column="1"/>
@@ -21,7 +23,9 @@
         <Button Grid.Column="3" x:Name="Button" Click="ButtonBase_OnClick">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <ContentControl Content="{Binding ButtonContent, ElementName=UserControl}"/>
+                    <!-- Contenu câblé en code (OnButtonContentChanged) : le binding
+                         ElementName sur son propre contenu re-parentait en boucle. -->
+                    <ContentControl x:Name="ButtonContentHost"/>
                     <icons:IconView VerticalAlignment="Bottom" Path="Icons/SelectForeign" MaxHeight="10"/>
                 </StackPanel>
 
@@ -51,4 +55,5 @@
         </Grid>
 
     </Grid>
+    </UserControl.Content>
 </UserControl>
