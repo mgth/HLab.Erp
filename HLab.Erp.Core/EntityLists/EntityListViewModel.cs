@@ -349,7 +349,9 @@ public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEnt
               .Merge(_canExecuteRefresh)
               .Select(_ => DeleteCanExecute(Selected)));
 
-      AddCommand = ReactiveCommand.CreateFromTask(
+      // Le paramètre (entité choisie dans le popup du ForeignView) alimente
+      // ConfigureNewEntityAsync(entity, arg) ; le bouton simple passe null.
+      AddCommand = ReactiveCommand.CreateFromTask<object?>(
           AddAsync,
           this.WhenAnyValue(e => e.AddArgumentClass).Select(_ => Unit.Default)
               .Merge(_canExecuteRefresh)
@@ -427,7 +429,7 @@ public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEnt
    }
 
 
-   Task AddAsync() => AddEntityAsync();
+   Task AddAsync(object? arg) => AddEntityAsync(arg);
 
    bool AddCanExecute(Type t)
    {
@@ -499,11 +501,11 @@ public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEnt
    protected virtual Task ConfigureNewEntityAsync(T entity, object arg) => ConfigureNewEntityAsync(entity);
    protected virtual Task ConfigureNewEntityAsync(T entity) => Task.CompletedTask;
 
-   async Task AddEntityAsync()
+   async Task AddEntityAsync(object? arg = null)
    {
       try
       {
-         var entity = await Injected.Data.AddAsync<T>(e => ConfigureNewEntityAsync(e));
+         var entity = await Injected.Data.AddAsync<T>(e => ConfigureNewEntityAsync(e, arg));
          if (entity == null) return;
          await List.UpdateAsync();
          await Injected.Docs.OpenDocumentAsync(entity);

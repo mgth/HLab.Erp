@@ -8,8 +8,9 @@
              Background="{DynamicResource HLab.Brushes.Background}"
              >
     <UserControl.Styles>
-        <!-- Équivalent du trigger WPF : bouton désactivé => masqué -->
-        <Style Selector="StackPanel#MenuPanel > Button:disabled">
+        <!-- Équivalent du trigger WPF : bouton désactivé => masqué. Sélecteur
+             descendant pour couvrir aussi le bouton interne du ForeignView. -->
+        <Style Selector="StackPanel#MenuPanel Button:disabled">
             <Setter Property="IsVisible" Value="False" />
         </Style>
     </UserControl.Styles>
