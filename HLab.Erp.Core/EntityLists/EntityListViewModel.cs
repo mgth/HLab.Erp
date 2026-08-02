@@ -6,7 +6,9 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml.Linq;
@@ -144,6 +146,15 @@ public abstract class EntityListViewModel : ViewModel
    public ICommand OpenCommand { get; protected set; }
    public ICommand ImportCommand { get; protected set; }
    public ICommand ExportCommand { get; protected set; }
+
+   protected readonly Subject<Unit> _canExecuteRefresh = new();
+
+   /// <summary>
+   /// Ré-évalue les CanExecute des commandes (Add/Delete/Export/Import) dont les
+   /// conditions dépendent d'états non observés par leurs pipelines (verrou,
+   /// étape du workflow, droits...) — rôle tenu par les ITrigger avant ReactiveUI.
+   /// </summary>
+   public void RefreshCanExecute() => _canExecuteRefresh.OnNext(Unit.Default);
 
    public ICommand SaveFiltersPresetCommand { get; }
 
@@ -329,29 +340,33 @@ public abstract partial class EntityListViewModel<T> : EntityListViewModel, IEnt
 
       RefreshCommand = ReactiveCommand.Create(() => List.Refresh());
 
+      // Les conditions des commandes dépendent aussi d'états externes (verrou,
+      // étape du workflow, droits...) : RefreshCanExecute() permet aux listes
+      // dérivées de forcer la ré-évaluation (rôle des anciens ITrigger).
       DeleteCommand = ReactiveCommand.CreateFromTask<T>(
           DeleteAsync,
-          this.WhenAnyValue(
-              e => e.Selected,
-              selector: DeleteCanExecute));
+          this.WhenAnyValue(e => e.Selected).Select(_ => Unit.Default)
+              .Merge(_canExecuteRefresh)
+              .Select(_ => DeleteCanExecute(Selected)));
 
       AddCommand = ReactiveCommand.CreateFromTask(
           AddAsync,
-          this.WhenAnyValue(
-              e => e.AddArgumentClass,
-              selector: AddCanExecute).SubscribeOn(RxSchedulers.MainThreadScheduler));
+          this.WhenAnyValue(e => e.AddArgumentClass).Select(_ => Unit.Default)
+              .Merge(_canExecuteRefresh)
+              .Select(_ => AddCanExecute(AddArgumentClass))
+              .SubscribeOn(RxSchedulers.MainThreadScheduler));
 
       ExportCommand = ReactiveCommand.CreateFromTask(
            ExportAsync,
-           this.WhenAnyValue(
-           e => e.Selected,
-           selector: ExportCanExecute));
+           this.WhenAnyValue(e => e.Selected).Select(_ => Unit.Default)
+               .Merge(_canExecuteRefresh)
+               .Select(_ => ExportCanExecute(Selected)));
 
       ImportCommand = ReactiveCommand.CreateFromTask(
            ImportAsync,
-           this.WhenAnyValue(
-           e => e.Selected,
-           selector: ImportCanExecute));
+           this.WhenAnyValue(e => e.Selected).Select(_ => Unit.Default)
+               .Merge(_canExecuteRefresh)
+               .Select(_ => ImportCanExecute(Selected)));
 
       ShowMenuCommand = ReactiveCommand.Create(() => ShowMenu = true);
 
