@@ -12,15 +12,19 @@
              x:DataType="loginServices:LoginViewModel">
 	
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-        <Viewbox Opacity="0.05">
+        <!-- Filigrane : l'opacité est cuite dans le SVG (LogoBackground.svg) — une
+             Opacity XAML n'est pas composée par le rendu Skia des icônes. Taille
+             plafonnée : sans cela le Viewbox réclame la taille naturelle du SVG
+             et gonfle la fenêtre. -->
+        <Viewbox MaxWidth="420" MaxHeight="360">
             <icons:IconView Path="icons/LogoBackground"/>
         </Viewbox>
 
         <StackPanel Margin="30,20,20,0" VerticalAlignment="Center" HorizontalAlignment="Center">
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <icons:IconView Path="Icons/Logo" IconMaxWidth="NaN"/>
-                <icons:IconView Margin="20" Path="Icons/AppName" IconMaxWidth="NaN"/>
+                <icons:IconView MaxHeight="80" Path="Icons/Logo" IconMaxWidth="NaN"/>
+                <icons:IconView MaxHeight="60" Margin="20" Path="Icons/AppName" IconMaxWidth="NaN"/>
             </StackPanel>
 
             <Grid VerticalAlignment="Center" HorizontalAlignment="Center"
@@ -33,11 +37,12 @@
                 HorizontalAlignment="Right"
                 IsVisible="{Binding AllowDatabaseSelection}"
                 />
-                <ComboBox 
-                    SelectedItem="{Binding Database}" 
-                    IsVisible="{Binding AllowDatabaseSelection}"      
-                    Grid.Row="0" 
-                    Grid.Column="1" 
+                <ComboBox
+                    SelectedItem="{Binding Database}"
+                    IsVisible="{Binding AllowDatabaseSelection}"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    MinWidth="200"
                     ItemsSource="{Binding Databases}"
                     />
 
@@ -48,11 +53,12 @@
                 HorizontalAlignment="Right"
                 IsVisible="{Binding AllowThemeSelection}"
                 />
-                <ComboBox 
-                    SelectedItem="{Binding InfoService.Theme}" 
-                    IsVisible="{Binding AllowThemeSelection}"      
-                    Grid.Row="1" 
-                    Grid.Column="1" 
+                <ComboBox
+                    SelectedItem="{Binding InfoService.Theme}"
+                    IsVisible="{Binding AllowThemeSelection}"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    MinWidth="200"
                     ItemsSource="{Binding InfoService.Themes}"
                     >
                     <ComboBox.ItemTemplate>
@@ -114,22 +120,27 @@
                 Grid.Row="5" 
                 Grid.Column="0" 
                 Grid.ColumnSpan="2"   
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource HLab.Brushes.Accent}"
                 TextWrapping="Wrap" 
                 Text="{Binding Message}"/>
 
 <!-- Connection -->
-                <Button 
-                IsDefault="True" 
-                Width="100" 
-                Grid.ColumnSpan="2" 
-                Grid.Column="0" 
-                Grid.Row="6" 
-                Margin="10" 
-                Command="{Binding LoginCommand}">
-                    <lang:Localize Id="{}{Connection}"/>
-                </Button>
-                
+                <StackPanel Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button
+                        IsDefault="True"
+                        Width="100"
+                        Margin="10"
+                        Command="{Binding LoginCommand}">
+                        <lang:Localize Id="{}{Connection}"/>
+                    </Button>
+                    <Button
+                        Width="100"
+                        Margin="10"
+                        Command="{Binding CancelCommand}">
+                        <lang:Localize Id="{}{Cancel}"/>
+                    </Button>
+                </StackPanel>
+
             </Grid>
         </StackPanel>
     </Grid>

@@ -11,16 +11,40 @@
         <Style Selector="Label">
             <Setter Property="FontStyle" Value="Italic"/>
             <Setter Property="Foreground" Value="{DynamicResource HLab.Brushes.Foreground}"/>
-            <Setter Property="VerticalContentAlignment" Value="Bottom"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Right"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <Style Selector="lang|LocalizedLabel">
             <Setter Property="FontStyle" Value="Italic"/>
             <Setter Property="Foreground" Value="{DynamicResource HLab.Brushes.Foreground}"/>
-            <Setter Property="VerticalContentAlignment" Value="Bottom"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Right"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Équivalents des Separator/SmallSeparator WPF. IMPORTANT : un Label
+             (pas un Border — le PropertyGrid n'avance pas son curseur sur les
+             Border, la ligne suivante se superposerait). -->
+        <Style Selector="Label.separator">
+            <Setter Property="FontStyle" Value="Normal"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="0,15,0,10"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Foreground" Value="{DynamicResource HLab.Brushes.Badge.Foreground}"/>
+            <Setter Property="Background" Value="{DynamicResource HLab.Brushes.Accent3}"/>
+            <Setter Property="Grid.ColumnSpan" Value="2"/>
+        </Style>
+        <Style Selector="Label.small-separator">
+            <Setter Property="FontStyle" Value="Normal"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5,0,0,0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Grid.ColumnSpan" Value="2"/>
         </Style>
         <!-- Équivalent des styles implicites du DetailView WPF : hors édition les
              champs sont en lecture seule. Syntaxe Avalonia : $parent[Type].Prop
@@ -51,15 +75,17 @@
     <UserControl.Content>
     <Grid RowDefinitions="Auto,*,10">
 
+        <!-- Parité WPF (style Separator) : blanc sur bande accent translucide —
+             Header.Background/Foreground donnait du gris sur gris. -->
         <Border Grid.Row="0"
                 Margin="0,15,0,10"
-                Background="{DynamicResource HLab.Brushes.Header.Background}">
+                Background="{DynamicResource HLab.Brushes.Accent3}">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                 <Canvas>
                     <icons:IconView x:Name="HeaderIcon" Height="35" Opacity="0.8"/>
                 </Canvas>
                 <lang:Localize x:Name="HeaderText" FontWeight="Bold" FontSize="16" Margin="50,0,0,0"
-                               Foreground="{DynamicResource HLab.Brushes.Header.Foreground}"/>
+                               Foreground="{DynamicResource HLab.Brushes.Badge.Foreground}"/>
             </StackPanel>
         </Border>
 

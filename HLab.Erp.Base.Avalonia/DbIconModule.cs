@@ -35,7 +35,21 @@ public class DbIconModule(IIconService icons, IDataService data) : Bootloader
                 }
                 else if (!string.IsNullOrWhiteSpace(icon.SourceXaml))
                 {
-                    icons.AddIconProvider(path, new IconProviderXamlFromSource(icon.SourceXaml, path, icon.Foreground));
+                    // Sources XAML WPF (formes produit, tests...) : reconverties
+                    // en SVG — le chargeur XAML Avalonia ne lit pas le markup WPF.
+                    if (WpfXamlToSvg.TryConvert(icon.SourceXaml) is { } svg)
+                    {
+                        icons.AddIconProvider(path, new IconProviderSvgFromSource(svg, path, icon.Foreground));
+                    }
+                    else
+                    {
+                        Console.Error.WriteLine($"[DbIcons] '{path}' : XAML WPF non convertible en SVG");
+                        icons.AddIconProvider(path, new IconProviderXamlFromSource(icon.SourceXaml, path, icon.Foreground));
+                    }
+                }
+                else
+                {
+                    Console.Error.WriteLine($"[DbIcons] '{path}' : AUCUNE source (ni SVG ni XAML)");
                 }
             }
         }

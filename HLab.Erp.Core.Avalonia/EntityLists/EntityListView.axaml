@@ -5,7 +5,7 @@
              xmlns:lang="clr-namespace:HLab.Localization.Avalonia.Lang;assembly=HLab.Localization.Avalonia"
              xmlns:entitySelectors="clr-namespace:HLab.Erp.Core.Avalonia.EntitySelectors"
              xmlns:mvvm="clr-namespace:HLab.Mvvm.Avalonia;assembly=HLab.Mvvm.Avalonia"
-             Background="{DynamicResource HLab.Brushes.Background}"
+             Background="{DynamicResource HLab.Brushes.ThemeBackground}"
              >
     <UserControl.Styles>
         <!-- Équivalent du trigger WPF : bouton désactivé => masqué. Sélecteur
@@ -143,7 +143,7 @@
                        ItemsSource="{Binding ListViewModel}"
                        SelectedItem="{Binding SelectedViewModel}"
                        x:Name="ListView"
-                       Background="{DynamicResource HLab.Brushes.Background}"
+                       Background="{DynamicResource HLab.Brushes.ThemeBackground}"
                        AutoGenerateColumns="False"
                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
                        ScrollViewer.VerticalScrollBarVisibility="Auto"

@@ -14,7 +14,7 @@
              x:DataType="auditTrails:AuditTrailMotivationViewModel"
 			 >
     <Grid>
-        <Border Background="{DynamicResource MahApps.Brushes.ThemeBackground}" CornerRadius="10" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}"/>
+        <Border Background="{DynamicResource HLab.Brushes.Control.Background}" CornerRadius="10" BorderThickness="1" BorderBrush="{DynamicResource HLab.Brushes.Accent}"/>
         
         <StackPanel HorizontalAlignment="Center" Margin="20">
             <icons:IconView Path="{Binding IconPath}" MaxHeight="30" MaxWidth="30"/>
@@ -26,9 +26,10 @@
                 ScrollViewer.HorizontalScrollBarVisibility="Auto" 
                 ScrollViewer.VerticalScrollBarVisibility="Auto" 
                 Padding="5" 
-                Text="{Binding Log}" 
-                FontStyle="Italic" 
-                Foreground="#80FFFFFF" 
+                Text="{Binding Log}"
+                FontStyle="Italic"
+                Opacity="0.6"
+                Foreground="{DynamicResource HLab.Brushes.Foreground}"
                 BorderBrush="Transparent">
                 
                 <TextBox.Background>
